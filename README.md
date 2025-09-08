@@ -1,59 +1,69 @@
-# PgfFrontend
+# PGF Artist Website - Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+Application Angular moderne pour portfolio d'artiste. Interface responsive présentant œuvres d'art, expositions et informations de contact.
 
-## Development server
+## 🏗️ Architecture
 
-To start a local development server, run:
+### Stack technique
+- **Angular 18** avec Standalone Components
+- **TypeScript**
+- **Angular Material** - Design system
+- **RxJS** - Programmation réactive
+- **SSR** activé pour SEO
 
-```bash
-ng serve
+### Structure du projet
+
+```
+src/app/
+├── 📁 core/
+│   ├── models/                     # Interfaces métier
+│   └── services/                   # Services API
+├── 📁 shared/
+│   └── components/                 # Composants réutilisables
+│       ├── artwork-gallery/
+│       ├── contact-form/
+│       └── loading-spinner/
+├── 📁 features/                    # Pages (lazy-loaded)
+│   ├── home/                       # Page d'accueil
+│   ├── about/                      # Présentation artiste
+│   ├── artworks/                   # Galerie œuvres
+│   ├── exhibitions/                # Expositions
+│   └── contact/                    # Contact
+└── 📁 layout/                      # Navigation et footer
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 📱 Pages principales
 
-## Code scaffolding
+| Section | Description |
+|---------|-------------|
+| **Accueil** | Hero section + sélection d'œuvres |
+| **À propos** | Biographie et démarche artistique |
+| **Œuvres** | Galerie organisée par catégories |
+| **Expositions** | Historique et événements à venir |
+| **Contact** | Formulaire et informations |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🔗 Backend Integration
 
-```bash
-ng generate component component-name
-```
+- Communication avec API REST Spring Boot
+- Gestion des œuvres, catégories et expositions
+- Formulaire de contact avec validation
+- Configuration via variables d'environnement
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🎨 Design System
 
-```bash
-ng generate --help
-```
+- **Material Design** avec thème personnalisé
+- **Responsive** mobile-first
+- **Lazy Loading** pour optimisation des performances
+- **Animations** subtiles et transitions fluides
 
-## Building
+## ⚡ Fonctionnalités
 
-To build the project run:
+- ✅ **Performance** - OnPush Strategy et lazy loading
+- ✅ **SEO** - Rendu côté serveur configuré
+- ✅ **PWA** - Cache offline pour meilleure UX
+- ✅ **Accessibilité** - Standards WCAG respectés
+- ✅ **TypeScript** - Typage strict pour robustesse
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+*Portfolio web moderne pour présentation d'œuvres d'art contemporain*
