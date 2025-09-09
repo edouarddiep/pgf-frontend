@@ -1,0 +1,56 @@
+<mat-card class="exhibition-card">
+  @if (exhibition().imageUrl) {
+    <div class="card-image">
+      <img
+        [lazyLoad]="exhibition().imageUrl!"
+        [alt]="exhibition().title"
+        [defaultImage]="'assets/images/placeholder.jpg'">
+    </div>
+  }
+
+  <mat-card-header>
+    <mat-card-title>{{ exhibition().title }}</mat-card-title>
+    @if (exhibition().location) {
+      <mat-card-subtitle>
+        <mat-icon>location_on</mat-icon>
+        {{ exhibition().location }}
+      </mat-card-subtitle>
+    }
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (exhibition().startDate) {
+      <div class="exhibition-dates">
+        <mat-icon>event</mat-icon>
+        <span>
+          {{ exhibition().startDate | date:'mediumDate':'fr' }}
+          @if (exhibition().endDate) {
+            - {{ exhibition().endDate | date:'mediumDate':'fr' }}
+          }
+        </span>
+      </div>
+    }
+
+    @if (exhibition().description) {
+      <p class="description">{{ exhibition().description }}</p>
+    }
+
+    <div class="exhibition-status">
+      <mat-chip-set>
+        <mat-chip [color]="getChipColor(exhibition().status)">
+          {{ getStatusLabel(exhibition().status) }}
+        </mat-chip>
+        @if (exhibition().isFeatured) {
+          <mat-chip color="accent">Exposition phare</mat-chip>
+        }
+      </mat-chip-set>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button color="primary">
+      <mat-icon>info</mat-icon>
+      Plus d'infos
+    </button>
+  </mat-card-actions>
+</mat-card>

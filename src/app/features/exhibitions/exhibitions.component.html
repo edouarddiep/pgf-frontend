@@ -1,0 +1,28 @@
+<div class="exhibitions-container">
+  <div class="page-header">
+    <h1>Expositions</h1>
+    <p class="subtitle">Découvrez mes expositions passées, présentes et à venir</p>
+  </div>
+
+  @if (exhibitions$ | async; as exhibitions) {
+    <div class="exhibitions-grid">
+      @for (exhibition of exhibitions; track exhibition.id) {
+        <app-exhibition-card [exhibition]="exhibition"></app-exhibition-card>
+      } @empty {
+        <div class="empty-state">
+          <mat-icon>event</mat-icon>
+          <h3>Aucune exposition disponible</h3>
+          <p>Revenez bientôt pour découvrir mes prochaines expositions</p>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="loading-state">
+      <app-loading-spinner
+        [diameter]="40"
+        [message]="'Chargement des expositions...'"
+        [fullscreen]="false">
+      </app-loading-spinner>
+    </div>
+  }
+</div>

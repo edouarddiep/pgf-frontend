@@ -1,0 +1,48 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <div class="container">
+    <a routerLink="/" class="logo">
+      <h1>PGF</h1>
+    </a>
+
+    @if (isHandset$ | async) {
+      <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-button">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <mat-menu #mobileMenu="matMenu">
+        <a mat-menu-item routerLink="/about">À propos</a>
+        <button mat-menu-item [matMenuTriggerFor]="artworksSubmenu">Œuvres</button>
+        <a mat-menu-item routerLink="/exhibitions">Expositions</a>
+        <a mat-menu-item routerLink="/contact">Contact</a>
+      </mat-menu>
+
+      <mat-menu #artworksSubmenu="matMenu">
+        @for (category of categories$ | async; track category.id) {
+          <a mat-menu-item [routerLink]="['/artworks', category.slug]">
+            {{ category.name }}
+          </a>
+        }
+      </mat-menu>
+    } @else {
+      <nav class="desktop-nav">
+        <a mat-button routerLink="/about" routerLinkActive="active">À propos</a>
+
+        <button mat-button [matMenuTriggerFor]="artworksMenu" class="artworks-menu">
+          Œuvres
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #artworksMenu="matMenu">
+          @for (category of categories$ | async; track category.id) {
+            <a mat-menu-item [routerLink]="['/artworks', category.slug]">
+              {{ category.name }}
+            </a>
+          }
+        </mat-menu>
+
+        <a mat-button routerLink="/exhibitions" routerLinkActive="active">Expositions</a>
+        <a mat-button routerLink="/contact" routerLinkActive="active">Contact</a>
+      </nav>
+    }
+  </div>
+</mat-toolbar>

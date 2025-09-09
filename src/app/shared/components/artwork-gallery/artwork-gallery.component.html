@@ -1,0 +1,52 @@
+<div class="gallery-grid">
+  @for (artwork of artworks(); track artwork.id) {
+    <mat-card class="artwork-card" (click)="onArtworkClick(artwork)">
+      <div class="image-container">
+        <img
+          [defaultImage]="'assets/images/placeholder.jpg'"
+          [lazyLoad]="artwork.thumbnailUrl || artwork.imageUrl || ''"
+          [alt]="artwork.title"
+          class="artwork-image">
+
+        @if (!artwork.isAvailable) {
+          <div class="sold-overlay">
+            <mat-chip color="accent">Vendu</mat-chip>
+          </div>
+        }
+      </div>
+
+      <mat-card-content>
+        <h3 class="artwork-title">{{ artwork.title }}</h3>
+
+        @if (artwork.dimensions || artwork.materials) {
+          <div class="artwork-details">
+            @if (artwork.dimensions) {
+              <span class="dimensions">{{ artwork.dimensions }}</span>
+            }
+            @if (artwork.materials) {
+              <span class="materials">{{ artwork.materials }}</span>
+            }
+          </div>
+        }
+
+        @if (artwork.price && artwork.isAvailable) {
+          <div class="price">
+            {{ artwork.price | currency:'EUR':'symbol':'1.0-0' }}
+          </div>
+        }
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-button color="primary">
+          <mat-icon>visibility</mat-icon>
+          Voir plus
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  } @empty {
+    <div class="empty-state">
+      <mat-icon>image</mat-icon>
+      <p>Aucune oeuvre disponible dans cette catégorie</p>
+    </div>
+  }
+</div>

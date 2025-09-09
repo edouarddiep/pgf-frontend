@@ -1,0 +1,161 @@
+<!-- artwork-detail.component.html -->
+@if (artwork$ | async; as artwork) {
+  <div class="artwork-detail">
+    <div class="container">
+      <div class="breadcrumb">
+        <a routerLink="/artworks" mat-button>
+          <mat-icon>arrow_back</mat-icon>
+          Retour aux œuvres
+        </a>
+        @if (artwork.categorySlug) {
+          <span class="separator">•</span>
+          <a [routerLink]="['/artworks', artwork.categorySlug]" mat-button>
+            {{ artwork.categoryName }}
+          </a>
+        }
+      </div>
+
+      <div class="artwork-content">
+        <div class="artwork-image-section">
+          @if (artwork.imageUrl) {
+            <div class="main-image">
+              <img
+                [lazyLoad]="artwork.imageUrl"
+                [defaultImage]="'assets/images/placeholder.jpg'"
+                [alt]="artwork.title">
+            </div>
+          } @else {
+            <div class="placeholder-image">
+              <mat-icon>image</mat-icon>
+            </div>
+          }
+        </div>
+
+        <div class="artwork-info-section">
+          <mat-card class="artwork-info">
+            <mat-card-header>
+              <mat-card-title>{{ artwork.title }}</mat-card-title>
+              @if (artwork.creationDate) {
+                <mat-card-subtitle>{{ artwork.creationDate }}</mat-card-subtitle>
+              }
+            </mat-card-header>
+
+            <mat-card-content>
+              @if (artwork.description) {
+                <div class="description">
+                  <h3>Description</h3>
+                  <p>{{ artwork.description }}</p>
+                </div>
+              }
+
+              <div class="technical-details">
+                <h3>Détails techniques</h3>
+
+                @if (artwork.dimensions) {
+                  <div class="detail-item">
+                    <mat-icon>straighten</mat-icon>
+                    <span class="label">Dimensions :</span>
+                    <span class="value">{{ artwork.dimensions }}</span>
+                  </div>
+                }
+
+                @if (artwork.materials) {
+                  <div class="detail-item">
+                    <mat-icon>palette</mat-icon>
+                    <span class="label">Matériaux :</span>
+                    <span class="value">{{ artwork.materials }}</span>
+                  </div>
+                }
+
+                @if (artwork.categoryName) {
+                  <div class="detail-item">
+                    <mat-icon>category</mat-icon>
+                    <span class="label">Catégorie :</span>
+                    <button mat-button
+                            color="primary"
+                            (click)="onCategoryClick(artwork.categorySlug!)">
+                      {{ artwork.categoryName }}
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <div class="availability-section">
+                <div class="availability-status">
+                  @if (artwork.isAvailable) {
+                    <mat-chip color="accent">
+                      <mat-icon>check_circle</mat-icon>
+                      Disponible
+                    </mat-chip>
+                  } @else {
+                    <mat-chip color="warn">
+                      <mat-icon>block</mat-icon>
+                      Vendue
+                    </mat-chip>
+                  }
+                </div>
+
+                @if (artwork.price && artwork.isAvailable) {
+                  <div class="price">
+                    {{ formatPrice(artwork.price) }}
+                  </div>
+                }
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+              @if (artwork.isAvailable) {
+                <button mat-raised-button
+                        color="primary"
+                        (click)="onContactInterest()">
+                  <mat-icon>mail</mat-icon>
+                  Exprimer un intérêt
+                </button>
+              }
+              <button mat-button color="accent">
+                <mat-icon>share</mat-icon>
+                Partager
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (relatedArtworks$ | async; as relatedArtworks) {
+    @if (relatedArtworks.length > 0) {
+      <section class="related-artworks">
+        <div class="container">
+          <h2>Œuvres similaires</h2>
+          <div class="related-grid">
+            @for (relatedArtwork of relatedArtworks; track relatedArtwork.id) {
+              <mat-card class="related-artwork-card"
+                        (click)="onRelatedArtworkClick(relatedArtwork.id)">
+                <div class="related-image">
+                  @if (relatedArtwork.thumbnailUrl) {
+                    <img
+                      [lazyLoad]="relatedArtwork.thumbnailUrl"
+                      [defaultImage]="'assets/images/placeholder.jpg'"
+                      [alt]="relatedArtwork.title">
+                  } @else {
+                    <div class="placeholder">
+                      <mat-icon>image</mat-icon>
+                    </div>
+                  }
+                </div>
+
+                <mat-card-content>
+                  <h4>{{ relatedArtwork.title }}</h4>
+                  @if (relatedArtwork.price && relatedArtwork.isAvailable) {
+                    <p class="price">{{ formatPrice(relatedArtwork.price) }}</p>
+                  }
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  }
+}

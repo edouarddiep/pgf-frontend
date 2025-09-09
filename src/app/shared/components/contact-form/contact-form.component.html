@@ -1,0 +1,89 @@
+<div class="contact-form-container">
+  <h2>Contactez l'artiste</h2>
+  <p class="subtitle">
+    N'hÃ©sitez pas Ã  me contacter pour toute question sur mes Å"uvres ou pour organiser une visite d'atelier.
+  </p>
+
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Nom complet</mat-label>
+        <input matInput formControlName="name" required>
+        <mat-icon matSuffix>person</mat-icon>
+        @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+          <mat-error>Le nom est requis</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required>
+        <mat-icon matSuffix>email</mat-icon>
+        @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+          <mat-error>
+            @if (contactForm.get('email')?.errors?.['required']) {
+              L'email est requis
+            } @else if (contactForm.get('email')?.errors?.['email']) {
+              Format d'email invalide
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>TÃ©lÃ©phone (optionnel)</mat-label>
+        <input matInput type="tel" formControlName="phone">
+        <mat-icon matSuffix>phone</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Sujet</mat-label>
+        <input matInput formControlName="subject">
+        <mat-icon matSuffix>subject</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Message</mat-label>
+      <textarea
+        matInput
+        formControlName="message"
+        rows="6"
+        placeholder="Décrivez votre demande ou votre intérêtt pour mes oeuvres..."
+      required>
+      </textarea>
+      @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+        <mat-error>Le message est requis</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="form-actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="contactForm.invalid || isSubmitting()"
+        class="submit-button">
+        @if (isSubmitting()) {
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Envoi en cours...</span>
+        } @else {
+          <ng-container>
+            <mat-icon>send</mat-icon>
+            <span>Envoyer le message</span>
+          </ng-container>
+        }
+      </button>
+    </div>
+  </form>
+
+  @if (isSubmitted()) {
+    <div class="success-message">
+      <mat-icon color="primary">check_circle</mat-icon>
+      <h3>Message envoyÃ© avec succès !</h3>
+      <p>Je vous rÃ©pondrai dans les plus brefs dÃ©lais.</p>
+    </div>
+  }
+</div>

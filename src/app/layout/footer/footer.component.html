@@ -1,0 +1,102 @@
+<!-- footer.html -->
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="container">
+      <div class="footer-sections">
+
+        <!-- Section À propos -->
+        <div class="footer-section about-section">
+          <h3>PGF</h3>
+          <p class="artist-description">
+            Artiste contemporain passionné par l'exploration de nouvelles formes d'expression
+            à travers différents médiums : fils de fer, toile de jute, peinture, sculpture et écriture.
+          </p>
+          <div class="social-links">
+            @for (social of socialLinks; track social.name) {
+              <a [href]="social.url"
+                 [attr.aria-label]="social.name"
+                 mat-icon-button>
+                <mat-icon>{{ social.icon }}</mat-icon>
+              </a>
+            }
+          </div>
+        </div>
+
+        <!-- Section Navigation -->
+        <div class="footer-section navigation-section">
+          <h4>Navigation</h4>
+          <nav class="footer-nav">
+            @for (link of quickLinks; track link.route) {
+              <a [routerLink]="link.route" routerLinkActive="active">
+                {{ link.name }}
+              </a>
+            }
+          </nav>
+        </div>
+
+        <!-- Section Catégories -->
+        <div class="footer-section categories-section">
+          <h4>Catégories</h4>
+          @if (categories$ | async; as categories) {
+            <nav class="footer-nav">
+              @for (category of categories; track category.id) {
+                <a [routerLink]="['/artworks', category.slug]">
+                  {{ category.name }}
+                </a>
+              }
+            </nav>
+          }
+        </div>
+
+        <!-- Section Contact -->
+        <div class="footer-section contact-section">
+          <h4>Contact</h4>
+          <div class="contact-info">
+            <div class="contact-item">
+              <mat-icon>mail</mat-icon>
+              <a href="mailto:contact@pgf-art.fr">contact@pgf-art.fr</a>
+            </div>
+            <div class="contact-item">
+              <mat-icon>phone</mat-icon>
+              <span>+33 (0)1 23 45 67 89</span>
+            </div>
+            <div class="contact-item">
+              <mat-icon>location_on</mat-icon>
+              <span>Paris, France</span>
+            </div>
+          </div>
+
+          <div class="newsletter">
+            <p>Restez informé des nouvelles œuvres et expositions</p>
+            <button mat-raised-button color="accent" routerLink="/contact">
+              S'abonner à la newsletter
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-content">
+        <div class="copyright">
+          <p>&copy; {{ currentYear }} PGF. Tous droits réservés.</p>
+        </div>
+
+        <nav class="legal-nav">
+          @for (legal of legalLinks; track legal.route) {
+            <a [routerLink]="legal.route">{{ legal.name }}</a>
+          }
+        </nav>
+
+        <div class="credits">
+          <p>Site réalisé avec ❤️</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

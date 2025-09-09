@@ -1,0 +1,238 @@
+.about-page {
+  overflow-x: hidden;
+}
+
+.artist-section {
+  padding: 4rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.artist-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.artist-text h1 {
+  font-size: 3rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  color: #1976d2;
+}
+
+.artist-bio .lead {
+  font-size: 1.3rem;
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.artist-bio p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.artist-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat .number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1976d2;
+  line-height: 1;
+}
+
+.stat .label {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 0.5rem;
+}
+
+.artist-image {
+  position: sticky;
+  top: 2rem;
+}
+
+.artist-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.image-caption {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.image-caption p {
+  margin: 0;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.techniques-section,
+.exhibitions-preview,
+.association-section {
+  padding: 4rem 0;
+}
+
+.techniques-section {
+  background: #f8f9fa;
+}
+
+.association-section {
+  background: #f8f9fa;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: #1976d2;
+}
+
+.section-subtitle {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1.1rem;
+}
+
+.techniques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.technique-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.technique-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.exhibitions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.exhibition-card {
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.exhibition-card:hover {
+  transform: translateY(-2px);
+}
+
+.exhibition-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.exhibition-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exhibition-card h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.3rem;
+  color: #1976d2;
+}
+
+.location,
+.date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.description {
+  margin: 1rem 0;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.section-actions {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.section-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.association-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.association-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.association-actions button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .artist-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .artist-text h1 {
+    font-size: 2rem;
+  }
+
+  .artist-stats {
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .techniques-grid,
+  .exhibitions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .association-actions {
+    justify-content: center;
+  }
+}

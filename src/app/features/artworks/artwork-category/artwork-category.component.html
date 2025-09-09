@@ -1,0 +1,82 @@
+@if (viewModel$ | async; as vm) {
+  <div class="category-header">
+    <div class="container">
+      <div class="category-info">
+        <h1>{{ vm.category.name }}</h1>
+        @if (vm.category.description) {
+          <p class="category-description">{{ vm.category.description }}</p>
+        }
+        <div class="category-meta">
+          <mat-chip-set>
+            <mat-chip>{{ vm.artworks.length }} œuvres</mat-chip>
+          </mat-chip-set>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="artworks-grid">
+    <div class="container">
+      @if (vm.artworks.length > 0) {
+        <div class="grid">
+          @for (artwork of vm.artworks; track artwork.id) {
+            <mat-card class="artwork-card" (click)="onArtworkClick(artwork.id)">
+              <div class="artwork-image">
+                @if (artwork.thumbnailUrl) {
+                  <img
+                    [defaultImage]="'assets/images/placeholder.jpg'"
+                    [lazyLoad]="artwork.thumbnailUrl"
+                    [alt]="artwork.title">
+                } @else {
+                  <div class="placeholder-image">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                }
+                @if (!artwork.isAvailable) {
+                  <div class="availability-overlay">
+                    <mat-chip color="warn">Vendue</mat-chip>
+                  </div>
+                }
+              </div>
+
+              <mat-card-content>
+                <h3 class="artwork-title">{{ artwork.title }}</h3>
+
+                <div class="artwork-details">
+                  @if (artwork.dimensions) {
+                    <p class="dimensions">{{ artwork.dimensions }}</p>
+                  }
+                  @if (artwork.materials) {
+                    <p class="materials">{{ artwork.materials }}</p>
+                  }
+                  @if (artwork.creationDate) {
+                    <p class="creation-date">{{ artwork.creationDate }}</p>
+                  }
+                </div>
+
+                @if (artwork.price && artwork.isAvailable) {
+                  <div class="price">
+                    {{ formatPrice(artwork.price) }}
+                  </div>
+                }
+              </mat-card-content>
+
+              <mat-card-actions align="end">
+                <button mat-button color="primary">
+                  Voir détails
+                  <mat-icon>arrow_forward</mat-icon>
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>palette</mat-icon>
+          <h3>Aucune œuvre disponible</h3>
+          <p>Cette catégorie ne contient pas encore d'œuvres.</p>
+        </div>
+      }
+    </div>
+  </section>
+}

@@ -1,0 +1,202 @@
+<div class="about-page">
+  <section class="artist-section">
+    <div class="container">
+      <div class="artist-content">
+        <div class="artist-text">
+          <h1>À propos de l'artiste</h1>
+          <div class="artist-bio">
+            <p class="lead">
+              Passionné par l'art contemporain et les matériaux bruts, je développe depuis plus de 15 ans
+              un univers artistique unique mêlant tradition et modernité.
+            </p>
+
+            <p>
+              Mon travail explore les tensions entre fragilité et résistance, utilisant principalement
+              le fil de fer, la toile de jute et les techniques mixtes pour créer des œuvres qui interrogent
+              notre rapport au temps et à l'espace.
+            </p>
+
+            <p>
+              Autodidacte, j'ai développé ma propre technique de manipulation du fil de fer, créant des
+              structures aériennes qui semblent défier la gravité. Mes œuvres sur toile de jute explorent
+              quant à elles la texture et la matérialité, révélant la beauté brute des matériaux industriels.
+            </p>
+
+            <p>
+              Basé à Paris, mon atelier est ouvert aux visiteurs sur rendez-vous. Je propose également
+              des commandes personnalisées et des ateliers de découverte de mes techniques.
+            </p>
+          </div>
+
+          <div class="artist-stats">
+            <div class="stat">
+              <span class="number">15+</span>
+              <span class="label">Années d'expérience</span>
+            </div>
+            <div class="stat">
+              <span class="number">50+</span>
+              <span class="label">Œuvres créées</span>
+            </div>
+            <div class="stat">
+              <span class="number">12</span>
+              <span class="label">Expositions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artist-image">
+          <img
+            src="assets/images/artist-portrait.jpg"
+            alt="Portrait de l'artiste PGF"
+            [lazyLoad]="'assets/images/artist-portrait.jpg'"
+            [defaultImage]="'assets/images/placeholder.jpg'">
+
+          <div class="image-caption">
+            <p>Dans mon atelier parisien</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="techniques-section">
+    <div class="container">
+      <h2>Techniques et matériaux</h2>
+      <div class="techniques-grid">
+        <mat-card class="technique-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>build</mat-icon>
+            <mat-card-title>Fil de fer</mat-card-title>
+            <mat-card-subtitle>Sculpture aérienne</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              Technique développée au fil des années, permettant de créer des structures
+              complexes et légères qui jouent avec la lumière et l'espace.
+            </p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="technique-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>texture</mat-icon>
+            <mat-card-title>Toile de jute</mat-card-title>
+            <mat-card-subtitle>Matérialité brute</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              Exploration de la texture naturelle de la jute, révélant sa beauté brute
+              à travers des techniques mixtes et des interventions subtiles.
+            </p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="technique-card">
+          <mat-card-header>
+            <mat-icon mat-card-avatar>palette</mat-icon>
+            <mat-card-title>Techniques mixtes</mat-card-title>
+            <mat-card-subtitle>Innovation créative</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              Combinaison de différents médiums pour créer des œuvres uniques
+              qui transcendent les frontières traditionnelles entre les disciplines.
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <section class="exhibitions-preview">
+    <div class="container">
+      <h2>Expositions récentes</h2>
+      <p class="section-subtitle">Découvrez mes dernières participations</p>
+
+      @if (recentExhibitions$ | async; as exhibitions) {
+        <div class="exhibitions-grid">
+          @for (exhibition of exhibitions; track exhibition.id) {
+            <mat-card class="exhibition-card">
+              @if (exhibition.imageUrl) {
+                <div class="exhibition-image">
+                  <img
+                    [lazyLoad]="exhibition.imageUrl"
+                    [alt]="exhibition.title"
+                    [defaultImage]="'assets/images/placeholder.jpg'">
+                </div>
+              }
+
+              <mat-card-content>
+                <h3>{{ exhibition.title }}</h3>
+                @if (exhibition.location) {
+                  <p class="location">
+                    <mat-icon>location_on</mat-icon>
+                    {{ exhibition.location }}
+                  </p>
+                }
+                @if (exhibition.startDate) {
+                  <p class="date">
+                    <mat-icon>event</mat-icon>
+                    {{ exhibition.startDate | date:'MMMM yyyy':'fr' }}
+                  </p>
+                }
+                @if (exhibition.description) {
+                  <p class="description">{{ exhibition.description }}</p>
+                }
+
+                <mat-chip-set>
+                  <mat-chip [color]="exhibition.status === 'ONGOING' ? 'accent' : 'primary'">
+                    {{ getStatusLabel(exhibition.status) }}
+                  </mat-chip>
+                  @if (exhibition.isFeatured) {
+                    <mat-chip color="warn">Exposition phare</mat-chip>
+                  }
+                </mat-chip-set>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      }
+
+      <div class="section-actions">
+        <button mat-raised-button color="primary" routerLink="/exhibitions">
+          <mat-icon>visibility</mat-icon>
+          Voir toutes les expositions
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="association-section">
+    <div class="container">
+      <mat-card class="association-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>group</mat-icon>
+          <mat-card-title>Association PGF</mat-card-title>
+          <mat-card-subtitle>Promouvoir l'art contemporain</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>
+            L'Association PGF a été créée dans le but de promouvoir l'art contemporain
+            et de soutenir les jeunes artistes dans leurs démarches créatives.
+          </p>
+          <p>
+            Nous organisons régulièrement des expositions collectives, des ateliers
+            de découverte et des rencontres entre artistes et amateurs d'art.
+          </p>
+
+          <div class="association-actions">
+            <button mat-raised-button color="accent">
+              <mat-icon>info</mat-icon>
+              En savoir plus
+            </button>
+            <button mat-stroked-button>
+              <mat-icon>volunteer_activism</mat-icon>
+              Nous soutenir
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</div>
