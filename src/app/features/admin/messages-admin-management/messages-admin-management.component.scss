@@ -1,0 +1,50 @@
+.messages-container {
+  max-width: 1200px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.messages-table {
+  width: 100%;
+}
+
+.sender-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sender-info small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.status-read {
+  color: #4caf50;
+}
+
+.status-unread {
+  color: #ff9800;
+}
+
+.unread {
+  background-color: rgba(255, 152, 0, 0.1);
+}
+
+.no-messages {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-messages mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+}

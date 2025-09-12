@@ -1,0 +1,158 @@
+<div class="exhibitions-container">
+  <div class="header">
+    <h1>Gestion des expositions</h1>
+    <button mat-raised-button color="primary" (click)="openForm()">
+      <mat-icon>add</mat-icon>
+      Ajouter une exposition
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingExhibition() ? 'Modifier' : 'Créer' }} une exposition
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="exhibitionForm" (ngSubmit)="saveExhibition()">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Lieu</mat-label>
+              <input matInput formControlName="location">
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Date de début</mat-label>
+              <input matInput type="date" formControlName="startDate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date de fin</mat-label>
+              <input matInput type="date" formControlName="endDate">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Statut</mat-label>
+              <mat-select formControlName="status">
+                <mat-option [value]="ExhibitionStatus.UPCOMING">À venir</mat-option>
+                <mat-option [value]="ExhibitionStatus.ONGOING">En cours</mat-option>
+                <mat-option [value]="ExhibitionStatus.PAST">Passée</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isFeatured">
+                Exposition mise en avant
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>URL de l'image</mat-label>
+            <input matInput formControlName="imageUrl">
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="cancelForm()">
+              Annuler
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="exhibitionForm.invalid">
+              {{ editingExhibition() ? 'Modifier' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card class="table-card">
+    <mat-card-content>
+      <table mat-table [dataSource]="exhibitions()" class="exhibitions-table">
+        <ng-container matColumnDef="image">
+          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <td mat-cell *matCellDef="let exhibition">
+            @if (exhibition.imageUrl) {
+              <img [src]="exhibition.imageUrl" [alt]="exhibition.title" class="exhibition-thumbnail">
+            } @else {
+              <div class="no-image">
+                <mat-icon>image</mat-icon>
+              </div>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Titre</th>
+          <td mat-cell *matCellDef="let exhibition">
+            <div class="exhibition-info">
+              <strong>{{ exhibition.title }}</strong>
+              @if (exhibition.isFeatured) {
+                <mat-icon class="featured-icon" title="Mise en avant">star</mat-icon>
+              }
+              <small>{{ exhibition.location }}</small>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dates">
+          <th mat-header-cell *matHeaderCellDef>Dates</th>
+          <td mat-cell *matCellDef="let exhibition">
+            <div class="date-info">
+              <small>Du {{ exhibition.startDate | date:'short' }}</small>
+              @if (exhibition.endDate) {
+                <small>au {{ exhibition.endDate | date:'short' }}</small>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <td mat-cell *matCellDef="let exhibition">
+            <mat-chip [color]="getStatusColor(exhibition.status)" [highlighted]="true">
+              {{ getStatusLabel(exhibition.status) }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let exhibition">
+            <button mat-icon-button (click)="editExhibition(exhibition)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      @if (exhibitions().length === 0) {
+        <div class="no-exhibitions">
+          <mat-icon>event</mat-icon>
+          <p>Aucune exposition pour le moment</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

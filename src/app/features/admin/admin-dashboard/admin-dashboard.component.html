@@ -1,0 +1,93 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>category</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ stats().categories }}</h2>
+            <p>Catégories</p>
+          </div>
+        </div>
+        <button mat-button routerLink="/admin/categories" color="primary">
+          Gérer
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>palette</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ stats().artworks }}</h2>
+            <p>Œuvres</p>
+          </div>
+        </div>
+        <button mat-button routerLink="/admin/artworks" color="primary">
+          Gérer
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>event</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ stats().exhibitions }}</h2>
+            <p>Expositions</p>
+          </div>
+        </div>
+        <button mat-button routerLink="/admin/exhibitions" color="primary">
+          Gérer
+        </button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <div class="stat-icon">
+            <mat-icon>mail</mat-icon>
+          </div>
+          <div class="stat-info">
+            <h2>{{ stats().messages }}</h2>
+            <p>Messages</p>
+          </div>
+        </div>
+        <button mat-button routerLink="/admin/messages" color="primary">
+          Consulter
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="quick-actions">
+    <h2>Actions rapides</h2>
+    <div class="actions-grid">
+      <button mat-raised-button color="primary" routerLink="/admin/artworks">
+        <mat-icon>add</mat-icon>
+        Ajouter une œuvre
+      </button>
+
+      <button mat-raised-button color="accent" routerLink="/admin/exhibitions">
+        <mat-icon>add</mat-icon>
+        Créer une exposition
+      </button>
+
+      <button mat-raised-button routerLink="/">
+        <mat-icon>public</mat-icon>
+        Voir le site
+      </button>
+    </div>
+  </div>
+</div>

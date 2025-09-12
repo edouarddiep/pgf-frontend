@@ -1,0 +1,38 @@
+.admin-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-toolbar {
+  position: relative;
+  z-index: 2;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.admin-sidenav-container {
+  flex: 1;
+}
+
+.admin-sidenav {
+  width: 250px;
+  background: #fafafa;
+}
+
+.admin-content {
+  padding: 2rem;
+  background: #f5f5f5;
+}
+
+.active {
+  background: rgba(63, 81, 181, 0.1);
+  color: #3f51b5;
+}
+
+.mat-mdc-list-item {
+  border-radius: 8px;
+  margin: 4px 8px;
+}

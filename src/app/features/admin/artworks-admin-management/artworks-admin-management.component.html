@@ -1,0 +1,190 @@
+<div class="artworks-container">
+  <div class="header">
+    <h1>Gestion des œuvres</h1>
+    <button mat-raised-button color="primary" (click)="openForm()">
+      <mat-icon>add</mat-icon>
+      Ajouter une œuvre
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingArtwork() ? 'Modifier' : 'Créer' }} une œuvre
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="artworkForm" (ngSubmit)="saveArtwork()">
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Catégorie</mat-label>
+              <mat-select formControlName="categoryId">
+                @for (category of categories(); track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3"></textarea>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Dimensions</mat-label>
+              <input matInput formControlName="dimensions" placeholder="ex: 50x70cm">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Matériaux</mat-label>
+              <input matInput formControlName="materials">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Date de création</mat-label>
+              <input matInput type="date" formControlName="creationDate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Prix (€)</mat-label>
+              <input matInput type="number" formControlName="price" min="0" step="0.01">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>URL de l'image</mat-label>
+              <input matInput formControlName="imageUrl">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>URL miniature</mat-label>
+              <input matInput formControlName="thumbnailUrl">
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Ordre d'affichage</mat-label>
+              <input matInput type="number" formControlName="displayOrder" min="0">
+            </mat-form-field>
+
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isAvailable">
+                Œuvre disponible
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="cancelForm()">
+              Annuler
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="artworkForm.invalid">
+              {{ editingArtwork() ? 'Modifier' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <mat-card class="table-card">
+    <mat-card-content>
+      <div class="filter-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Filtrer par catégorie</mat-label>
+          <mat-select [(value)]="selectedCategoryFilter" (selectionChange)="applyFilter()">
+            <mat-option value="">Toutes les catégories</mat-option>
+            @for (category of categories(); track category.id) {
+              <mat-option [value]="category.id">{{ category.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
+        <ng-container matColumnDef="image">
+          <th mat-header-cell *matHeaderCellDef>Image</th>
+          <td mat-cell *matCellDef="let artwork">
+            @if (artwork.thumbnailUrl) {
+              <img [src]="artwork.thumbnailUrl" [alt]="artwork.title" class="artwork-thumbnail">
+            } @else {
+              <div class="no-image">
+                <mat-icon>image</mat-icon>
+              </div>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Titre</th>
+          <td mat-cell *matCellDef="let artwork">
+            <div class="artwork-info">
+              <strong>{{ artwork.title }}</strong>
+              <small>{{ getCategoryName(artwork.categoryId) }}</small>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dimensions">
+          <th mat-header-cell *matHeaderCellDef>Dimensions</th>
+          <td mat-cell *matCellDef="let artwork">{{ artwork.dimensions || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Prix</th>
+          <td mat-cell *matCellDef="let artwork">
+            @if (artwork.price) {
+              {{ artwork.price | currency:'EUR':'symbol':'1.2-2' }}
+            } @else {
+              -
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <td mat-cell *matCellDef="let artwork">
+            <mat-chip [color]="artwork.isAvailable ? 'primary' : 'warn'" [highlighted]="true">
+              {{ artwork.isAvailable ? 'Disponible' : 'Non disponible' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let artwork">
+            <button mat-icon-button (click)="editArtwork(artwork)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      @if (artworks().length === 0) {
+        <div class="no-artworks">
+          <mat-icon>palette</mat-icon>
+          <p>Aucune œuvre pour le moment</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

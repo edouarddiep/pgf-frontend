@@ -1,0 +1,45 @@
+<div class="admin-container">
+  <mat-toolbar color="primary" class="admin-toolbar">
+    <span>Administration PGF</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Déconnexion
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="admin-sidenav-container">
+    <mat-sidenav mode="side" opened class="admin-sidenav">
+      <mat-nav-list>
+        <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active">
+          <mat-icon matListIcon>dashboard</mat-icon>
+          <span matLine>Dashboard</span>
+        </a>
+
+        <a mat-list-item routerLink="/admin/categories" routerLinkActive="active">
+          <mat-icon matListIcon>category</mat-icon>
+          <span matLine>Catégories</span>
+        </a>
+
+        <a mat-list-item routerLink="/admin/artworks" routerLinkActive="active">
+          <mat-icon matListIcon>palette</mat-icon>
+          <span matLine>Œuvres</span>
+        </a>
+
+        <a mat-list-item routerLink="/admin/exhibitions" routerLinkActive="active">
+          <mat-icon matListIcon>event</mat-icon>
+          <span matLine>Expositions</span>
+        </a>
+
+        <a mat-list-item routerLink="/admin/messages" routerLinkActive="active">
+          <mat-icon matListIcon>mail</mat-icon>
+          <span matLine>Messages</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="admin-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

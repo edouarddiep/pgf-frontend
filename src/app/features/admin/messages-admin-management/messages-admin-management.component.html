@@ -1,0 +1,80 @@
+<div class="messages-container">
+  <div class="header">
+    <h1>Messages de contact</h1>
+    <div class="stats">
+      <mat-chip-set>
+        <mat-chip>Total: {{ messages().length }}</mat-chip>
+        <mat-chip color="primary" [highlighted]="unreadCount() > 0">
+          Non lus: {{ unreadCount() }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </div>
+
+  <mat-card class="table-card">
+    <mat-card-content>
+      <table mat-table [dataSource]="messages()" class="messages-table">
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <td mat-cell *matCellDef="let message">
+            @if (message.isRead) {
+              <mat-icon class="status-read">mail</mat-icon>
+            } @else {
+              <mat-icon class="status-unread">mark_email_unread</mat-icon>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nom</th>
+          <td mat-cell *matCellDef="let message">
+            <div class="sender-info">
+              <strong>{{ message.name }}</strong>
+              <small>{{ message.email }}</small>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="subject">
+          <th mat-header-cell *matHeaderCellDef>Sujet</th>
+          <td mat-cell *matCellDef="let message">{{ message.subject }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let message">
+            {{ message.createdAt | date:'short' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let message">
+            <button mat-icon-button (click)="viewMessage(message)" title="Voir le message">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            @if (!message.isRead) {
+              <button mat-icon-button (click)="markAsRead(message)" title="Marquer comme lu">
+                <mat-icon>mark_email_read</mat-icon>
+              </button>
+            }
+            <button mat-icon-button color="warn" (click)="deleteMessage(message.id)" title="Supprimer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            [class.unread]="!row.isRead"></tr>
+      </table>
+
+      @if (messages().length === 0) {
+        <div class="no-messages">
+          <mat-icon>inbox</mat-icon>
+          <p>Aucun message pour le moment</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

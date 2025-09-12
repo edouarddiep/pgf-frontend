@@ -1,0 +1,111 @@
+.exhibitions-container {
+  max-width: 1400px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.form-card {
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.exhibitions-table {
+  width: 100%;
+}
+
+.exhibition-thumbnail {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.no-image {
+  width: 60px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 4px;
+  color: #999;
+}
+
+.exhibition-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.featured-icon {
+  position: absolute;
+  top: 0;
+  right: -24px;
+  color: #ff9800;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.exhibition-info small {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.date-info small {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.no-exhibitions {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.no-exhibitions mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+}
+
+.table-card {
+  margin-top: 1rem;
+}
