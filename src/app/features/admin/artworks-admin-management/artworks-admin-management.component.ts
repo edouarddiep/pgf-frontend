@@ -1,29 +1,26 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminService, AdminArtworkRequest } from '@features/admin/services/admin.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
+import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 import { catchError, EMPTY, forkJoin } from 'rxjs';
 
 interface ArtworkFormData {
   title: string;
   description: string;
-  dimensions?: string;
-  materials?: string;
-  creationDate?: string;
-  price?: number;
   isAvailable: boolean;
-  imageUrl?: string;
-  thumbnailUrl?: string;
+  imageUrls: string[];
   displayOrder: number;
   categoryId: number;
 }
@@ -39,9 +36,11 @@ interface ArtworkFormData {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatCheckboxModule,
+    MatSlideToggleModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTooltipModule,
+    ImageUploadComponent
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -55,7 +54,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly categories = signal<ArtworkCategory[]>([]);
   protected readonly showForm = signal(false);
   protected readonly editingArtwork = signal<Artwork | null>(null);
-  protected readonly displayedColumns = ['image', 'title', 'dimensions', 'price', 'status', 'actions'];
+  protected readonly displayedColumns = ['image', 'title', 'status', 'actions'];
   protected selectedCategoryFilter = '';
 
   protected readonly filteredArtworks = computed(() => {
@@ -69,19 +68,23 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required]],
     description: ['', [Validators.required]],
-    dimensions: [''],
-    materials: [''],
-    creationDate: [''],
-    price: [null as number | null],
     isAvailable: [true],
-    imageUrl: [''],
-    thumbnailUrl: [''],
+    imageUrls: [[] as string[], [Validators.required, this.minLengthArray(1)]],
     displayOrder: [0, [Validators.required, Validators.min(0)]],
     categoryId: [null as number | null, [Validators.required]]
   });
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  private minLengthArray(min: number) {
+    return (control: any) => {
+      if (!control.value || control.value.length < min) {
+        return { minLengthArray: { requiredLength: min, actualLength: control.value?.length || 0 } };
+      }
+      return null;
+    };
   }
 
   private loadData(): void {
@@ -111,13 +114,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.artworkForm.reset({
       title: '',
       description: '',
-      dimensions: '',
-      materials: '',
-      creationDate: '',
-      price: null,
       isAvailable: true,
-      imageUrl: '',
-      thumbnailUrl: '',
+      imageUrls: [],
       displayOrder: 0,
       categoryId: null
     });
@@ -130,13 +128,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.artworkForm.patchValue({
       title: artwork.title,
       description: artwork.description,
-      dimensions: artwork.dimensions || '',
-      materials: artwork.materials || '',
-      creationDate: artwork.creationDate || '',
-      price: artwork.price || null,
       isAvailable: artwork.isAvailable,
-      imageUrl: artwork.imageUrl || '',
-      thumbnailUrl: artwork.thumbnailUrl || '',
+      imageUrls: artwork.imageUrls || [],
       displayOrder: artwork.displayOrder,
       categoryId: artwork.categoryId
     });
@@ -148,6 +141,20 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.artworkForm.reset();
   }
 
+  protected onImagesUploaded(images: string[]): void {
+    this.artworkForm.patchValue({
+      imageUrls: images
+    });
+  }
+
+  protected onImageRemoved(removedImageUrl: string): void {
+    const currentImages = this.artworkForm.get('imageUrls')?.value || [];
+    const updatedImages = currentImages.filter((url: string) => url !== removedImageUrl);
+    this.artworkForm.patchValue({
+      imageUrls: updatedImages
+    });
+  }
+
   protected saveArtwork(): void {
     if (this.artworkForm.invalid) return;
 
@@ -155,13 +162,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
     const request: AdminArtworkRequest = {
       title: formData.title,
       description: formData.description,
-      dimensions: formData.dimensions || undefined,
-      materials: formData.materials || undefined,
-      creationDate: formData.creationDate || undefined,
-      price: formData.price || undefined,
       isAvailable: formData.isAvailable,
-      imageUrl: formData.imageUrl || undefined,
-      thumbnailUrl: formData.thumbnailUrl || undefined,
+      imageUrls: formData.imageUrls,
       displayOrder: formData.displayOrder,
       categoryId: formData.categoryId!
     };
@@ -176,6 +178,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .subscribe(() => {
         this.cancelForm();
         this.loadData();
+        // Notifier le dashboard pour mise à jour
+        window.dispatchEvent(new CustomEvent('artworkChanged'));
       });
   }
 
@@ -188,6 +192,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .pipe(catchError(() => EMPTY))
       .subscribe(() => {
         this.loadData();
+        window.dispatchEvent(new CustomEvent('artworkChanged'));
       });
   }
 }

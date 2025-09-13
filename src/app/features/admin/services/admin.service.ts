@@ -7,10 +7,6 @@ import { ArtworkCategory, Artwork } from '@core/models/artwork.model';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { ContactMessage } from '@core/models/contact.model';
 
-export interface AdminLoginRequest {
-  password: string;
-}
-
 export interface AdminCategoryRequest {
   name: string;
   description: string;
@@ -21,13 +17,8 @@ export interface AdminCategoryRequest {
 export interface AdminArtworkRequest {
   title: string;
   description: string;
-  dimensions?: string;
-  materials?: string;
-  creationDate?: string;
-  price?: number;
   isAvailable: boolean;
-  imageUrl?: string;
-  thumbnailUrl?: string;
+  imageUrls: string[];
   displayOrder: number;
   categoryId: number;
 }

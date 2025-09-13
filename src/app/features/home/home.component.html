@@ -1,116 +1,72 @@
-<div class="hero-section">
+<div class="home-hero">
   <div class="hero-content">
-    <h1 class="hero-title">PGF</h1>
-    <p class="hero-subtitle">Artiste créateur</p>
-    <p class="hero-description">
-      Découvrez mes créations uniques mêlant fils de fer, toiles de jute,
-      peintures et sculptures dans un univers artistique singulier.
-    </p>
-    <div class="hero-actions">
-      <button mat-raised-button color="primary" routerLink="/artworks">
-        <mat-icon>palette</mat-icon>
-        Découvrir les œuvres
-      </button>
-      <button mat-stroked-button routerLink="/about">
-        <mat-icon>info</mat-icon>
-        À propos de l'artiste
-      </button>
-    </div>
-  </div>
-  <div class="hero-image">
-    <img
-      src="assets/images/hero-artwork.jpg"
-      alt="Œuvre principale PGF"
-      [lazyLoad]="'assets/images/hero-artwork.jpg'"
-      [defaultImage]="'assets/images/placeholder.jpg'">
+    <h1>Portfolio PGF</h1>
+    <p>Découvrez l'univers artistique</p>
   </div>
 </div>
 
-<section class="featured-section">
+<section class="featured-artworks">
   <div class="container">
-    <h2>Œuvres en vedette</h2>
-    <p class="section-subtitle">Une sélection de mes créations récentes</p>
+    <h2>Œuvres à la une</h2>
 
     @if (featuredArtworks$ | async; as artworks) {
-      <app-artwork-gallery
-        [artworks]="artworks"
-        (artworkSelected)="onArtworkSelected($event)">
-      </app-artwork-gallery>
-    }
-
-    <div class="section-actions">
-      <button mat-raised-button color="accent" routerLink="/artworks">
-        Voir toutes les œuvres
-        <mat-icon>arrow_forward</mat-icon>
-      </button>
-    </div>
-  </div>
-</section>
-
-<section class="next-exhibition" *ngIf="nextExhibition$ | async as exhibition">
-  <div class="container">
-    <mat-card class="exhibition-card">
-      <div class="exhibition-content">
-        <div class="exhibition-info">
-          <h3>Prochaine exposition</h3>
-          <h2>{{ exhibition.title }}</h2>
-          @if (exhibition.location) {
-            <p class="location">
-              <mat-icon>location_on</mat-icon>
-              {{ exhibition.location }}
-            </p>
-          }
-          @if (exhibition.startDate) {
-            <p class="date">
-              <mat-icon>event</mat-icon>
-              {{ exhibition.startDate | date:'longDate':'fr' }}
-            </p>
-          }
-          @if (exhibition.description) {
-            <p class="description">{{ exhibition.description }}</p>
-          }
-          <button mat-raised-button color="primary" routerLink="/exhibitions">
-            En savoir plus
-          </button>
-        </div>
-        @if (exhibition.imageUrl) {
-          <div class="exhibition-image">
-            <img
-              [lazyLoad]="exhibition.imageUrl"
-              [alt]="exhibition.title"
-              [defaultImage]="'assets/images/placeholder.jpg'">
+      <div class="artworks-grid">
+        @for (artwork of artworks | slice:0:6; track artwork.id) {
+          <div class="artwork-card" (click)="onArtworkClick(artwork)">
+            <div class="artwork-image">
+              @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+                <img
+                  [lazyLoad]="getMainImage(artwork)"
+                  [alt]="artwork.title"
+                  [defaultImage]="'public/assets/images/placeholder.jpg'">
+              } @else {
+                <div class="placeholder">
+                  <mat-icon>image</mat-icon>
+                </div>
+              }
+            </div>
+            <div class="artwork-info">
+              <h3>{{ artwork.title }}</h3>
+              <p>{{ artwork.categoryName }}</p>
+            </div>
           </div>
         }
       </div>
-    </mat-card>
+    }
   </div>
 </section>
 
-<section class="categories-preview">
+<section class="categories-section">
   <div class="container">
-    <h2>Explorez par catégorie</h2>
-    <div class="categories-grid">
-      @for (category of categories$ | async; track category.id) {
-        <mat-card class="category-card" [routerLink]="['/artworks', category.slug]">
-          <mat-card-header>
-            <mat-card-title>{{ category.name }}</mat-card-title>
-            @if (category.artworkCount) {
-              <mat-card-subtitle>{{ category.artworkCount }} œuvres</mat-card-subtitle>
-            }
-          </mat-card-header>
-          @if (category.description) {
-            <mat-card-content>
+    <h2>Catégories</h2>
+
+    @if (categories$ | async; as categories) {
+      <div class="categories-grid">
+        @for (category of categories; track category.id) {
+          <div class="category-card" (click)="onCategoryClick(category.slug)">
+            <div class="category-image">
+              <img
+                [lazyLoad]="getCategoryImage(category.slug)"
+                [alt]="category.name"
+                [defaultImage]="'public/assets/images/placeholder.jpg'">
+            </div>
+            <div class="category-info">
+              <h3>{{ category.name }}</h3>
               <p>{{ category.description }}</p>
-            </mat-card-content>
-          }
-          <mat-card-actions align="end">
-            <button mat-button color="primary">
-              Découvrir
-              <mat-icon>arrow_forward</mat-icon>
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      }
-    </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section class="call-to-action">
+  <div class="container">
+    <h2>Intéressé par une œuvre ?</h2>
+    <p>Prenez contact pour plus d'informations</p>
+    <button mat-raised-button color="primary" routerLink="/contact">
+      Nous contacter
+    </button>
   </div>
 </section>

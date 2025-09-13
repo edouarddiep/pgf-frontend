@@ -159,6 +159,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       .subscribe(() => {
         this.cancelForm();
         this.loadExhibitions();
+        window.dispatchEvent(new CustomEvent('exhibitionChanged'));
       });
   }
 
@@ -171,6 +172,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       .pipe(catchError(() => EMPTY))
       .subscribe(() => {
         this.loadExhibitions();
+        window.dispatchEvent(new CustomEvent('exhibitionChanged'));
       });
   }
 }

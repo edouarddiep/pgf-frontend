@@ -1,5 +1,4 @@
-import { Routes } from '@angular/router';
-import {adminRoutes} from '@features/admin/admin.routes';
+import {Routes} from '@angular/router';
 
 export const routes: Routes = [
   {

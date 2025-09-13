@@ -1,23 +1,22 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatCardModule } from '@angular/material/card';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
-import { map } from 'rxjs';
+import { ArtworkCategory } from '@core/models/artwork.model';
+import { switchMap, map, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-artworks',
   imports: [
     CommonModule,
     RouterModule,
-    MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatChipsModule,
+    MatCardModule,
     LazyLoadImageModule
   ],
   templateUrl: './artworks.component.html',
@@ -27,35 +26,49 @@ import { map } from 'rxjs';
 export class ArtworksComponent {
   private readonly artworkService = inject(ArtworkService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly categorySlug$ = this.route.params.pipe(
+    map(params => params['category'])
+  );
 
   readonly categories$ = this.artworkService.getCategories();
-  readonly recentArtworks$ = this.artworkService.getAvailableArtworks().pipe(
-    map(artworks => artworks.slice(0, 8))
+
+  readonly filteredArtworks$ = combineLatest([
+    this.categorySlug$,
+    this.artworkService.getAvailableArtworks()
+  ]).pipe(
+    map(([categorySlug, artworks]) => {
+      if (!categorySlug) return artworks;
+      return artworks.filter(artwork => artwork.categorySlug === categorySlug);
+    })
+  );
+
+  readonly currentCategory$ = combineLatest([
+    this.categorySlug$,
+    this.categories$
+  ]).pipe(
+    map(([categorySlug, categories]) => {
+      return categories.find(cat => cat.slug === categorySlug);
+    })
   );
 
   onArtworkClick(artworkId: number): void {
     this.router.navigate(['/artworks/detail', artworkId]);
   }
 
-  getCategoryImage(slug: string): string | null {
-    const images: Record<string, string> = {
-      'fils-de-fer': 'assets/images/categories/fils-de-fer.jpg',
-      'toile-de-jute': 'assets/images/categories/toile-de-jute.jpg',
-      'peinture': 'assets/images/categories/peinture.jpg',
-      'sculpture': 'assets/images/categories/sculpture.jpg',
-      'ecriture': 'assets/images/categories/ecriture.jpg'
-    };
-    return images[slug] || null;
+  getCategoryImage(category: ArtworkCategory): string {
+    // Utilise l'image de la première œuvre de la catégorie si disponible
+    if (category.artworks && category.artworks.length > 0) {
+      const firstArtwork = category.artworks[0];
+      if (firstArtwork.imageUrls && firstArtwork.imageUrls.length > 0) {
+        return firstArtwork.imageUrls[0];
+      }
+    }
+    return 'public/assets/images/placeholder.jpg';
   }
 
-  getCategoryIcon(slug: string): string {
-    const icons: Record<string, string> = {
-      'fils-de-fer': 'build',
-      'toile-de-jute': 'texture',
-      'peinture': 'palette',
-      'sculpture': 'view_in_ar',
-      'ecriture': 'edit'
-    };
-    return icons[slug] || 'image';
+  getPlaceholderImage(): string {
+    return 'public/assets/images/placeholder.jpg';
   }
 }

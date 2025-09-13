@@ -22,10 +22,10 @@
           @for (artwork of vm.artworks; track artwork.id) {
             <mat-card class="artwork-card" (click)="onArtworkClick(artwork.id)">
               <div class="artwork-image">
-                @if (artwork.thumbnailUrl) {
+                @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
                   <img
-                    [defaultImage]="'assets/images/placeholder.jpg'"
-                    [lazyLoad]="artwork.thumbnailUrl"
+                    [defaultImage]="'public/assets/images/placeholder.jpg'"
+                    [lazyLoad]="artwork.imageUrls[0]"
                     [alt]="artwork.title">
                 } @else {
                   <div class="placeholder-image">
@@ -42,21 +42,13 @@
               <mat-card-content>
                 <h3 class="artwork-title">{{ artwork.title }}</h3>
 
-                <div class="artwork-details">
-                  @if (artwork.dimensions) {
-                    <p class="dimensions">{{ artwork.dimensions }}</p>
-                  }
-                  @if (artwork.materials) {
-                    <p class="materials">{{ artwork.materials }}</p>
-                  }
-                  @if (artwork.creationDate) {
-                    <p class="creation-date">{{ artwork.creationDate }}</p>
-                  }
-                </div>
+                @if (artwork.description) {
+                  <p class="artwork-description">{{ artwork.description }}</p>
+                }
 
-                @if (artwork.price && artwork.isAvailable) {
-                  <div class="price">
-                    {{ formatPrice(artwork.price) }}
+                @if (artwork.isAvailable) {
+                  <div class="availability-status">
+                    <mat-chip color="primary" selected>Disponible à la vente</mat-chip>
                   </div>
                 }
               </mat-card-content>

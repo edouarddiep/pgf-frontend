@@ -1,1 +1,120 @@
-<p>artworks works!</p>
+<div class="artworks-hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>LES OEUVRES</h1>
+    @if (currentCategory$ | async; as category) {
+      <p>{{ category.name }}</p>
+    }
+  </div>
+</div>
+
+<section class="artworks-main">
+  <div class="container">
+    <div class="page-header">
+      <h2>LES OEUVRES</h2>
+      @if (currentCategory$ | async; as category) {
+        <p class="category-subtitle">— {{ category.name }}</p>
+      }
+    </div>
+
+    @if (categorySlug$ | async; as slug) {
+      <div class="artwork-detail-section">
+        @if (filteredArtworks$ | async; as artworks) {
+          <div class="artworks-grid">
+            @for (artwork of artworks; track artwork.id) {
+              <div class="artwork-card" (click)="onArtworkClick(artwork.id)">
+                <div class="artwork-image">
+                  @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+                    <img
+                      [lazyLoad]="artwork.imageUrls[0]"
+                      [alt]="artwork.title"
+                      [defaultImage]="'public/assets/images/placeholder.jpg'">
+                  } @else {
+                    <div class="placeholder-image">
+                      <mat-icon>image</mat-icon>
+                    </div>
+                  }
+                </div>
+                <div class="artwork-info">
+                  <h3>{{ artwork.title }}</h3>
+                  @if (artwork.description) {
+                    <p class="artwork-description">{{ artwork.description }}</p>
+                  }
+                  <div class="artwork-status">
+                    @if (artwork.isAvailable) {
+                      <span class="available">Disponible</span>
+                    } @else {
+                      <span class="sold">Vendue</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="navigation-buttons">
+          <button mat-stroked-button routerLink="/artworks">
+            <mat-icon>arrow_back</mat-icon>
+            {{ (currentCategory$ | async)?.name || 'TOUTES LES ŒUVRES' }}
+          </button>
+          <button mat-stroked-button routerLink="/artworks">
+            TOUTES LES OEUVRES
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="categories-grid">
+        @for (category of categories$ | async; track category.id) {
+          <div class="category-card" [routerLink]="['/artworks', category.slug]">
+            <div class="category-image">
+              <img
+                [lazyLoad]="getCategoryImage(category)"
+                [alt]="category.name"
+                [defaultImage]="'public/assets/images/placeholder.jpg'">
+            </div>
+            <div class="category-info">
+              <h3>{{ category.name }}</h3>
+              <p>{{ category.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!(categorySlug$ | async)) {
+      <div class="featured-artworks">
+        @for (category of categories$ | async; track category.id; let last = $last) {
+          <div class="category-section">
+            <div class="category-header">
+              <h3>{{ category.name }}</h3>
+              <p>{{ category.description }}</p>
+            </div>
+            <div class="category-preview">
+              <img
+                [lazyLoad]="getCategoryImage(category)"
+                [alt]="category.name"
+                [defaultImage]="'public/assets/images/placeholder.jpg'">
+            </div>
+          </div>
+          @if (!last) {
+            <hr class="section-divider">
+          }
+        }
+      </div>
+    }
+  </div>
+</section>
+
+@if ((categorySlug$ | async) === 'fils-de-fer') {
+  <section class="call-to-action">
+    <div class="cta-overlay"></div>
+    <div class="cta-content">
+      <h2>Vous avez aimé cette œuvre ?</h2>
+      <p>Prenez contact avec l'artiste.</p>
+      <button mat-stroked-button routerLink="/contact">
+        CONTACT
+      </button>
+    </div>
+  </section>
+}

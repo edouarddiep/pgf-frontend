@@ -2,13 +2,8 @@ export interface Artwork {
   id: number;
   title: string;
   description?: string;
-  dimensions?: string;
-  materials?: string;
-  creationDate?: string;
-  price?: number;
   isAvailable: boolean;
-  imageUrl?: string;
-  thumbnailUrl?: string;
+  imageUrls: string[];
   displayOrder?: number;
   categoryId: number;
   categoryName?: string;

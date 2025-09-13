@@ -1,100 +1,130 @@
 <div class="contact-page">
-  <div class="hero-section">
-    <div class="container">
-      <h1>Contactez-moi</h1>
-      <p class="hero-subtitle">
-        Parlons de votre projet ou de votre intérêt pour mes œuvres
-      </p>
-    </div>
-  </div>
-
   <div class="contact-content">
     <div class="container">
       <div class="contact-grid">
         <div class="contact-info">
-          <mat-card class="info-card">
-            <mat-card-header>
-              <mat-card-title>Informations de contact</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="contact-item">
+          <h2>Informations pratiques</h2>
+          <p class="info-subtitle">
+            Toutes les informations pour me joindre et visiter l'atelier.
+          </p>
+
+          <div class="info-section">
+            <div class="info-item">
+              <div class="info-icon">
                 <mat-icon>email</mat-icon>
-                <div>
-                  <strong>Email</strong>
-                  <p>contact@pgf-artist.com</p>
-                </div>
               </div>
+              <div class="info-content">
+                <h3>Email</h3>
+                <p>contact@pgf-artist.com</p>
+              </div>
+            </div>
 
-              <div class="contact-item">
+            <div class="info-item">
+              <div class="info-icon">
                 <mat-icon>phone</mat-icon>
-                <div>
-                  <strong>Téléphone</strong>
-                  <p>+33 (0)1 23 45 67 89</p>
-                </div>
               </div>
+              <div class="info-content">
+                <h3>Téléphone</h3>
+                <p>+33 (0)1 23 45 67 89</p>
+              </div>
+            </div>
 
-              <div class="contact-item">
+            <div class="info-item">
+              <div class="info-icon">
                 <mat-icon>location_on</mat-icon>
-                <div>
-                  <strong>Atelier</strong>
-                  <p>123 Rue de l'Art<br>75001 Paris, France</p>
-                </div>
               </div>
+              <div class="info-content">
+                <h3>Atelier</h3>
+                <p>123 Rue de l'Art<br>75001 Paris, France</p>
+              </div>
+            </div>
 
-              <div class="contact-item">
+            <div class="info-item">
+              <div class="info-icon">
                 <mat-icon>schedule</mat-icon>
-                <div>
-                  <strong>Horaires</strong>
-                  <p>Lundi - Vendredi: 9h - 18h<br>Sur rendez-vous uniquement</p>
-                </div>
               </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card class="services-card">
-            <mat-card-header>
-              <mat-card-title>Services proposés</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ul class="services-list">
-                <li>
-                  <mat-icon>palette</mat-icon>
-                  <span>Commandes personnalisées</span>
-                </li>
-                <li>
-                  <mat-icon>home</mat-icon>
-                  <span>Visite d'atelier</span>
-                </li>
-                <li>
-                  <mat-icon>business</mat-icon>
-                  <span>Expositions et collaborations</span>
-                </li>
-                <li>
-                  <mat-icon>school</mat-icon>
-                  <span>Ateliers et formations</span>
-                </li>
-                <li>
-                  <mat-icon>local_shipping</mat-icon>
-                  <span>Livraison et installation</span>
-                </li>
-              </ul>
-            </mat-card-content>
-          </mat-card>
+              <div class="info-content">
+                <h3>Horaires</h3>
+                <p>Lundi - Vendredi: 9h - 18h<br>Sur rendez-vous uniquement</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="contact-form-section">
-          <app-contact-form></app-contact-form>
-        </div>
-      </div>
-    </div>
-  </div>
+          <h2>Contactez l'artiste</h2>
+          <p class="subtitle">
+            N'hésitez pas à me contacter pour toute question sur mes œuvres ou pour organiser une visite d'atelier.
+          </p>
 
-  <div class="map-section">
-    <div class="container">
-      <h2>Localisation de l'atelier</h2>
-      <div class="map-placeholder">
-        <mat-icon>map</mat-icon>
-        <p>Carte interactive disponible prochainement</p>
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Nom complet</mat-label>
+                <input matInput formControlName="name" required>
+                <mat-icon matSuffix>person</mat-icon>
+                @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+                  <mat-error>Le nom est requis</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" required>
+                <mat-icon matSuffix>email</mat-icon>
+                @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+                  <mat-error>
+                    @if (contactForm.get('email')?.errors?.['required']) {
+                      L'email est requis
+                    } @else if (contactForm.get('email')?.errors?.['email']) {
+                      Format d'email invalide
+                    }
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Téléphone (optionnel)</mat-label>
+                <input matInput type="tel" formControlName="phone">
+                <mat-icon matSuffix>phone</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Sujet</mat-label>
+                <input matInput formControlName="subject">
+                <mat-icon matSuffix>subject</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Message</mat-label>
+              <textarea
+                matInput
+                formControlName="message"
+                rows="6"
+                placeholder="Décrivez votre demande ou votre intérêt pour mes œuvres..."
+                required>
+              </textarea>
+              @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+                <mat-error>Le message est requis</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="contactForm.invalid"
+                class="submit-button">
+                <mat-icon>send</mat-icon>
+                <span>Envoyer le message</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

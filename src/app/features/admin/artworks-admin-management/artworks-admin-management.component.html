@@ -1,9 +1,9 @@
 <div class="artworks-container">
   <div class="header">
-    <h1>Gestion des œuvres</h1>
+    <h1>Gestion des Œuvres</h1>
     <button mat-raised-button color="primary" (click)="openForm()">
       <mat-icon>add</mat-icon>
-      Ajouter une œuvre
+      Ajouter une Œuvre
     </button>
   </div>
 
@@ -11,7 +11,7 @@
     <mat-card class="form-card">
       <mat-card-header>
         <mat-card-title>
-          {{ editingArtwork() ? 'Modifier' : 'Créer' }} une œuvre
+          {{ editingArtwork() ? 'Modifier' : 'Créer' }} une Œuvre
         </mat-card-title>
       </mat-card-header>
 
@@ -40,51 +40,32 @@
 
           <div class="form-row">
             <mat-form-field appearance="outline">
-              <mat-label>Dimensions</mat-label>
-              <input matInput formControlName="dimensions" placeholder="ex: 50x70cm">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Matériaux</mat-label>
-              <input matInput formControlName="materials">
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Date de création</mat-label>
-              <input matInput type="date" formControlName="creationDate">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Prix (€)</mat-label>
-              <input matInput type="number" formControlName="price" min="0" step="0.01">
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>URL de l'image</mat-label>
-              <input matInput formControlName="imageUrl">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>URL miniature</mat-label>
-              <input matInput formControlName="thumbnailUrl">
-            </mat-form-field>
-          </div>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline">
               <mat-label>Ordre d'affichage</mat-label>
               <input matInput type="number" formControlName="displayOrder" min="0">
             </mat-form-field>
 
-            <div class="checkbox-field">
-              <mat-checkbox formControlName="isAvailable">
-                Œuvre disponible
-              </mat-checkbox>
+            <div class="switch-field">
+              <mat-slide-toggle formControlName="isAvailable">
+                Disponible à la vente
+              </mat-slide-toggle>
             </div>
+          </div>
+
+          <div class="images-upload-section">
+            <h3>Images de l'œuvre <span class="required">*</span></h3>
+            <p class="field-hint">Au moins une image est obligatoire</p>
+
+            <app-image-upload
+              [multiple]="true"
+              [required]="true"
+              [currentImages]="editingArtwork() ? editingArtwork()!.imageUrls : []"
+              (imagesUploaded)="onImagesUploaded($event)"
+              (imageRemoved)="onImageRemoved($event)">
+            </app-image-upload>
+
+            @if (artworkForm.get('imageUrls')?.invalid && artworkForm.get('imageUrls')?.touched) {
+              <mat-error>Au moins une image est requise</mat-error>
+            }
           </div>
 
           <div class="form-actions">
@@ -101,6 +82,10 @@
   }
 
   <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Liste des Œuvres</mat-card-title>
+    </mat-card-header>
+
     <mat-card-content>
       <div class="filter-section">
         <mat-form-field appearance="outline">
@@ -114,75 +99,64 @@
         </mat-form-field>
       </div>
 
-      <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
-        <ng-container matColumnDef="image">
-          <th mat-header-cell *matHeaderCellDef>Image</th>
-          <td mat-cell *matCellDef="let artwork">
-            @if (artwork.thumbnailUrl) {
-              <img [src]="artwork.thumbnailUrl" [alt]="artwork.title" class="artwork-thumbnail">
-            } @else {
-              <div class="no-image">
-                <mat-icon>image</mat-icon>
+      @if (filteredArtworks().length > 0) {
+        <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
+          <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>Image</th>
+            <td mat-cell *matCellDef="let artwork">
+              @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+                <img [src]="artwork.imageUrls[0]" [alt]="artwork.title" class="artwork-thumbnail">
+              } @else {
+                <div class="no-image">
+                  <mat-icon>image</mat-icon>
+                </div>
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Titre</th>
+            <td mat-cell *matCellDef="let artwork">
+              <div class="artwork-info">
+                <strong>{{ artwork.title }}</strong>
+                <small>{{ getCategoryName(artwork.categoryId) }}</small>
+                @if (artwork.description) {
+                  <small>{{ artwork.description | slice:0:50 }}{{ artwork.description.length > 50 ? '...' : '' }}</small>
+                }
               </div>
-            }
-          </td>
-        </ng-container>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Titre</th>
-          <td mat-cell *matCellDef="let artwork">
-            <div class="artwork-info">
-              <strong>{{ artwork.title }}</strong>
-              <small>{{ getCategoryName(artwork.categoryId) }}</small>
-            </div>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let artwork">
+              @if (artwork.isAvailable) {
+                <mat-chip color="primary" selected>Disponible à la vente</mat-chip>
+              } @else {
+                <mat-chip>Non disponible</mat-chip>
+              }
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="dimensions">
-          <th mat-header-cell *matHeaderCellDef>Dimensions</th>
-          <td mat-cell *matCellDef="let artwork">{{ artwork.dimensions || '-' }}</td>
-        </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let artwork">
+              <button mat-icon-button (click)="editArtwork(artwork)" matTooltip="Modifier">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)" matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="price">
-          <th mat-header-cell *matHeaderCellDef>Prix</th>
-          <td mat-cell *matCellDef="let artwork">
-            @if (artwork.price) {
-              {{ artwork.price | currency:'EUR':'symbol':'1.2-2' }}
-            } @else {
-              -
-            }
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Statut</th>
-          <td mat-cell *matCellDef="let artwork">
-            <mat-chip [color]="artwork.isAvailable ? 'primary' : 'warn'" [highlighted]="true">
-              {{ artwork.isAvailable ? 'Disponible' : 'Non disponible' }}
-            </mat-chip>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let artwork">
-            <button mat-icon-button (click)="editArtwork(artwork)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      @if (artworks().length === 0) {
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      } @else {
         <div class="no-artworks">
           <mat-icon>palette</mat-icon>
-          <p>Aucune œuvre pour le moment</p>
+          <p>Aucune œuvre trouvée</p>
         </div>
       }
     </mat-card-content>
