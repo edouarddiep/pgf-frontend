@@ -1,7 +1,7 @@
-<mat-toolbar color="primary" class="header-toolbar">
+<mat-toolbar class="header-toolbar">
   <div class="container">
     <a routerLink="/" class="logo">
-      <h1>PGF</h1>
+      <h1>PIERRETTE GONSETH FAVRE</h1>
     </a>
 
     @if (isHandset$ | async) {
@@ -10,6 +10,7 @@
       </button>
 
       <mat-menu #mobileMenu="matMenu">
+        <a mat-menu-item routerLink="/">Accueil</a>
         <a mat-menu-item routerLink="/about">À propos</a>
         <button mat-menu-item [matMenuTriggerFor]="artworksSubmenu">Œuvres</button>
         <a mat-menu-item routerLink="/exhibitions">Expositions</a>
@@ -25,6 +26,7 @@
       </mat-menu>
     } @else {
       <nav class="desktop-nav">
+        <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Accueil</a>
         <a mat-button routerLink="/about" routerLinkActive="active">À propos</a>
 
         <button mat-button [matMenuTriggerFor]="artworksMenu" class="artworks-menu">

@@ -1,72 +1,42 @@
-<div class="home-hero">
+<section class="hero-banner">
   <div class="hero-content">
-    <h1>Portfolio PGF</h1>
-    <p>Découvrez l'univers artistique</p>
-  </div>
-</div>
-
-<section class="featured-artworks">
-  <div class="container">
-    <h2>Œuvres à la une</h2>
-
-    @if (featuredArtworks$ | async; as artworks) {
-      <div class="artworks-grid">
-        @for (artwork of artworks | slice:0:6; track artwork.id) {
-          <div class="artwork-card" (click)="onArtworkClick(artwork)">
-            <div class="artwork-image">
-              @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
-                <img
-                  [lazyLoad]="getMainImage(artwork)"
-                  [alt]="artwork.title"
-                  [defaultImage]="'public/assets/images/placeholder.jpg'">
-              } @else {
-                <div class="placeholder">
-                  <mat-icon>image</mat-icon>
-                </div>
-              }
-            </div>
-            <div class="artwork-info">
-              <h3>{{ artwork.title }}</h3>
-              <p>{{ artwork.categoryName }}</p>
-            </div>
-          </div>
-        }
-      </div>
-    }
-  </div>
-</section>
-
-<section class="categories-section">
-  <div class="container">
-    <h2>Catégories</h2>
-
-    @if (categories$ | async; as categories) {
-      <div class="categories-grid">
-        @for (category of categories; track category.id) {
-          <div class="category-card" (click)="onCategoryClick(category.slug)">
-            <div class="category-image">
-              <img
-                [lazyLoad]="getCategoryImage(category.slug)"
-                [alt]="category.name"
-                [defaultImage]="'public/assets/images/placeholder.jpg'">
-            </div>
-            <div class="category-info">
-              <h3>{{ category.name }}</h3>
-              <p>{{ category.description }}</p>
-            </div>
-          </div>
-        }
-      </div>
-    }
-  </div>
-</section>
-
-<section class="call-to-action">
-  <div class="container">
-    <h2>Intéressé par une œuvre ?</h2>
-    <p>Prenez contact pour plus d'informations</p>
-    <button mat-raised-button color="primary" routerLink="/contact">
-      Nous contacter
+    <h1>PIERRETTE GONSETH FAVRE</h1>
+    <h2>Une artiste aux multiples approches.</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <button mat-stroked-button class="cta-button" routerLink="/artworks">
+      MES OEUVRES
     </button>
+  </div>
+</section>
+
+<section class="artworks-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>LES OEUVRES</h2>
+    </div>
+
+    @if (artworks$ | async; as artworks) {
+      @if (artworks.length > 0) {
+        <div class="artworks-grid">
+          @for (artwork of artworks | slice:0:8; track artwork.id) {
+            <app-artwork-card
+              [artwork]="artwork"
+              (artworkClick)="onArtworkClick($event)">
+            </app-artwork-card>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>palette</mat-icon>
+          <h3>Aucune œuvre disponible</h3>
+          <p>Les œuvres seront bientôt disponibles à la consultation.</p>
+        </div>
+      }
+    } @else {
+      <div class="loading-state">
+        <mat-icon>hourglass_empty</mat-icon>
+        <p>Chargement des œuvres...</p>
+      </div>
+    }
   </div>
 </section>

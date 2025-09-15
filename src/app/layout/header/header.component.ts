@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
-import {ArtworkService} from '@features/artworks/services/artwork.service';
+import { ArtworkService } from '@features/artworks/services/artwork.service';
 
 @Component({
   selector: 'app-header',

@@ -1,0 +1,29 @@
+<mat-card class="artwork-card" (click)="onCardClick()">
+  <div class="artwork-image">
+    @if (artwork().imageUrls && artwork().imageUrls.length > 0) {
+      <img
+        [lazyLoad]="getMainImage(artwork())"
+        [alt]="artwork().title"
+        [defaultImage]="'/assets/images/placeholder.jpg'">
+    } @else {
+      <div class="placeholder-image">
+        <mat-icon>image</mat-icon>
+      </div>
+    }
+  </div>
+
+  <mat-card-content class="artwork-info">
+    <h3>{{ artwork().title }}</h3>
+    <p class="category">{{ artwork().categoryName }}</p>
+
+    @if (artwork().description) {
+      <p class="description">{{ artwork().description }}</p>
+    }
+
+    @if (!artwork().isAvailable) {
+      <span class="sold-label">Vendu</span>
+    } @else {
+      <span class="available-label">Disponible</span>
+    }
+  </mat-card-content>
+</mat-card>
