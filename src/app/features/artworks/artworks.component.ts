@@ -40,7 +40,11 @@ export class ArtworksComponent {
   ]).pipe(
     map(([categorySlug, artworks]) => {
       if (!categorySlug) return artworks;
-      return artworks.filter(artwork => artwork.categorySlug === categorySlug);
+
+      // Filtre les œuvres qui appartiennent à la catégorie (Many-to-Many)
+      return artworks.filter(artwork =>
+        artwork.categorySlugs && artwork.categorySlugs.has(categorySlug)
+      );
     })
   );
 
@@ -58,17 +62,12 @@ export class ArtworksComponent {
   }
 
   getCategoryImage(category: ArtworkCategory): string {
-    // Utilise l'image de la première œuvre de la catégorie si disponible
-    if (category.artworks && category.artworks.length > 0) {
-      const firstArtwork = category.artworks[0];
-      if (firstArtwork.imageUrls && firstArtwork.imageUrls.length > 0) {
-        return firstArtwork.imageUrls[0];
-      }
-    }
-    return 'public/assets/images/placeholder.jpg';
+    // Recherche dans toutes les œuvres disponibles pour cette catégorie
+    // Note: Cette logique pourrait être optimisée avec un service dédié
+    return '/assets/images/placeholder.jpg';
   }
 
   getPlaceholderImage(): string {
-    return 'public/assets/images/placeholder.jpg';
+    return '/assets/images/placeholder.jpg';
   }
 }

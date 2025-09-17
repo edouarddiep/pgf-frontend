@@ -2,7 +2,12 @@
   <div class="artwork-detail-container">
     <div class="artwork-gallery">
       <div class="main-image">
-        @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+        @if (artwork.mainImageUrl) {
+          <img
+            [src]="artwork.mainImageUrl"
+            [alt]="artwork.title"
+            class="main-artwork-image">
+        } @else if (artwork.imageUrls && artwork.imageUrls.length > 0) {
           <img
             [src]="artwork.imageUrls[selectedImageIndex()]"
             [alt]="artwork.title"
@@ -28,13 +33,53 @@
       <div class="breadcrumb">
         <span>LES OEUVRES</span>
         <span class="separator">—</span>
-        <span>{{ artwork.categoryName }}</span>
+        @if (categories$ | async; as categories) {
+          @if (categories.length > 0) {
+            <span>{{ categories[0].name }}</span>
+          }
+        }
       </div>
 
       <h1 class="artwork-title">{{ artwork.title }}</h1>
 
+      <!-- Affichage des catégories multiples -->
+      @if (categories$ | async; as categories) {
+        @if (categories.length > 0) {
+          <div class="artwork-categories">
+            @for (category of categories; track category.id) {
+              <mat-chip class="category-chip">{{ category.name }}</mat-chip>
+            }
+          </div>
+        }
+      }
+
       @if (artwork.description) {
         <p class="artwork-description">{{ artwork.description }}</p>
+      }
+
+      @if (artwork.dimensions || artwork.materials || artwork.creationDate || artwork.price) {
+        <div class="artwork-details">
+          @if (artwork.dimensions) {
+            <div class="detail-item">
+              <strong>Dimensions :</strong> {{ artwork.dimensions }}
+            </div>
+          }
+          @if (artwork.materials) {
+            <div class="detail-item">
+              <strong>Matériaux :</strong> {{ artwork.materials }}
+            </div>
+          }
+          @if (artwork.creationDate) {
+            <div class="detail-item">
+              <strong>Date de création :</strong> {{ artwork.creationDate | date:'yyyy' }}
+            </div>
+          }
+          @if (artwork.price) {
+            <div class="detail-item">
+              <strong>Prix :</strong> {{ artwork.price | currency:'EUR':'symbol':'1.2-2' }}
+            </div>
+          }
+        </div>
       }
 
       <div class="artwork-actions">
@@ -53,11 +98,35 @@
       </div>
 
       <div class="navigation-actions">
-        <button mat-stroked-button [routerLink]="['/artworks', artwork.categorySlug]">
-          <mat-icon>arrow_back</mat-icon>
-          Retour à {{ artwork.categoryName }}
-        </button>
+        @if (primaryCategory$ | async; as primaryCategory) {
+          <button mat-stroked-button [routerLink]="['/artworks', primaryCategory.slug]">
+            <mat-icon>arrow_back</mat-icon>
+            Retour à {{ primaryCategory.name }}
+          </button>
+        }
       </div>
     </div>
   </div>
+
+  <!-- Section œuvres similaires -->
+  @if (relatedArtworks$ | async; as relatedArtworks) {
+    @if (relatedArtworks.length > 0) {
+      <div class="related-artworks">
+        <h2>Œuvres similaires</h2>
+        <div class="related-grid">
+          @for (relatedArtwork of relatedArtworks; track relatedArtwork.id) {
+            <div class="related-item" [routerLink]="['/artwork', relatedArtwork.id]">
+              @if (relatedArtwork.mainImageUrl || (relatedArtwork.imageUrls && relatedArtwork.imageUrls.length > 0)) {
+                <img
+                  [src]="relatedArtwork.mainImageUrl || relatedArtwork.imageUrls![0]"
+                  [alt]="relatedArtwork.title"
+                  class="related-image">
+              }
+              <h3>{{ relatedArtwork.title }}</h3>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
 }

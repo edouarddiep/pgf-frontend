@@ -16,11 +16,15 @@ export interface AdminCategoryRequest {
 
 export interface AdminArtworkRequest {
   title: string;
-  description: string;
+  description?: string;
+  dimensions?: string;
+  materials?: string;
+  creationDate?: string;
+  price?: number;
   isAvailable: boolean;
   imageUrls: string[];
   displayOrder: number;
-  categoryId: number;
+  categoryIds: Set<number>;
 }
 
 export interface AdminExhibitionRequest {
@@ -44,12 +48,10 @@ export class AdminService {
   private readonly isAuthenticatedSignal = signal(false);
 
   constructor() {
-    // ✅ Vérifier si on est côté navigateur avant d'accéder à sessionStorage
     if (isPlatformBrowser(this.platformId)) {
       const stored = sessionStorage.getItem('pgf-admin-auth');
       this.isAuthenticatedSignal.set(stored === 'true');
     } else {
-      // Côté serveur : pas authentifié par défaut
       this.isAuthenticatedSignal.set(false);
     }
   }
@@ -62,7 +64,6 @@ export class AdminService {
         map(() => true),
         tap(() => {
           this.isAuthenticatedSignal.set(true);
-          // ✅ Vérifier l'environnement avant sessionStorage
           if (isPlatformBrowser(this.platformId)) {
             sessionStorage.setItem('pgf-admin-auth', 'true');
           }
@@ -72,7 +73,6 @@ export class AdminService {
 
   logout(): void {
     this.isAuthenticatedSignal.set(false);
-    // ✅ Vérifier l'environnement avant sessionStorage
     if (isPlatformBrowser(this.platformId)) {
       sessionStorage.removeItem('pgf-admin-auth');
     }
@@ -104,8 +104,24 @@ export class AdminService {
     return this.http.post<Artwork>(`${this.baseUrl}/artworks`, request);
   }
 
+  // Nouveau : création avec upload d'images
+  createArtworkWithImages(formData: FormData): Observable<Artwork> {
+    return this.http.post<Artwork>(`${this.baseUrl}/artworks/with-images`, formData);
+  }
+
   updateArtwork(id: number, request: AdminArtworkRequest): Observable<Artwork> {
     return this.http.put<Artwork>(`${this.baseUrl}/artworks/${id}`, request);
+  }
+
+  // Nouveau : modification avec upload d'images
+  updateArtworkWithImages(id: number, formData: FormData): Observable<Artwork> {
+    return this.http.put<Artwork>(`${this.baseUrl}/artworks/${id}/with-images`, formData);
+  }
+
+  // Nouveau : gestion des catégories multiples
+  updateArtworkCategories(artworkId: number, categoryIds: Set<number>): Observable<Artwork> {
+    const categoryIdsArray = Array.from(categoryIds);
+    return this.http.put<Artwork>(`${this.baseUrl}/artworks/${artworkId}/categories`, categoryIdsArray);
   }
 
   deleteArtwork(id: number): Observable<void> {
@@ -134,11 +150,27 @@ export class AdminService {
     return this.http.get<ContactMessage[]>(`${this.baseUrl}/messages`);
   }
 
-  markMessageAsRead(id: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/messages/${id}/read`, {});
+  getUnreadMessages(): Observable<ContactMessage[]> {
+    return this.http.get<ContactMessage[]>(`${this.baseUrl}/messages/unread`);
+  }
+
+  getUnreadMessagesCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/messages/count-unread`);
+  }
+
+  markMessageAsRead(id: number): Observable<ContactMessage> {
+    return this.http.put<ContactMessage>(`${this.baseUrl}/messages/${id}/read`, {});
   }
 
   deleteMessage(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/messages/${id}`);
+  }
+
+  // Upload d'images seules
+  uploadImage(file: File, category: string = 'general'): Observable<{imageUrl: string}> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', category);
+    return this.http.post<{imageUrl: string}>(`${this.baseUrl}/upload/image`, formData);
   }
 }
