@@ -2,115 +2,91 @@
   <div class="contact-content">
     <div class="container">
       <div class="contact-grid">
-        <div class="contact-info">
-          <h2>Informations pratiques</h2>
-          <p class="info-subtitle">
-            Toutes les informations pour me joindre et visiter l'atelier.
-          </p>
-
-          <div class="info-section">
-            <div class="info-item">
-              <div class="info-icon">
-                <mat-icon>email</mat-icon>
-              </div>
-              <div class="info-content">
-                <h3>Email</h3>
-                <p>contact@pgf-artist.com</p>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-icon">
-                <mat-icon>phone</mat-icon>
-              </div>
-              <div class="info-content">
-                <h3>Téléphone</h3>
-                <p>+33 (0)1 23 45 67 89</p>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-icon">
-                <mat-icon>location_on</mat-icon>
-              </div>
-              <div class="info-content">
-                <h3>Atelier</h3>
-                <p>123 Rue de l'Art<br>75001 Paris, France</p>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <div class="info-icon">
-                <mat-icon>schedule</mat-icon>
-              </div>
-              <div class="info-content">
-                <h3>Horaires</h3>
-                <p>Lundi - Vendredi: 9h - 18h<br>Sur rendez-vous uniquement</p>
-              </div>
-            </div>
-          </div>
+        <div class="contact-image">
+          <img
+            src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/land-art/images/IMG_3233.jpeg"
+            alt="Atelier de l'artiste"
+            loading="lazy"
+          >
         </div>
 
         <div class="contact-form-section">
-          <h2>Contactez l'artiste</h2>
-          <p class="subtitle">
-            N'hésitez pas à me contacter pour toute question sur mes œuvres ou pour organiser une visite d'atelier.
-          </p>
+          <h2>PRENDRE CONTACT</h2>
 
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
             <div class="form-row">
               <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Nom complet</mat-label>
+                <mat-label>Nom</mat-label>
                 <input matInput formControlName="name" required>
-                <mat-icon matSuffix>person</mat-icon>
                 @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
                   <mat-error>Le nom est requis</mat-error>
                 }
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Email</mat-label>
-                <input matInput type="email" formControlName="email" required>
-                <mat-icon matSuffix>email</mat-icon>
-                @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
-                  <mat-error>
-                    @if (contactForm.get('email')?.errors?.['required']) {
-                      L'email est requis
-                    } @else if (contactForm.get('email')?.errors?.['email']) {
-                      Format d'email invalide
-                    }
-                  </mat-error>
+                <mat-label>Prénom</mat-label>
+                <input matInput formControlName="firstName" required>
+                @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
+                  <mat-error>Le prénom est requis</mat-error>
                 }
               </mat-form-field>
             </div>
 
             <div class="form-row">
               <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Téléphone (optionnel)</mat-label>
-                <input matInput type="tel" formControlName="phone">
-                <mat-icon matSuffix>phone</mat-icon>
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" required>
+                @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+                  <mat-error>
+                    @if (contactForm.get('email')?.errors?.['required']) {
+                      L'email est requis
+                    } @else if (contactForm.get('email')?.errors?.['email']) {
+                      Format d'adresse email invalide
+                    }
+                  </mat-error>
+                }
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Sujet</mat-label>
-                <input matInput formControlName="subject">
-                <mat-icon matSuffix>subject</mat-icon>
+                <mat-label>Téléphone (optionnel)</mat-label>
+                <input matInput type="tel" formControlName="phone">
               </mat-form-field>
             </div>
 
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Message</mat-label>
-              <textarea
-                matInput
-                formControlName="message"
-                rows="6"
-                placeholder="Décrivez votre demande ou votre intérêt pour mes œuvres..."
-                required>
-              </textarea>
-              @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
-                <mat-error>Le message est requis</mat-error>
-              }
-            </mat-form-field>
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Sujet</mat-label>
+                <input matInput formControlName="subject" required>
+                @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
+                  <mat-error>Le sujet est requis</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Message</mat-label>
+                <textarea
+                  matInput
+                  formControlName="message"
+                  rows="6"
+                  placeholder="Votre message..."
+                  required>
+                </textarea>
+                @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+                  <mat-error>
+                    @if (contactForm.get('message')?.errors?.['required']) {
+                      Le message est requis
+                    } @else if (contactForm.get('message')?.errors?.['minlength']) {
+                      Merci de saisir 10 caractères au minimum
+                    }
+                  </mat-error>
+                }
+              </mat-form-field>
+              <div class="character-counter">
+                {{ getMessageLength() }} sur 500 max.
+              </div>
+            </div>
 
             <div class="form-actions">
               <button
@@ -119,8 +95,7 @@
                 type="submit"
                 [disabled]="contactForm.invalid"
                 class="submit-button">
-                <mat-icon>send</mat-icon>
-                <span>Envoyer le message</span>
+                Envoyer
               </button>
             </div>
           </form>
