@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,25 +10,43 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AdminService } from '@features/admin/services/admin.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
-import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
-import { catchError, EMPTY, forkJoin } from 'rxjs';
+import { DateFormatPipe } from '@core/pipes/date-format.pipe';
+import { forkJoin, EMPTY, catchError } from 'rxjs';
 
 interface ArtworkFormData {
   title: string;
-  description: string;
+  description?: string;
   dimensions?: string;
   materials?: string;
-  creationDate?: string;
+  creationDate?: Date | null;
   price?: number;
   isAvailable: boolean;
   imageUrls: string[];
   displayOrder: number;
   categoryIds: number[];
 }
+
+interface PreviewImage {
+  file: File;
+  url: string;
+}
+
+const SWISS_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD.MM.YYYY',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD.MM.YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-artworks-admin-management',
@@ -44,8 +62,14 @@ interface ArtworkFormData {
     MatSlideToggleModule,
     MatCardModule,
     MatChipsModule,
-    MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    DateFormatPipe
+  ],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },
+    { provide: MAT_DATE_FORMATS, useValue: SWISS_DATE_FORMATS }
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -58,29 +82,23 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
   protected readonly showForm = signal(false);
+  protected readonly showList = signal(true);
   protected readonly editingArtwork = signal<Artwork | null>(null);
   protected readonly isSubmitting = signal(false);
   protected readonly selectedFiles = signal<FileList | null>(null);
+  protected readonly imagesPreviews = signal<PreviewImage[]>([]);
 
   protected readonly displayedColumns = ['image', 'title', 'categories', 'status', 'actions'];
   protected selectedCategoryFilter = '';
 
-  protected readonly filteredArtworks = computed(() => {
-    const artworks = this.artworks();
-    if (!this.selectedCategoryFilter) {
-      return artworks;
-    }
-    return artworks.filter(artwork =>
-      artwork.categoryIds?.has(+this.selectedCategoryFilter)
-    );
-  });
+  protected readonly filteredArtworks = signal<Artwork[]>([]);
 
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
     dimensions: ['', [Validators.maxLength(255)]],
     materials: ['', [Validators.maxLength(255)]],
-    creationDate: [''],
+    creationDate: [null as Date | null],
     price: [null as number | null, [Validators.min(0)]],
     isAvailable: [true, [Validators.required]],
     imageUrls: [[] as string[]],
@@ -94,7 +112,31 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.selectedFiles.set(input.files);
+    const files = input.files;
+    this.selectedFiles.set(files);
+
+    if (files && files.length > 0) {
+      const previews: PreviewImage[] = [];
+      Array.from(files).forEach(file => {
+        const url = URL.createObjectURL(file);
+        previews.push({ file, url });
+      });
+      this.imagesPreviews.set(previews);
+    } else {
+      this.imagesPreviews.set([]);
+    }
+  }
+
+  removeImagePreview(index: number): void {
+    const previews = this.imagesPreviews();
+    URL.revokeObjectURL(previews[index].url);
+
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    this.imagesPreviews.set(updatedPreviews);
+
+    const dt = new DataTransfer();
+    updatedPreviews.forEach(preview => dt.items.add(preview.file));
+    this.selectedFiles.set(dt.files);
   }
 
   private loadData(): void {
@@ -106,6 +148,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
         this.categories.set(categories);
+        this.filteredArtworks.set(artworks);
+        this.selectedCategoryFilter = '';
       });
   }
 
@@ -118,35 +162,18 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .filter(name => name !== undefined) as string[];
   }
 
-  protected isCategorySelected(categoryId: number): boolean {
-    const selectedIds = this.artworkForm.get('categoryIds')?.value || [];
-    return selectedIds.includes(categoryId);
-  }
-
-  protected onCategoryChange(categoryId: number, checked: boolean): void {
-    const currentIds = this.artworkForm.get('categoryIds')?.value || [];
-
-    if (checked) {
-      this.artworkForm.patchValue({
-        categoryIds: [...currentIds, categoryId]
-      });
-    } else {
-      this.artworkForm.patchValue({
-        categoryIds: currentIds.filter(id => id !== categoryId)
-      });
-    }
-  }
-
   protected openForm(): void {
     this.showForm.set(true);
+    this.showList.set(false);
     this.editingArtwork.set(null);
     this.selectedFiles.set(null);
+    this.imagesPreviews.set([]);
     this.artworkForm.reset({
       title: '',
       description: '',
       dimensions: '',
       materials: '',
-      creationDate: '',
+      creationDate: null,
       price: null,
       isAvailable: true,
       imageUrls: [],
@@ -157,73 +184,71 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   protected editArtwork(artwork: Artwork): void {
     this.showForm.set(true);
+    this.showList.set(false);
     this.editingArtwork.set(artwork);
     this.selectedFiles.set(null);
+    this.imagesPreviews.set([]);
 
-    this.artworkForm.patchValue({
+    const creationDate = artwork.creationDate ? new Date(artwork.creationDate) : null;
+
+    // Utiliser setValue au lieu de patchValue pour une réinitialisation complète
+    this.artworkForm.setValue({
       title: artwork.title,
       description: artwork.description || '',
       dimensions: artwork.dimensions || '',
       materials: artwork.materials || '',
-      creationDate: artwork.creationDate || '',
+      creationDate,
       price: artwork.price || null,
       isAvailable: artwork.isAvailable,
       imageUrls: artwork.imageUrls || [],
       displayOrder: artwork.displayOrder,
       categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
     });
+
+    // Reset du state dirty/pristine pour permettre la détection des changements
+    this.artworkForm.markAsPristine();
+    this.artworkForm.markAsUntouched();
+    this.artworkForm.updateValueAndValidity();
   }
 
   protected cancelForm(): void {
     this.showForm.set(false);
+    this.showList.set(true);
     this.editingArtwork.set(null);
     this.selectedFiles.set(null);
+
+    this.imagesPreviews().forEach(preview => URL.revokeObjectURL(preview.url));
+    this.imagesPreviews.set([]);
+
     this.artworkForm.reset();
-  }
-
-  protected onImagesUploaded(images: string[]): void {
-    const currentImages = this.artworkForm.get('imageUrls')?.value || [];
-    this.artworkForm.patchValue({
-      imageUrls: [...currentImages, ...images]
-    });
-  }
-
-  protected onImageRemoved(removedImageUrl: string): void {
-    const currentImages = this.artworkForm.get('imageUrls')?.value || [];
-    const updatedImages = currentImages.filter((url: string) => url !== removedImageUrl);
-    this.artworkForm.patchValue({
-      imageUrls: updatedImages
-    });
   }
 
   protected saveArtwork(): void {
     if (this.artworkForm.invalid || this.isSubmitting()) return;
 
     this.isSubmitting.set(true);
-    const formData = this.artworkForm.value as ArtworkFormData;
+    const formValue = this.artworkForm.value;
 
-    // Préparer FormData pour l'upload avec images
-    const uploadData = new FormData();
-
-    // Créer l'objet artwork DTO
     const artworkDto = {
-      title: formData.title,
-      description: formData.description,
-      dimensions: formData.dimensions,
-      materials: formData.materials,
-      creationDate: formData.creationDate,
-      price: formData.price,
-      isAvailable: formData.isAvailable,
-      imageUrls: formData.imageUrls,
-      displayOrder: formData.displayOrder,
-      categoryIds: new Set(formData.categoryIds)
+      title: formValue.title!,
+      description: formValue.description,
+      dimensions: formValue.dimensions,
+      materials: formValue.materials,
+      creationDate: formValue.creationDate?.toISOString().split('T')[0] || null,
+      price: formValue.price,
+      isAvailable: formValue.isAvailable!,
+      imageUrls: formValue.imageUrls!,
+      displayOrder: formValue.displayOrder!,
+      categoryIds: formValue.categoryIds!
     };
 
-    uploadData.append('artwork', new Blob([JSON.stringify(artworkDto)], {
-      type: 'application/json'
-    }));
+    // Debug pour vérifier les données
+    console.log('Artwork DTO being sent:', artworkDto);
+    console.log('Category IDs:', artworkDto.categoryIds);
 
-    // Ajouter les nouvelles images si présentes
+    const uploadData = new FormData();
+    uploadData.append('artwork', JSON.stringify(artworkDto));
+
     const files = this.selectedFiles();
     if (files && files.length > 0) {
       Array.from(files).forEach(file => {
@@ -237,9 +262,13 @@ export class ArtworksAdminManagementComponent implements OnInit {
       : this.adminService.createArtworkWithImages(uploadData);
 
     operation
-      .pipe(catchError(() => EMPTY))
+      .pipe(catchError((error) => {
+        console.error('Error saving artwork:', error);
+        return EMPTY;
+      }))
       .subscribe({
-        next: () => {
+        next: (result) => {
+          console.log('Saved artwork result:', result);
           this.cancelForm();
           this.loadData();
           window.dispatchEvent(new CustomEvent('artworkChanged'));
@@ -263,11 +292,38 @@ export class ArtworksAdminManagementComponent implements OnInit {
       });
   }
 
-  protected updateArtworkCategories(artworkId: number, categoryIds: number[]): void {
-    this.adminService.updateArtworkCategories(artworkId, new Set(categoryIds))
-      .pipe(catchError(() => EMPTY))
-      .subscribe(() => {
-        this.loadData();
-      });
+  protected onCategoryFilterChange(): void {
+    if (!this.selectedCategoryFilter) {
+      this.filteredArtworks.set(this.artworks());
+    } else {
+      this.adminService.getArtworksByCategory(+this.selectedCategoryFilter)
+        .pipe(catchError(() => EMPTY))
+        .subscribe(artworks => {
+          this.filteredArtworks.set(artworks);
+        });
+    }
+  }
+
+  protected getCleanImageUrl(artwork: Artwork): string | null {
+    let imageUrl = artwork.mainImageUrl;
+
+    if (!imageUrl && artwork.imageUrls && artwork.imageUrls.length > 0) {
+      imageUrl = artwork.imageUrls[0];
+    }
+
+    if (!imageUrl) return null;
+
+    // Nettoyer les caractères d'échappement
+    return imageUrl.replace(/\\"/g, '"').replace(/^"|"$/g, '');
+  }
+
+  protected isFormValidForSubmit(): boolean {
+    if (!this.editingArtwork()) {
+      // Mode création : formulaire doit être valide
+      return this.artworkForm.valid;
+    } else {
+      // Mode édition : formulaire doit être valide ET modifié
+      return this.artworkForm.valid && (this.artworkForm.dirty || this.selectedFiles()?.length > 0);
+    }
   }
 }

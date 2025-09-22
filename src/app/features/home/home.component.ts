@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '@core/services/api.service';
 import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-card.component';
-import { Artwork } from '@core/models/artwork.model';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +25,7 @@ export class HomeComponent {
 
   readonly artworks$ = this.apiService.getAvailableArtworks();
 
-  onArtworkClick(artwork: Artwork): void {
-    this.router.navigate(['/artworks/detail', artwork.id]);
+  onArtworkClick(artworkId: number): void {
+    this.router.navigate(['/artworks/detail', artworkId]);
   }
 }

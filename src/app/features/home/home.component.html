@@ -21,7 +21,7 @@
           @for (artwork of artworks | slice:0:8; track artwork.id) {
             <app-artwork-card
               [artwork]="artwork"
-              (artworkClick)="onArtworkClick($event)">
+              (cardClick)="onArtworkClick($event)">
             </app-artwork-card>
           }
         </div>

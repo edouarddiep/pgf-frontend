@@ -1,144 +1,92 @@
-<div class="artworks-container">
-  <div class="header">
-    <h1>Gestion des Œuvres</h1>
-    <button mat-raised-button color="primary" (click)="openForm()">
-      <mat-icon>add</mat-icon>
-      Nouvelle Œuvre
-    </button>
+<div class="admin-artworks-container">
+  <div class="admin-header">
+    <h2>Gestion des œuvres</h2>
+    @if (!showForm()) {
+      <button mat-raised-button color="primary" (click)="openForm()">
+        <mat-icon>add</mat-icon>
+        Nouvelle œuvre
+      </button>
+    }
   </div>
 
   @if (showForm()) {
     <mat-card class="form-card">
       <mat-card-header>
         <mat-card-title>
-          {{ editingArtwork() ? 'Modifier l\'œuvre' : 'Créer une nouvelle œuvre' }}
+          {{ editingArtwork() ? 'Modifier l\'œuvre' : 'Nouvelle œuvre' }}
         </mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
         <form [formGroup]="artworkForm" (ngSubmit)="saveArtwork()">
-          <!-- Informations de base -->
-          <div class="form-section">
-            <h3>Informations générales</h3>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Titre *</mat-label>
-                <input matInput formControlName="title" placeholder="Titre de l'œuvre">
-                @if (artworkForm.get('title')?.hasError('required')) {
-                  <mat-error>Le titre est obligatoire</mat-error>
-                }
-                @if (artworkForm.get('title')?.hasError('maxlength')) {
-                  <mat-error>Maximum 255 caractères</mat-error>
-                }
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Description</mat-label>
-                <textarea matInput formControlName="description" rows="4"
-                          placeholder="Description de l'œuvre"></textarea>
-                @if (artworkForm.get('description')?.hasError('maxlength')) {
-                  <mat-error>Maximum 1000 caractères</mat-error>
-                }
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Dimensions</mat-label>
-                <input matInput formControlName="dimensions" placeholder="Ex: 50x70 cm">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Matériaux</mat-label>
-                <input matInput formControlName="materials" placeholder="Ex: Huile sur toile">
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Date de création</mat-label>
-                <input matInput type="date" formControlName="creationDate">
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Prix (€)</mat-label>
-                <input matInput type="number" step="0.01" formControlName="price" placeholder="0.00">
-                @if (artworkForm.get('price')?.hasError('min')) {
-                  <mat-error>Le prix doit être positif</mat-error>
-                }
-              </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline">
-                <mat-label>Ordre d'affichage</mat-label>
-                <input matInput type="number" formControlName="displayOrder">
-              </mat-form-field>
-
-              <div class="form-field">
-                <mat-slide-toggle formControlName="isAvailable">
-                  Œuvre disponible
-                </mat-slide-toggle>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sélection des catégories -->
-          <div class="form-section">
-            <h3>Catégories *</h3>
-            <div class="categories-selection">
-              @for (category of categories(); track category.id) {
-                <mat-checkbox
-                  [checked]="isCategorySelected(category.id)"
-                  (change)="onCategoryChange(category.id, $event.checked)"
-                  class="category-checkbox">
-                  {{ category.name }}
-                  @if (category.description) {
-                    <small class="category-description">{{ category.description }}</small>
-                  }
-                </mat-checkbox>
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title" required>
+              @if (artworkForm.get('title')?.errors?.['required']) {
+                <mat-error>Le titre est obligatoire</mat-error>
               }
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="3"></textarea>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Dimensions</mat-label>
+              <input matInput formControlName="dimensions">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Matériaux</mat-label>
+              <input matInput formControlName="materials">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Date de création</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="creationDate">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Prix (CHF)</mat-label>
+              <input matInput type="number" formControlName="price" min="0" step="0.01">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Ordre d'affichage</mat-label>
+              <input matInput type="number" formControlName="displayOrder" min="0">
+            </mat-form-field>
+
+            <div class="toggle-field">
+              <mat-slide-toggle formControlName="isAvailable">
+                Disponible
+              </mat-slide-toggle>
             </div>
-            @if (artworkForm.get('categoryIds')?.hasError('required')) {
-              <mat-error class="category-error">Sélectionnez au moins une catégorie</mat-error>
-            }
-          </div>
 
-          <!-- Upload d'images -->
-          <div class="form-section">
-            <h3>Images</h3>
+            <mat-form-field class="full-width">
+              <mat-label>Catégories</mat-label>
+              <mat-select formControlName="categoryIds" multiple>
+                @for (category of categories(); track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+              @if (artworkForm.get('categoryIds')?.errors?.['required']) {
+                <mat-error>Veuillez sélectionner au moins une catégorie</mat-error>
+              }
+            </mat-form-field>
 
-            <!-- Images existantes -->
-            @if (artworkForm.get('imageUrls')?.value && artworkForm.get('imageUrls')?.value.length > 0) {
-              <div class="existing-images">
-                <h4>Images actuelles</h4>
-                <div class="images-grid">
-                  @for (imageUrl of artworkForm.get('imageUrls')?.value; track imageUrl) {
-                    <div class="image-item">
-                      <img [src]="imageUrl" [alt]="artworkForm.get('title')?.value" class="preview-image">
-                      <button type="button" mat-icon-button color="warn"
-                              (click)="onImageRemoved(imageUrl)"
-                              class="remove-image-btn">
-                        <mat-icon>delete</mat-icon>
-                      </button>
-                    </div>
-                  }
-                </div>
-              </div>
-            }
-
-            <!-- Upload de nouvelles images -->
-            <div class="image-upload-section">
-              <h4>{{ editingArtwork() ? 'Ajouter de nouvelles images' : 'Sélectionner des images' }}</h4>
-              <input type="file"
-                     multiple
-                     accept="image/*"
-                     (change)="onFileSelected($event)"
-                     #fileInput
-                     class="file-input">
+            <div class="full-width file-upload-section">
+              <label class="file-upload-label">Images</label>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                #fileInput
+                class="file-input">
               <button type="button" mat-stroked-button (click)="fileInput.click()">
                 <mat-icon>cloud_upload</mat-icon>
                 Choisir des images
@@ -148,19 +96,31 @@
                   {{ selectedFiles()?.length }} fichier(s) sélectionné(s)
                 </p>
               }
+
+              @if (imagesPreviews().length > 0) {
+                <div class="images-preview">
+                  @for (preview of imagesPreviews(); track $index) {
+                    <div class="preview-item">
+                      <img [src]="preview.url" [alt]="'Preview ' + ($index + 1)">
+                      <button type="button" mat-icon-button color="warn"
+                              (click)="removeImagePreview($index)" class="remove-btn">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
 
-          <!-- Actions -->
           <div class="form-actions">
-            <button type="button" mat-stroked-button (click)="cancelForm()"
-                    [disabled]="isSubmitting()">
+            <button type="button" mat-button (click)="cancelForm()">
               Annuler
             </button>
             <button type="submit" mat-raised-button color="primary"
-                    [disabled]="artworkForm.invalid || isSubmitting()">
+                    [disabled]="!isFormValidForSubmit() || isSubmitting()">
               @if (isSubmitting()) {
-                <mat-icon class="spinner">refresh</mat-icon>
+                <mat-icon>hourglass_empty</mat-icon>
               }
               {{ editingArtwork() ? 'Modifier' : 'Créer' }}
             </button>
@@ -170,110 +130,99 @@
     </mat-card>
   }
 
-  <!-- Liste des œuvres -->
-  <mat-card class="table-card">
-    <mat-card-header>
-      <mat-card-title>Liste des Œuvres</mat-card-title>
-    </mat-card-header>
-
-    <mat-card-content>
-      <!-- Filtre par catégorie -->
-      <div class="filter-section">
-        <mat-form-field appearance="outline">
+  @if (showList()) {
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>Liste des œuvres</mat-card-title>
+        <mat-form-field>
           <mat-label>Filtrer par catégorie</mat-label>
-          <mat-select [(value)]="selectedCategoryFilter">
+          <mat-select [(value)]="selectedCategoryFilter" (selectionChange)="onCategoryFilterChange()">
             <mat-option value="">Toutes les catégories</mat-option>
             @for (category of categories(); track category.id) {
               <mat-option [value]="category.id">{{ category.name }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
-      </div>
+      </mat-card-header>
 
-      <!-- Tableau des œuvres -->
-      @if (filteredArtworks().length > 0) {
-        <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
-          <!-- Colonne Image -->
-          <ng-container matColumnDef="image">
-            <th mat-header-cell *matHeaderCellDef>Image</th>
-            <td mat-cell *matCellDef="let artwork">
-              @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
-                <img [src]="artwork.mainImageUrl || artwork.imageUrls[0]"
-                     [alt]="artwork.title"
-                     class="artwork-thumbnail">
-              } @else {
-                <div class="no-image">
-                  <mat-icon>image</mat-icon>
+      <mat-card-content>
+        @if (filteredArtworks().length > 0) {
+          <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
+            <ng-container matColumnDef="image">
+              <th mat-header-cell *matHeaderCellDef>Image</th>
+              <td mat-cell *matCellDef="let artwork">
+                @if (getCleanImageUrl(artwork)) {
+                  <img [src]="getCleanImageUrl(artwork)" [alt]="artwork.title" class="artwork-thumb">
+                } @else {
+                  <div class="no-image">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Titre</th>
+              <td mat-cell *matCellDef="let artwork">
+                <div class="artwork-info">
+                  <strong>{{ artwork.title }}</strong>
+                  @if (artwork.price) {
+                    <div class="price">{{ artwork.price }} CHF</div>
+                  }
+                  @if (artwork.creationDate) {
+                    <div class="date">{{ artwork.creationDate | dateFormat }}</div>
+                  }
                 </div>
-              }
-            </td>
-          </ng-container>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Titre -->
-          <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef>Titre</th>
-            <td mat-cell *matCellDef="let artwork">
-              <div class="artwork-info">
-                <strong>{{ artwork.title }}</strong>
-                @if (artwork.dimensions) {
-                  <small>{{ artwork.dimensions }}</small>
-                }
-                @if (artwork.price) {
-                  <small class="price">{{ artwork.price | currency:'EUR':'symbol':'1.2-2' }}</small>
-                }
-              </div>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="categories">
+              <th mat-header-cell *matHeaderCellDef>Catégories</th>
+              <td mat-cell *matCellDef="let artwork">
+                <div class="categories-chips">
+                  @for (categoryName of getCategoryNames(artwork.categoryIds); track categoryName) {
+                    <mat-chip class="category-chip">{{ categoryName }}</mat-chip>
+                  }
+                  @if (!artwork.categoryIds || artwork.categoryIds.size === 0) {
+                    <span class="no-categories">Aucune catégorie</span>
+                  }
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Catégories -->
-          <ng-container matColumnDef="categories">
-            <th mat-header-cell *matHeaderCellDef>Catégories</th>
-            <td mat-cell *matCellDef="let artwork">
-              <div class="categories-chips">
-                @for (categoryName of getCategoryNames(artwork.categoryIds); track categoryName) {
-                  <mat-chip class="category-chip">{{ categoryName }}</mat-chip>
-                }
-                @if (!artwork.categoryIds || artwork.categoryIds.size === 0) {
-                  <span class="no-categories">Aucune catégorie</span>
-                }
-              </div>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Statut</th>
+              <td mat-cell *matCellDef="let artwork">
+                <mat-chip [class.available]="artwork.isAvailable"
+                          [class.unavailable]="!artwork.isAvailable">
+                  {{ artwork.isAvailable ? 'Disponible' : 'Non disponible' }}
+                </mat-chip>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Statut -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Statut</th>
-            <td mat-cell *matCellDef="let artwork">
-              <mat-chip [class.available]="artwork.isAvailable"
-                        [class.unavailable]="!artwork.isAvailable">
-                {{ artwork.isAvailable ? 'Disponible' : 'Non disponible' }}
-              </mat-chip>
-            </td>
-          </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let artwork">
+                <button mat-icon-button [matTooltip]="'Modifier'" (click)="editArtwork(artwork)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button [matTooltip]="'Supprimer'"
+                        color="warn" (click)="deleteArtwork(artwork.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-          <!-- Colonne Actions -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Actions</th>
-            <td mat-cell *matCellDef="let artwork">
-              <button mat-icon-button [matTooltip]="'Modifier'" (click)="editArtwork(artwork)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button [matTooltip]="'Supprimer'"
-                      color="warn" (click)="deleteArtwork(artwork.id)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      } @else {
-        <div class="no-data">
-          <mat-icon>palette</mat-icon>
-          <p>Aucune œuvre trouvée</p>
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        } @else {
+          <div class="no-data">
+            <mat-icon>palette</mat-icon>
+            <p>Aucune œuvre trouvée</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
 </div>
