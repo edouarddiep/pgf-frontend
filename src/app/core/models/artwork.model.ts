@@ -1,3 +1,19 @@
+export interface ArtworkCategory {
+  id: number;
+  name: string;
+  description?: string;
+  slug: string;
+  displayOrder: number;
+  mainImageUrl?: string;
+  thumbnailUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CategoryWithThumbnail extends ArtworkCategory {
+  thumbnailUrl: string; // Always defined in this interface
+}
+
 export interface Artwork {
   id: number;
   title: string;
@@ -7,22 +23,11 @@ export interface Artwork {
   creationDate?: string;
   price?: number;
   isAvailable: boolean;
-  imageUrls?: string[];
+  imageUrls: string[];
   mainImageUrl?: string;
   displayOrder: number;
   categoryIds?: Set<number>;
-  categoryNames?: Set<string>;
   categorySlugs?: Set<string>;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ArtworkCategory {
-  id: number;
-  name: string;
-  description?: string;
-  slug: string;
-  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }

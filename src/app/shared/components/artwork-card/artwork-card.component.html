@@ -21,12 +21,8 @@
     <h3>{{ artwork().title }}</h3>
 
     <!-- Affichage des catégories multiples -->
-    @if (artwork().categoryNames && artwork().categoryNames.size > 0) {
-      <div class="categories">
-        @for (categoryName of getCategoryNamesArray(artwork()); track categoryName) {
-          <span class="category-tag">{{ categoryName }}</span>
-        }
-      </div>
+    @for (categorySlug of getCategorySlugsArray(artwork()); track categorySlug) {
+      <span class="category-chip">{{ categorySlug }}</span>
     }
 
     @if (artwork().description) {

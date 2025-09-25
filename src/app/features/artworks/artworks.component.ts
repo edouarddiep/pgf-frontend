@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
-import { ArtworkCategory } from '@core/models/artwork.model';
 import { switchMap, map, combineLatest } from 'rxjs';
 
 @Component({
@@ -39,9 +38,8 @@ export class ArtworksComponent {
     this.artworkService.getAvailableArtworks()
   ]).pipe(
     map(([categorySlug, artworks]) => {
-      if (!categorySlug) return artworks;
+      if (!categorySlug) return [];
 
-      // Filtre les œuvres qui appartiennent à la catégorie (Many-to-Many)
       return artworks.filter(artwork =>
         artwork.categorySlugs && artwork.categorySlugs.has(categorySlug)
       );
@@ -59,12 +57,6 @@ export class ArtworksComponent {
 
   onArtworkClick(artworkId: number): void {
     this.router.navigate(['/artworks/detail', artworkId]);
-  }
-
-  getCategoryImage(category: ArtworkCategory): string {
-    // Recherche dans toutes les œuvres disponibles pour cette catégorie
-    // Note: Cette logique pourrait être optimisée avec un service dédié
-    return '/assets/images/placeholder.jpg';
   }
 
   getPlaceholderImage(): string {

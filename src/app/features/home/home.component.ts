@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ApiService } from '@core/services/api.service';
-import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-card.component';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { ArtworkService } from '@features/artworks/services/artwork.service';
 
 @Component({
   selector: 'app-home',
@@ -13,19 +13,23 @@ import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-ca
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    ArtworkCardComponent
+    LazyLoadImageModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
-  private readonly apiService = inject(ApiService);
+  private readonly artworkService = inject(ArtworkService);
   private readonly router = inject(Router);
 
-  readonly artworks$ = this.apiService.getAvailableArtworks();
+  readonly categories$ = this.artworkService.getCategories();
 
-  onArtworkClick(artworkId: number): void {
-    this.router.navigate(['/artworks/detail', artworkId]);
+  onCategoryClick(categorySlug: string): void {
+    this.router.navigate(['/artworks', categorySlug]);
+  }
+
+  getCategoryThumbnail(category: any): string {
+    return category.thumbnailUrl || category.mainImageUrl || '/assets/images/placeholder.jpg';
   }
 }

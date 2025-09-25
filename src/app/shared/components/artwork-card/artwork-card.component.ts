@@ -25,11 +25,11 @@ export class ArtworkCardComponent {
     this.cardClick.emit(this.artwork().id);
   }
 
-  getCategoryNamesArray(artwork: Artwork): string[] {
-    if (!artwork.categoryNames || artwork.categoryNames.size === 0) {
+  getCategorySlugsArray(artwork: Artwork): string[] {
+    if (!artwork.categorySlugs || artwork.categorySlugs.size === 0) {
       return [];
     }
-    return Array.from(artwork.categoryNames);
+    return Array.from(artwork.categorySlugs);
   }
 
   getMainImage(artwork: Artwork): string {

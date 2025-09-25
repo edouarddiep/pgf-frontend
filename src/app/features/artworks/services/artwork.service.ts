@@ -1,47 +1,29 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
-import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
-import { ApiService } from '@core/services/api.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '@environments/environment';
+import { ArtworkCategory, Artwork } from '@core/models/artwork.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArtworkService {
-  private readonly apiService = inject(ApiService);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
 
-  private readonly artworks$ = this.apiService.getArtworks().pipe(
-    shareReplay(1)
-  );
-
-  private readonly categories$ = this.apiService.getArtworkCategories().pipe(
-    shareReplay(1)
-  );
-
-  getAllArtworks(): Observable<Artwork[]> {
-    return this.artworks$;
+  getCategories(): Observable<ArtworkCategory[]> {
+    return this.http.get<ArtworkCategory[]>(`${this.apiUrl}/categories`);
   }
 
   getAvailableArtworks(): Observable<Artwork[]> {
-    return this.apiService.getAvailableArtworks();
+    return this.http.get<Artwork[]>(`${this.apiUrl}/artworks/available`);
   }
 
   getArtworkById(id: number): Observable<Artwork> {
-    return this.apiService.getArtworkById(id);
+    return this.http.get<Artwork>(`${this.apiUrl}/artworks/${id}`);
   }
 
   getArtworksByCategory(categorySlug: string): Observable<Artwork[]> {
-    return this.apiService.getArtworksByCategorySlug(categorySlug);
-  }
-
-  getCategories(): Observable<ArtworkCategory[]> {
-    return this.categories$;
-  }
-
-  getCategoryBySlug(slug: string): Observable<ArtworkCategory> {
-    return this.apiService.getCategoryBySlug(slug);
-  }
-
-  getFeaturedArtworks(): Observable<Artwork[]> {
-    return this.apiService.getArtworks();
+    return this.http.get<Artwork[]>(`${this.apiUrl}/artworks/category/slug/${categorySlug}`);
   }
 }

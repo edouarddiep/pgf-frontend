@@ -15,27 +15,37 @@
       <h2>LES OEUVRES</h2>
     </div>
 
-    @if (artworks$ | async; as artworks) {
-      @if (artworks.length > 0) {
-        <div class="artworks-grid">
-          @for (artwork of artworks | slice:0:8; track artwork.id) {
-            <app-artwork-card
-              [artwork]="artwork"
-              (cardClick)="onArtworkClick($event)">
-            </app-artwork-card>
+    @if (categories$ | async; as categories) {
+      @if (categories.length > 0) {
+        <div class="categories-grid">
+          @for (category of categories; track category.id) {
+            <div class="category-card" (click)="onCategoryClick(category.slug)">
+              <div class="category-image">
+                <img
+                  [lazyLoad]="getCategoryThumbnail(category)"
+                  [alt]="category.name"
+                  [defaultImage]="'/assets/images/placeholder.jpg'">
+              </div>
+              <div class="category-info">
+                <h3>{{ category.name }}</h3>
+                @if (category.description) {
+                  <p>{{ category.description }}</p>
+                }
+              </div>
+            </div>
           }
         </div>
       } @else {
         <div class="empty-state">
-          <mat-icon>palette</mat-icon>
-          <h3>Aucune œuvre disponible</h3>
-          <p>Les œuvres seront bientôt disponibles à la consultation.</p>
+          <mat-icon>category</mat-icon>
+          <h3>Aucune catégorie disponible</h3>
+          <p>Les catégories seront bientôt disponibles à la consultation.</p>
         </div>
       }
     } @else {
       <div class="loading-state">
         <mat-icon>hourglass_empty</mat-icon>
-        <p>Chargement des œuvres...</p>
+        <p>Chargement des catégories...</p>
       </div>
     }
   </div>
