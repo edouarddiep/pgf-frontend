@@ -1,132 +1,132 @@
-@if (artwork$ | async; as artwork) {
-  <div class="artwork-detail-container">
-    <div class="artwork-gallery">
-      <div class="main-image">
-        @if (artwork.mainImageUrl) {
-          <img
-            [src]="artwork.mainImageUrl"
-            [alt]="artwork.title"
-            class="main-artwork-image">
-        } @else if (artwork.imageUrls && artwork.imageUrls.length > 0) {
-          <img
-            [src]="artwork.imageUrls[selectedImageIndex()]"
-            [alt]="artwork.title"
-            class="main-artwork-image">
-        }
-      </div>
-
-      @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
-        <div class="thumbnail-strip">
-          @for (imageUrl of artwork.imageUrls; track $index) {
-            <div
-              class="thumbnail"
-              [class.active]="selectedImageIndex() === $index"
-              (click)="selectImage($index)">
-              <img [src]="imageUrl" [alt]="artwork.title">
-            </div>
-          }
-        </div>
+<!-- Bannière hero avec titre de catégorie -->
+<section class="category-hero">
+  @if (artwork$ | async; as artwork) {
+    <div class="hero-content">
+      <h1>LES OEUVRES</h1>
+      @if (primaryCategory$ | async; as category) {
+        <div class="category-title">{{ category.name }}</div>
       }
     </div>
+  }
+</section>
 
-    <div class="artwork-info">
-      <div class="breadcrumb">
-        <span>LES OEUVRES</span>
-        <span class="separator">—</span>
-        @if (categories$ | async; as categories) {
-          @if (categories.length > 0) {
-            <span>{{ categories[0].name }}</span>
-          }
-        }
+<!-- Section principale avec détail de l'œuvre -->
+@if (artwork$ | async; as artwork) {
+  <section class="artwork-detail-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>— {{ artwork.title }}</h2>
       </div>
 
-      <h1 class="artwork-title">{{ artwork.title }}</h1>
-
-      <!-- Affichage des catégories multiples -->
-      @if (categories$ | async; as categories) {
-        @if (categories.length > 0) {
-          <div class="artwork-categories">
-            @for (category of categories; track category.id) {
-              <mat-chip class="category-chip">{{ category.name }}</mat-chip>
+      <div class="artwork-content">
+        <!-- Galerie d'images -->
+        <div class="artwork-gallery">
+          <div class="main-image-container">
+            <!-- Flèches de navigation principale -->
+            @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
+              <button class="main-carousel-btn prev" (click)="previousImage()" [disabled]="selectedImageIndex() === 0">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <button class="main-carousel-btn next" (click)="nextImage()" [disabled]="selectedImageIndex() === artwork.imageUrls.length - 1">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
             }
+
+            <div class="main-image">
+              <img
+                [src]="artwork.imageUrls && artwork.imageUrls.length > 0 ? artwork.imageUrls[selectedImageIndex()] : artwork.mainImageUrl"
+                [alt]="artwork.title"
+                class="main-artwork-image"
+                (click)="openImageModal(selectedImageIndex())">
+            </div>
           </div>
-        }
-      }
 
-      @if (artwork.description) {
-        <p class="artwork-description">{{ artwork.description }}</p>
-      }
+          @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
+            <div class="thumbnail-carousel">
+              <button class="carousel-btn prev" (click)="scrollThumbnails('left')">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
 
-      @if (artwork.dimensions || artwork.materials || artwork.creationDate || artwork.price) {
-        <div class="artwork-details">
-          @if (artwork.dimensions) {
-            <div class="detail-item">
-              <strong>Dimensions :</strong> {{ artwork.dimensions }}
-            </div>
-          }
-          @if (artwork.materials) {
-            <div class="detail-item">
-              <strong>Matériaux :</strong> {{ artwork.materials }}
-            </div>
-          }
-          @if (artwork.creationDate) {
-            <div class="detail-item">
-              <strong>Date de création :</strong> {{ artwork.creationDate | date:'yyyy' }}
-            </div>
-          }
-          @if (artwork.price) {
-            <div class="detail-item">
-              <strong>Prix :</strong> {{ artwork.price | currency:'EUR':'symbol':'1.2-2' }}
+              <div class="thumbnails-container" #thumbnailsContainer>
+                @for (imageUrl of artwork.imageUrls; track $index) {
+                  <div
+                    class="thumbnail"
+                    [class.active]="selectedImageIndex() === $index"
+                    (click)="selectImage($index)">
+                    <img [src]="imageUrl" [alt]="artwork.title">
+                  </div>
+                }
+              </div>
+
+              <button class="carousel-btn next" (click)="scrollThumbnails('right')">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
             </div>
           }
         </div>
+
+        <!-- Informations de l'œuvre -->
+        <div class="artwork-info">
+          <h3 class="artwork-title">{{ artwork.title }}</h3>
+
+          <div class="artwork-meta">
+            <p><strong>Mois, Année</strong></p>
+          </div>
+
+          <div class="artwork-description">
+            <p>Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat. Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.</p>
+
+            <p>Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat. Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.</p>
+
+            <p>Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat. Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat. Debut du paragraphe PDP.Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat. Debut du paragraphe PDP oeuvre Lorem ipsum dolor sit amet, ipsum labitur lucilius mei id, ad has appareat.</p>
+          </div>
+
+          <div class="navigation-buttons">
+            @if (primaryCategory$ | async; as category) {
+              <button mat-stroked-button [routerLink]="['/artworks', category.slug]" class="nav-button">
+                <mat-icon>arrow_back</mat-icon>
+                {{ category.name.toUpperCase() }}
+              </button>
+            } @else {
+              <!-- Bouton de fallback si pas de catégorie trouvée -->
+              <button mat-stroked-button routerLink="/artworks" class="nav-button">
+                <mat-icon>arrow_back</mat-icon>
+                RETOUR
+              </button>
+            }
+            <button mat-stroked-button routerLink="/artworks" class="nav-button">
+              TOUTES LES OEUVRES
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+<!-- Modal identique -->
+@if (showImageModal()) {
+  <div class="image-modal" (click)="closeImageModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      @if (artwork$ | async; as artwork) {
+        <img
+          [src]="artwork.imageUrls[modalImageIndex()]"
+          [alt]="artwork.title"
+          class="modal-image">
+
+        <button class="modal-close" (click)="closeImageModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        @if (artwork.imageUrls.length > 1) {
+          <button class="modal-prev" (click)="previousModalImage()" [disabled]="modalImageIndex() === 0">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <button class="modal-next" (click)="nextModalImage()" [disabled]="modalImageIndex() === artwork.imageUrls.length - 1">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        }
       }
-
-      <div class="artwork-actions">
-        @if (artwork.isAvailable) {
-          <div class="availability-badge available">
-            Disponible à la vente
-          </div>
-          <button mat-raised-button color="primary" routerLink="/contact">
-            Prendre contact
-          </button>
-        } @else {
-          <div class="availability-badge sold">
-            Œuvre vendue
-          </div>
-        }
-      </div>
-
-      <div class="navigation-actions">
-        @if (primaryCategory$ | async; as primaryCategory) {
-          <button mat-stroked-button [routerLink]="['/artworks', primaryCategory.slug]">
-            <mat-icon>arrow_back</mat-icon>
-            Retour à {{ primaryCategory.name }}
-          </button>
-        }
-      </div>
     </div>
   </div>
-
-  <!-- Section œuvres similaires -->
-  @if (relatedArtworks$ | async; as relatedArtworks) {
-    @if (relatedArtworks.length > 0) {
-      <div class="related-artworks">
-        <h2>Œuvres similaires</h2>
-        <div class="related-grid">
-          @for (relatedArtwork of relatedArtworks; track relatedArtwork.id) {
-            <div class="related-item" [routerLink]="['/artwork', relatedArtwork.id]">
-              @if (relatedArtwork.mainImageUrl || (relatedArtwork.imageUrls && relatedArtwork.imageUrls.length > 0)) {
-                <img
-                  [src]="relatedArtwork.mainImageUrl || relatedArtwork.imageUrls![0]"
-                  [alt]="relatedArtwork.title"
-                  class="related-image">
-              }
-              <h3>{{ relatedArtwork.title }}</h3>
-            </div>
-          }
-        </div>
-      </div>
-    }
-  }
 }

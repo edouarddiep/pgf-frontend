@@ -26,10 +26,10 @@ export class ArtworkCardComponent {
   }
 
   getCategorySlugsArray(artwork: Artwork): string[] {
-    if (!artwork.categorySlugs || artwork.categorySlugs.size === 0) {
+    if (!artwork.categorySlugs || artwork.categorySlugs.length === 0) {
       return [];
     }
-    return Array.from(artwork.categorySlugs);
+    return artwork.categorySlugs;
   }
 
   getMainImage(artwork: Artwork): string {

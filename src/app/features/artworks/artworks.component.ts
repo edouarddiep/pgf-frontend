@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
+import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-card.component';
 import { switchMap, map, combineLatest } from 'rxjs';
 
 @Component({
@@ -15,8 +15,8 @@ import { switchMap, map, combineLatest } from 'rxjs';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    ArtworkCardComponent
   ],
   templateUrl: './artworks.component.html',
   styleUrl: './artworks.component.scss',
@@ -41,7 +41,7 @@ export class ArtworksComponent {
       if (!categorySlug) return [];
 
       return artworks.filter(artwork =>
-        artwork.categorySlugs && artwork.categorySlugs.has(categorySlug)
+        artwork.categorySlugs && artwork.categorySlugs.includes(categorySlug)
       );
     })
   );
@@ -59,7 +59,11 @@ export class ArtworksComponent {
     this.router.navigate(['/artworks/detail', artworkId]);
   }
 
-  getPlaceholderImage(): string {
-    return '/assets/images/placeholder.jpg';
+  onCategoryClick(categorySlug: string): void {
+    this.router.navigate(['/artworks', categorySlug]);
+  }
+
+  getCategoryThumbnail(category: any): string {
+    return category.thumbnailUrl || category.mainImageUrl || '/assets/images/placeholder.jpg';
   }
 }

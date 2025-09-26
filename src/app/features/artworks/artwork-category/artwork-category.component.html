@@ -1,74 +1,87 @@
-@if (viewModel$ | async; as vm) {
-  <div class="category-header">
-    <div class="container">
-      <div class="category-info">
-        <h1>{{ vm.category.name }}</h1>
-        @if (vm.category.description) {
-          <p class="category-description">{{ vm.category.description }}</p>
-        }
-        <div class="category-meta">
-          <mat-chip-set>
-            <mat-chip>{{ vm.artworks.length }} œuvres</mat-chip>
-          </mat-chip-set>
-        </div>
-      </div>
+<!-- Bannière hero avec titre de catégorie -->
+<section class="category-hero">
+  @if (viewModel$ | async; as vm) {
+    <div class="hero-content">
+      <h1>LES OEUVRES</h1>
+      <div class="category-title">{{ vm.category.name }}</div>
     </div>
-  </div>
+  }
+</section>
 
-  <section class="artworks-grid">
+<!-- Section principale avec les œuvres -->
+@if (viewModel$ | async; as vm) {
+  <section class="artworks-section">
     <div class="container">
+      <div class="section-header">
+        <h2>LES OEUVRES</h2>
+        <p class="category-subtitle">— {{ vm.category.name }}</p>
+      </div>
+
       @if (vm.artworks.length > 0) {
-        <div class="grid">
+        <div class="artworks-grid">
           @for (artwork of vm.artworks; track artwork.id) {
-            <mat-card class="artwork-card" (click)="onArtworkClick(artwork.id)">
+            <div class="artwork-card" (click)="onArtworkClick(artwork.id)">
               <div class="artwork-image">
-                @if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+                @if (artwork.mainImageUrl) {
                   <img
-                    [defaultImage]="'public/assets/images/placeholder.jpg'"
+                    [lazyLoad]="artwork.mainImageUrl"
+                    [alt]="artwork.title"
+                    [defaultImage]="'/assets/images/placeholder.jpg'">
+                } @else if (artwork.imageUrls && artwork.imageUrls.length > 0) {
+                  <img
                     [lazyLoad]="artwork.imageUrls[0]"
-                    [alt]="artwork.title">
+                    [alt]="artwork.title"
+                    [defaultImage]="'/assets/images/placeholder.jpg'">
                 } @else {
                   <div class="placeholder-image">
                     <mat-icon>image</mat-icon>
                   </div>
                 }
-                @if (!artwork.isAvailable) {
-                  <div class="availability-overlay">
-                    <mat-chip color="warn">Vendue</mat-chip>
-                  </div>
-                }
               </div>
-
-              <mat-card-content>
-                <h3 class="artwork-title">{{ artwork.title }}</h3>
-
+              <div class="artwork-info">
+                <h3>{{ artwork.title }}</h3>
                 @if (artwork.description) {
-                  <p class="artwork-description">{{ artwork.description }}</p>
+                  <p class="artwork-description">{{ artwork.description | slice:0:100 }}{{ artwork.description.length > 100 ? '...' : '' }}</p>
                 }
-
-                @if (artwork.isAvailable) {
-                  <div class="availability-status">
-                    <mat-chip color="primary" selected>Disponible à la vente</mat-chip>
+                @if (artwork.dimensions || artwork.materials) {
+                  <div class="artwork-meta">
+                    @if (artwork.dimensions) {
+                      <span class="dimensions">{{ artwork.dimensions }}</span>
+                    }
+                    @if (artwork.materials) {
+                      <span class="materials">{{ artwork.materials }}</span>
+                    }
                   </div>
                 }
-              </mat-card-content>
-
-              <mat-card-actions align="end">
-                <button mat-button color="primary">
-                  Voir détails
-                  <mat-icon>arrow_forward</mat-icon>
-                </button>
-              </mat-card-actions>
-            </mat-card>
+                <div class="artwork-status">
+                  @if (artwork.isAvailable) {
+                    <span class="available">Disponible</span>
+                  } @else {
+                    <span class="sold">Vendue</span>
+                  }
+                </div>
+              </div>
+            </div>
           }
         </div>
       } @else {
         <div class="empty-state">
           <mat-icon>palette</mat-icon>
           <h3>Aucune œuvre disponible</h3>
-          <p>Cette catégorie ne contient pas encore d'œuvres.</p>
+          <p>Aucune œuvre n'est disponible dans cette catégorie pour le moment.</p>
         </div>
       }
+
+      <div class="navigation-buttons">
+        <button mat-stroked-button routerLink="/artworks" class="nav-button">
+          <mat-icon>arrow_back</mat-icon>
+          TOUTES LES CATÉGORIES
+        </button>
+        <button mat-stroked-button routerLink="/contact" class="nav-button">
+          <mat-icon>mail</mat-icon>
+          CONTACT
+        </button>
+      </div>
     </div>
   </section>
 }

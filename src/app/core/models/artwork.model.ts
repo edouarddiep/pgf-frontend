@@ -24,10 +24,13 @@ export interface Artwork {
   price?: number;
   isAvailable: boolean;
   imageUrls: string[];
+  thumbnailUrls?: string[];
   mainImageUrl?: string;
+  mainThumbnailUrl?: string;
   displayOrder: number;
-  categoryIds?: Set<number>;
-  categorySlugs?: Set<string>;
+  categoryIds?: number[];
+  categoryNames?: string[];
+  categorySlugs?: string[];
   createdAt: string;
   updatedAt: string;
 }

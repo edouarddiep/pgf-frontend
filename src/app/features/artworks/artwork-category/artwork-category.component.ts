@@ -1,22 +1,19 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { switchMap, map, combineLatest } from 'rxjs';
-import {ApiService} from '@core/services/api.service';
+import { ApiService } from '@core/services/api.service';
 
 @Component({
   selector: 'app-artwork-category',
   imports: [
     CommonModule,
-    MatCardModule,
+    RouterModule,
     MatButtonModule,
     MatIconModule,
-    MatChipsModule,
     LazyLoadImageModule
   ],
   templateUrl: './artwork-category.component.html',
@@ -29,7 +26,7 @@ export class ArtworkCategoryComponent {
   private readonly apiService = inject(ApiService);
 
   readonly slug$ = this.route.params.pipe(
-    map(params => params['categorySlug'])
+    map(params => params['category'])
   );
 
   readonly category$ = this.slug$.pipe(
@@ -49,12 +46,5 @@ export class ArtworkCategoryComponent {
 
   onArtworkClick(artworkId: number): void {
     this.router.navigate(['/artworks/detail', artworkId]);
-  }
-
-  formatPrice(price: number): string {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
   }
 }

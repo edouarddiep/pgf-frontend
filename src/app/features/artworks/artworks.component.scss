@@ -1,17 +1,19 @@
 .artworks-hero {
   position: relative;
-  height: 50vh;
-  background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/land-art/images/IMG_3233.jpeg');
+  height: 40vh;
+  background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/papier-japonais/images/partition-vegetale/image-1.jpeg');
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  .hero-overlay {
+  &::before {
+    content: '';
     position: absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
   }
 
   .hero-content {
@@ -23,19 +25,28 @@
     h1 {
       font-size: 3rem;
       font-weight: 300;
-      letter-spacing: 3px;
-      margin-bottom: 0.5rem;
-    }
+      letter-spacing: 0.1em;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 
-    p {
-      font-size: 1.2rem;
-      font-weight: 300;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 2px;
+        background: white;
+      }
     }
   }
 }
 
-.artworks-main {
+.artworks-section {
   padding: 4rem 0;
+  background: #fafafa;
+  min-height: 80vh;
 
   .container {
     max-width: 1200px;
@@ -43,43 +54,51 @@
     padding: 0 2rem;
   }
 
-  .page-header {
-    text-align: center;
-    margin-bottom: 4rem;
+  .section-header {
+    margin-bottom: 3rem;
 
     h2 {
       font-size: 2.5rem;
       font-weight: 300;
-      letter-spacing: 2px;
-      margin-bottom: 1rem;
+      color: #333;
+      margin: 0;
+      text-align: left;
     }
+  }
 
-    .category-subtitle {
-      font-size: 1.2rem;
-      color: #666;
-      font-weight: 300;
-    }
+  .artworks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
   }
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    margin-bottom: 4rem;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
 
     .category-card {
       cursor: pointer;
-      transition: transform 0.3s ease;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
 
       &:hover {
         transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+        .category-image img {
+          transform: scale(1.05);
+        }
       }
 
       .category-image {
-        aspect-ratio: 16/10;
+        aspect-ratio: 4/3;
         overflow: hidden;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
 
         img {
           width: 100%;
@@ -89,266 +108,130 @@
         }
       }
 
-      &:hover .category-image img {
-        transform: scale(1.05);
-      }
-
       .category-info {
-        text-align: center;
+        padding: 2rem;
 
-        h3 {
-          font-size: 1.25rem;
-          font-weight: 500;
-          margin-bottom: 0.5rem;
-          color: #333;
-        }
-
-        p {
-          color: #666;
-          line-height: 1.6;
-          font-size: 0.9rem;
-        }
-      }
-    }
-  }
-
-  .featured-artworks {
-    .category-section {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 3rem;
-      align-items: center;
-      margin: 4rem 0;
-
-      &:nth-child(even) {
-        grid-template-columns: 1fr 2fr;
-
-        .category-header {
-          order: 2;
-        }
-
-        .category-preview {
-          order: 1;
-        }
-      }
-
-      .category-header {
         h3 {
           font-size: 1.5rem;
           font-weight: 500;
-          margin-bottom: 1rem;
+          margin-bottom: 0.75rem;
           color: #333;
+          text-transform: uppercase;
+          letter-spacing: 1px;
         }
 
         p {
           color: #666;
           line-height: 1.6;
+          font-size: 0.95rem;
+          margin: 0;
         }
       }
-
-      .category-preview {
-        img {
-          width: 100%;
-          height: 300px;
-          object-fit: cover;
-          border-radius: 8px;
-        }
-      }
-    }
-
-    .section-divider {
-      border: none;
-      height: 1px;
-      background: #eee;
-      margin: 3rem 0;
     }
   }
 
-  .artwork-detail-section {
-    .artworks-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
-      margin-bottom: 3rem;
+  .navigation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e0e0e0;
 
-      .artwork-card {
-        cursor: pointer;
-        transition: transform 0.3s ease;
-
-        &:hover {
-          transform: translateY(-4px);
-        }
-
-        .artwork-image {
-          aspect-ratio: 4/3;
-          overflow: hidden;
-          border-radius: 8px;
-          margin-bottom: 1rem;
-
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-
-        .artwork-info {
-          h3 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-            color: #333;
-          }
-
-          .artwork-meta {
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 0.5rem;
-          }
-
-          .artwork-description {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-        }
-      }
-    }
-
-    .navigation-buttons {
+    .nav-button {
+      background: transparent;
+      border: 2px solid #c62828;
+      color: #c62828;
+      padding: 12px 24px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
       display: flex;
-      justify-content: space-between;
-      gap: 1rem;
+      align-items: center;
+      gap: 0.5rem;
 
-      button {
-        border: 2px solid #c62828;
-        color: #c62828;
-        padding: 10px 24px;
-        font-weight: 500;
-        letter-spacing: 1px;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+      &:hover {
+        background: #c62828;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      mat-icon {
+        font-size: 1.2rem;
+        width: 1.2rem;
+        height: 1.2rem;
       }
     }
   }
-}
 
-.call-to-action {
-  position: relative;
-  height: 60vh;
-  background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/land-art/IMG_3233.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .cta-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-  }
-
-  .cta-content {
-    position: relative;
-    z-index: 2;
+  .empty-state,
+  .loading-state {
     text-align: center;
-    color: white;
+    padding: 4rem 2rem;
+    color: #666;
 
-    h2 {
-      font-size: 2rem;
-      font-weight: 300;
-      margin-bottom: 1rem;
+    mat-icon {
+      font-size: 4rem;
+      width: 4rem;
+      height: 4rem;
+      margin-bottom: 1.5rem;
+      color: #ccc;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #333;
     }
 
     p {
-      font-size: 1.2rem;
+      font-size: 1rem;
       margin-bottom: 2rem;
-    }
-
-    button {
-      border: 2px solid white;
-      color: white;
-      background: transparent;
-      padding: 12px 32px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: white;
-        color: #333;
-      }
     }
   }
 }
 
 @media (max-width: 768px) {
-  .artworks-hero {
-    height: 40vh;
+  .artworks-section {
+    padding: 2rem 0;
 
-    .hero-content {
-      h1 {
-        font-size: 2rem;
-      }
-
-      p {
-        font-size: 1rem;
-      }
-    }
-  }
-
-  .artworks-main {
-    .categories-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
+    .container {
+      padding: 0 1rem;
     }
 
-    .featured-artworks {
-      .category-section {
-        grid-template-columns: 1fr !important;
-        gap: 2rem;
-
-        .category-header {
-          order: 2 !important;
-          text-align: center;
-        }
-
-        .category-preview {
-          order: 1 !important;
-        }
-      }
-    }
-
-    .artwork-detail-section {
-      .artworks-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .navigation-buttons {
-        flex-direction: column;
-      }
-    }
-  }
-
-  .call-to-action {
-    height: 50vh;
-
-    .cta-content {
-      padding: 0 2rem;
+    .section-header {
+      margin-bottom: 2rem;
 
       h2 {
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
+    }
 
-      p {
-        font-size: 1rem;
+    .artworks-grid,
+    .categories-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .navigation-buttons {
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+
+      .nav-button {
+        width: 100%;
+        justify-content: center;
       }
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .artworks-section {
+    .section-header h2 {
+      font-size: 3rem;
     }
   }
 }
