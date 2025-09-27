@@ -1,111 +1,324 @@
 .exhibitions-container {
-  max-width: 1400px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+// En-têtes
 .header {
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  h1 {
+    margin: 0;
+    color: #333;
+  }
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+// Instructions pour la liste
+.list-instructions {
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+
+  p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #2196f3;
+  }
+}
+
+// Liste des expositions
+.exhibitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.exhibition-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: move;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: #ccc;
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    transform: rotate(2deg);
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.4;
+    transform: scale(0.98);
+  }
+}
+
+.drag-handle {
+  color: #999;
+  cursor: grab;
+  padding: 0.5rem;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.exhibition-image {
+  width: 80px;
+  height: 60px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .no-image {
+    color: #999;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+.exhibition-content {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .location {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+    color: #333;
+    font-size: 0.95rem;
+  }
+
+  .address {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #666;
+    line-height: 1.3;
+  }
+
+  .dates {
+    font-size: 0.875rem;
+    color: #666;
+    font-style: italic;
+  }
+}
+
+.exhibition-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  mat-chip {
+    font-size: 0.75rem;
+    font-weight: 500;
+    min-height: 24px;
+  }
+
+  .order-number {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 600;
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 12px;
+  }
+}
+
+.exhibition-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+// État vide
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    color: #ccc;
+  }
+
+  h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: #999;
+  }
+
+  p {
+    margin: 0 0 2rem 0;
+    font-size: 1rem;
+  }
+}
+
+// Formulaire
+.form-card {
   margin-bottom: 2rem;
 }
 
-.form-card {
-  margin-bottom: 2rem;
+.form-group {
+  margin-bottom: 1.5rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .full-width {
   width: 100%;
-  grid-column: 1 / -1;
 }
 
-.checkbox-field {
-  display: flex;
-  align-items: center;
-  padding: 1rem 0;
+.image-label {
+  display: block;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
 }
 
 .form-actions {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
 }
 
-.exhibitions-table {
-  width: 100%;
+// Responsive
+@media (max-width: 768px) {
+  .exhibitions-container {
+    padding: 0 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    button {
+      align-self: center;
+    }
+  }
+
+  .exhibition-item {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 1rem;
+
+    .drag-handle {
+      align-self: center;
+    }
+
+    .exhibition-content {
+      order: 1;
+    }
+
+    .exhibition-status {
+      order: 2;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .exhibition-actions {
+      order: 3;
+      justify-content: center;
+    }
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
 }
 
-.exhibition-thumbnail {
-  width: 60px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 4px;
-}
+@media (max-width: 480px) {
+  .exhibition-image {
+    width: 60px;
+    height: 45px;
+  }
 
-.no-image {
-  width: 60px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  border-radius: 4px;
-  color: #999;
-}
+  .exhibition-content {
+    h3 {
+      font-size: 1rem;
+    }
 
-.exhibition-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  position: relative;
-}
-
-.featured-icon {
-  position: absolute;
-  top: 0;
-  right: -24px;
-  color: #ff9800;
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
-.exhibition-info small {
-  color: #666;
-  font-size: 0.8rem;
-}
-
-.date-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.date-info small {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.no-exhibitions {
-  text-align: center;
-  padding: 3rem;
-  color: #666;
-}
-
-.no-exhibitions mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 1rem;
-}
-
-.table-card {
-  margin-top: 1rem;
+    .location, .address, .dates {
+      font-size: 0.8rem;
+    }
+  }
 }

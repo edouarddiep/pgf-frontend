@@ -40,9 +40,6 @@
         <mat-chip [color]="getChipColor(exhibition().status)">
           {{ getStatusLabel(exhibition().status) }}
         </mat-chip>
-        @if (exhibition().isFeatured) {
-          <mat-chip color="accent">Exposition phare</mat-chip>
-        }
       </mat-chip-set>
     </div>
   </mat-card-content>
