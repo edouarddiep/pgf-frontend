@@ -19,11 +19,15 @@ export class ImageService {
     formData.append('file', file);
     formData.append('category', category);
 
-    return this.http.post<{ imageUrl: string }>(`${this.baseUrl}/admin/upload/image`, formData)
+    const endpoint = category === 'exhibitions'
+      ? `${this.baseUrl}/admin/upload/exhibition-image`
+      : `${this.baseUrl}/admin/upload/image`;
+
+    return this.http.post<{ imageUrl: string; thumbnailUrl?: string }>(endpoint, formData)
       .pipe(
         map(response => ({
           imageUrl: response.imageUrl,
-          thumbnailUrl: response.imageUrl // Backend peut générer thumbnail si nécessaire
+          thumbnailUrl: response.thumbnailUrl || response.imageUrl
         }))
       );
   }
@@ -33,7 +37,11 @@ export class ImageService {
     formData.append('file', file);
     formData.append('category', category);
 
-    return this.http.post(`${this.baseUrl}/admin/upload/image`, formData, {
+    const endpoint = category === 'exhibitions'
+      ? `${this.baseUrl}/admin/upload/exhibition-image`
+      : `${this.baseUrl}/admin/upload/image`;
+
+    return this.http.post(endpoint, formData, {
       reportProgress: true,
       observe: 'events'
     }).pipe(

@@ -1,28 +1,131 @@
-<div class="exhibitions-container">
-  <div class="page-header">
-    <h1>Expositions</h1>
-    <p class="subtitle">Découvrez mes expositions passées, présentes et à venir</p>
-  </div>
+<div class="exhibitions-page">
+  <section class="exhibitions-hero">
+    <div class="hero-content">
+      <h1>EXPOSITIONS</h1>
+    </div>
+  </section>
 
-  @if (exhibitions$ | async; as exhibitions) {
-    <div class="exhibitions-grid">
-      @for (exhibition of exhibitions; track exhibition.id) {
-        <app-exhibition-card [exhibition]="exhibition"></app-exhibition-card>
-      } @empty {
-        <div class="empty-state">
-          <mat-icon>event</mat-icon>
-          <h3>Aucune exposition disponible</h3>
-          <p>Revenez bientôt pour découvrir mes prochaines expositions</p>
-        </div>
-      }
+  <nav class="exhibitions-tabs">
+    <div class="tabs-container">
+      <button
+        class="tab-button"
+        [class.active]="activeTab() === 'current'"
+        (click)="setActiveTab('current')">
+        Actuelles
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab() === 'past'"
+        (click)="setActiveTab('past')">
+        Passées
+      </button>
     </div>
-  } @else {
-    <div class="loading-state">
-      <app-loading-spinner
-        [diameter]="40"
-        [message]="'Chargement des expositions...'"
-        [fullscreen]="false">
-      </app-loading-spinner>
-    </div>
-  }
+  </nav>
+
+  <div class="exhibitions-content">
+    @if (activeTab() === 'current') {
+      <section class="current-section">
+        @if (upcomingExhibitions().length > 0) {
+          <div class="exhibitions-list">
+            @for (exhibition of upcomingExhibitions(); track exhibition.id; let isLast = $last) {
+              <article class="exhibition-item">
+                <div class="exhibition-image">
+                  @if (exhibition.imageUrl) {
+                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                  } @else {
+                    <div class="no-image">
+                      <span>Aucune image</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="exhibition-content">
+                  <h3>{{ exhibition.title }}</h3>
+                  <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
+
+                  @if (exhibition.location) {
+                    <p class="location">{{ exhibition.location }}</p>
+                  }
+
+                  @if (exhibition.address) {
+                    <p class="address">{{ exhibition.address }}</p>
+                  }
+
+                  @if (exhibition.description) {
+                    <p class="description">{{ exhibition.description }}</p>
+                  }
+
+                  <div class="action-buttons">
+                    <button mat-raised-button color="primary" (click)="onVernissageRegistration(exhibition)">
+                      S'inscrire au vernissage
+                    </button>
+                    <button mat-stroked-button (click)="onShowOnMap(exhibition)">
+                      Où se rendre
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              @if (!isLast) {
+                <hr class="exhibition-separator">
+              }
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <h3>Aucune exposition actuelle</h3>
+            <p>Consultez les expositions passées ou revenez bientôt</p>
+          </div>
+        }
+      </section>
+    }
+
+    @if (activeTab() === 'past') {
+      <section class="past-section">
+        @if (pastExhibitions().length > 0) {
+          <div class="exhibitions-list">
+            @for (exhibition of pastExhibitions(); track exhibition.id; let isLast = $last) {
+              <article class="exhibition-item">
+                <div class="exhibition-image">
+                  @if (exhibition.imageUrl) {
+                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                  } @else {
+                    <div class="no-image">
+                      <span>Aucune image</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="exhibition-content">
+                  <h3>{{ exhibition.title }}</h3>
+                  <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
+
+                  @if (exhibition.location) {
+                    <p class="location">{{ exhibition.location }}</p>
+                  }
+
+                  @if (exhibition.address) {
+                    <p class="address">{{ exhibition.address }}</p>
+                  }
+
+                  @if (exhibition.description) {
+                    <p class="description">{{ exhibition.description }}</p>
+                  }
+                </div>
+              </article>
+
+              @if (!isLast) {
+                <hr class="exhibition-separator">
+              }
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <h3>Aucune exposition passée</h3>
+            <p>L'historique des expositions sera bientôt disponible</p>
+          </div>
+        }
+      </section>
+    }
+  </div>
 </div>

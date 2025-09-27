@@ -12,34 +12,18 @@ export class ApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = 'http://localhost:8080/api';
 
-  getArtworkCategories(): Observable<ArtworkCategory[]> {
-    return this.http.get<ArtworkCategory[]>(`${this.baseUrl}/categories`);
-  }
+  // Catégories
 
   getCategoryBySlug(slug: string): Observable<ArtworkCategory> {
     return this.http.get<ArtworkCategory>(`${this.baseUrl}/categories/slug/${slug}`);
   }
 
-  getArtworks(): Observable<Artwork[]> {
-    return this.http.get<Artwork[]>(`${this.baseUrl}/artworks`);
-  }
-
-  getArtworkById(id: number): Observable<Artwork> {
-    return this.http.get<Artwork>(`${this.baseUrl}/artworks/${id}`);
-  }
-
-   getArtworksByCategory(categoryId: number): Observable<Artwork[]> {
-    return this.http.get<Artwork[]>(`${this.baseUrl}/artworks/category/${categoryId}`);
-  }
-
+  // Œuvres
   getArtworksByCategorySlug(slug: string): Observable<Artwork[]> {
     return this.http.get<Artwork[]>(`${this.baseUrl}/artworks/category/slug/${slug}`);
   }
 
-  getAvailableArtworks(): Observable<Artwork[]> {
-    return this.http.get<Artwork[]>(`${this.baseUrl}/artworks/available`);
-  }
-
+  // Expositions
   getExhibitions(): Observable<Exhibition[]> {
     return this.http.get<Exhibition[]>(`${this.baseUrl}/exhibitions`);
   }
@@ -60,6 +44,7 @@ export class ApiService {
     return this.http.get<Exhibition>(`${this.baseUrl}/exhibitions/next-featured`);
   }
 
+  // Contact
   sendContactMessage(message: ContactMessage): Observable<ContactMessage> {
     return this.http.post<ContactMessage>(`${this.baseUrl}/contact`, message);
   }

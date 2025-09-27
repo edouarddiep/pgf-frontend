@@ -148,9 +148,6 @@
                   <mat-chip [color]="exhibition.status === 'ONGOING' ? 'accent' : 'primary'">
                     {{ getStatusLabel(exhibition.status) }}
                   </mat-chip>
-                  @if (exhibition.isFeatured) {
-                    <mat-chip color="warn">Exposition phare</mat-chip>
-                  }
                 </mat-chip-set>
               </mat-card-content>
             </mat-card>

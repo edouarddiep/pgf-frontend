@@ -3,10 +3,11 @@ export interface Exhibition {
   title: string;
   description?: string;
   location?: string;
+  address?: string;
   startDate?: string;
   endDate?: string;
   imageUrl?: string;
-  isFeatured?: boolean;
+  displayOrder?: number;
   status: ExhibitionStatus;
   createdAt: string;
   updatedAt: string;

@@ -1,158 +1,193 @@
 <div class="exhibitions-container">
-  <div class="header">
-    <h1>Gestion des expositions</h1>
-    <button mat-raised-button color="primary" (click)="openForm()">
-      <mat-icon>add</mat-icon>
-      Ajouter une exposition
-    </button>
-  </div>
+  @if (currentMode() === 'list') {
+    <div class="header">
+      <h1>Gestion des expositions</h1>
+      <button mat-raised-button color="primary" (click)="showCreateForm()">
+        <mat-icon>add</mat-icon>
+        Créer une exposition
+      </button>
+    </div>
 
-  @if (showForm()) {
+    <mat-card>
+      <mat-card-content>
+        @if (exhibitions().length > 0) {
+          <div class="list-instructions">
+            <p><mat-icon>info</mat-icon> Glissez-déposez les expositions pour modifier leur ordre d'affichage</p>
+          </div>
+
+          <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="exhibitions-list">
+            @for (exhibition of exhibitions(); track exhibition.id) {
+              <div cdkDrag class="exhibition-item">
+                <div class="drag-handle" cdkDragHandle>
+                  <mat-icon>drag_indicator</mat-icon>
+                </div>
+
+                <div class="exhibition-image">
+                  @if (exhibition.imageUrl) {
+                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                  } @else {
+                    <div class="no-image">
+                      <mat-icon>image</mat-icon>
+                    </div>
+                  }
+                </div>
+
+                <div class="exhibition-content">
+                  <h3>{{ exhibition.title }}</h3>
+                  <p class="location">{{ exhibition.location }}</p>
+                  @if (exhibition.address) {
+                    <p class="address">{{ exhibition.address }}</p>
+                  }
+                  <div class="dates">
+                    @if (exhibition.startDate) {
+                      <span>Du {{ formatDate(exhibition.startDate) }}</span>
+                    }
+                    @if (exhibition.endDate) {
+                      <span> au {{ formatDate(exhibition.endDate) }}</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="exhibition-status">
+                  <mat-chip [style.background-color]="getStatusColor(exhibition.status)" [style.color]="'white'">
+                    {{ getStatusLabel(exhibition.status) }}
+                  </mat-chip>
+                </div>
+
+                <div class="exhibition-actions">
+                  <button mat-icon-button (click)="showEditForm(exhibition)" matTooltip="Modifier">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon>event</mat-icon>
+            <h3>Aucune exposition</h3>
+            <p>Créez votre première exposition pour commencer</p>
+            <button mat-raised-button color="primary" (click)="showCreateForm()">
+              <mat-icon>add</mat-icon>
+              Créer une exposition
+            </button>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (currentMode() === 'create' || currentMode() === 'edit') {
+    <div class="header">
+      <div class="header-nav">
+        <button mat-icon-button (click)="showList()" matTooltip="Retour à la liste">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h1>{{ currentMode() === 'edit' ? 'Modifier l\'exposition' : 'Créer une exposition' }}</h1>
+      </div>
+    </div>
+
     <mat-card class="form-card">
-      <mat-card-header>
-        <mat-card-title>
-          {{ editingExhibition() ? 'Modifier' : 'Créer' }} une exposition
-        </mat-card-title>
-      </mat-card-header>
-
       <mat-card-content>
         <form [formGroup]="exhibitionForm" (ngSubmit)="saveExhibition()">
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Titre</mat-label>
-              <input matInput formControlName="title">
-            </mat-form-field>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Lieu</mat-label>
-              <input matInput formControlName="location">
-            </mat-form-field>
-          </div>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description" rows="3"></textarea>
-          </mat-form-field>
-
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Date de début</mat-label>
-              <input matInput type="date" formControlName="startDate">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Date de fin</mat-label>
-              <input matInput type="date" formControlName="endDate">
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Titre *</mat-label>
+              <input matInput formControlName="title" required>
+              @if (exhibitionForm.get('title')?.errors?.['required'] && exhibitionForm.get('title')?.touched) {
+                <mat-error>Le titre est obligatoire</mat-error>
+              }
+              @if (exhibitionForm.get('title')?.errors?.['minlength']) {
+                <mat-error>Le titre doit contenir au moins 2 caractères</mat-error>
+              }
             </mat-form-field>
           </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline">
-              <mat-label>Statut</mat-label>
-              <mat-select formControlName="status">
-                <mat-option [value]="ExhibitionStatus.UPCOMING">À venir</mat-option>
-                <mat-option [value]="ExhibitionStatus.ONGOING">En cours</mat-option>
-                <mat-option [value]="ExhibitionStatus.PAST">Passée</mat-option>
-              </mat-select>
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Lieu *</mat-label>
+              <input matInput formControlName="location" required>
+              @if (exhibitionForm.get('location')?.errors?.['required'] && exhibitionForm.get('location')?.touched) {
+                <mat-error>Le lieu est obligatoire</mat-error>
+              }
+              @if (exhibitionForm.get('location')?.errors?.['minlength']) {
+                <mat-error>Le lieu doit contenir au moins 2 caractères</mat-error>
+              }
             </mat-form-field>
-
-            <div class="checkbox-field">
-              <mat-checkbox formControlName="isFeatured">
-                Exposition mise en avant
-              </mat-checkbox>
-            </div>
           </div>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>URL de l'image</mat-label>
-            <input matInput formControlName="imageUrl">
-          </mat-form-field>
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Adresse (optionnelle)</mat-label>
+              <input matInput formControlName="address" placeholder="Rue, numéro, code postal, localité">
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description (optionnelle)</mat-label>
+              <textarea matInput formControlName="description" rows="3"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Date de début *</mat-label>
+              <input
+                matInput
+                [matDatepicker]="startPicker"
+                formControlName="startDate"
+                required>
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+              @if (exhibitionForm.get('startDate')?.errors?.['required'] && exhibitionForm.get('startDate')?.touched) {
+                <mat-error>La date de début est obligatoire</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date de fin (optionnelle)</mat-label>
+              <input
+                matInput
+                [matDatepicker]="endPicker"
+                formControlName="endDate">
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+              @if (exhibitionForm.errors?.['endDateBeforeStart'] && exhibitionForm.get('endDate')?.touched) {
+                <mat-error>La date de fin ne peut pas être avant la date de début</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <label class="image-label">Image de l'exposition (une seule image)</label>
+            <app-image-upload
+              [currentImages]="uploadedImageUrls()"
+              [category]="'exhibitions'"
+              [multiple]="false"
+              (imagesUploaded)="onImagesUploaded($event)"
+              (imageRemoved)="onImageRemoved()">
+            </app-image-upload>
+          </div>
 
           <div class="form-actions">
-            <button mat-button type="button" (click)="cancelForm()">
+            <button mat-button type="button" (click)="showList()">
               Annuler
             </button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="exhibitionForm.invalid">
-              {{ editingExhibition() ? 'Modifier' : 'Créer' }}
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="exhibitionForm.invalid">
+              {{ currentMode() === 'edit' ? 'Modifier' : 'Créer' }}
             </button>
           </div>
         </form>
       </mat-card-content>
     </mat-card>
   }
-
-  <mat-card class="table-card">
-    <mat-card-content>
-      <table mat-table [dataSource]="exhibitions()" class="exhibitions-table">
-        <ng-container matColumnDef="image">
-          <th mat-header-cell *matHeaderCellDef>Image</th>
-          <td mat-cell *matCellDef="let exhibition">
-            @if (exhibition.imageUrl) {
-              <img [src]="exhibition.imageUrl" [alt]="exhibition.title" class="exhibition-thumbnail">
-            } @else {
-              <div class="no-image">
-                <mat-icon>image</mat-icon>
-              </div>
-            }
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Titre</th>
-          <td mat-cell *matCellDef="let exhibition">
-            <div class="exhibition-info">
-              <strong>{{ exhibition.title }}</strong>
-              @if (exhibition.isFeatured) {
-                <mat-icon class="featured-icon" title="Mise en avant">star</mat-icon>
-              }
-              <small>{{ exhibition.location }}</small>
-            </div>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="dates">
-          <th mat-header-cell *matHeaderCellDef>Dates</th>
-          <td mat-cell *matCellDef="let exhibition">
-            <div class="date-info">
-              <small>Du {{ exhibition.startDate | date:'short' }}</small>
-              @if (exhibition.endDate) {
-                <small>au {{ exhibition.endDate | date:'short' }}</small>
-              }
-            </div>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Statut</th>
-          <td mat-cell *matCellDef="let exhibition">
-            <mat-chip [color]="getStatusColor(exhibition.status)" [highlighted]="true">
-              {{ getStatusLabel(exhibition.status) }}
-            </mat-chip>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let exhibition">
-            <button mat-icon-button (click)="editExhibition(exhibition)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-
-      @if (exhibitions().length === 0) {
-        <div class="no-exhibitions">
-          <mat-icon>event</mat-icon>
-          <p>Aucune exposition pour le moment</p>
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
 </div>
