@@ -4,40 +4,82 @@
     #fileInput
     (change)="onFileSelected($event)"
     accept="image/*"
+    [multiple]="multiple"
     class="file-input"
-    [disabled]="uploading()">
+    [disabled]="uploading()"
+    style="display: none;">
 
-  <div class="upload-area"
-       (click)="fileInput.click()"
-       (dragover)="onDragOver($event)"
-       (dragleave)="onDragLeave($event)"
-       (drop)="onDrop($event)"
-       [class.dragging]="isDragging()"
-       [class.uploading]="uploading()">
+  @if (uploadedImages().length === 0 || multiple) {
+    <div class="drop-zone"
+         [class.dragging]="isDragging()"
+         [class.has-images]="uploadedImages().length > 0"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (drop)="onDrop($event)"
+         (click)="fileInput.click()">
 
-    @if (uploading()) {
-      <div class="upload-progress">
-        <mat-icon>cloud_upload</mat-icon>
-        <p>Upload en cours...</p>
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      </div>
-    } @else if (previewUrl()) {
-      <div class="image-preview">
-        <img [src]="previewUrl()" alt="Preview">
-        <div class="preview-overlay">
-          <button mat-icon-button (click)="removeImage($event)">
-            <mat-icon>delete</mat-icon>
-          </button>
+      @if (uploadedImages().length === 0 || (multiple && uploadedImages().length > 0)) {
+        @if (uploadedImages().length === 0) {
+          <div class="drop-content">
+            <mat-icon>cloud_upload</mat-icon>
+            <p>{{ multiple ? 'Glissez vos images ici ou cliquez pour sélectionner' : 'Cliquez ou glissez une image ici' }}</p>
+            <small>Formats supportés: JPG, PNG, GIF, WebP (max 10MB)</small>
+          </div>
+        } @else if (multiple) {
+          <div class="add-more">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>Ajouter d'autres images</span>
+          </div>
+        }
+      }
+    </div>
+  }
+
+  @if (uploadedImages().length > 0) {
+    <div class="uploaded-images">
+      @for (image of uploadedImages(); track image.url; let i = $index) {
+        <div class="image-item" [class.primary]="multiple && i === 0">
+          <img [src]="image.url" [alt]="'Image ' + (i + 1)">
+
+          @if (multiple && i === 0) {
+            <div class="primary-badge">
+              <mat-icon>star</mat-icon>
+              <span>Image principale</span>
+            </div>
+          }
+
+          <div class="image-actions">
+            @if (multiple && i !== 0) {
+              <button
+                type="button"
+                mat-mini-fab
+                color="primary"
+                (click)="moveToFirst(i); $event.stopPropagation()"
+                matTooltip="Définir comme image principale">
+                <mat-icon>star</mat-icon>
+              </button>
+            }
+
+            <button
+              type="button"
+              mat-mini-fab
+              color="warn"
+              (click)="removeImage(i); $event.stopPropagation()"
+              matTooltip="Supprimer">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
-      </div>
-    } @else {
-      <div class="upload-prompt">
-        <mat-icon>add_photo_alternate</mat-icon>
-        <p>Cliquez ou glissez une image ici</p>
-        <small>Formats supportés: JPG, PNG, GIF, WebP (max 10MB)</small>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  }
+
+  @if (uploading()) {
+    <div class="upload-progress">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <span>Upload en cours...</span>
+    </div>
+  }
 
   @if (errorMessage()) {
     <div class="error-message">

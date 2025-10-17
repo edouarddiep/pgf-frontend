@@ -14,22 +14,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { AdminService } from '@features/admin/services/admin.service';
+import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
-import { DateFormatPipe } from '@core/pipes/date-format.pipe';
-import { forkJoin, EMPTY, catchError } from 'rxjs';
-
-interface ArtworkFormData {
-  title: string;
-  description?: string;
-  dimensions?: string;
-  materials?: string;
-  creationDate?: Date | null;
-  price?: number;
-  isAvailable: boolean;
-  imageUrls: string[];
-  displayOrder: number;
-  categoryIds: number[];
-}
+import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 interface PreviewImage {
   file: File;
@@ -65,7 +54,8 @@ const SWISS_DATE_FORMATS = {
     MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    DateFormatPipe
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },
@@ -78,6 +68,7 @@ const SWISS_DATE_FORMATS = {
 export class ArtworksAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
+  private readonly notificationService = inject(NotificationService);
 
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
@@ -85,8 +76,10 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly showList = signal(true);
   protected readonly editingArtwork = signal<Artwork | null>(null);
   protected readonly isSubmitting = signal(false);
+  protected readonly isLoading = signal(true);
   protected readonly selectedFiles = signal<FileList | null>(null);
   protected readonly imagesPreviews = signal<PreviewImage[]>([]);
+
 
   protected readonly displayedColumns = ['image', 'title', 'categories', 'status', 'actions'];
   protected selectedCategoryFilter = '';
@@ -140,17 +133,34 @@ export class ArtworksAdminManagementComponent implements OnInit {
   }
 
   private loadData(): void {
+    this.isLoading.set(true);
     forkJoin({
       artworks: this.adminService.getArtworks(),
       categories: this.adminService.getCategories()
     })
-      .pipe(catchError(() => EMPTY))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error('Erreur lors du chargement des données');
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
         this.categories.set(categories);
         this.filteredArtworks.set(artworks);
         this.selectedCategoryFilter = '';
       });
+  }
+
+  protected formatDate(date: Date | string | null): string {
+    if (!date) return '';
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return d.toLocaleDateString('de-CH', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   }
 
   protected getCategoryNames(categoryIds?: Set<number>): string[] {
@@ -229,6 +239,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.isSubmitting.set(true);
     const formValue = this.artworkForm.value;
 
+    const uploadData = new FormData();
+
     const artworkDto = {
       title: formValue.title!,
       description: formValue.description,
@@ -242,11 +254,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
       categoryIds: formValue.categoryIds!
     };
 
-    // Debug pour vérifier les données
-    console.log('Artwork DTO being sent:', artworkDto);
-    console.log('Category IDs:', artworkDto.categoryIds);
-
-    const uploadData = new FormData();
     uploadData.append('artwork', JSON.stringify(artworkDto));
 
     const files = this.selectedFiles();
@@ -262,19 +269,20 @@ export class ArtworksAdminManagementComponent implements OnInit {
       : this.adminService.createArtworkWithImages(uploadData);
 
     operation
-      .pipe(catchError((error) => {
-        console.error('Error saving artwork:', error);
-        return EMPTY;
-      }))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error('Erreur lors de la sauvegarde de l\'œuvre');
+          return EMPTY;
+        }),
+        finalize(() => this.isSubmitting.set(false))
+      )
       .subscribe({
-        next: (result) => {
-          console.log('Saved artwork result:', result);
+        next: () => {
+          const message = editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès';
+          this.notificationService.success(message);
           this.cancelForm();
           this.loadData();
           window.dispatchEvent(new CustomEvent('artworkChanged'));
-        },
-        complete: () => {
-          this.isSubmitting.set(false);
         }
       });
   }
@@ -285,8 +293,14 @@ export class ArtworksAdminManagementComponent implements OnInit {
     }
 
     this.adminService.deleteArtwork(id)
-      .pipe(catchError(() => EMPTY))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
+          return EMPTY;
+        })
+      )
       .subscribe(() => {
+        this.notificationService.success('Œuvre supprimée avec succès');
         this.loadData();
         window.dispatchEvent(new CustomEvent('artworkChanged'));
       });

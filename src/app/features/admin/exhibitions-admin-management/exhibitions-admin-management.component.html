@@ -10,72 +10,83 @@
 
     <mat-card>
       <mat-card-content>
-        @if (exhibitions().length > 0) {
-          <div class="list-instructions">
-            <p><mat-icon>info</mat-icon> Glissez-déposez les expositions pour modifier leur ordre d'affichage</p>
-          </div>
+        <div class="spinner-container">
+          @if (isLoading()) {
+            <div class="loading-overlay">
+              <mat-spinner diameter="50"></mat-spinner>
+              <p>Chargement des expositions...</p>
+            </div>
+          }
 
-          <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="exhibitions-list">
-            @for (exhibition of exhibitions(); track exhibition.id) {
-              <div cdkDrag class="exhibition-item">
-                <div class="drag-handle" cdkDragHandle>
-                  <mat-icon>drag_indicator</mat-icon>
-                </div>
+          @if (!isLoading()) {
+            @if (exhibitions().length > 0) {
+              <div class="list-instructions">
+                <p><mat-icon>info</mat-icon> Glissez-déposez les expositions pour modifier leur ordre d'affichage</p>
+              </div>
 
-                <div class="exhibition-image">
-                  @if (exhibition.imageUrl) {
-                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
-                  } @else {
-                    <div class="no-image">
-                      <mat-icon>image</mat-icon>
+              <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="exhibitions-list">
+                @for (exhibition of exhibitions(); track exhibition.id) {
+                  <div cdkDrag class="exhibition-item">
+                    <div class="drag-handle" cdkDragHandle>
+                      <mat-icon>drag_indicator</mat-icon>
                     </div>
-                  }
-                </div>
 
-                <div class="exhibition-content">
-                  <h3>{{ exhibition.title }}</h3>
-                  <p class="location">{{ exhibition.location }}</p>
-                  @if (exhibition.address) {
-                    <p class="address">{{ exhibition.address }}</p>
-                  }
-                  <div class="dates">
-                    @if (exhibition.startDate) {
-                      <span>Du {{ formatDate(exhibition.startDate) }}</span>
-                    }
-                    @if (exhibition.endDate) {
-                      <span> au {{ formatDate(exhibition.endDate) }}</span>
-                    }
+                    <div class="exhibition-image">
+                      @if (exhibition.imageUrl) {
+                        <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                      } @else {
+                        <div class="no-image">
+                          <mat-icon>image</mat-icon>
+                        </div>
+                      }
+                    </div>
+
+                    <div class="exhibition-content">
+                      <h3>{{ exhibition.title }}</h3>
+                      <p class="location">{{ exhibition.location }}</p>
+                      @if (exhibition.address) {
+                        <p class="address">{{ exhibition.address }}</p>
+                      }
+                      <div class="dates">
+                        @if (exhibition.startDate) {
+                          <span>Du {{ formatDate(exhibition.startDate) }}</span>
+                        }
+                        @if (exhibition.endDate) {
+                          <span> au {{ formatDate(exhibition.endDate) }}</span>
+                        }
+                      </div>
+                    </div>
+
+                    <div class="exhibition-status">
+                      <mat-chip [style.background-color]="exhibition.status" [style.color]="'white'">
+                        {{ getStatusLabel(exhibition.status) }}
+                      </mat-chip>
+                    </div>
+
+                    <div class="exhibition-actions">
+                      <button mat-icon-button (click)="showEditForm(exhibition)" matTooltip="Modifier">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)" matTooltip="Supprimer">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
                   </div>
-                </div>
-
-                <div class="exhibition-status">
-                  <mat-chip [style.background-color]="getStatusColor(exhibition.status)" [style.color]="'white'">
-                    {{ getStatusLabel(exhibition.status) }}
-                  </mat-chip>
-                </div>
-
-                <div class="exhibition-actions">
-                  <button mat-icon-button (click)="showEditForm(exhibition)" matTooltip="Modifier">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)" matTooltip="Supprimer">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
+                }
+              </div>
+            } @else {
+              <div class="empty-state">
+                <mat-icon>event</mat-icon>
+                <h3>Aucune exposition</h3>
+                <p>Créez votre première exposition pour commencer</p>
+                <button mat-raised-button color="primary" (click)="showCreateForm()">
+                  <mat-icon>add</mat-icon>
+                  Créer une exposition
+                </button>
               </div>
             }
-          </div>
-        } @else {
-          <div class="empty-state">
-            <mat-icon>event</mat-icon>
-            <h3>Aucune exposition</h3>
-            <p>Créez votre première exposition pour commencer</p>
-            <button mat-raised-button color="primary" (click)="showCreateForm()">
-              <mat-icon>add</mat-icon>
-              Créer une exposition
-            </button>
-          </div>
-        }
+          }
+        </div>
       </mat-card-content>
     </mat-card>
   }
@@ -96,7 +107,7 @@
 
           <div class="form-group">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Titre *</mat-label>
+              <mat-label>Titre</mat-label>
               <input matInput formControlName="title" required>
               @if (exhibitionForm.get('title')?.errors?.['required'] && exhibitionForm.get('title')?.touched) {
                 <mat-error>Le titre est obligatoire</mat-error>
@@ -109,7 +120,7 @@
 
           <div class="form-group">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Lieu *</mat-label>
+              <mat-label>Lieu</mat-label>
               <input matInput formControlName="location" required>
               @if (exhibitionForm.get('location')?.errors?.['required'] && exhibitionForm.get('location')?.touched) {
                 <mat-error>Le lieu est obligatoire</mat-error>
@@ -122,25 +133,26 @@
 
           <div class="form-group">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Adresse (optionnelle)</mat-label>
+              <mat-label>Adresse</mat-label>
               <input matInput formControlName="address" placeholder="Rue, numéro, code postal, localité">
             </mat-form-field>
           </div>
 
           <div class="form-group">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Description (optionnelle)</mat-label>
+              <mat-label>Description</mat-label>
               <textarea matInput formControlName="description" rows="3"></textarea>
             </mat-form-field>
           </div>
 
           <div class="form-row">
             <mat-form-field appearance="outline">
-              <mat-label>Date de début *</mat-label>
+              <mat-label>Date de début</mat-label>
               <input
                 matInput
                 [matDatepicker]="startPicker"
                 formControlName="startDate"
+                placeholder="dd.MM.yyyy"
                 required>
               <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
               <mat-datepicker #startPicker></mat-datepicker>
@@ -150,11 +162,12 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Date de fin (optionnelle)</mat-label>
+              <mat-label>Date de fin</mat-label>
               <input
                 matInput
                 [matDatepicker]="endPicker"
-                formControlName="endDate">
+                formControlName="endDate"
+                placeholder="dd.MM.yyyy">
               <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
               <mat-datepicker #endPicker></mat-datepicker>
               @if (exhibitionForm.errors?.['endDateBeforeStart'] && exhibitionForm.get('endDate')?.touched) {
@@ -164,7 +177,7 @@
           </div>
 
           <div class="form-group">
-            <label class="image-label">Image de l'exposition (une seule image)</label>
+            <label class="image-label">Image de l'exposition</label>
             <app-image-upload
               [currentImages]="uploadedImageUrls()"
               [category]="'exhibitions'"
@@ -175,14 +188,17 @@
           </div>
 
           <div class="form-actions">
-            <button mat-button type="button" (click)="showList()">
+            <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">
               Annuler
             </button>
             <button
               mat-raised-button
               color="primary"
               type="submit"
-              [disabled]="exhibitionForm.invalid">
+              [disabled]="exhibitionForm.invalid || isSaving()">
+              @if (isSaving()) {
+                <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+              }
               {{ currentMode() === 'edit' ? 'Modifier' : 'Créer' }}
             </button>
           </div>

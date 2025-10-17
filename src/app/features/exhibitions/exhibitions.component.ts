@@ -1,6 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '@core/services/api.service';
 import { Exhibition } from '@core/models/exhibition.model';
@@ -20,7 +19,6 @@ type TabType = 'current' | 'past';
 })
 export class ExhibitionsComponent implements OnInit {
   private readonly apiService = inject(ApiService);
-  private readonly router = inject(Router);
 
   protected readonly activeTab = signal<TabType>('current');
   protected readonly upcomingExhibitions = signal<Exhibition[]>([]);
@@ -77,7 +75,8 @@ export class ExhibitionsComponent implements OnInit {
   }
 
   protected onVernissageRegistration(exhibition: Exhibition): void {
-    this.router.navigateByUrl('https://forms.cloud.microsoft/pages/responsepage.aspx?id=wmJHDV9sh06TKIDkc-144X_K4JQ2f1ZDpqkc-BlhTspUQkQ3N0JHNUJJVUNGNzdBTzZCOEdWWEhISy4u&utm_source=print&utm_medium=paper&utm_campaign=20250902_cdg_flyer_vernissage_pierette&route=shorturl');
+    const vernissageUrl = 'https://forms.cloud.microsoft/pages/responsepage.aspx?id=wmJHDV9sh06TKIDkc-144X_K4JQ2f1ZDpqkc-BlhTspUQkQ3N0JHNUJJVUNGNzdBTzZCOEdWWEhISy4u&utm_source=print&utm_medium=paper&utm_campaign=20250902_cdg_flyer_vernissage_pierette&route=shorturl';
+    window.open(vernissageUrl, '_blank');
   }
 
   protected onShowOnMap(exhibition: Exhibition): void {
