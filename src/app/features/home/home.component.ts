@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
 
         video.addEventListener('timeupdate', () => {
-          if (video.currentTime >= 25) {
+          if (video.currentTime >= 22) {
             video.currentTime = 2;
           }
         });

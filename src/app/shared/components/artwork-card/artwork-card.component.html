@@ -20,33 +20,14 @@
   <mat-card-content class="artwork-info">
     <h3>{{ artwork().title }}</h3>
 
-    <!-- Affichage des catégories multiples -->
     @for (categorySlug of getCategorySlugsArray(artwork()); track categorySlug) {
       <span class="category-chip">{{ categorySlug }}</span>
     }
 
-    @if (artwork().description) {
+    @if (artwork().descriptionShort) {
+      <p class="description">{{ artwork().descriptionShort }}</p>
+    } @else if (artwork().description) {
       <p class="description">{{ artwork().description | slice:0:100 }}{{ artwork().description.length > 100 ? '...' : '' }}</p>
     }
-
-    <!-- Informations supplémentaires -->
-    @if (artwork().dimensions || artwork().price) {
-      <div class="artwork-details">
-        @if (artwork().dimensions) {
-          <span class="dimensions">{{ artwork().dimensions }}</span>
-        }
-        @if (artwork().price) {
-          <span class="price">{{ artwork().price | currency:'EUR':'symbol':'1.2-2' }}</span>
-        }
-      </div>
-    }
-
-    <div class="availability">
-      @if (!artwork().isAvailable) {
-        <span class="sold-label">Vendu</span>
-      } @else {
-        <span class="available-label">Disponible</span>
-      }
-    </div>
   </mat-card-content>
 </mat-card>

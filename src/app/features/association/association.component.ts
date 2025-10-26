@@ -1,11 +1,12 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 
 @Component({
   selector: 'app-association',
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, MatButtonModule],
   templateUrl: './association.component.html',
   styleUrl: './association.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

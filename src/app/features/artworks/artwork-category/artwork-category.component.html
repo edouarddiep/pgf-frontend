@@ -37,26 +37,9 @@
               </div>
               <div class="artwork-info">
                 <h3>{{ artwork.title }}</h3>
-                @if (artwork.description) {
-                  <p class="artwork-description">{{ artwork.description | slice:0:100 }}{{ artwork.description.length > 100 ? '...' : '' }}</p>
+                @if (artwork.descriptionShort) {
+                  <p class="artwork-description">{{ artwork.descriptionShort }}</p>
                 }
-                @if (artwork.dimensions || artwork.materials) {
-                  <div class="artwork-meta">
-                    @if (artwork.dimensions) {
-                      <span class="dimensions">{{ artwork.dimensions }}</span>
-                    }
-                    @if (artwork.materials) {
-                      <span class="materials">{{ artwork.materials }}</span>
-                    }
-                  </div>
-                }
-                <div class="artwork-status">
-                  @if (artwork.isAvailable) {
-                    <span class="available">Disponible</span>
-                  } @else {
-                    <span class="sold">Vendue</span>
-                  }
-                </div>
               </div>
             </div>
           }

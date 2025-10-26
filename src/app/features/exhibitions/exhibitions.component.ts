@@ -71,7 +71,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
         });
 
         video.addEventListener('timeupdate', () => {
-          if (video.currentTime >= 12) {
+          if (video.currentTime >= 10) {
             video.currentTime = 2;
           }
         });

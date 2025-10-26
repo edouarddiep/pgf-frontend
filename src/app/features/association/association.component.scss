@@ -109,103 +109,125 @@
   line-height: 1.7;
 }
 
-.membership-details {
+.membership-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  max-width: 900px;
-  margin: 0 auto;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  gap: 0;
 
-  .contact-info,
-  .payment-info {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  .membership-image {
+    width: 100%;
+    height: 100%;
 
-    h3 {
-      font-size: 1.3rem;
-      color: #706969;
-      margin-bottom: 1rem;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .membership-content {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .section-title {
+      margin: 0;
+      text-align: left;
     }
 
-    p {
-      margin-bottom: 0.5rem;
-      line-height: 1.6;
+    .intro-text {
+      margin: 0;
+      text-align: left;
+      font-size: 1rem;
+    }
 
-      strong {
+    .payment-info {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+      h3 {
+        font-size: 1.3rem;
         color: #706969;
+        margin-bottom: 1rem;
       }
-    }
 
-    .qr-code-container {
-      display: flex;
-      justify-content: center;
-      margin: 1.5rem 0;
-
-      .qr-code {
-        width: 200px;
-        height: auto;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-    }
-  }
-
-  .bank-details {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 6px;
-    margin-top: 1rem;
-
-    p {
-      margin-bottom: 0.25rem;
-      font-size: 0.95rem;
-    }
-  }
-}
-
-.organization-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  max-width: 900px;
-  margin: 0 auto;
-
-  .committee-section,
-  .officers-section {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-    h3 {
-      font-size: 1.3rem;
-      color: #706969;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      margin-bottom: 1rem;
-      color: #666;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-
-      li {
-        padding: 0.5rem 0;
-        border-bottom: 1px solid #f0f0f0;
-
-        &:last-child {
-          border-bottom: none;
-        }
+      p {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
 
         strong {
           color: #706969;
         }
       }
+
+      .qr-code-container {
+        display: flex;
+        justify-content: center;
+        margin: 1.5rem 0;
+
+        .qr-code {
+          width: 200px;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      .bank-details {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-top: 1rem;
+
+        p {
+          margin-bottom: 0.25rem;
+          font-size: 0.95rem;
+        }
+      }
+    }
+
+    .cta-button {
+      background-color: #706969;
+      color: white;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      align-self: flex-start;
+
+      &:hover {
+        background-color: #5a5454;
+      }
+    }
+  }
+}
+
+.organization-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align:center;
+
+  h3 {
+    font-size: 1.3rem;
+    color: #706969;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  p {
+    line-height: 1.8;
+    color: #666;
+    margin-bottom: 1rem;
+
+    strong {
+      color: #706969;
     }
   }
 }
@@ -230,13 +252,15 @@
     }
   }
 
-  .membership-details {
+  .membership-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
-  }
 
-  .organization-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    .membership-image {
+      height: 50vh;
+    }
+
+    .membership-content {
+      padding: 2rem;
+    }
   }
 }

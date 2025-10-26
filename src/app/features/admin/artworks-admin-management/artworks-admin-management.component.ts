@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -7,35 +7,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 interface PreviewImage {
   file: File;
   url: string;
 }
-
-const SWISS_DATE_FORMATS = {
-  parse: {
-    dateInput: 'DD.MM.YYYY',
-  },
-  display: {
-    dateInput: 'DD.MM.YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'DD.MM.YYYY',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
 
 @Component({
   selector: 'app-artworks-admin-management',
@@ -48,18 +33,11 @@ const SWISS_DATE_FORMATS = {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatSlideToggleModule,
     MatCardModule,
     MatChipsModule,
     MatTooltipModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     MatProgressSpinnerModule,
     MatSnackBarModule
-  ],
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },
-    { provide: MAT_DATE_FORMATS, useValue: SWISS_DATE_FORMATS }
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -80,8 +58,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly selectedFiles = signal<FileList | null>(null);
   protected readonly imagesPreviews = signal<PreviewImage[]>([]);
 
-
-  protected readonly displayedColumns = ['image', 'title', 'categories', 'status', 'actions'];
+  protected readonly displayedColumns = ['image', 'title', 'categories', 'actions'];
   protected selectedCategoryFilter = '';
 
   protected readonly filteredArtworks = signal<Artwork[]>([]);
@@ -89,11 +66,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
-    dimensions: ['', [Validators.maxLength(255)]],
-    materials: ['', [Validators.maxLength(255)]],
-    creationDate: [null as Date | null],
-    price: [null as number | null, [Validators.min(0)]],
-    isAvailable: [true, [Validators.required]],
+    descriptionShort: ['', [Validators.maxLength(255)]],
     imageUrls: [[] as string[]],
     displayOrder: [0, [Validators.required, Validators.min(0)]],
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
@@ -153,16 +126,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
       });
   }
 
-  protected formatDate(date: Date | string | null): string {
-    if (!date) return '';
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleDateString('de-CH', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  }
-
   protected getCategoryNames(categoryIds?: Set<number>): string[] {
     if (!categoryIds || categoryIds.size === 0) return [];
 
@@ -181,11 +144,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.artworkForm.reset({
       title: '',
       description: '',
-      dimensions: '',
-      materials: '',
-      creationDate: null,
-      price: null,
-      isAvailable: true,
+      descriptionShort: '',
       imageUrls: [],
       displayOrder: 0,
       categoryIds: []
@@ -199,23 +158,15 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.selectedFiles.set(null);
     this.imagesPreviews.set([]);
 
-    const creationDate = artwork.creationDate ? new Date(artwork.creationDate) : null;
-
-    // Utiliser setValue au lieu de patchValue pour une réinitialisation complète
     this.artworkForm.setValue({
       title: artwork.title,
       description: artwork.description || '',
-      dimensions: artwork.dimensions || '',
-      materials: artwork.materials || '',
-      creationDate,
-      price: artwork.price || null,
-      isAvailable: artwork.isAvailable,
+      descriptionShort: artwork.descriptionShort || '',
       imageUrls: artwork.imageUrls || [],
       displayOrder: artwork.displayOrder,
       categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
     });
 
-    // Reset du state dirty/pristine pour permettre la détection des changements
     this.artworkForm.markAsPristine();
     this.artworkForm.markAsUntouched();
     this.artworkForm.updateValueAndValidity();
@@ -244,11 +195,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
     const artworkDto = {
       title: formValue.title!,
       description: formValue.description,
-      dimensions: formValue.dimensions,
-      materials: formValue.materials,
-      creationDate: formValue.creationDate?.toISOString().split('T')[0] || null,
-      price: formValue.price,
-      isAvailable: formValue.isAvailable!,
+      descriptionShort: formValue.descriptionShort,
       imageUrls: formValue.imageUrls!,
       displayOrder: formValue.displayOrder!,
       categoryIds: formValue.categoryIds!
@@ -327,16 +274,13 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
     if (!imageUrl) return null;
 
-    // Nettoyer les caractères d'échappement
     return imageUrl.replace(/\\"/g, '"').replace(/^"|"$/g, '');
   }
 
   protected isFormValidForSubmit(): boolean {
     if (!this.editingArtwork()) {
-      // Mode création : formulaire doit être valide
       return this.artworkForm.valid;
     } else {
-      // Mode édition : formulaire doit être valide ET modifié
       return this.artworkForm.valid && (this.artworkForm.dirty || this.selectedFiles()?.length > 0);
     }
   }

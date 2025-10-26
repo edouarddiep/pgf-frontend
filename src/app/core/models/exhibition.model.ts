@@ -7,6 +7,7 @@ export interface Exhibition {
   startDate?: string;
   endDate?: string;
   imageUrl?: string;
+  url?: string;
   displayOrder?: number;
   status: ExhibitionStatus;
   createdAt: string;

@@ -21,8 +21,8 @@
               </div>
               <div class="category-info">
                 <h3>{{ category.name }}</h3>
-                @if (category.description) {
-                  <p>{{ category.description }}</p>
+                @if (category.descriptionShort) {
+                  <p>{{ category.descriptionShort }}</p>
                 }
               </div>
             </div>
@@ -39,8 +39,8 @@
       @if (currentCategory$ | async; as category) {
         <div class="section-header">
           <h2>{{ category.name }}</h2>
-          @if (category.description) {
-            <p class="category-description">{{ category.description }}</p>
+          @if (category.descriptionShort) {
+            <p class="category-description">{{ category.descriptionShort }}</p>
           }
         </div>
       }

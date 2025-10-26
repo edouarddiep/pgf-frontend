@@ -28,18 +28,19 @@
   </section>
 
   <section class="page-section section-gray scroll-fade-in">
-    <div class="container">
-      <h2 class="section-title">Devenir Membre</h2>
-      <p class="intro-text">
-        Si vous désirez soutenir le travail de Pierrette Gonseth-Favre et participer à la promotion de son œuvre, contactez notre trésorier ou acquittez-vous de la cotisation de 50 CHF.
-      </p>
+    <div class="membership-grid">
+      <div class="membership-image">
+        <img
+          src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/expositions/bonmont-2023/image-2.jpg"
+          alt="Devenir membre"
+          loading="lazy">
+      </div>
 
-      <div class="membership-details">
-        <div class="contact-info">
-          <h3>Contact</h3>
-          <p><strong>Trésorier :</strong> denis.gonseth@dfinet.ch</p>
-          <p>Veuillez indiquer votre nom, votre adresse et votre adresse courriel.</p>
-        </div>
+      <div class="membership-content">
+        <h2 class="section-title">Devenir Membre</h2>
+        <p class="intro-text">
+          Si vous désirez soutenir le travail de Pierrette Gonseth-Favre et participer à la promotion de son œuvre, contactez notre trésorier ou acquittez-vous de la cotisation de 50 CHF.
+        </p>
 
         <div class="payment-info">
           <h3>Cotisation annuelle : 50 CHF</h3>
@@ -57,6 +58,10 @@
             <p>Association "Amis de Pierrette Gonseth-Favre"</p>
           </div>
         </div>
+
+        <button mat-raised-button routerLink="/contact" class="cta-button">
+          Prendre contact
+        </button>
       </div>
     </div>
   </section>
@@ -65,26 +70,13 @@
     <div class="container">
       <h2 class="section-title">Informations générales</h2>
 
-      <div class="organization-grid">
-        <div class="committee-section">
-          <h3>Comité</h3>
-          <p>Le comité de l'association se compose de :</p>
-          <ul>
-            <li><strong>Claude Gaignard</strong> - Président</li>
-            <li>Micheline Altwegg</li>
-            <li>Myriam Yrazabal Glasson</li>
-            <li>Pierrette Gonseth-Favre</li>
-            <li>Camille Gonseth</li>
-          </ul>
-        </div>
+      <div class="organization-content">
+        <h3>Comité</h3>
+        <p>Le comité de l'association se compose de : <strong>Claude Gaignard</strong> (Président), Micheline Altwegg, Myriam Yrazabal Glasson, Pierrette Gonseth-Favre et Camille Gonseth.</p>
 
-        <div class="officers-section">
-          <h3>Autres fonctions</h3>
-          <ul>
-            <li><strong>Denis Gonseth</strong> - Trésorier - secrétaire (hors comité)</li>
-            <li><strong>Dr. Philippe Glasson</strong> - Contrôleur aux comptes</li>
-          </ul>
-        </div>
+        <h3>Autres fonctions</h3>
+        <p><strong>Denis Gonseth</strong> - Trésorier - secrétaire (hors comité)</p>
+        <p><strong>Dr. Philippe Glasson</strong> - Contrôleur aux comptes</p>
       </div>
     </div>
   </section>
