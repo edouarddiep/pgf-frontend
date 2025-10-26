@@ -1,4 +1,14 @@
 @use '@angular/material' as mat;
+@font-face {
+  font-family: 'Roboto Flex';
+  font-style: normal;
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-display: swap;
+  src: url('../public/fonts/Roboto_Flex/RobotoFlex-VariableFont_GRAD,XOPQ,XTRA,YOPQ,YTAS,YTDE,YTFI,YTLC,YTUC,opsz,slnt,wdth,wght.ttf') format('truetype-variations');
+  font-named-instance: 'Regular';
+}
+
 
 html {
   @include mat.theme((
@@ -6,7 +16,7 @@ html {
       primary: mat.$azure-palette,
       tertiary: mat.$blue-palette,
     ),
-    typography: Roboto,
+    typography: 'Roboto Flex',
     density: 0,
   ));
 }
@@ -18,14 +28,18 @@ body {
   font: var(--mat-sys-body-medium);
   margin: 0;
   height: 100%;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-variation-settings: 'wght' 400, 'wdth' 100, 'opsz' 14;
 }
 
 html, body {
   height: 100%;
 }
 
-// Animations scroll globales
+h1, h2, h3, h4, h5, h6 {
+  font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 48;
+}
+
 .scroll-fade-in {
   opacity: 0;
   transform: translateY(30px);
@@ -37,7 +51,6 @@ html, body {
   }
 }
 
-// Classes utilitaires pour l'alternance des backgrounds
 .section-white {
   background: white;
 }
@@ -46,7 +59,6 @@ html, body {
   background: #f8f9fa;
 }
 
-// Hero banners uniformes
 .hero-banner {
   position: relative;
   height: 30vh;
@@ -110,7 +122,6 @@ html, body {
   }
 }
 
-// Titres de sections uniformes
 .section-title {
   text-align: center;
   font-size: 2.5rem;
@@ -123,7 +134,6 @@ html, body {
   }
 }
 
-// Contenus de sections uniformes
 .section-content {
   max-width: 900px;
   margin: 0 auto;
@@ -136,14 +146,12 @@ html, body {
   }
 }
 
-// Container uniforme
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-// Sections uniformes
 .page-section {
   padding: 4rem 0;
 
@@ -152,7 +160,6 @@ html, body {
   }
 }
 
-// Styles pour les pages légales
 .legal-section {
   margin-bottom: 3rem;
 
