@@ -1,5 +1,5 @@
 .site-footer {
-  background: #706969;
+  background: #5E5D5D;
   color: #ecf0f1;
   margin-top: auto;
 
@@ -11,6 +11,7 @@
 
   .footer-content {
     padding: 3rem 0 2rem;
+    background: rgba(0, 0, 0, 0.2);
 
     .footer-sections {
       display: grid;
@@ -68,8 +69,9 @@
                 text-decoration: none;
                 transition: color 0.3s ease;
 
-                &:hover {
-                  color: #706969;
+                &:hover,
+                &.active {
+                  color: white;
                 }
               }
             }

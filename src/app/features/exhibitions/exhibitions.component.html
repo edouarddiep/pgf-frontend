@@ -1,5 +1,8 @@
 <div class="exhibitions-page">
   <section class="exhibitions-hero">
+    <video #heroVideo class="hero-video" autoplay muted playsinline preload="metadata">
+      <source src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/expositions/genolier-2025/videos/video-1.mp4" type="video/mp4">
+    </video>
     <div class="hero-content">
       <h1>EXPOSITIONS</h1>
     </div>
@@ -27,8 +30,8 @@
       <section class="current-section">
         @if (currentExhibitions().length > 0) {
           <div class="exhibitions-list">
-            @for (exhibition of currentExhibitions(); track exhibition.id; let isLast = $last) {
-              <article class="exhibition-item">
+            @for (exhibition of currentExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
+              <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-image">
                   @if (exhibition.imageUrl) {
                     <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
@@ -97,8 +100,8 @@
       <section class="past-section">
         @if (pastExhibitions().length > 0) {
           <div class="exhibitions-list">
-            @for (exhibition of pastExhibitions(); track exhibition.id; let isLast = $last) {
-              <article class="exhibition-item">
+            @for (exhibition of pastExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
+              <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-image">
                   @if (exhibition.imageUrl) {
                     <img [src]="exhibition.imageUrl" [alt]="exhibition.title">

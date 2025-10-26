@@ -2,12 +2,11 @@
   <video #heroVideo class="hero-video" autoplay muted playsinline preload="metadata">
     <source src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/videos/video1.mp4" type="video/mp4">
   </video>
-  <div class="hero-content">
+  <div class="hero-content" >
     <h1>PIERRETTE GONSETH FAVRE</h1>
-    <h2>Une artiste aux multiples approches.</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Une artiste aux multiples approches, Pierrette Gonseth-Favre explore la matière sous toutes ses formes. Peintures, toiles de jute, fils de fer, sculptures, collages ou créations de bijoux et d’objets, son travail tisse un dialogue sensible entre texture, volume et poésie du geste.</p>
     <button mat-stroked-button class="cta-button" routerLink="/artworks">
-      MES OEUVRES
+      MES ŒUVRES
     </button>
   </div>
 </section>
@@ -15,7 +14,7 @@
 <section class="artworks-section scroll-fade-in">
   <div class="container">
     <div class="section-header">
-      <h2>LES OEUVRES</h2>
+      <h2>LES ŒUVRES</h2>
     </div>
 
     @if (categories$ | async; as categories) {

@@ -9,7 +9,6 @@
   font-named-instance: 'Regular';
 }
 
-
 html {
   @include mat.theme((
     color: (
@@ -23,7 +22,7 @@ html {
 
 body {
   color-scheme: light;
-  background-color: var(--mat-sys-surface);
+  background-color: white;
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
   margin: 0;
@@ -38,6 +37,51 @@ html, body {
 
 h1, h2, h3, h4, h5, h6 {
   font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 48;
+  color: #706969;
+}
+
+.hero-banner,
+.hero-content,
+.exhibitions-hero,
+.artworks-hero,
+.category-hero,
+.about-hero {
+  h1, h2, h3, h4, h5, h6 {
+    color: white !important;
+  }
+}
+
+h2 {
+  text-transform: uppercase;
+}
+
+p {
+  color: #706969;
+}
+
+button {
+  background: transparent !important;
+  border: 2px solid #706969 !important;
+  color: #706969 !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+
+  &:hover {
+    background: #f8f9fa !important;
+    color: black !important;
+    border-color: #f8f9fa !important;
+    transform: translateY(-2px) !important;
+    box-shadow: none !important;
+  }
+
+  &:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+  }
 }
 
 .scroll-fade-in {
@@ -59,72 +103,9 @@ h1, h2, h3, h4, h5, h6 {
   background: #f8f9fa;
 }
 
-.hero-banner {
-  position: relative;
-  height: 30vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-size: cover;
-  background-position: center;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: white;
-
-    h1 {
-      font-size: 3rem;
-      font-weight: 300;
-      letter-spacing: 0.1em;
-      margin: 0;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-      position: relative;
-      padding-bottom: 1.5rem;
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 0.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 200px;
-        height: 2px;
-        background: white;
-      }
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 300;
-      margin: 0;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .hero-content h1 {
-      font-size: 2.5rem;
-
-      &::after {
-        width: 150px;
-      }
-    }
-  }
-}
-
 .section-title {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 1.9rem;
   font-weight: 300;
   margin-bottom: 3rem;
   color: #706969;
@@ -137,9 +118,9 @@ h1, h2, h3, h4, h5, h6 {
 .section-content {
   max-width: 900px;
   margin: 0 auto;
-  font-size: 1.1rem;
+  font-size: .9rem;
   line-height: 1.8;
-  color: #333;
+  color: #706969;
 
   p {
     margin-bottom: 1.5rem;
@@ -182,7 +163,7 @@ h1, h2, h3, h4, h5, h6 {
   p {
     font-size: 1rem;
     line-height: 1.7;
-    color: #333;
+    color: #706969;
     margin-bottom: 1rem;
 
     strong {
@@ -190,7 +171,7 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     em {
-      color: #666;
+      color: #706969;
       font-style: italic;
     }
   }
@@ -202,7 +183,7 @@ h1, h2, h3, h4, h5, h6 {
     li {
       font-size: 1rem;
       line-height: 1.7;
-      color: #333;
+      color: #706969;
       margin-bottom: 0.5rem;
 
       strong {
@@ -234,6 +215,7 @@ h1, h2, h3, h4, h5, h6 {
 
   p {
     margin-bottom: 0.5rem;
+    color: #706969;
 
     &:last-child {
       margin-bottom: 0;

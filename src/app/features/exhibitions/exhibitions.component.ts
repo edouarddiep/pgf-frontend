@@ -1,5 +1,5 @@
-import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, ViewChild, ElementRef, PLATFORM_ID} from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '@core/services/api.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
@@ -22,20 +22,68 @@ type TabType = 'current' | 'past';
 })
 export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly apiService = inject(ApiService);
+  private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly platformId = inject(PLATFORM_ID);
+
+  @ViewChild('heroVideo', { static: true }) heroVideo!: ElementRef<HTMLVideoElement>;
 
   protected readonly activeTab = signal<TabType>('current');
   protected readonly currentExhibitions = signal<Exhibition[]>([]);
   protected readonly pastExhibitions = signal<Exhibition[]>([]);
   protected readonly ExhibitionStatus = ExhibitionStatus;
-  private readonly scrollAnimationService = inject(ScrollAnimationService);
 
   ngOnInit(): void {
     this.loadExhibitions();
-    this.scrollAnimationService.setupScrollAnimations();
+    if (isPlatformBrowser(this.platformId)) {
+      this.ensureVideoPlays();
+      this.setupVideoLoop();
+      this.scrollAnimationService.setupScrollAnimations();
+    }
   }
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
+  }
+
+  private ensureVideoPlays(): void {
+    setTimeout(() => {
+      const video = this.heroVideo?.nativeElement;
+      if (video && typeof video.play === 'function') {
+        video.muted = true;
+        video.volume = 0;
+        video.currentTime = 2;
+        video.play().catch(() => {});
+      }
+    }, 500);
+  }
+
+  private setupVideoLoop(): void {
+    setTimeout(() => {
+      const video = this.heroVideo?.nativeElement;
+      if (video && typeof video.addEventListener === 'function') {
+        video.muted = true;
+        video.volume = 0;
+
+        video.addEventListener('loadedmetadata', () => {
+          video.currentTime = 2;
+          video.muted = true;
+          video.volume = 0;
+        });
+
+        video.addEventListener('timeupdate', () => {
+          if (video.currentTime >= 12) {
+            video.currentTime = 2;
+          }
+        });
+
+        video.addEventListener('volumechange', () => {
+          if (!video.muted || video.volume > 0) {
+            video.muted = true;
+            video.volume = 0;
+          }
+        });
+      }
+    }, 500);
   }
 
   private loadExhibitions(): void {

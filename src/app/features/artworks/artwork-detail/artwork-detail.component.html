@@ -1,28 +1,9 @@
-<!-- Bannière hero avec titre de catégorie -->
-<section class="category-hero">
-  @if (artwork$ | async; as artwork) {
-    <div class="hero-content">
-      <h1>LES OEUVRES</h1>
-      @if (primaryCategory$ | async; as category) {
-        <div class="category-title">{{ category.name }}</div>
-      }
-    </div>
-  }
-</section>
-
-<!-- Section principale avec détail de l'œuvre -->
 @if (artwork$ | async; as artwork) {
   <section class="artwork-detail-section">
     <div class="container">
-      <div class="section-header">
-        <h2>— {{ artwork.title }}</h2>
-      </div>
-
       <div class="artwork-content">
-        <!-- Galerie d'images -->
         <div class="artwork-gallery">
           <div class="main-image-container">
-            <!-- Flèches de navigation principale -->
             @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
               <button class="main-carousel-btn prev" (click)="previousImage()" [disabled]="selectedImageIndex() === 0">
                 <mat-icon>chevron_left</mat-icon>
@@ -65,7 +46,6 @@
           }
         </div>
 
-        <!-- Informations de l'œuvre -->
         <div class="artwork-info">
           <h3 class="artwork-title">{{ artwork.title }}</h3>
 
@@ -88,14 +68,13 @@
                 {{ category.name.toUpperCase() }}
               </button>
             } @else {
-              <!-- Bouton de fallback si pas de catégorie trouvée -->
               <button mat-stroked-button routerLink="/artworks" class="nav-button">
                 <mat-icon>arrow_back</mat-icon>
                 RETOUR
               </button>
             }
             <button mat-stroked-button routerLink="/artworks" class="nav-button">
-              TOUTES LES OEUVRES
+              TOUTES LES ŒUVRES
             </button>
           </div>
         </div>
@@ -104,7 +83,6 @@
   </section>
 }
 
-<!-- Modal identique -->
 @if (showImageModal()) {
   <div class="image-modal" (click)="closeImageModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">

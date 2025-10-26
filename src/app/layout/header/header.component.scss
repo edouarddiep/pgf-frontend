@@ -39,14 +39,14 @@
 
   a, button {
     color: #666;
-    font-weight: 400;
+    font-weight: normal !important;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     font-size: 0.9rem;
-    border: none;
+    border: none !important;
     background: none;
     padding: 8px 16px;
-    border-radius: 0;
+    border-radius: 0 !important;
     transition: all 0.3s ease;
 
     &:hover {
