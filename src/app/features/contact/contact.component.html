@@ -1,92 +1,91 @@
 <div class="contact-page">
-  <div class="contact-content">
-    <div class="container">
-      <div class="contact-grid">
-        <div class="contact-image">
-          <img
-            src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-3.jpeg"
-            alt="Atelier de l'artiste"
-            loading="lazy"
-          >
-        </div>
+  <div class="contact-grid">
+    <div class="contact-image">
+      <img
+        src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/fil-de-fer/images/arbre-coeur/image-1.jpeg"
+        alt="Atelier de l'artiste"
+        loading="lazy">
+    </div>
 
-        <div class="contact-form-section">
-          <h2>PRENDRE CONTACT</h2>
+    <div class="contact-form-section">
+      <div class="form-container">
+        <h2 class="section-title">Prendre contact</h2>
 
-          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Nom</mat-label>
-                <input matInput formControlName="name" required>
-                @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
-                  <mat-error>Le nom est requis</mat-error>
-                }
-              </mat-form-field>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Prénom</mat-label>
-                <input matInput formControlName="firstName" required>
-                @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
-                  <mat-error>Le prénom est requis</mat-error>
-                }
-              </mat-form-field>
+        <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="name" required>
+              @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
+                <mat-error>Le nom est requis</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Prénom</mat-label>
+              <input matInput formControlName="firstName" required>
+              @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
+                <mat-error>Le prénom est requis</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" formControlName="email" required>
+              @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
+                <mat-error>
+                  @if (contactForm.get('email')?.errors?.['required']) {
+                    L'email est requis
+                  } @else if (contactForm.get('email')?.errors?.['email']) {
+                    Format d'adresse email invalide
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Téléphone (optionnel)</mat-label>
+              <input matInput type="tel" formControlName="phone">
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Sujet</mat-label>
+              <input matInput formControlName="subject" required>
+              @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
+                <mat-error>Le sujet est requis</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Message</mat-label>
+              <textarea
+                matInput
+                formControlName="message"
+                rows="6"
+                placeholder="Votre message..."
+                required>
+              </textarea>
+              @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
+                <mat-error>
+                  @if (contactForm.get('message')?.errors?.['required']) {
+                    Le message est requis
+                  } @else if (contactForm.get('message')?.errors?.['minlength']) {
+                    Merci de saisir 10 caractères au minimum
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+            <div class="character-counter">
+              {{ getMessageLength() }} sur 500 max.
             </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Email</mat-label>
-                <input matInput type="email" formControlName="email" required>
-                @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
-                  <mat-error>
-                    @if (contactForm.get('email')?.errors?.['required']) {
-                      L'email est requis
-                    } @else if (contactForm.get('email')?.errors?.['email']) {
-                      Format d'adresse email invalide
-                    }
-                  </mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" class="half-width">
-                <mat-label>Téléphone (optionnel)</mat-label>
-                <input matInput type="tel" formControlName="phone">
-              </mat-form-field>
-            </div>
-
-            <div class="form-group">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Sujet</mat-label>
-                <input matInput formControlName="subject" required>
-                @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
-                  <mat-error>Le sujet est requis</mat-error>
-                }
-              </mat-form-field>
-            </div>
-
-            <div class="form-group">
-              <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Message</mat-label>
-                <textarea
-                  matInput
-                  formControlName="message"
-                  rows="6"
-                  placeholder="Votre message..."
-                  required>
-                </textarea>
-                @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
-                  <mat-error>
-                    @if (contactForm.get('message')?.errors?.['required']) {
-                      Le message est requis
-                    } @else if (contactForm.get('message')?.errors?.['minlength']) {
-                      Merci de saisir 10 caractères au minimum
-                    }
-                  </mat-error>
-                }
-              </mat-form-field>
-              <div class="character-counter">
-                {{ getMessageLength() }} sur 500 max.
-              </div>
-            </div>
+          </div>
 
             <div class="form-actions">
               <button
@@ -97,9 +96,8 @@
                 class="submit-button">
                 Envoyer
               </button>
-            </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

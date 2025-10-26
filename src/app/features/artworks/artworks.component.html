@@ -1,31 +1,57 @@
-<!-- Bannière hero pour la page /artworks -->
+<section class="artworks-hero scroll-fade-in">
+  <div class="hero-content">
+    <h1>ŒUVRES</h1>
+  </div>
+</section>
+
 @if (!(categorySlug$ | async)) {
-  <section class="artworks-hero">
-    <div class="hero-content">
-      <h1>LES OEUVRES</h1>
+  <section class="categories-section scroll-fade-in">
+    <div class="container">
+      <h2>Catégories d'œuvres</h2>
+
+      @if (categories$ | async; as categories) {
+        <div class="categories-grid">
+          @for (category of categories; track category.id) {
+            <div class="category-card" (click)="onCategoryClick(category.slug)">
+              <div class="category-image">
+                <img
+                  [lazyLoad]="getCategoryThumbnail(category)"
+                  [alt]="category.name"
+                  [defaultImage]="'/assets/images/placeholder.jpg'">
+              </div>
+              <div class="category-info">
+                <h3>{{ category.name }}</h3>
+                @if (category.description) {
+                  <p>{{ category.description }}</p>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
   </section>
 }
 
-<section class="artworks-section">
-  <div class="container">
-    <div class="section-header">
+@if (categorySlug$ | async; as categorySlug) {
+  <section class="artworks-section scroll-fade-in">
+    <div class="container">
       @if (currentCategory$ | async; as category) {
-        <h2>{{ category.name }}</h2>
-      } @else {
-        <h2>LES OEUVRES</h2>
+        <div class="section-header">
+          <h2>{{ category.name }}</h2>
+          @if (category.description) {
+            <p class="category-description">{{ category.description }}</p>
+          }
+        </div>
       }
-    </div>
 
-    @if (categorySlug$ | async; as slug) {
-      <!-- Affichage des œuvres filtrées par catégorie -->
       @if (filteredArtworks$ | async; as artworks) {
         @if (artworks.length > 0) {
           <div class="artworks-grid">
             @for (artwork of artworks; track artwork.id) {
               <app-artwork-card
                 [artwork]="artwork"
-                (cardClick)="onArtworkClick($event)">
+                (click)="onArtworkClick(artwork.id)">
               </app-artwork-card>
             }
           </div>
@@ -33,61 +59,10 @@
           <div class="empty-state">
             <mat-icon>palette</mat-icon>
             <h3>Aucune œuvre disponible</h3>
-            <p>Aucune œuvre n'est disponible dans cette catégorie pour le moment.</p>
+            <p>Cette catégorie ne contient pas encore d'œuvres.</p>
           </div>
         }
-      } @else {
-        <div class="loading-state">
-          <mat-icon>hourglass_empty</mat-icon>
-          <p>Chargement des œuvres...</p>
-        </div>
       }
-
-      <div class="navigation-buttons">
-        <button mat-stroked-button routerLink="/artworks" class="nav-button">
-          <mat-icon>arrow_back</mat-icon>
-          TOUTES LES CATÉGORIES
-        </button>
-        <button mat-stroked-button routerLink="/contact" class="nav-button">
-          <mat-icon>mail</mat-icon>
-          CONTACT
-        </button>
-      </div>
-    } @else {
-      <!-- Affichage des catégories (même contenu que l'accueil) -->
-      @if (categories$ | async; as categories) {
-        @if (categories.length > 0) {
-          <div class="categories-grid">
-            @for (category of categories; track category.id) {
-              <div class="category-card" (click)="onCategoryClick(category.slug)">
-                <div class="category-image">
-                  <img
-                    [lazyLoad]="getCategoryThumbnail(category)"
-                    [alt]="category.name"
-                    [defaultImage]="'/assets/images/placeholder.jpg'">
-                </div>
-                <div class="category-info">
-                  <h3>{{ category.name }}</h3>
-                  @if (category.description) {
-                    <p>{{ category.description }}</p>
-                  }
-                </div>
-              </div>
-            }
-          </div>
-        } @else {
-          <div class="empty-state">
-            <mat-icon>category</mat-icon>
-            <h3>Aucune catégorie disponible</h3>
-            <p>Les catégories seront bientôt disponibles à la consultation.</p>
-          </div>
-        }
-      } @else {
-        <div class="loading-state">
-          <mat-icon>hourglass_empty</mat-icon>
-          <p>Chargement des catégories...</p>
-        </div>
-      }
-    }
-  </div>
-</section>
+    </div>
+  </section>
+}

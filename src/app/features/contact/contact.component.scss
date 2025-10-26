@@ -1,34 +1,45 @@
+.contact-page {
+  min-height: 100vh;
+}
+
 .contact-content {
-  padding: 4rem 0;
+  padding: 0;
 
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 calc(16px + 1rem);
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
   }
 }
 
 .contact-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
+  grid-template-columns: 50% 50%;
+  min-height: 100vh;
+  align-items: stretch;
 }
 
 .contact-image {
   width: 100%;
-  height: 100%;
+  height: 100vh;
 
   img {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    display: block;
   }
 }
 
 .contact-form-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem;
+  background: white;
+  box-sizing: border-box;
+
   h2 {
     margin-bottom: 2rem;
     color: #000;
@@ -41,6 +52,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    flex-grow: 1;
   }
 
   .form-row {
@@ -72,13 +84,21 @@
   .form-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
   }
 
   .submit-button {
     padding: 0.75rem 2rem;
     font-size: 1rem;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-spinner {
+      margin-right: 0.5rem;
+    }
   }
 
   mat-form-field {
@@ -104,31 +124,25 @@
 }
 
 @media (max-width: 768px) {
-  .contact-content {
-    padding: 2rem 0;
-
-    .container {
-      padding: 0 1rem;
-    }
-  }
-
   .contact-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    min-height: auto;
   }
 
   .contact-image {
     order: 1;
-    max-height: 300px;
+    height: 50vh;
 
     img {
-      height: 300px;
+      height: 50vh;
       object-fit: cover;
     }
   }
 
   .contact-form-section {
     order: 2;
+    min-height: auto;
+    padding: 2rem 1rem;
 
     h2 {
       text-align: center;
@@ -137,6 +151,8 @@
 
     .form-actions {
       justify-content: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
     }
 
     .form-row {

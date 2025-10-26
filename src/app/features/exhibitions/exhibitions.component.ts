@@ -1,9 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '@core/services/api.service';
-import { Exhibition } from '@core/models/exhibition.model';
-import { catchError, EMPTY } from 'rxjs';
+import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
+import { catchError, EMPTY, combineLatest } from 'rxjs';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
 
 type TabType = 'current' | 'past';
 
@@ -11,28 +13,39 @@ type TabType = 'current' | 'past';
   selector: 'app-exhibitions',
   imports: [
     CommonModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTooltipModule
   ],
   templateUrl: './exhibitions.component.html',
   styleUrl: './exhibitions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExhibitionsComponent implements OnInit {
+export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly apiService = inject(ApiService);
 
   protected readonly activeTab = signal<TabType>('current');
-  protected readonly upcomingExhibitions = signal<Exhibition[]>([]);
+  protected readonly currentExhibitions = signal<Exhibition[]>([]);
   protected readonly pastExhibitions = signal<Exhibition[]>([]);
+  protected readonly ExhibitionStatus = ExhibitionStatus;
+  private readonly scrollAnimationService = inject(ScrollAnimationService);
 
   ngOnInit(): void {
     this.loadExhibitions();
+    this.scrollAnimationService.setupScrollAnimations();
+  }
+
+  ngOnDestroy(): void {
+    this.scrollAnimationService.disconnect();
   }
 
   private loadExhibitions(): void {
-    this.apiService.getUpcomingExhibitions()
+    combineLatest([
+      this.apiService.getUpcomingExhibitions(),
+      this.apiService.getOngoingExhibitions()
+    ])
       .pipe(catchError(() => EMPTY))
-      .subscribe(exhibitions => {
-        this.upcomingExhibitions.set(exhibitions);
+      .subscribe(([upcoming, ongoing]) => {
+        this.currentExhibitions.set([...ongoing, ...upcoming]);
       });
 
     this.apiService.getPastExhibitions()
@@ -44,6 +57,10 @@ export class ExhibitionsComponent implements OnInit {
 
   protected setActiveTab(tab: TabType): void {
     this.activeTab.set(tab);
+  }
+
+  protected isVernissageRegistrationDisabled(exhibition: Exhibition): boolean {
+    return exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
   }
 
   protected formatDateBlock(startDate?: string, endDate?: string): string {
@@ -75,6 +92,8 @@ export class ExhibitionsComponent implements OnInit {
   }
 
   protected onVernissageRegistration(exhibition: Exhibition): void {
+    if (this.isVernissageRegistrationDisabled(exhibition)) return;
+
     const vernissageUrl = 'https://forms.cloud.microsoft/pages/responsepage.aspx?id=wmJHDV9sh06TKIDkc-144X_K4JQ2f1ZDpqkc-BlhTspUQkQ3N0JHNUJJVUNGNzdBTzZCOEdWWEhISy4u&utm_source=print&utm_medium=paper&utm_campaign=20250902_cdg_flyer_vernissage_pierette&route=shorturl';
     window.open(vernissageUrl, '_blank');
   }

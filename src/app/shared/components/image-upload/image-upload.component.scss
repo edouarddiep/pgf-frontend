@@ -12,7 +12,7 @@
   background: #fafafa;
 
   &:hover, &.dragging {
-    border-color: #2196f3;
+    border-color: #706969;
     background: #f0f8ff;
   }
 
@@ -52,7 +52,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #2196f3;
+  color: #706969;
   font-weight: 500;
 
   mat-icon {
@@ -82,7 +82,7 @@
   }
 
   &.primary {
-    ring: 3px solid #2196f3;
+    ring: 3px solid #706969;
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
   }
 
@@ -98,7 +98,7 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  background: #2196f3;
+  background: #706969;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;

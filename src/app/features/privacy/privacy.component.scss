@@ -1,0 +1,157 @@
+.privacy-page {
+  min-height: 100vh;
+}
+
+.privacy-hero {
+  position: relative;
+  height: 30vh;
+  background: linear-gradient(135deg, #673ab7, #5e35b1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .hero-content {
+    text-align: center;
+    color: white;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin: 0;
+      position: relative;
+      padding-bottom: 1.5rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 350px;
+        height: 2px;
+        background: white;
+      }
+    }
+  }
+}
+
+.privacy-content {
+  padding: 4rem 0;
+  background: white;
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .privacy-section {
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #673ab7;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #5e35b1;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 1rem;
+
+      strong {
+        color: #673ab7;
+      }
+
+      em {
+        color: #666;
+        font-style: italic;
+      }
+    }
+
+    ul {
+      margin: 1rem 0;
+      padding-left: 2rem;
+
+      li {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #333;
+        margin-bottom: 0.5rem;
+
+        strong {
+          color: #673ab7;
+        }
+      }
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: #e0e0e0;
+      margin: 1.5rem 0;
+    }
+  }
+
+  .contact-section {
+    background: #f3e5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    border-left: 4px solid #673ab7;
+
+    h3 {
+      font-size: 1.3rem;
+      color: #673ab7;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .privacy-hero .hero-content h1 {
+    font-size: 2rem;
+
+    &::after {
+      width: 250px;
+    }
+  }
+
+  .privacy-content {
+    padding: 2rem 0;
+
+    .privacy-section {
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      h3 {
+        font-size: 1.1rem;
+      }
+    }
+
+    .contact-section {
+      padding: 1.5rem;
+    }
+  }
+}

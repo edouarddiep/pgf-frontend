@@ -1,238 +1,178 @@
 .about-page {
-  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-.artist-section {
-  padding: 4rem 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
+// Section artiste 50/50 sans padding
 .artist-content {
+  padding: 0;
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    min-height: 100vh;
+    align-items: stretch;
+  }
+
+  .artist-text {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+
+    .artist-bio {
+      p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #333;
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+
+  .artist-image {
+    width: 100%;
+    height: 100vh;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+}
+
+// Section vision avec contenu large
+.vision-container {
+  max-width: none;
+  padding: 0 4rem;
+
+  .vision-content {
+    max-width: none;
+    margin: 0;
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 2rem;
+      text-align: justify;
+    }
+  }
+}
+
+// Section expositions
+.exhibitions-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 4rem;
-  align-items: start;
-}
-
-.artist-text h1 {
-  font-size: 3rem;
-  font-weight: 300;
-  margin-bottom: 2rem;
-  color: #1976d2;
-}
-
-.artist-bio .lead {
-  font-size: 1.3rem;
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-  color: rgba(0, 0, 0, 0.8);
-}
-
-.artist-bio p {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.artist-stats {
-  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-top: 3rem;
-  flex-wrap: wrap;
+  margin-bottom: 3rem;
 }
 
-.stat {
-  text-align: center;
-}
-
-.stat .number {
-  display: block;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1976d2;
-  line-height: 1;
-}
-
-.stat .label {
-  display: block;
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.6);
-  margin-top: 0.5rem;
-}
-
-.artist-image {
-  position: sticky;
-  top: 2rem;
-}
-
-.artist-image img {
-  width: 100%;
-  height: auto;
+.exhibition-card {
+  background: white;
   border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .exhibition-image {
+    height: 200px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .exhibition-content {
+    padding: 1.5rem;
+
+    h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+      color: #1976d2;
+    }
+
+    .location, .date {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  }
 }
 
-.image-caption {
+.section-actions {
   text-align: center;
-  margin-top: 1rem;
 }
 
-.image-caption p {
-  margin: 0;
-  font-style: italic;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.techniques-section,
-.exhibitions-preview,
-.association-section {
-  padding: 4rem 0;
-}
-
-.techniques-section {
-  background: #f8f9fa;
-}
-
-.association-section {
-  background: #f8f9fa;
-}
-
-h2 {
+// Section association
+.association-content {
+  max-width: 800px;
+  margin: 0 auto;
   text-align: center;
-  font-size: 2.5rem;
-  font-weight: 300;
-  margin-bottom: 1rem;
-  color: #1976d2;
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.association-actions {
+  margin-top: 2rem;
+
+  button {
+    padding: 0.75rem 2rem;
+    font-weight: 500;
+  }
 }
 
 .section-subtitle {
   text-align: center;
   margin-bottom: 3rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: #666;
   font-size: 1.1rem;
 }
 
-.techniques-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 3rem;
-}
-
-.technique-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.technique-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.exhibitions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-}
-
-.exhibition-card {
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.exhibition-card:hover {
-  transform: translateY(-2px);
-}
-
-.exhibition-image {
-  height: 200px;
-  overflow: hidden;
-}
-
-.exhibition-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.exhibition-card h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.3rem;
-  color: #1976d2;
-}
-
-.location,
-.date {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.6);
-}
-
-.description {
-  margin: 1rem 0;
-  line-height: 1.6;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.section-actions {
-  text-align: center;
-  margin-top: 3rem;
-}
-
-.section-actions button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.association-card {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.association-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
-  flex-wrap: wrap;
-}
-
-.association-actions button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
+// Responsive design
 @media (max-width: 768px) {
-  .artist-content {
+  .artist-content .content-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    min-height: auto;
+
+    .artist-text {
+      order: 2;
+      padding: 2rem;
+    }
+
+    .artist-image {
+      order: 1;
+      height: 50vh;
+
+      img {
+        height: 50vh;
+      }
+    }
   }
 
-  .artist-text h1 {
-    font-size: 2rem;
+  .vision-container {
+    padding: 0 2rem;
+
+    .vision-content p {
+      text-align: left;
+    }
   }
 
-  .artist-stats {
-    justify-content: center;
-    gap: 1.5rem;
-  }
-
-  .techniques-grid,
   .exhibitions-grid {
     grid-template-columns: 1fr;
-  }
-
-  .association-actions {
-    justify-content: center;
   }
 }

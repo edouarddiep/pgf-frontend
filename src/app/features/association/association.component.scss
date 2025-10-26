@@ -1,0 +1,199 @@
+.association-page {
+  min-height: 100vh;
+}
+
+// Hero avec image de fond spécifique
+.hero-banner {
+  background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-1.jpeg');
+  height: 40vh;
+}
+
+// Section content 50/50 sans padding
+.association-content {
+  padding: 0;
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    min-height: 100vh;
+    align-items: stretch;
+  }
+
+  .main-content {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    blockquote {
+      background: #f8f9fa;
+      border-left: 4px solid #1976d2;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: #555;
+    }
+  }
+
+  .image-content {
+    width: 100%;
+    height: 100vh;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+}
+
+// Texte d'introduction centré
+.intro-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.7;
+}
+
+// Section adhésion
+.membership-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  .contact-info,
+  .payment-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      font-size: 1.3rem;
+      color: #1976d2;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+
+      strong {
+        color: #1976d2;
+      }
+    }
+  }
+
+  .bank-details {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+
+    p {
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+  }
+}
+
+// Section organisation
+.organization-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+
+  .committee-section,
+  .officers-section {
+    h3 {
+      font-size: 1.3rem;
+      color: #1976d2;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        strong {
+          color: #1976d2;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .hero-banner .hero-content {
+    h1 {
+      font-size: 2.5rem;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+
+      &::after {
+        width: 200px;
+      }
+    }
+  }
+
+  .association-content .content-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+
+    .main-content {
+      order: 2;
+      padding: 2rem;
+    }
+
+    .image-content {
+      order: 1;
+      height: 50vh;
+
+      img {
+        height: 50vh;
+      }
+    }
+  }
+
+  .membership-details {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .organization-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

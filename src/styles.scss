@@ -25,6 +25,219 @@ html, body {
   height: 100%;
 }
 
+// Animations scroll globales
+.scroll-fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Classes utilitaires pour l'alternance des backgrounds
+.section-white {
+  background: white;
+}
+
+.section-gray {
+  background: #f8f9fa;
+}
+
+// Hero banners uniformes
+.hero-banner {
+  position: relative;
+  height: 30vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      position: relative;
+      padding-bottom: 1.5rem;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200px;
+        height: 2px;
+        background: white;
+      }
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin: 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-content h1 {
+      font-size: 2.5rem;
+
+      &::after {
+        width: 150px;
+      }
+    }
+  }
+}
+
+// Titres de sections uniformes
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 3rem;
+  color: #706969;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+// Contenus de sections uniformes
+.section-content {
+  max-width: 900px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Container uniforme
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// Sections uniformes
+.page-section {
+  padding: 4rem 0;
+
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+}
+
+// Styles pour les pages légales
+.legal-section {
+  margin-bottom: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #706969;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #706969;
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 1rem;
+
+    strong {
+      color: #706969;
+    }
+
+    em {
+      color: #666;
+      font-style: italic;
+    }
+  }
+
+  ul {
+    margin: 1rem 0;
+    padding-left: 2rem;
+
+    li {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #333;
+      margin-bottom: 0.5rem;
+
+      strong {
+        color: #706969;
+      }
+    }
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 1.5rem 0;
+  }
+}
+
+.legal-contact-section {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  border-left: 4px solid #706969;
+
+  h3 {
+    font-size: 1.3rem;
+    color: #706969;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+  }
+}
+
 .success-snackbar {
   background-color: #4caf50 !important;
   color: white !important;
@@ -33,8 +246,8 @@ html, body {
     background-color: #4caf50 !important;
     min-width: 400px !important;
     max-width: 600px !important;
-    font-size: 16px !important;
-    padding: 16px 24px !important;
+    font-size: 1.2rem !important;
+    padding: 20px 28px !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
   }
@@ -42,11 +255,14 @@ html, body {
   .mdc-snackbar__label {
     color: white !important;
     font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
   }
 
   .mat-mdc-snack-bar-action {
     color: white !important;
     font-weight: 600 !important;
+    font-size: 1.2rem !important;
   }
 }
 
@@ -58,8 +274,8 @@ html, body {
     background-color: #f44336 !important;
     min-width: 400px !important;
     max-width: 600px !important;
-    font-size: 16px !important;
-    padding: 16px 24px !important;
+    font-size: 1.2rem !important;
+    padding: 20px 28px !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
   }
@@ -67,24 +283,27 @@ html, body {
   .mdc-snackbar__label {
     color: white !important;
     font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
   }
 
   .mat-mdc-snack-bar-action {
     color: white !important;
     font-weight: 600 !important;
+    font-size: 1.2rem !important;
   }
 }
 
 .info-snackbar {
-  background-color: #2196f3 !important;
+  background-color: #706969 !important;
   color: white !important;
 
   .mdc-snackbar__surface {
-    background-color: #2196f3 !important;
+    background-color: #706969 !important;
     min-width: 400px !important;
     max-width: 600px !important;
-    font-size: 16px !important;
-    padding: 16px 24px !important;
+    font-size: 1.2rem !important;
+    padding: 20px 28px !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
   }
@@ -92,10 +311,30 @@ html, body {
   .mdc-snackbar__label {
     color: white !important;
     font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
   }
 
   .mat-mdc-snack-bar-action {
     color: white !important;
     font-weight: 600 !important;
+    font-size: 1.2rem !important;
   }
+}
+
+img {
+  border-radius: 0;
+  box-shadow: none;
+
+  mat-card & {
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.contact-image img,
+.artist-image img,
+.exhibition-image img {
+  border-radius: 0;
+  box-shadow: none;
 }

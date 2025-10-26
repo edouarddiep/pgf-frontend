@@ -25,9 +25,9 @@
   <div class="exhibitions-content">
     @if (activeTab() === 'current') {
       <section class="current-section">
-        @if (upcomingExhibitions().length > 0) {
+        @if (currentExhibitions().length > 0) {
           <div class="exhibitions-list">
-            @for (exhibition of upcomingExhibitions(); track exhibition.id; let isLast = $last) {
+            @for (exhibition of currentExhibitions(); track exhibition.id; let isLast = $last) {
               <article class="exhibition-item">
                 <div class="exhibition-image">
                   @if (exhibition.imageUrl) {
@@ -56,9 +56,22 @@
                   }
 
                   <div class="action-buttons">
-                    <button mat-raised-button color="primary" (click)="onVernissageRegistration(exhibition)">
-                      S'inscrire au vernissage
-                    </button>
+                    <div class="vernissage-button-container">
+                      <button
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="isVernissageRegistrationDisabled(exhibition)"
+                        [matTooltip]="isVernissageRegistrationDisabled(exhibition) ? 'L\'exposition est actuellement en cours. Il n\'est plus possible de s\'inscrire au vernissage.' : ''"
+                        matTooltipPosition="above"
+                        (click)="onVernissageRegistration(exhibition)">
+                        S'inscrire au vernissage
+                      </button>
+                      @if (isVernissageRegistrationDisabled(exhibition)) {
+                        <small class="disabled-info">
+                          L'exposition est actuellement en cours. Il n'est plus possible de s'inscrire au vernissage.
+                        </small>
+                      }
+                    </div>
                     <button mat-stroked-button (click)="onShowOnMap(exhibition)">
                       Où se rendre
                     </button>
