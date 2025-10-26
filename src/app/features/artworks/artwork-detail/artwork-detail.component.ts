@@ -1,9 +1,8 @@
-import { Component, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { switchMap, combineLatest, map } from 'rxjs';
 
@@ -13,8 +12,7 @@ import { switchMap, combineLatest, map } from 'rxjs';
     CommonModule,
     RouterModule,
     MatButtonModule,
-    MatIconModule,
-    LazyLoadImageModule
+    MatIconModule
   ],
   templateUrl: './artwork-detail.component.html',
   styleUrl: './artwork-detail.component.scss',
@@ -24,6 +22,7 @@ export class ArtworkDetailComponent {
   private readonly artworkService = inject(ArtworkService);
   private readonly route = inject(ActivatedRoute);
 
+  readonly thumbnailsContainer = viewChild<ElementRef<HTMLElement>>('thumbnailsContainer');
   readonly selectedImageIndex = signal(0);
   readonly showImageModal = signal(false);
   readonly modalImageIndex = signal(0);
@@ -57,17 +56,19 @@ export class ArtworkDetailComponent {
 
   selectImage(index: number): void {
     this.selectedImageIndex.set(index);
+    this.centerThumbnail(index);
   }
 
-  previousImage(): void {
+  previousImage(totalImages: number): void {
     const current = this.selectedImageIndex();
-    if (current > 0) {
-      this.selectedImageIndex.set(current - 1);
-    }
+    const newIndex = current > 0 ? current - 1 : totalImages - 1;
+    this.selectImage(newIndex);
   }
 
-  nextImage(): void {
-    this.selectedImageIndex.set(this.selectedImageIndex() + 1);
+  nextImage(totalImages: number): void {
+    const current = this.selectedImageIndex();
+    const newIndex = current < totalImages - 1 ? current + 1 : 0;
+    this.selectImage(newIndex);
   }
 
   openImageModal(index: number): void {
@@ -79,25 +80,41 @@ export class ArtworkDetailComponent {
     this.showImageModal.set(false);
   }
 
-  previousModalImage(): void {
+  previousModalImage(event: Event, totalImages: number): void {
+    event.stopPropagation();
     const current = this.modalImageIndex();
-    if (current > 0) {
-      this.modalImageIndex.set(current - 1);
-    }
+    const newIndex = current > 0 ? current - 1 : totalImages - 1;
+    this.modalImageIndex.set(newIndex);
   }
 
-  nextModalImage(): void {
-    this.modalImageIndex.set(this.modalImageIndex() + 1);
+  nextModalImage(event: Event, totalImages: number): void {
+    event.stopPropagation();
+    const current = this.modalImageIndex();
+    const newIndex = current < totalImages - 1 ? current + 1 : 0;
+    this.modalImageIndex.set(newIndex);
   }
 
-  scrollThumbnails(direction: 'left' | 'right'): void {
-    const container = document.querySelector('.thumbnails-container') as HTMLElement;
-    if (container) {
-      const scrollAmount = 120;
+  private centerThumbnail(index: number): void {
+    requestAnimationFrame(() => {
+      const container = this.thumbnailsContainer()?.nativeElement;
+      if (!container) return;
+
+      const thumbnails = Array.from(container.children) as HTMLElement[];
+      const thumbnail = thumbnails[index];
+
+      if (!thumbnail) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const thumbnailRect = thumbnail.getBoundingClientRect();
+
+      const containerCenter = containerRect.width / 2;
+      const thumbnailCenter = thumbnailRect.left - containerRect.left + thumbnailRect.width / 2;
+      const scrollOffset = thumbnailCenter - containerCenter;
+
       container.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        left: scrollOffset,
         behavior: 'smooth'
       });
-    }
+    });
   }
 }

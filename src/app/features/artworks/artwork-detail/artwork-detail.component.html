@@ -5,10 +5,16 @@
         <div class="artwork-gallery">
           <div class="main-image-container">
             @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
-              <button class="main-carousel-btn prev" (click)="previousImage()" [disabled]="selectedImageIndex() === 0">
+              <button
+                type="button"
+                class="main-carousel-btn prev"
+                (click)="previousImage(artwork.imageUrls.length)">
                 <mat-icon>chevron_left</mat-icon>
               </button>
-              <button class="main-carousel-btn next" (click)="nextImage()" [disabled]="selectedImageIndex() === artwork.imageUrls.length - 1">
+              <button
+                type="button"
+                class="main-carousel-btn next"
+                (click)="nextImage(artwork.imageUrls.length)">
                 <mat-icon>chevron_right</mat-icon>
               </button>
             }
@@ -24,10 +30,6 @@
 
           @if (artwork.imageUrls && artwork.imageUrls.length > 1) {
             <div class="thumbnail-carousel">
-              <button class="carousel-btn prev" (click)="scrollThumbnails('left')">
-                <mat-icon>chevron_left</mat-icon>
-              </button>
-
               <div class="thumbnails-container" #thumbnailsContainer>
                 @for (imageUrl of artwork.imageUrls; track $index) {
                   <div
@@ -38,10 +40,6 @@
                   </div>
                 }
               </div>
-
-              <button class="carousel-btn next" (click)="scrollThumbnails('right')">
-                <mat-icon>chevron_right</mat-icon>
-              </button>
             </div>
           }
         </div>
@@ -85,25 +83,34 @@
 
 @if (showImageModal()) {
   <div class="image-modal" (click)="closeImageModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-content">
       @if (artwork$ | async; as artwork) {
-        <img
-          [src]="artwork.imageUrls[modalImageIndex()]"
-          [alt]="artwork.title"
-          class="modal-image">
+        <div class="modal-image-wrapper">
+          <img
+            [src]="artwork.imageUrls[modalImageIndex()]"
+            [alt]="artwork.title"
+            class="modal-image"
+            (click)="$event.stopPropagation()">
 
-        <button class="modal-close" (click)="closeImageModal()">
-          <mat-icon>close</mat-icon>
-        </button>
+          <button type="button" class="modal-close" (click)="closeImageModal()">
+            <mat-icon>close</mat-icon>
+          </button>
 
-        @if (artwork.imageUrls.length > 1) {
-          <button class="modal-prev" (click)="previousModalImage()" [disabled]="modalImageIndex() === 0">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <button class="modal-next" (click)="nextModalImage()" [disabled]="modalImageIndex() === artwork.imageUrls.length - 1">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        }
+          @if (artwork.imageUrls.length > 1) {
+            <button
+              type="button"
+              class="modal-prev"
+              (click)="previousModalImage($event, artwork.imageUrls.length)">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button
+              type="button"
+              class="modal-next"
+              (click)="nextModalImage($event, artwork.imageUrls.length)">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          }
+        </div>
       }
     </div>
   </div>
