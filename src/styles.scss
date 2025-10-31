@@ -57,6 +57,10 @@ h2 {
 
 p {
   color: #706969;
+
+  @media (max-width: 768px) {
+    font-size: 1rem !important;
+  }
 }
 
 button {

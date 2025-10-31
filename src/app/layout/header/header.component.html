@@ -5,43 +5,18 @@
     </a>
 
     @if (isHandset$ | async) {
-      <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-button">
-        <mat-icon>menu</mat-icon>
+      <button mat-icon-button (click)="toggleMobileMenu()" class="mobile-menu-button" [class.open]="isMobileMenuOpen()">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </button>
-
-      <mat-menu #mobileMenu="matMenu">
-        <a mat-menu-item routerLink="/">Accueil</a>
-        <a mat-menu-item routerLink="/about">À propos</a>
-        <button mat-menu-item [matMenuTriggerFor]="artworksSubmenu">Œuvres</button>
-        <a mat-menu-item routerLink="/exhibitions">Expositions</a>
-        <a mat-menu-item routerLink="/association">Association</a>
-        <a mat-menu-item routerLink="/contact">Contact</a>
-      </mat-menu>
-
-      <mat-menu #artworksSubmenu="matMenu">
-        @for (category of categories$ | async; track category.id) {
-          <a mat-menu-item [routerLink]="['/artworks', category.slug]">
-            {{ category.name }}
-          </a>
-        }
-      </mat-menu>
     } @else {
       <nav class="desktop-nav">
         <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Accueil</a>
         <a mat-button routerLink="/about" routerLinkActive="active">À propos</a>
-
-        <button mat-button [matMenuTriggerFor]="artworksMenu" class="artworks-menu">
-          Œuvres
-        </button>
-
-        <mat-menu #artworksMenu="matMenu">
-          @for (category of categories$ | async; track category.id) {
-            <a mat-menu-item [routerLink]="['/artworks', category.slug]">
-              {{ category.name }}
-            </a>
-          }
-        </mat-menu>
-
+        <a mat-button routerLink="/artworks" routerLinkActive="active">Œuvres</a>
         <a mat-button routerLink="/exhibitions" routerLinkActive="active">Expositions</a>
         <a mat-button routerLink="/association" routerLinkActive="active">Association</a>
         <a mat-button routerLink="/contact" routerLinkActive="active">Contact</a>
@@ -49,3 +24,14 @@
     }
   </div>
 </mat-toolbar>
+
+@if (isMobileMenuOpen()) {
+  <nav class="mobile-menu">
+    <a routerLink="/" (click)="closeMobileMenu()">Accueil</a>
+    <a routerLink="/about" (click)="closeMobileMenu()">À propos</a>
+    <a routerLink="/artworks" (click)="closeMobileMenu()">Œuvres</a>
+    <a routerLink="/exhibitions" (click)="closeMobileMenu()">Expositions</a>
+    <a routerLink="/association" (click)="closeMobileMenu()">Association</a>
+    <a routerLink="/contact" (click)="closeMobileMenu()">Contact</a>
+  </nav>
+}
