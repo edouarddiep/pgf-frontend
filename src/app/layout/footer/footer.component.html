@@ -3,7 +3,6 @@
     <div class="container">
       <div class="footer-sections">
 
-        <!-- Section Navigation -->
         <div class="footer-section navigation-section">
           <h4>Navigation</h4>
           <nav class="footer-nav">
@@ -17,7 +16,6 @@
           </nav>
         </div>
 
-        <!-- Section Catégories -->
         <div class="footer-section categories-section">
           <h4>Catégories</h4>
           @if (categories$ | async; as categories) {
@@ -31,13 +29,13 @@
           }
         </div>
 
-        <!-- Section Contact -->
         <div class="footer-section contact-section">
-          <h4>Contact</h4>
+          <h4>Suivez-moi</h4>
           <div class="contact-info">
-            <div class="contact-item">
-              <a href="mailto:denis.gonseth@dfinet.ch">denis.gonseth@dfinet.ch</a>
-            </div>
+            <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
+              <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
+              <span>pierrette_gf</span>
+            </a>
           </div>
         </div>
 

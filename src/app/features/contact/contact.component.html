@@ -13,7 +13,7 @@
 
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
-        <div class="form-row">
+          <div class="form-row">
             <mat-form-field appearance="outline" class="half-width">
               <mat-label>Nom</mat-label>
               <input matInput formControlName="name" required>
@@ -40,7 +40,7 @@
                   @if (contactForm.get('email')?.errors?.['required']) {
                     L'email est requis
                   } @else if (contactForm.get('email')?.errors?.['email']) {
-                    Format d'adresse email invalide
+                    Email invalide
                   }
                 </mat-error>
               }
@@ -52,52 +52,63 @@
             </mat-form-field>
           </div>
 
-          <div class="form-group">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Sujet</mat-label>
-              <input matInput formControlName="subject" required>
-              @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
-                <mat-error>Le sujet est requis</mat-error>
-              }
-            </mat-form-field>
-          </div>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Sujet</mat-label>
+            <input matInput formControlName="subject" required>
+            @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
+              <mat-error>Le sujet est requis</mat-error>
+            }
+          </mat-form-field>
 
-          <div class="form-group">
+          <div class="form-group full-width">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Message</mat-label>
               <textarea
                 matInput
                 formControlName="message"
                 rows="6"
-                placeholder="Votre message..."
-                required>
+                required
+                maxlength="500">
               </textarea>
               @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
                 <mat-error>
                   @if (contactForm.get('message')?.errors?.['required']) {
                     Le message est requis
                   } @else if (contactForm.get('message')?.errors?.['minlength']) {
-                    Merci de saisir 10 caractères au minimum
+                    Le message doit contenir au moins 10 caractères
                   }
                 </mat-error>
               }
             </mat-form-field>
             <div class="character-counter">
-              {{ getMessageLength() }} sur 500 max.
+              {{ getMessageLength() }} / 500 caractères
             </div>
           </div>
 
-            <div class="form-actions">
-              <button
-                mat-raised-button
-                color="primary"
-                type="submit"
-                [disabled]="contactForm.invalid"
-                class="submit-button">
+          <div class="form-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="submit-button"
+              [disabled]="contactForm.invalid || isSubmitting()">
+              @if (isSubmitting()) {
+                <mat-spinner diameter="20"></mat-spinner>
+                Envoi en cours...
+              } @else {
                 Envoyer
-              </button>
+              }
+            </button>
           </div>
         </form>
+
+        <div class="social-section">
+          <p class="social-text">Suivez mon actualité sur Instagram</p>
+          <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
+            <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
+            <span>pierrette_gf</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>

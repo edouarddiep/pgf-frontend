@@ -43,7 +43,18 @@
     height: 30vh;
 
     .hero-content h1 {
-      font-size: 2rem;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+
+      &:first-child {
+        margin-bottom: 1.5rem;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-content h1 {
+      font-size: 1.2rem;
 
       &:first-child {
         margin-bottom: 1rem;
@@ -70,7 +81,7 @@
     background: white;
 
     p {
-      font-size: 0.9rem;
+      font-size: 1.125rem;
       line-height: 1.8;
       color: #333;
       margin-bottom: 1.5rem;
@@ -82,7 +93,7 @@
       padding: 1.5rem;
       margin: 2rem 0;
       font-style: italic;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       color: #555;
     }
   }
@@ -102,11 +113,11 @@
 
 .intro-text {
   text-align: center;
-  font-size: 1.1rem;
   color: #666;
   max-width: 800px;
   margin: 0 auto 3rem auto;
   line-height: 1.7;
+  font-size: 1.125rem;
 }
 
 .membership-grid {
@@ -141,7 +152,7 @@
     .intro-text {
       margin: 0;
       text-align: left;
-      font-size: 1rem;
+      font-size: 1.125rem;
     }
 
     .payment-info {
@@ -159,6 +170,7 @@
       p {
         margin-bottom: 0.5rem;
         line-height: 1.6;
+        font-size: 1rem;
 
         strong {
           color: #706969;
@@ -186,7 +198,7 @@
 
         p {
           margin-bottom: 0.25rem;
-          font-size: 0.95rem;
+          font-size: 1rem;
         }
       }
     }
@@ -196,7 +208,7 @@
       color: white;
       padding: 0.75rem 2rem;
       font-size: 1rem;
-      align-self: flex-start;
+      align-self: center;
 
       &:hover {
         background-color: #5a5454;
@@ -208,20 +220,16 @@
 .organization-content {
   max-width: 800px;
   margin: 0 auto;
-  text-align:center;
+  text-align: center;
 
   h3 {
     font-size: 1.3rem;
-    color: #706969;
     margin-top: 2rem;
     margin-bottom: 1rem;
-
-    &:first-child {
-      margin-top: 0;
-    }
   }
 
   p {
+    font-size: 1.125rem;
     line-height: 1.8;
     color: #666;
     margin-bottom: 1rem;
@@ -240,6 +248,14 @@
     .main-content {
       order: 2;
       padding: 2rem;
+
+      p {
+        font-size: 1rem;
+      }
+
+      blockquote {
+        font-size: 1rem;
+      }
     }
 
     .image-content {
@@ -261,6 +277,20 @@
 
     .membership-content {
       padding: 2rem;
+
+      .intro-text {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .organization-content {
+    h3 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      font-size: 1rem;
     }
   }
 }

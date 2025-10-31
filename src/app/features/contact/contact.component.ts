@@ -32,6 +32,8 @@ export class ContactComponent {
   private readonly snackBar = inject(MatSnackBar);
 
   readonly isSubmitting = signal(false);
+  readonly instagramUrl = 'https://www.instagram.com/pierrette_gf?igsh=azh0bGV6ZzltMzdj&utm_source=qr';
+  readonly instagramLogoUrl = 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/insta-logo.jpg';
 
   readonly contactForm: FormGroup = this.fb.group({
     name: ['', [Validators.required]],
@@ -69,7 +71,7 @@ export class ContactComponent {
           this.contactForm.reset();
           this.isSubmitting.set(false);
         },
-        error: (error) => {
+        error: () => {
           this.snackBar.open('Erreur lors de l\'envoi du message', 'Fermer', {
             duration: 5000,
             panelClass: ['error-snackbar']
