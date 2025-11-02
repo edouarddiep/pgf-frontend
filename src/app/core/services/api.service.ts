@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { Exhibition } from '@core/models/exhibition.model';
 import { ContactMessage } from '@core/models/contact.model';
+import {environment} from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api';
+  private readonly baseUrl = environment.apiUrl;
 
   // Catégories
 
