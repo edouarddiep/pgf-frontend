@@ -46,44 +46,40 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   private ensureVideoPlays(): void {
-    setTimeout(() => {
-      const video = this.heroVideo?.nativeElement;
-      if (video && typeof video.play === 'function') {
-        video.muted = true;
-        video.volume = 0;
-        video.currentTime = 2;
-        video.play().catch(() => {});
-      }
-    }, 500);
+    const video = this.heroVideo?.nativeElement;
+    if (video && typeof video.play === 'function') {
+      video.muted = true;
+      video.volume = 0;
+      video.currentTime = 2;
+      video.play().catch(() => {});
+    }
   }
 
   private setupVideoLoop(): void {
-    setTimeout(() => {
-      const video = this.heroVideo?.nativeElement;
-      if (video && typeof video.addEventListener === 'function') {
+    const video = this.heroVideo?.nativeElement;
+    if (video && typeof video.addEventListener === 'function') {
+      video.muted = true;
+      video.volume = 0;
+
+      video.addEventListener('loadedmetadata', () => {
+        video.currentTime = 2;
         video.muted = true;
         video.volume = 0;
+      });
 
-        video.addEventListener('loadedmetadata', () => {
+      video.addEventListener('timeupdate', () => {
+        if (video.currentTime >= 10) {
           video.currentTime = 2;
+        }
+      });
+
+      video.addEventListener('volumechange', () => {
+        if (!video.muted || video.volume > 0) {
           video.muted = true;
           video.volume = 0;
-        });
-
-        video.addEventListener('timeupdate', () => {
-          if (video.currentTime >= 10) {
-            video.currentTime = 2;
-          }
-        });
-
-        video.addEventListener('volumechange', () => {
-          if (!video.muted || video.volume > 0) {
-            video.muted = true;
-            video.volume = 0;
-          }
-        });
-      }
-    }, 500);
+        }
+      });
+    }
   }
 
   private loadExhibitions(): void {

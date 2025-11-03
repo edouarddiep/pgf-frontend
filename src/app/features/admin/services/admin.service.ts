@@ -1,11 +1,12 @@
-import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { ArtworkCategory, Artwork } from '@core/models/artwork.model';
-import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
-import { ContactMessage } from '@core/models/contact.model';
+import {Injectable, inject, signal, PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
+import {ArtworkCategory, Artwork} from '@core/models/artwork.model';
+import {Exhibition} from '@core/models/exhibition.model';
+import {ContactMessage} from '@core/models/contact.model';
+import {environment} from '@environments/environment';
 
 export interface AdminExhibitionRequest {
   title: string;
@@ -23,8 +24,8 @@ export interface AdminExhibitionRequest {
 export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly baseUrl = 'http://localhost:8080/api/admin';
-  private readonly apiUrl = 'http://localhost:8080/api';
+  private readonly baseUrl = `${environment.apiUrl}/admin`;
+  private readonly apiUrl = environment.apiUrl;
   private readonly isAuthenticatedSignal = signal(false);
 
   constructor() {
@@ -39,7 +40,7 @@ export class AdminService {
   isAuthenticated = this.isAuthenticatedSignal.asReadonly();
 
   login(password: string): Observable<boolean> {
-    return this.http.post<void>(`${this.baseUrl}/auth/login`, { password })
+    return this.http.post<void>(`${this.baseUrl}/auth/login`, {password})
       .pipe(
         map(() => true),
         tap(() => {
@@ -97,7 +98,7 @@ export class AdminService {
   }
 
   updateExhibitionOrder(id: number, order: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/exhibitions/${id}/order`, { displayOrder: order });
+    return this.http.put<void>(`${this.baseUrl}/exhibitions/${id}/order`, {displayOrder: order});
   }
 
   deleteExhibition(id: number): Observable<void> {
@@ -117,7 +118,7 @@ export class AdminService {
   // Ajouter dans AdminService
   deleteExhibitionImage(imageUrl: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/images`, {
-      params: { imageUrl }
+      params: {imageUrl}
     });
   }
 

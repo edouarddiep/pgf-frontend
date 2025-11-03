@@ -44,48 +44,40 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private ensureVideoPlays(): void {
-    setTimeout(() => {
-      const video = this.heroVideo?.nativeElement;
-      if (video && typeof video.play === 'function') {
-        // Force le mute avant de jouer
-        video.muted = true;
-        video.volume = 0;
-        video.currentTime = 2;
-        video.play().catch(() => {
-          // Fallback silencieux si l'autoplay échoue
-        });
-      }
-    }, 500);
+    const video = this.heroVideo?.nativeElement;
+    if (video && typeof video.play === 'function') {
+      video.muted = true;
+      video.volume = 0;
+      video.currentTime = 2;
+      video.play().catch(() => {});
+    }
   }
 
   private setupVideoLoop(): void {
-    setTimeout(() => {
-      const video = this.heroVideo?.nativeElement;
-      if (video && typeof video.addEventListener === 'function') {
+    const video = this.heroVideo?.nativeElement;
+    if (video && typeof video.addEventListener === 'function') {
+      video.muted = true;
+      video.volume = 0;
+
+      video.addEventListener('loadedmetadata', () => {
+        video.currentTime = 2;
         video.muted = true;
         video.volume = 0;
+      });
 
-        video.addEventListener('loadedmetadata', () => {
+      video.addEventListener('timeupdate', () => {
+        if (video.currentTime >= 22) {
           video.currentTime = 2;
+        }
+      });
+
+      video.addEventListener('volumechange', () => {
+        if (!video.muted || video.volume > 0) {
           video.muted = true;
           video.volume = 0;
-        });
-
-        video.addEventListener('timeupdate', () => {
-          if (video.currentTime >= 22) {
-            video.currentTime = 2;
-          }
-        });
-
-        // Empêcher la réactivation du son
-        video.addEventListener('volumechange', () => {
-          if (!video.muted || video.volume > 0) {
-            video.muted = true;
-            video.volume = 0;
-          }
-        });
-      }
-    }, 500);
+        }
+      });
+    }
   }
 
   onCategoryClick(categorySlug: string): void {
