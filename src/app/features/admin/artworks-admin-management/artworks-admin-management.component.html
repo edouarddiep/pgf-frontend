@@ -98,9 +98,6 @@
             </button>
             <button type="submit" mat-raised-button color="primary"
                     [disabled]="!isFormValidForSubmit() || isSubmitting()">
-              @if (isSubmitting()) {
-                <mat-icon>hourglass_empty</mat-icon>
-              }
               {{ editingArtwork() ? 'Modifier' : 'Créer' }}
             </button>
           </div>
@@ -125,83 +122,72 @@
       </mat-card-header>
 
       <mat-card-content>
-        <div class="spinner-container">
-          @if (isLoading()) {
-            <div class="loading-overlay">
-              <mat-spinner diameter="50"></mat-spinner>
-              <p>Chargement des œuvres...</p>
-            </div>
-          }
+        @if (filteredArtworks().length > 0) {
+          <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
+            <ng-container matColumnDef="image">
+              <th mat-header-cell *matHeaderCellDef>Image</th>
+              <td mat-cell *matCellDef="let artwork">
+                @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
+                  <img
+                    [src]="artwork.mainImageUrl || artwork.imageUrls[0]"
+                    [alt]="artwork.title"
+                    class="artwork-thumb">
+                } @else {
+                  <div class="no-image">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                }
+              </td>
+            </ng-container>
 
-          @if (!isLoading()) {
-            @if (filteredArtworks().length > 0) {
-              <table mat-table [dataSource]="filteredArtworks()" class="artworks-table">
-                <ng-container matColumnDef="image">
-                  <th mat-header-cell *matHeaderCellDef>Image</th>
-                  <td mat-cell *matCellDef="let artwork">
-                    @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
-                      <img
-                        [src]="artwork.mainImageUrl || artwork.imageUrls[0]"
-                        [alt]="artwork.title"
-                        class="artwork-thumb">
-                    } @else {
-                      <div class="no-image">
-                        <mat-icon>image</mat-icon>
-                      </div>
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef>Œuvre</th>
+              <td mat-cell *matCellDef="let artwork">
+                <div class="artwork-info">
+                  <strong>{{ artwork.title }}</strong>
+                  @if (artwork.descriptionShort) {
+                    <div class="description-short">{{ artwork.descriptionShort }}</div>
+                  }
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="categories">
+              <th mat-header-cell *matHeaderCellDef>Catégories</th>
+              <td mat-cell *matCellDef="let artwork">
+                <div class="categories-chips">
+                  @if (artwork.categoryIds && artwork.categoryIds.length > 0) {
+                    @for (categoryName of getCategoryNames(artwork.categoryIds); track categoryName) {
+                      <mat-chip class="category-chip">{{ categoryName }}</mat-chip>
                     }
-                  </td>
-                </ng-container>
+                  } @else {
+                    <span class="no-categories">Aucune catégorie</span>
+                  }
+                </div>
+              </td>
+            </ng-container>
 
-                <ng-container matColumnDef="title">
-                  <th mat-header-cell *matHeaderCellDef>Œuvre</th>
-                  <td mat-cell *matCellDef="let artwork">
-                    <div class="artwork-info">
-                      <strong>{{ artwork.title }}</strong>
-                      @if (artwork.descriptionShort) {
-                        <div class="description-short">{{ artwork.descriptionShort }}</div>
-                      }
-                    </div>
-                  </td>
-                </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let artwork">
+                <button mat-icon-button (click)="editArtwork(artwork)" matTooltip="Modifier">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)" matTooltip="Supprimer">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
 
-                <ng-container matColumnDef="categories">
-                  <th mat-header-cell *matHeaderCellDef>Catégories</th>
-                  <td mat-cell *matCellDef="let artwork">
-                    <div class="categories-chips">
-                      @if (artwork.categoryIds && artwork.categoryIds.length > 0) {
-                        @for (categoryName of getCategoryNames(artwork.categoryIds); track categoryName) {
-                          <mat-chip class="category-chip">{{ categoryName }}</mat-chip>
-                        }
-                      } @else {
-                        <span class="no-categories">Aucune catégorie</span>
-                      }
-                    </div>
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef>Actions</th>
-                  <td mat-cell *matCellDef="let artwork">
-                    <button mat-icon-button (click)="editArtwork(artwork)" matTooltip="Modifier">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)" matTooltip="Supprimer">
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-              </table>
-            } @else {
-              <div class="no-data">
-                <mat-icon>palette</mat-icon>
-                <p>Aucune œuvre trouvée</p>
-              </div>
-            }
-          }
-        </div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        } @else {
+          <div class="no-data">
+            <mat-icon>palette</mat-icon>
+            <p>Aucune œuvre trouvée</p>
+          </div>
+        }
       </mat-card-content>
     </mat-card>
   }

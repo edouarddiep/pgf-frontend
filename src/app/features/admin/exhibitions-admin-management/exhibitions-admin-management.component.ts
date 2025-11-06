@@ -145,15 +145,11 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   }
 
   private loadExhibitions(): void {
-    this.isLoading.set(true);
     this.adminService.getExhibitions()
-      .pipe(
-        catchError(() => {
-          this.notificationService.error('Erreur lors du chargement des expositions');
-          return EMPTY;
-        }),
-        finalize(() => this.isLoading.set(false))
-      )
+      .pipe(catchError(() => {
+        this.notificationService.error('Erreur lors du chargement des expositions');
+        return EMPTY;
+      }))
       .subscribe(exhibitions => {
         this.exhibitions.set(exhibitions);
       });

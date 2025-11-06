@@ -106,18 +106,14 @@ export class ArtworksAdminManagementComponent implements OnInit {
   }
 
   private loadData(): void {
-    this.isLoading.set(true);
     forkJoin({
       artworks: this.adminService.getArtworks(),
       categories: this.adminService.getCategories()
     })
-      .pipe(
-        catchError(() => {
-          this.notificationService.error('Erreur lors du chargement des données');
-          return EMPTY;
-        }),
-        finalize(() => this.isLoading.set(false))
-      )
+      .pipe(catchError(() => {
+        this.notificationService.error('Erreur lors du chargement des données');
+        return EMPTY;
+      }))
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
         this.categories.set(categories);
@@ -125,7 +121,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
         this.selectedCategoryFilter = '';
       });
   }
-
   protected getCategoryNames(categoryIds?: Set<number>): string[] {
     if (!categoryIds || categoryIds.size === 0) return [];
 

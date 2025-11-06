@@ -5,3 +5,9 @@
 </main>
 
 <app-footer></app-footer>
+
+@if (loadingService.isLoading()) {
+  <div class="global-loading-overlay">
+    <app-loading-spinner />
+  </div>
+}

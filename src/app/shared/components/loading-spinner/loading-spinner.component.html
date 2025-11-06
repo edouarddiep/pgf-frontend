@@ -1,9 +1,5 @@
-<div class="loading-container" [class.fullscreen]="fullscreen()">
-  <mat-spinner
-    [diameter]="diameter()"
-    [strokeWidth]="strokeWidth()">
-  </mat-spinner>
-  @if (message()) {
-    <p class="loading-message">{{ message() }}</p>
-  }
+<div class="spinner">
+  <div class="spinner-ring"></div>
+  <div class="spinner-ring"></div>
+  <div class="spinner-ring"></div>
 </div>
