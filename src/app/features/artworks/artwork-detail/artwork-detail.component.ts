@@ -1,10 +1,10 @@
-import { Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
-import { switchMap, combineLatest, map } from 'rxjs';
+import { switchMap, combineLatest, map, take } from 'rxjs';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -18,14 +18,19 @@ import { switchMap, combineLatest, map } from 'rxjs';
   styleUrl: './artwork-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtworkDetailComponent {
+export class ArtworkDetailComponent implements AfterViewInit {
   private readonly artworkService = inject(ArtworkService);
   private readonly route = inject(ActivatedRoute);
 
+  readonly mainImageContainer = viewChild<ElementRef<HTMLElement>>('mainImageContainer');
   readonly thumbnailsContainer = viewChild<ElementRef<HTMLElement>>('thumbnailsContainer');
   readonly selectedImageIndex = signal(0);
   readonly showImageModal = signal(false);
   readonly modalImageIndex = signal(0);
+
+  private touchStartX = 0;
+  private touchEndX = 0;
+  private totalImages = 0;
 
   readonly artwork$ = this.route.params.pipe(
     switchMap(params => this.artworkService.getArtworkById(+params['id']))
@@ -53,6 +58,42 @@ export class ArtworkDetailComponent {
       return null;
     })
   );
+
+  ngAfterViewInit(): void {
+    this.artwork$.pipe(take(1)).subscribe(artwork => {
+      if (artwork?.imageUrls) {
+        this.totalImages = artwork.imageUrls.length;
+        this.setupTouchListeners();
+      }
+    });
+  }
+
+  private setupTouchListeners(): void {
+    const container = this.mainImageContainer()?.nativeElement;
+    if (!container) return;
+
+    container.addEventListener('touchstart', (e) => {
+      this.touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      this.touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe();
+    }, { passive: true });
+  }
+
+  private handleSwipe(): void {
+    const swipeThreshold = 50;
+    const diff = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        this.nextImage(this.totalImages);
+      } else {
+        this.previousImage(this.totalImages);
+      }
+    }
+  }
 
   selectImage(index: number): void {
     this.selectedImageIndex.set(index);

@@ -62,10 +62,17 @@
 
 .mobile-menu-button {
   margin-left: auto;
-  color: #333;
-  background: none !important;
+  color: #333 !important;
   border: none !important;
-  box-shadow: none !important;
+
+  &.mat-mdc-button-base {
+    border: none !important;
+    left: 10px;
+  }
+
+  ::ng-deep .mat-mdc-button-persistent-ripple {
+    background-color: transparent !important;
+  }
 
   .hamburger {
     width: 24px;

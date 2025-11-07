@@ -60,7 +60,7 @@
   }
 
   .artist-text {
-    padding: 4rem;
+    padding: 0 4rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -211,6 +211,41 @@
   text-align: center;
   margin-bottom: 3rem;
   color: #666;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+    margin: 1.5rem 0;
+
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 50vh;
+      object-fit: cover;
+    }
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .artist-content .content-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+
+    .artist-text {
+      padding: 2rem;
+    }
+  }
 }
 
 @media (max-width: 768px) {
