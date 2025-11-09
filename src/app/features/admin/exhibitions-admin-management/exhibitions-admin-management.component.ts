@@ -12,7 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdminService } from '@features/admin/services/admin.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
@@ -103,7 +103,7 @@ function endDateValidator(control: AbstractControl) {
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    DragDropModule,
+    MatProgressBarModule,
     ImageUploadComponent
   ],
   providers: [
@@ -126,6 +126,8 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected readonly uploadedImageUrls = signal<string[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly isSaving = signal(false);
+  protected readonly uploadedVideoUrls = signal<string[]>([]);
+  protected readonly uploadingVideos = signal(false);
 
   protected readonly exhibitionForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(2)]],
@@ -183,6 +185,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       endDate: null
     });
     this.uploadedImageUrls.set([]);
+    this.uploadedVideoUrls.set([]);
   }
 
   private fillForm(exhibition: Exhibition): void {
@@ -195,15 +198,76 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       endDate: exhibition.endDate ? new Date(exhibition.endDate) : null
     });
 
-    this.uploadedImageUrls.set(exhibition.imageUrl ? [exhibition.imageUrl] : []);
+    const uniqueUrls = exhibition.imageUrls && exhibition.imageUrls.length > 0
+      ? Array.from(new Set(exhibition.imageUrls))
+      : (exhibition.imageUrl ? [exhibition.imageUrl] : []);
+
+    this.uploadedImageUrls.set(uniqueUrls);
+    this.uploadedVideoUrls.set(exhibition.videoUrls || []);
   }
 
   protected onImagesUploaded(imageUrls: string[]): void {
-    this.uploadedImageUrls.set(imageUrls.slice(0, 1));
+    this.uploadedImageUrls.update(existing => [...existing, ...imageUrls]);
   }
 
-  protected onImageRemoved(): void {
-    this.uploadedImageUrls.set([]);
+  protected onImageRemoved(imageUrl: string): void {
+    this.uploadedImageUrls.update(urls => urls.filter(url => url !== imageUrl));
+  }
+
+  protected onVideoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const files = Array.from(input.files);
+
+    for (const file of files) {
+      if (file.size > 500 * 1024 * 1024) {
+        this.notificationService.error(`${file.name}: Vidéo trop volumineuse (max 500MB)`);
+        continue;
+      }
+
+      if (file.type !== 'video/mp4') {
+        this.notificationService.error(`${file.name}: Seuls les fichiers MP4 sont acceptés`);
+        continue;
+      }
+    }
+
+    this.uploadVideos(files.filter(f => f.type === 'video/mp4' && f.size <= 500 * 1024 * 1024));
+    input.value = '';
+  }
+
+  private uploadVideos(files: File[]): void {
+    if (files.length === 0) return;
+
+    this.uploadingVideos.set(true);
+    const exhibitionSlug = this.getExhibitionSlug();
+    const startIndex = this.uploadedVideoUrls().length;
+
+    let uploadIndex = 0;
+    const processNext = () => {
+      if (uploadIndex >= files.length) {
+        this.uploadingVideos.set(false);
+        return;
+      }
+
+      const videoIndex = startIndex + uploadIndex + 1;
+      this.adminService.uploadExhibitionVideo(files[uploadIndex], exhibitionSlug, videoIndex)
+        .pipe(catchError(() => {
+          this.notificationService.error(`Erreur upload: ${files[uploadIndex].name}`);
+          return EMPTY;
+        }))
+        .subscribe(result => {
+          this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]);
+          uploadIndex++;
+          processNext();
+        });
+    };
+
+    processNext();
+  }
+
+  protected removeVideo(index: number): void {
+    this.uploadedVideoUrls.update(urls => urls.filter((_, i) => i !== index));
   }
 
   protected saveExhibition(): void {
@@ -212,21 +276,24 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     this.isSaving.set(true);
     const formData = this.exhibitionForm.value as ExhibitionFormData;
     const imageUrls = this.uploadedImageUrls();
+    const videoUrls = this.uploadedVideoUrls();
 
-    const request = {
+    const exhibitionData = {
       title: formData.title!,
       description: formData.description || undefined,
       location: formData.location!,
       address: formData.address || undefined,
       startDate: this.formatDateForBackend(formData.startDate!),
       endDate: formData.endDate ? this.formatDateForBackend(formData.endDate) : undefined,
-      imageUrl: imageUrls.length > 0 ? imageUrls[0] : undefined
+      imageUrl: imageUrls.length > 0 ? imageUrls[0] : undefined,
+      imageUrls: imageUrls,
+      videoUrls: videoUrls
     };
 
     const editing = this.editingExhibition();
     const operation = editing
-      ? this.adminService.updateExhibition(editing.id, request)
-      : this.adminService.createExhibition(request);
+      ? this.adminService.updateExhibition(editing.id, exhibitionData)
+      : this.adminService.createExhibition(exhibitionData);
 
     operation
       .pipe(
@@ -252,23 +319,6 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     return `${year}-${month}-${day}`;
   }
 
-  protected onDrop(event: CdkDragDrop<Exhibition[]>): void {
-    const exhibitions = [...this.exhibitions()];
-    moveItemInArray(exhibitions, event.previousIndex, event.currentIndex);
-
-    exhibitions.forEach((exhibition, index) => {
-      const newOrder = index + 1;
-      if (exhibition.displayOrder !== newOrder) {
-        this.adminService.updateExhibitionOrder(exhibition.id, newOrder)
-          .pipe(catchError(() => EMPTY))
-          .subscribe();
-      }
-    });
-
-    this.exhibitions.set(exhibitions);
-    this.notificationService.success('Ordre des expositions mis à jour');
-  }
-
   protected deleteExhibition(id: number): void {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette exposition ?')) {
       return;
@@ -284,10 +334,12 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
         })
       )
       .subscribe(() => {
-        if (exhibition?.imageUrl) {
-          this.adminService.deleteExhibitionImage(exhibition.imageUrl)
-            .pipe(catchError(() => EMPTY))
-            .subscribe();
+        if (exhibition?.imageUrls) {
+          exhibition.imageUrls.forEach(imageUrl => {
+            this.adminService.deleteExhibitionImage(imageUrl)
+              .pipe(catchError(() => EMPTY))
+              .subscribe();
+          });
         }
         this.notificationService.success('Exposition supprimée avec succès');
         this.loadExhibitions();
@@ -312,5 +364,32 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       [ExhibitionStatus.PAST]: 'Passée'
     };
     return labels[status] || status;
+  }
+
+  protected getStatusColor(status: ExhibitionStatus): string {
+    const colors = {
+      [ExhibitionStatus.UPCOMING]: '#2196F3',
+      [ExhibitionStatus.ONGOING]: '#4CAF50',
+      [ExhibitionStatus.PAST]: '#9E9E9E'
+    };
+    return colors[status] || '#9E9E9E';
+  }
+
+  protected getExhibitionSlug(): string {
+    const editing = this.editingExhibition();
+    if (editing) {
+      return this.generateSlug(editing.title);
+    }
+    const title = this.exhibitionForm.get('title')?.value;
+    return title ? this.generateSlug(title) : 'nouvelle-exposition';
+  }
+
+  private generateSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
   }
 }

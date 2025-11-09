@@ -30,12 +30,51 @@
           <div class="exhibitions-list">
             @for (exhibition of currentExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
-                <div class="exhibition-image">
-                  @if (exhibition.imageUrl) {
-                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
-                  } @else {
-                    <div class="no-image">
-                      <span>Aucune image</span>
+                <div class="exhibition-gallery">
+                  <div class="main-image-container">
+                    @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                      <button
+                        type="button"
+                        class="carousel-btn prev"
+                        (click)="previousImage(exhibition.id, exhibition.imageUrls.length)">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="carousel-btn next"
+                        (click)="nextImage(exhibition.id, exhibition.imageUrls.length)">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    }
+
+                    <div class="main-image">
+                      @if (getUniqueImageUrls(exhibition).length > 0) {
+                        <img
+                          [src]="getUniqueImageUrls(exhibition)[getSelectedImageIndex(exhibition.id)]"
+                          [alt]="exhibition.title"
+                          (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
+                      } @else if (exhibition.imageUrl) {
+                        <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                      } @else {
+                        <div class="no-image">
+                          <span>Aucune image</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                    <div class="thumbnail-carousel">
+                      <div class="thumbnails-container">
+                        @for (imageUrl of exhibition.imageUrls; track $index) {
+                          <div
+                            class="thumbnail"
+                            [class.active]="getSelectedImageIndex(exhibition.id) === $index"
+                            (click)="selectImage(exhibition.id, $index)">
+                            <img [src]="imageUrl" [alt]="exhibition.title">
+                          </div>
+                        }
+                      </div>
                     </div>
                   }
                 </div>
@@ -100,15 +139,73 @@
           <div class="exhibitions-list">
             @for (exhibition of pastExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
-                <div class="exhibition-image">
-                  @if (exhibition.imageUrl) {
-                    <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
-                  } @else {
-                    <div class="no-image">
-                      <span>Aucune image</span>
+                <div class="exhibition-gallery">
+                  <div class="main-image-container">
+                    @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                      <button
+                        type="button"
+                        class="carousel-btn prev"
+                        (click)="previousImage(exhibition.id, exhibition.imageUrls.length)">
+                        <mat-icon>chevron_left</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="carousel-btn next"
+                        (click)="nextImage(exhibition.id, exhibition.imageUrls.length)">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    }
+
+                    <div class="main-image">
+                      @if (exhibition.imageUrls && exhibition.imageUrls.length > 0) {
+                        <img
+                          [src]="exhibition.imageUrls[getSelectedImageIndex(exhibition.id)]"
+                          [alt]="exhibition.title"
+                          (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
+                      } @else if (exhibition.imageUrl) {
+                        <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                      } @else {
+                        <div class="no-image">
+                          <span>Aucune image</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                    <div class="thumbnail-carousel">
+                      <div class="thumbnails-container">
+                        @for (imageUrl of exhibition.imageUrls; track $index) {
+                          <div
+                            class="thumbnail"
+                            [class.active]="getSelectedImageIndex(exhibition.id) === $index"
+                            (click)="selectImage(exhibition.id, $index)">
+                            <img [src]="imageUrl" [alt]="exhibition.title">
+                          </div>
+                        }
+                      </div>
                     </div>
                   }
                 </div>
+
+                @if (exhibition.videoUrls && exhibition.videoUrls.length > 0) {
+                  <div class="exhibition-videos">
+                    <h4>Rétrospective en vidéo</h4>
+                    <div class="videos-grid" [class.single-video]="exhibition.videoUrls.length === 1">
+                      @for (videoUrl of exhibition.videoUrls; track videoUrl) {
+                        <div class="video-container">
+                          <video
+                            [src]="videoUrl"
+                            controls
+                            controlsList="nodownload"
+                            class="video-player">
+                            Votre navigateur ne supporte pas la lecture de vidéos.
+                          </video>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
 
                 <div class="exhibition-content">
                   <h3>{{ exhibition.title }}</h3>
@@ -143,3 +240,38 @@
     }
   </div>
 </div>
+
+@if (showImageModal()) {
+  <div class="image-modal" (click)="closeImageModal()">
+    <div class="modal-content">
+      @if (modalExhibition(); as exhibition) {
+        <div class="modal-image-wrapper">
+          <img
+            [src]="exhibition.imageUrls![modalImageIndex()]"
+            [alt]="exhibition.title"
+            class="modal-image"
+            (click)="$event.stopPropagation()">
+
+          <button type="button" class="modal-close" (click)="closeImageModal()">
+            <mat-icon>close</mat-icon>
+          </button>
+
+          @if (exhibition.imageUrls!.length > 1) {
+            <button
+              type="button"
+              class="modal-prev"
+              (click)="previousModalImage($event, exhibition.imageUrls!.length)">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+            <button
+              type="button"
+              class="modal-next"
+              (click)="nextModalImage($event, exhibition.imageUrls!.length)">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

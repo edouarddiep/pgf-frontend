@@ -27,6 +27,7 @@ export class ImageUploadComponent implements OnInit {
   @Input() required = false;
   @Input() currentImages: string[] = [];
   @Input() category = 'artworks';
+  @Input() exhibitionSlug?: string;
 
   @Output() imagesUploaded = new EventEmitter<string[]>();
   @Output() imageRemoved = new EventEmitter<string>();
@@ -108,7 +109,11 @@ export class ImageUploadComponent implements OnInit {
   private uploadFiles(files: File[]): void {
     this.uploading.set(true);
 
-    const uploads = files.map(file => this.imageService.uploadImage(file, this.category));
+    const uploads = this.exhibitionSlug
+      ? files.map((file, index) =>
+        this.imageService.uploadExhibitionImage(file, this.exhibitionSlug!, this.uploadedImages().length + index + 1)
+      )
+      : files.map(file => this.imageService.uploadImage(file, this.category));
 
     let uploadIndex = 0;
     const processNext = () => {

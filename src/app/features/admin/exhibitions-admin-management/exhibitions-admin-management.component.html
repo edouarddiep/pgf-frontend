@@ -11,17 +11,9 @@
     <mat-card>
       <mat-card-content>
         @if (exhibitions().length > 0) {
-          <div class="list-instructions">
-            <p><mat-icon>info</mat-icon> Glissez-déposez les expositions pour modifier leur ordre d'affichage</p>
-          </div>
-
-          <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="exhibitions-list">
+          <div class="exhibitions-list">
             @for (exhibition of exhibitions(); track exhibition.id) {
-              <div cdkDrag class="exhibition-item">
-                <div class="drag-handle" cdkDragHandle>
-                  <mat-icon>drag_indicator</mat-icon>
-                </div>
-
+              <div class="exhibition-item">
                 <div class="exhibition-image">
                   @if (exhibition.imageUrl) {
                     <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
@@ -46,10 +38,13 @@
                       <span> au {{ formatDate(exhibition.endDate) }}</span>
                     }
                   </div>
+                  @if (exhibition.imageUrls && exhibition.imageUrls.length > 0) {
+                    <p class="images-count">{{ exhibition.imageUrls.length }} image(s)</p>
+                  }
                 </div>
 
                 <div class="exhibition-status">
-                  <mat-chip [style.background-color]="exhibition.status" [style.color]="'white'">
+                  <mat-chip [style.background-color]="getStatusColor(exhibition.status)" [style.color]="'white'">
                     {{ getStatusLabel(exhibition.status) }}
                   </mat-chip>
                 </div>
@@ -158,21 +153,60 @@
                 placeholder="dd.MM.yyyy">
               <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
               <mat-datepicker #endPicker></mat-datepicker>
-              @if (exhibitionForm.errors?.['endDateBeforeStart'] && exhibitionForm.get('endDate')?.touched) {
+              @if (exhibitionForm.errors?.['endDateBeforeStarNext'] && exhibitionForm.get('endDate')?.touched) {
                 <mat-error>La date de fin ne peut pas être avant la date de début</mat-error>
               }
             </mat-form-field>
           </div>
 
           <div class="form-group">
-            <label class="image-label">Image de l'exposition</label>
+            <label class="image-label">Images de l'exposition</label>
             <app-image-upload
               [currentImages]="uploadedImageUrls()"
               [category]="'exhibitions'"
-              [multiple]="false"
+              [exhibitionSlug]="getExhibitionSlug()"
+              [multiple]="true"
               (imagesUploaded)="onImagesUploaded($event)"
-              (imageRemoved)="onImageRemoved()">
+              (imageRemoved)="onImageRemoved($event)">
             </app-image-upload>
+          </div>
+
+          <div class="form-group">
+            <label class="video-label">Vidéos rétrospective</label>
+            <input
+              type="file"
+              #videoInput
+              (change)="onVideoSelected($event)"
+              accept="video/mp4"
+              multiple
+              style="display: none;">
+
+            <div class="video-upload-zone" (click)="videoInput.click()">
+              <mat-icon>videocam</mat-icon>
+              <span>Ajouter des vidéos (MP4)</span>
+            </div>
+
+            @if (uploadedVideoUrls().length > 0) {
+              <div class="uploaded-videos">
+                @for (videoUrl of uploadedVideoUrls(); track videoUrl; let i = $index) {
+                  <div class="video-item">
+                    <video [src]="videoUrl" class="video-thumbnail"></video>
+                    <button
+                      type="button"
+                      mat-icon-button
+                      color="warn"
+                      (click)="removeVideo(i); $event.stopPropagation()"
+                      class="remove-video-btn">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (uploadingVideos()) {
+              <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            }
           </div>
 
           <div class="form-actions">

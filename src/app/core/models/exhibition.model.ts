@@ -2,16 +2,16 @@ export interface Exhibition {
   id: number;
   title: string;
   description?: string;
-  location?: string;
+  location: string;
   address?: string;
   startDate?: string;
   endDate?: string;
   imageUrl?: string;
-  url?: string;
-  displayOrder?: number;
+  imageUrls?: string[];
+  videoUrls?: string[];
   status: ExhibitionStatus;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export enum ExhibitionStatus {

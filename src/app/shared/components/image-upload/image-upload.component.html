@@ -60,14 +60,16 @@
               </button>
             }
 
-            <button
-              type="button"
-              mat-mini-fab
-              color="warn"
-              (click)="removeImage(i); $event.stopPropagation()"
-              matTooltip="Supprimer">
-              <mat-icon>delete</mat-icon>
-            </button>
+            @if (!(i === 0 && uploadedImages().length === 1)) {
+              <button
+                type="button"
+                mat-mini-fab
+                color="warn"
+                (click)="removeImage(i); $event.stopPropagation()"
+                matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
           </div>
         </div>
       }

@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '@core/services/api.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { catchError, EMPTY, combineLatest } from 'rxjs';
@@ -14,6 +15,7 @@ type TabType = 'current' | 'past';
   imports: [
     CommonModule,
     MatButtonModule,
+    MatIconModule,
     MatTooltipModule
   ],
   templateUrl: './exhibitions.component.html',
@@ -28,6 +30,10 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly currentExhibitions = signal<Exhibition[]>([]);
   protected readonly pastExhibitions = signal<Exhibition[]>([]);
   protected readonly ExhibitionStatus = ExhibitionStatus;
+  protected readonly selectedImageIndices = signal<Map<number, number>>(new Map());
+  protected readonly showImageModal = signal(false);
+  protected readonly modalImageIndex = signal(0);
+  protected readonly modalExhibition = signal<Exhibition | null>(null);
 
   ngOnInit(): void {
     this.loadExhibitions();
@@ -59,6 +65,60 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
     this.activeTab.set(tab);
   }
 
+  protected getSelectedImageIndex(exhibitionId: number): number {
+    return this.selectedImageIndices().get(exhibitionId) || 0;
+  }
+
+  protected selectImage(exhibitionId: number, index: number): void {
+    this.selectedImageIndices.update(map => {
+      const newMap = new Map(map);
+      newMap.set(exhibitionId, index);
+      return newMap;
+    });
+  }
+
+  protected previousImage(exhibitionId: number, totalImages: number): void {
+    const current = this.getSelectedImageIndex(exhibitionId);
+    const newIndex = current > 0 ? current - 1 : totalImages - 1;
+    this.selectImage(exhibitionId, newIndex);
+  }
+
+  protected nextImage(exhibitionId: number, totalImages: number): void {
+    const current = this.getSelectedImageIndex(exhibitionId);
+    const newIndex = current < totalImages - 1 ? current + 1 : 0;
+    this.selectImage(exhibitionId, newIndex);
+  }
+
+  protected openImageModal(exhibitionId: number, index: number): void {
+    const exhibition = [...this.currentExhibitions(), ...this.pastExhibitions()]
+      .find(e => e.id === exhibitionId);
+
+    if (exhibition && exhibition.imageUrls && exhibition.imageUrls.length > 0) {
+      this.modalExhibition.set(exhibition);
+      this.modalImageIndex.set(index);
+      this.showImageModal.set(true);
+    }
+  }
+
+  protected closeImageModal(): void {
+    this.showImageModal.set(false);
+    this.modalExhibition.set(null);
+  }
+
+  protected previousModalImage(event: Event, totalImages: number): void {
+    event.stopPropagation();
+    const current = this.modalImageIndex();
+    const newIndex = current > 0 ? current - 1 : totalImages - 1;
+    this.modalImageIndex.set(newIndex);
+  }
+
+  protected nextModalImage(event: Event, totalImages: number): void {
+    event.stopPropagation();
+    const current = this.modalImageIndex();
+    const newIndex = current < totalImages - 1 ? current + 1 : 0;
+    this.modalImageIndex.set(newIndex);
+  }
+
   protected isVernissageRegistrationDisabled(exhibition: Exhibition): boolean {
     return exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
   }
@@ -85,5 +145,14 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
       const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
       window.open(googleMapsUrl, '_blank');
     }
+  }
+
+  protected getUniqueImageUrls(exhibition: Exhibition): string[] {
+    if (!exhibition.imageUrls || exhibition.imageUrls.length === 0) {
+      return exhibition.imageUrl ? [exhibition.imageUrl] : [];
+    }
+
+    const uniqueUrls = new Set(exhibition.imageUrls);
+    return Array.from(uniqueUrls);
   }
 }

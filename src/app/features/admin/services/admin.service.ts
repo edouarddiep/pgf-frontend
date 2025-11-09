@@ -10,12 +10,13 @@ import {environment} from '@environments/environment';
 
 export interface AdminExhibitionRequest {
   title: string;
-  description: string;
+  description?: string;
   location: string;
   address?: string;
   startDate: string;
   endDate?: string;
   imageUrl?: string;
+  imageUrls?: string[];
 }
 
 @Injectable({
@@ -59,7 +60,6 @@ export class AdminService {
     }
   }
 
-  // Artworks
   getCategories(): Observable<ArtworkCategory[]> {
     return this.http.get<ArtworkCategory[]>(`${this.baseUrl}/categories`);
   }
@@ -84,7 +84,6 @@ export class AdminService {
     return this.http.delete<void>(`${this.baseUrl}/artworks/${id}`);
   }
 
-  // Exhibitions
   getExhibitions(): Observable<Exhibition[]> {
     return this.http.get<Exhibition[]>(`${this.baseUrl}/exhibitions`);
   }
@@ -97,32 +96,28 @@ export class AdminService {
     return this.http.put<Exhibition>(`${this.baseUrl}/exhibitions/${id}`, request);
   }
 
-  updateExhibitionOrder(id: number, order: number): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/exhibitions/${id}/order`, {displayOrder: order});
+  uploadExhibitionVideo(file: File, exhibitionSlug: string, videoIndex: number): Observable<{ videoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('exhibitionSlug', exhibitionSlug);
+    formData.append('videoIndex', videoIndex.toString());
+
+    return this.http.post<{ videoUrl: string }>(
+      `${this.baseUrl}/upload/exhibition-video`,
+      formData
+    );
   }
 
   deleteExhibition(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/exhibitions/${id}`);
   }
 
-  uploadExhibitionImage(file: File): Observable<{ imageUrl: string; thumbnailUrl?: string }> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    return this.http.post<{ imageUrl: string; thumbnailUrl?: string }>(
-      `${this.baseUrl}/upload/exhibition-image`,
-      formData
-    );
-  }
-
-  // Ajouter dans AdminService
   deleteExhibitionImage(imageUrl: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/images`, {
       params: {imageUrl}
     });
   }
 
-  // Messages
   getMessages(): Observable<ContactMessage[]> {
     return this.http.get<ContactMessage[]>(`${this.baseUrl}/messages`);
   }

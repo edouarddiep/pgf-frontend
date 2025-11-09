@@ -16,7 +16,7 @@
     inset: 0;
     background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/expositions/bonmont-2023/image-2.jpg');
     background-size: cover;
-    background-position: center;
+    background-position: center 30%;
     background-repeat: no-repeat;
     z-index: 1;
   }
@@ -327,6 +327,224 @@
           }
         }
       }
+    }
+  }
+}
+
+.exhibition-gallery {
+  width: 100%;
+
+  .main-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 16px;
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.3s;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      mat-icon {
+        color: white;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      &.prev {
+        left: 8px;
+      }
+
+      &.next {
+        right: 8px;
+      }
+    }
+
+    .main-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .thumbnail-carousel {
+    width: 100%;
+    overflow-x: auto;
+    padding: 8px 0;
+
+    .thumbnails-container {
+      display: flex;
+      gap: 8px;
+
+      .thumbnail {
+        flex-shrink: 0;
+        width: 80px;
+        height: 60px;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: border-color 0.3s;
+
+        &.active {
+          border-color: #1976d2;
+        }
+
+        &:hover {
+          border-color: #1976d2;
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+.image-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  .modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    position: relative;
+
+    .modal-image-wrapper {
+      position: relative;
+
+      .modal-image {
+        max-width: 90vw;
+        max-height: 90vh;
+        object-fit: contain;
+        cursor: default;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: -40px;
+        right: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+
+        mat-icon {
+          color: white;
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      .modal-prev,
+      .modal-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.7);
+        }
+
+        mat-icon {
+          color: white;
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      .modal-prev {
+        left: -60px;
+      }
+
+      .modal-next {
+        right: -60px;
+      }
+    }
+  }
+}
+.exhibition-videos {
+  margin-top: 32px;
+  width: 100%;
+
+  h4 {
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+
+    &.single-video {
+      grid-template-columns: 1fr;
+    }
+
+    .video-container {
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+
+      .video-player {
+        width: 100%;
+        height: auto;
+        min-height: 300px;
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    .videos-grid {
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      max-width: 1200px;
     }
   }
 }

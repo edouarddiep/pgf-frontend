@@ -71,4 +71,16 @@ export class ImageService {
       params: {imageUrl}
     });
   }
+
+  uploadExhibitionImage(file: File, exhibitionSlug: string, imageIndex: number): Observable<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('exhibitionSlug', exhibitionSlug);
+    formData.append('imageIndex', imageIndex.toString());
+
+    return this.http.post<{ imageUrl: string }>(
+      `${environment.apiUrl}/admin/upload/exhibition-image-indexed`,
+      formData
+    );
+  }
 }
