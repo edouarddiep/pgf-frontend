@@ -1,15 +1,16 @@
-import { Component, signal, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { HeaderComponent } from '@layout/header/header.component';
-import { FooterComponent } from '@layout/footer/footer.component';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
-import { LoadingService } from '@shared/services/loading.service';
-import { ViewportScroller } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { VideoService } from '@shared/services/video.service';
+import {LoadingService} from '@shared/services/loading.service';
+import {FooterComponent} from '@layout/footer/footer.component';
+import {HeaderComponent} from '@layout/header/header.component';
 
 @Component({
   selector: 'app-root',
   imports: [
+    CommonModule,
     RouterOutlet,
     HeaderComponent,
     FooterComponent,
@@ -20,17 +21,12 @@ import { filter } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
-  private readonly router = inject(Router);
-  private readonly viewportScroller = inject(ViewportScroller);
+  private readonly loadingService = inject(LoadingService);
+  private readonly videoService = inject(VideoService);
 
-  readonly loadingService = inject(LoadingService);
-  protected readonly title = signal('PGF Artist Portfolio');
+  readonly isLoading = this.loadingService.isLoading;
 
   ngOnInit(): void {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.viewportScroller.scrollToPosition([0, 0]);
-    });
+    this.videoService.preloadVideo('home');
   }
 }

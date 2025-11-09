@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, ViewChild, ElementRef, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit, OnDestroy, ViewChild, ElementRef, PLATFORM_ID, AfterViewInit } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
+import { VideoService } from '@shared/services/video.service';
 
 @Component({
   selector: 'app-home',
@@ -21,63 +22,37 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly artworkService = inject(ArtworkService);
   private readonly router = inject(Router);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly videoService = inject(VideoService);
   private readonly platformId = inject(PLATFORM_ID);
 
-  @ViewChild('heroVideo', { static: true }) heroVideo!: ElementRef<HTMLVideoElement>;
+  @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;
 
   readonly categories$ = this.artworkService.getCategories();
+  readonly videoConfig = this.videoService.videos['home'];
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.ensureVideoPlays();
-      this.setupVideoLoop();
       this.scrollAnimationService.setupScrollAnimations();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId) && this.heroVideo) {
+      const video = this.heroVideo.nativeElement;
+      this.videoService.setupVideo(video, 'home');
+
+      video.addEventListener('canplay', () => {
+        video.classList.add('video-loaded');
+      }, { once: true });
     }
   }
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
-  }
-
-  private ensureVideoPlays(): void {
-    const video = this.heroVideo?.nativeElement;
-    if (video && typeof video.play === 'function') {
-      video.muted = true;
-      video.volume = 0;
-      video.currentTime = 2;
-      video.play().catch(() => {});
-    }
-  }
-
-  private setupVideoLoop(): void {
-    const video = this.heroVideo?.nativeElement;
-    if (video && typeof video.addEventListener === 'function') {
-      video.muted = true;
-      video.volume = 0;
-
-      video.addEventListener('loadedmetadata', () => {
-        video.currentTime = 2;
-        video.muted = true;
-        video.volume = 0;
-      });
-
-      video.addEventListener('timeupdate', () => {
-        if (video.currentTime >= 22) {
-          video.currentTime = 2;
-        }
-      });
-
-      video.addEventListener('volumechange', () => {
-        if (!video.muted || video.volume > 0) {
-          video.muted = true;
-          video.volume = 0;
-        }
-      });
-    }
   }
 
   onCategoryClick(categorySlug: string): void {

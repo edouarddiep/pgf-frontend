@@ -333,18 +333,20 @@ img {
   box-shadow: none;
 }
 
-.mobile-menu-button.mat-mdc-icon-button,
-.mat-mdc-button-base{
-  background-color: transparent !important;
-
-  &:hover,
-  &:focus,
-  &:active {
+@media (max-width: 768px) {
+  .mobile-menu-button.mat-mdc-icon-button,
+  .mat-mdc-button-base {
     background-color: transparent !important;
-  }
 
-  .mat-mdc-button-persistent-ripple,
-  .mat-mdc-button-ripple, {
-    display: none !important;
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: transparent !important;
+    }
+
+    .mat-mdc-button-persistent-ripple,
+    .mat-mdc-button-ripple {
+      display: none !important;
+    }
   }
 }
