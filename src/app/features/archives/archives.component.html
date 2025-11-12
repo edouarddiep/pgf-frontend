@@ -7,22 +7,29 @@
 
   <div class="archives-content">
     @if (archives().length > 0) {
-      <div class="archives-grid">
-        @for (archive of archives(); track archive.id) {
-          <div class="archive-card">
-            <div class="archive-image-wrapper">
+      <div class="timeline">
+        <div class="timeline-line"></div>
+        @for (archive of archives(); track archive.id; let idx = $index) {
+          <div class="timeline-item" [class.timeline-left]="idx % 2 === 0" [class.timeline-right]="idx % 2 !== 0">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">{{ archive.year }}</div>
+            <div class="archive-card" [routerLink]="['/archives', archive.id]">
               @if (archive.thumbnailUrl) {
-                <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
-              }
-              <div class="archive-overlay">
-                <div class="archive-info">
-                  <h3>{{ archive.title }}</h3>
-                  <p class="year">{{ archive.year }}</p>
-                  <button mat-raised-button color="primary" [routerLink]="['/archives', archive.id]">
-                    En savoir plus
-                  </button>
+                <div class="archive-image">
+                  <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
+                  <div class="archive-overlay">
+                    <div class="archive-info">
+                      <h3>{{ archive.title }}</h3>
+                      <button mat-raised-button>En savoir plus</button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              } @else {
+                <div class="archive-content">
+                  <h3>{{ archive.title }}</h3>
+                  <button mat-raised-button>En savoir plus</button>
+                </div>
+              }
             </div>
           </div>
         }

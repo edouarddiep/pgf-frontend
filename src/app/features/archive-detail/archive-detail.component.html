@@ -1,9 +1,13 @@
 <div class="archive-detail-page">
   @if (archive(); as arch) {
     <section class="hero-banner scroll-fade-in">
+      @if (arch.thumbnailUrl) {
+        <img [src]="arch.thumbnailUrl" [alt]="arch.title" class="hero-image">
+        <div class="hero-overlay"></div>
+      }
       <div class="hero-content">
-        <h1>{{ arch.title }}</h1>
         <p class="year">{{ arch.year }}</p>
+        <h1>{{ arch.title }}</h1>
       </div>
     </section>
 
@@ -16,52 +20,108 @@
     }
 
     @if (arch.files && arch.files.length > 0) {
-      <section class="files-section scroll-fade-in">
-        <div class="container">
-          <div class="files-grid">
-            @for (file of arch.files; track file.id) {
-              <div class="file-item">
-                @if (file.fileType === 'IMAGE') {
-                  <div class="file-media">
-                    <img [src]="file.fileUrl" [alt]="file.fileName || arch.title" loading="lazy">
+      @if (audioFiles().length > 0) {
+        <section class="audio-section scroll-fade-in">
+          <div class="container">
+            <h2>Fichiers Audio</h2>
+            <div class="audio-grid">
+              @for (file of audioFiles(); track file.id) {
+                <div class="audio-card">
+                  <div class="audio-player">
+                    <audio controls [src]="file.fileUrl"></audio>
                   </div>
-                } @else if (file.fileType === 'VIDEO') {
-                  <div class="file-media video">
-                    @if (isYouTubeUrl(file.fileUrl)) {
-                      <iframe
-                        [src]="getSafeUrl(file.fileUrl)"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                      </iframe>
-                    } @else {
-                      <video controls>
-                        <source [src]="file.fileUrl" type="video/mp4">
-                      </video>
-                    }
-                  </div>
-                } @else if (file.fileType === 'AUDIO') {
-                  <div class="file-media audio">
-                    <audio controls>
-                      <source [src]="file.fileUrl" type="audio/mpeg">
-                    </audio>
-                    @if (file.fileName) {
-                      <p class="file-name">{{ file.fileName }}</p>
-                    }
-                  </div>
-                } @else if (file.fileType === 'PDF') {
-                  <div class="file-media pdf">
-                    <a [href]="file.fileUrl" target="_blank" rel="noopener noreferrer">
-                      <span class="pdf-icon">📄</span>
-                      <span class="pdf-label">{{ file.fileName || 'Voir le PDF' }}</span>
-                    </a>
-                  </div>
-                }
-              </div>
-            }
+                </div>
+              }
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      }
+
+      @if (imageFiles().length > 0) {
+        <section class="images-section scroll-fade-in">
+          <div class="container">
+            <h2>Galerie</h2>
+            <div class="images-grid">
+              @for (file of imageFiles(); track file.id) {
+                <div class="image-card" (click)="openImageModal(file.fileUrl, arch.title)">
+                  <img [src]="file.fileUrl" [alt]="arch.title" loading="lazy">
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      @if (videoFiles().length > 0) {
+        <section class="videos-section scroll-fade-in">
+          <div class="container">
+            <h2>Vidéos</h2>
+            <div class="videos-grid" [class.single-video]="videoFiles().length === 1">
+              @for (file of videoFiles(); track file.id) {
+                <div class="video-card" (click)="openVideoModal(file)">
+                  <div class="video-thumbnail">
+                    @if (isYouTubeUrl(file.fileUrl)) {
+                      <img [src]="getYouTubeThumbnail(file.fileUrl)" [alt]="'Vidéo'">
+                    } @else {
+                      <video [src]="file.fileUrl"></video>
+                    }
+                    <div class="play-overlay">
+                      <div class="play-button">▶</div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      @if (pdfFiles().length > 0) {
+        <section class="pdf-section scroll-fade-in">
+          <div class="container">
+            <h2>Documents PDF</h2>
+            <div class="pdf-grid">
+              @for (file of pdfFiles(); track file.id) {
+                <a [href]="file.fileUrl" target="_blank" rel="noopener noreferrer" class="pdf-card">
+                  <svg class="pdf-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10 13H8V17H10C10.5304 17 11.0391 16.7893 11.4142 16.4142C11.7893 16.0391 12 15.5304 12 15C12 14.4696 11.7893 13.9609 11.4142 13.5858C11.0391 13.2107 10.5304 13 10 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="pdf-label">PDF</span>
+                </a>
+              }
+            </div>
+          </div>
+        </section>
+      }
     }
+  }
+
+  @if (modalImage()) {
+    <div class="modal" (click)="closeModal()">
+      <div class="modal-content">
+        <button class="modal-close" (click)="closeModal()">✕</button>
+        <img [src]="modalImage()" [alt]="modalTitle()" (click)="$event.stopPropagation()">
+      </div>
+    </div>
+  }
+
+  @if (modalVideo()) {
+    <div class="modal" (click)="closeModal()">
+      <div class="modal-content video-modal" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="closeModal()">✕</button>
+        @if (isYouTubeUrl(modalVideo()!.fileUrl)) {
+          <iframe
+            [src]="getSafeUrl(modalVideo()!.fileUrl)"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        } @else {
+          <video controls autoplay [src]="modalVideo()!.fileUrl"></video>
+        }
+      </div>
+    </div>
   }
 </div>

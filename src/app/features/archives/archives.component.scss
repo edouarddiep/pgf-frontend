@@ -1,182 +1,343 @@
 .archives-page {
   min-height: 100vh;
-}
+  padding-bottom: 4rem;
 
-.hero-banner {
-  position: relative;
-  height: 40vh;
-  background-image: url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-8.jpeg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-  }
-
-  .hero-content {
+  .hero-banner {
     position: relative;
-    z-index: 2;
-    text-align: center;
-    color: white;
-
-    h1 {
-      font-size: 3rem;
-      font-weight: 300;
-      letter-spacing: 0.1em;
-      margin: 0;
-    }
-  }
-}
-
-.archives-content {
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.archives-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-}
-
-.archive-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-
-    .archive-image-wrapper img {
-      transform: scale(1.05);
-    }
-
-    .archive-overlay {
-      background: rgba(0, 0, 0, 0.7);
-    }
-  }
-
-  .archive-image-wrapper {
-    position: relative;
-    width: 100%;
-    height: 400px;
+    height: 40vh;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
+    background: linear-gradient(135deg, rgba(44, 44, 44, 0.7) 0%, rgba(26, 26, 26, 0.7) 100%),
+    url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/archives/1985-2019_bibliographie/image-1.jpg');
+    background-size: cover;
+    background-position: center;
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
     }
 
-    .archive-overlay {
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+
+      h1 {
+        font-size: 3rem;
+        font-weight: 300;
+        letter-spacing: 0.1em;
+        margin: 0;
+
+        @media (max-width: 768px) {
+          font-size: 2.5rem;
+          letter-spacing: 4px;
+        }
+      }
+    }
+  }
+
+  .archives-content {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+
+    @media (max-width: 768px) {
+      padding: 2rem 1rem;
+    }
+  }
+
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+
+    .timeline-line {
       position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent 0%, #706969 10%, #706969 90%, transparent 100%);
+      transform: translateX(-50%);
+      z-index: 1;
+
+      @media (max-width: 968px) {
+        left: 30px;
+      }
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 8rem;
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: background 0.3s ease;
+      z-index: 2;
 
-      .archive-info {
-        text-align: center;
-        color: #f0f0f0 !important;
-        padding: 2rem;
+      @media (max-width: 968px) {
+        padding-left: 80px;
+        margin-bottom: 4rem;
+      }
 
-        h3 {
+      &.timeline-left {
+        justify-content: flex-end;
+        padding-right: calc(50% + 80px);
+
+        @media (max-width: 968px) {
+          justify-content: flex-start;
+          padding-right: 0;
+        }
+
+        .timeline-dot {
+          left: 50%;
+          transform: translateX(-50%);
+          opacity: 0;
+          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+          @media (max-width: 968px) {
+            left: 20px;
+            transform: translateX(0);
+          }
+        }
+
+        .timeline-year {
+          left: calc(50% + 80px);
+          opacity: 0;
+          transform: translateX(100px);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+
+          @media (max-width: 968px) {
+            right: auto;
+            left: -70px;
+          }
+        }
+
+        .archive-card {
+          opacity: 0;
+          transform: translateX(-100px);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+        }
+
+        &.visible {
+          .timeline-dot {
+            opacity: 1;
+          }
+
+          .timeline-year {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          .archive-card {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      }
+
+      &.timeline-right {
+        justify-content: flex-start;
+        padding-left: calc(50% + 80px);
+
+        @media (max-width: 968px) {
+          padding-left: 80px;
+        }
+
+        .timeline-dot {
+          left: 50%;
+          transform: translateX(-50%);
+          opacity: 0;
+          transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+          @media (max-width: 968px) {
+            left: 20px;
+            transform: translateX(0);
+          }
+        }
+
+        .timeline-year {
+          right: calc(50% + 80px);
+          opacity: 0;
+          transform: translateX(-100px);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
+
+          @media (max-width: 968px) {
+            left: -70px;
+          }
+        }
+
+        .archive-card {
+          opacity: 0;
+          transform: translateX(100px);
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+        }
+
+        &.visible {
+          .timeline-dot {
+            opacity: 1;
+          }
+
+          .timeline-year {
+            opacity: 1;
+            transform: translateX(0);
+          }
+
+          .archive-card {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      }
+
+      .timeline-dot {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 3px solid #706969;
+        border-radius: 50%;
+        z-index: 3;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 10px;
+          height: 10px;
+          background: #706969;
+          border-radius: 50%;
+        }
+      }
+
+      .timeline-year {
+        position: absolute;
+        font-size: 3rem;
+        font-weight: 100;
+        color: #706969;
+        white-space: nowrap;
+        z-index: 3;
+        letter-spacing: 2px;
+        font-variation-settings: 'wght' 200, 'wdth' 100, 'opsz' 48;
+
+        @media (max-width: 968px) {
           font-size: 1.8rem;
-          margin: 0 0 0.5rem 0;
-          font-weight: 300;
+        }
+      }
+
+      .archive-card {
+        width: 100%;
+        max-width: 750px;
+        cursor: pointer;
+        z-index: 2;
+
+        &:hover {
+          transform: scale(1.02);
         }
 
-        p {
-          color: #f0f0f0;
-        }
+        .archive-image {
+          position: relative;
+          width: 100%;
+          height: 450px;
+          overflow: hidden;
+          border-radius: 8px;
 
-        .year {
-          font-size: 1.2rem;
-          margin: 0 0 1.5rem 0;
-          opacity: 0.9;
-        }
+          @media (max-width: 768px) {
+            height: 350px;
+          }
 
-        button {
-          background: white;
-          color: #ffffff;
-          padding: 12px 32px;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+          }
+
+          .archive-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            transition: background 0.3s ease;
+
+            .archive-info {
+              width: 100%;
+              text-align: center;
+
+              h3 {
+                color: white;
+                font-size: 1.5rem;
+                font-weight: 300;
+                margin: 0 0 1.5rem 0;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+              }
+
+              button {
+                border-color: white !important;
+                color: white !important;
+                text-shadow: none !important;
+
+                &:hover {
+                  background: white !important;
+                  color: black !important;
+                }
+              }
+            }
+          }
 
           &:hover {
-            background: #f0f0f0;
+            img {
+              transform: scale(1.05);
+            }
+
+            .archive-overlay {
+              background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+            }
+          }
+        }
+
+        .archive-content {
+          padding: 2rem;
+          background: #f8f9fa;
+          border-radius: 8px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+          text-align: center;
+
+          h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin: 0 0 1.5rem 0;
           }
         }
       }
     }
   }
-}
 
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-
-  h3 {
-    font-size: 1.5rem;
-    color: #ffffff;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    color: #ffffff;
-  }
-}
-
-@media (max-width: 968px) {
-  .archives-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .archive-card .archive-image-wrapper {
-    height: 300px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-banner {
-    height: 30vh;
-
-    .hero-content h1 {
-      font-size: 2rem;
-    }
-  }
-
-  .archives-content {
-    padding: 2rem 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-banner .hero-content h1 {
-    font-size: 1.5rem;
-  }
-
-  .archive-card .archive-image-wrapper .archive-overlay .archive-info {
-    padding: 1rem;
-    color: white !important;
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
 
     h3 {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
     }
 
-    .year {
+    p {
       font-size: 1rem;
+      color: #999;
     }
   }
 }

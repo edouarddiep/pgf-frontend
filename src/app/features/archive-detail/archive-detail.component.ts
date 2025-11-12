@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -21,6 +21,25 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private readonly sanitizer = inject(DomSanitizer);
 
   protected readonly archive = signal<Archive | null>(null);
+  protected readonly modalImage = signal<string | null>(null);
+  protected readonly modalTitle = signal<string>('');
+  protected readonly modalVideo = signal<ArchiveFile | null>(null);
+
+  protected readonly audioFiles = computed(() =>
+    this.archive()?.files?.filter(f => f.fileType === 'AUDIO') || []
+  );
+
+  protected readonly imageFiles = computed(() =>
+    this.archive()?.files?.filter(f => f.fileType === 'IMAGE') || []
+  );
+
+  protected readonly videoFiles = computed(() =>
+    this.archive()?.files?.filter(f => f.fileType === 'VIDEO') || []
+  );
+
+  protected readonly pdfFiles = computed(() =>
+    this.archive()?.files?.filter(f => f.fileType === 'PDF') || []
+  );
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -44,5 +63,33 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
 
   protected isYouTubeUrl(url: string): boolean {
     return url.includes('youtube.com') || url.includes('youtu.be');
+  }
+
+  protected getYouTubeThumbnail(url: string): string {
+    const videoId = this.extractYouTubeId(url);
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+  }
+
+  private extractYouTubeId(url: string): string {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : '';
+  }
+
+  protected openImageModal(url: string, title: string): void {
+    this.modalImage.set(url);
+    this.modalTitle.set(title);
+    document.body.style.overflow = 'hidden';
+  }
+
+  protected openVideoModal(file: ArchiveFile): void {
+    this.modalVideo.set(file);
+    document.body.style.overflow = 'hidden';
+  }
+
+  protected closeModal(): void {
+    this.modalImage.set(null);
+    this.modalVideo.set(null);
+    document.body.style.overflow = 'auto';
   }
 }
