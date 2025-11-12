@@ -32,6 +32,8 @@ export class FooterComponent {
     { name: 'A propos', route: '/about' },
     { name: 'Œuvres', route: '/artworks' },
     { name: 'Expositions', route: '/exhibitions' },
+    { name: 'Archives', route: '/archives' },
+    { name: 'Association', route: '/association' },
     { name: 'Contact', route: '/contact' }
   ];
 

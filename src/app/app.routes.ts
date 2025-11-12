@@ -18,6 +18,10 @@ export const routes: Routes = [
     loadComponent: () => import('@features/exhibitions/exhibitions.component').then(m => m.ExhibitionsComponent)
   },
   {
+    path: 'archives',
+    loadChildren: () => import('@features/archives/archives.routes').then(m => m.ARCHIVES_ROUTES)
+  },
+  {
     path: 'contact',
     loadComponent: () => import('@features/contact/contact.component').then(m => m.ContactComponent)
   },

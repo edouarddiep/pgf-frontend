@@ -1,0 +1,37 @@
+<div class="archives-page">
+  <section class="hero-banner scroll-fade-in">
+    <div class="hero-content">
+      <h1>ARCHIVES</h1>
+    </div>
+  </section>
+
+  <div class="archives-content">
+    @if (archives().length > 0) {
+      <div class="archives-grid">
+        @for (archive of archives(); track archive.id) {
+          <div class="archive-card">
+            <div class="archive-image-wrapper">
+              @if (archive.thumbnailUrl) {
+                <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
+              }
+              <div class="archive-overlay">
+                <div class="archive-info">
+                  <h3>{{ archive.title }}</h3>
+                  <p class="year">{{ archive.year }}</p>
+                  <button mat-raised-button color="primary" [routerLink]="['/archives', archive.id]">
+                    En savoir plus
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h3>Aucune archive disponible</h3>
+        <p>Les archives seront bientôt disponibles</p>
+      </div>
+    }
+  </div>
+</div>

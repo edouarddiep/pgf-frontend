@@ -1,0 +1,153 @@
+.archive-detail-page {
+  min-height: 100vh;
+}
+
+.hero-banner {
+  position: relative;
+  height: 40vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+
+  .hero-content {
+    padding: 2rem;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      margin: 0 0 1rem 0;
+    }
+
+    .year {
+      font-size: 1.5rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+  }
+}
+
+.description-section {
+  padding: 3rem 2rem;
+  background: #f8f9fa;
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+
+    p {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      color: #333;
+      text-align: center;
+    }
+  }
+}
+
+.files-section {
+  padding: 4rem 2rem;
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}
+
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.file-item {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .file-media {
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    &.video {
+      iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+      }
+    }
+
+    &.audio {
+      padding: 2rem;
+      text-align: center;
+
+      audio {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+
+      .file-name {
+        margin: 0;
+        color: #666;
+      }
+    }
+
+    &.pdf {
+      padding: 3rem 2rem;
+      text-align: center;
+
+      a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        text-decoration: none;
+        color: #333;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #667eea;
+        }
+
+        .pdf-icon {
+          font-size: 4rem;
+        }
+
+        .pdf-label {
+          font-size: 1.125rem;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-banner {
+    height: 30vh;
+
+    .hero-content h1 {
+      font-size: 2rem;
+    }
+
+    .hero-content .year {
+      font-size: 1.2rem;
+    }
+  }
+
+  .files-grid {
+    grid-template-columns: 1fr;
+  }
+}
