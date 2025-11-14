@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <mat-card class="table-card">
+  <mat-card class="table-card" appLoading>
     <mat-card-content>
       <table mat-table [dataSource]="messages()" class="messages-table">
         <ng-container matColumnDef="status">

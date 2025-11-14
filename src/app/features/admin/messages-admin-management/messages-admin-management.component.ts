@@ -10,6 +10,7 @@ import {AdminService} from '@features/admin/services/admin.service';
 import { ContactMessage } from '@core/models/contact.model';
 import { catchError, EMPTY } from 'rxjs';
 import { MessageDetailDialogComponent } from './message-detail-dialog.component';
+import {LoadingDirective} from '@/app/directives/loading.directive';
 
 @Component({
   selector: 'app-messages-admin-management',
@@ -20,7 +21,8 @@ import { MessageDetailDialogComponent } from './message-detail-dialog.component'
     MatIconModule,
     MatCardModule,
     MatChipsModule,
-    MatDialogModule
+    MatDialogModule,
+    LoadingDirective
   ],
   templateUrl: './messages-admin-management.component.html',
   styleUrl: './messages-admin-management.component.scss',

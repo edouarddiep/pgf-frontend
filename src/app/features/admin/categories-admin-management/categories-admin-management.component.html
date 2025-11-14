@@ -3,53 +3,42 @@
     <h1>Gestion des catégories</h1>
   </div>
 
-  <mat-card class="table-card">
+  <mat-card class="table-card" appLoading>
     <mat-card-header>
       <mat-card-title>Liste des catégories</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <div class="spinner-container">
-        @if (isLoading()) {
-          <div class="loading-overlay">
-            <mat-spinner diameter="50"></mat-spinner>
-            <p>Chargement des catégories...</p>
-          </div>
-        }
+      @if (categories().length > 0) {
+        <table mat-table [dataSource]="categories()" class="categories-table">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let category">
+              <div class="category-info">
+                <div class="category-name">{{ category.name }}</div>
+                @if (category.description) {
+                  <div class="category-description">{{ category.description }}</div>
+                }
+              </div>
+            </td>
+          </ng-container>
 
-        @if (!isLoading()) {
-          @if (categories().length > 0) {
-            <table mat-table [dataSource]="categories()" class="categories-table">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Nom</th>
-                <td mat-cell *matCellDef="let category">
-                  <div class="category-info">
-                    <div class="category-name">{{ category.name }}</div>
-                    @if (category.description) {
-                      <div class="category-description">{{ category.description }}</div>
-                    }
-                  </div>
-                </td>
-              </ng-container>
+          <ng-container matColumnDef="artworkCount">
+            <th mat-header-cell *matHeaderCellDef>Œuvres</th>
+            <td mat-cell *matCellDef="let category">
+              {{ category.artworkCount || 0 }} œuvre(s)
+            </td>
+          </ng-container>
 
-              <ng-container matColumnDef="artworkCount">
-                <th mat-header-cell *matHeaderCellDef>Œuvres</th>
-                <td mat-cell *matCellDef="let category">
-                  {{ category.artworkCount || 0 }} œuvre(s)
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          } @else {
-            <div class="no-categories">
-              <mat-icon>category</mat-icon>
-              <p>Aucune catégorie trouvée</p>
-            </div>
-          }
-        }
-      </div>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      } @else {
+        <div class="no-categories">
+          <mat-icon>category</mat-icon>
+          <p>Aucune catégorie trouvée</p>
+        </div>
+      }
     </mat-card-content>
   </mat-card>
 </div>

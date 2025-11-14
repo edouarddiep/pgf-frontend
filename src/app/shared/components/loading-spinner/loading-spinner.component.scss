@@ -1,47 +1,54 @@
-.spinner {
+.spinner-wrapper {
   position: relative;
   width: 80px;
   height: 80px;
 }
 
-.spinner-ring {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border: 3px solid transparent;
-  border-top-color: #8b7355;
-  border-radius: 50%;
-  animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-
-  &:nth-child(1) {
-    animation-delay: 0s;
-    border-top-color: #8b7355;
-  }
-
-  &:nth-child(2) {
-    animation-delay: -0.5s;
-    border-top-color: #a68a6d;
-    width: 70%;
-    height: 70%;
-    top: 15%;
-    left: 15%;
-  }
-
-  &:nth-child(3) {
-    animation-delay: -1s;
-    border-top-color: #c4a582;
-    width: 40%;
-    height: 40%;
-    top: 30%;
-    left: 30%;
-  }
+.square {
+  width: 4px;
+  height: 24px;
+  background: #8b7355;
+  border-radius: 8px;
+  display: block;
+  animation: turn 2.5s ease infinite;
 }
 
-@keyframes spin {
+.top {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.bottom {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.left {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.right {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+@keyframes turn {
   0% {
-    transform: rotate(0deg);
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+  70% {
+    transform: translateX(400%) translateY(100%) rotate(90deg);
   }
   100% {
-    transform: rotate(360deg);
+    transform: translateX(0) translateY(0) rotate(0deg);
   }
 }

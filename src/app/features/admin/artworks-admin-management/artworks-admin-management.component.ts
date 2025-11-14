@@ -16,6 +16,7 @@ import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
+import {LoadingDirective} from '@/app/directives/loading.directive';
 
 interface PreviewImage {
   file: File;
@@ -37,7 +38,8 @@ interface PreviewImage {
     MatChipsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    LoadingDirective
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',

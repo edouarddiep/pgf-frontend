@@ -30,7 +30,7 @@
           <div class="exhibitions-list">
             @for (exhibition of currentExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
-                <div class="exhibition-gallery">
+                <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
                     @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
                       <button
@@ -78,7 +78,6 @@
                     </div>
                   }
                 </div>
-
                 <div class="exhibition-content">
                   <h3>{{ exhibition.title }}</h3>
                   <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
@@ -139,7 +138,7 @@
           <div class="exhibitions-list">
             @for (exhibition of pastExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
-                <div class="exhibition-gallery">
+                <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
                     @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
                       <button
@@ -187,7 +186,6 @@
                     </div>
                   }
                 </div>
-
                 @if (exhibition.videoUrls && exhibition.videoUrls.length > 0) {
                   <div class="exhibition-videos">
                     <h4>Rétrospective en vidéo</h4>

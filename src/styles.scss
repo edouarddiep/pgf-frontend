@@ -332,6 +332,76 @@ img {
   border-radius: 0;
   box-shadow: none;
 }
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: inherit;
+  animation: fadeIn 0.2s ease;
+
+  .spinner-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  .square {
+    width: 4px;
+    height: 24px;
+    background: #8b7355;
+    border-radius: 8px;
+    display: block;
+    animation: turn 2.5s ease infinite;
+  }
+
+  .top {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .bottom {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+  }
+
+  .left {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  .right {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+
+  @keyframes turn {
+    0% {
+      transform: translateX(0) translateY(0) rotate(0deg);
+    }
+    70% {
+      transform: translateX(400%) translateY(100%) rotate(90deg);
+    }
+    100% {
+      transform: translateX(0) translateY(0) rotate(0deg);
+    }
+  }
+}
 
 @media (max-width: 768px) {
   .mobile-menu-button.mat-mdc-icon-button,

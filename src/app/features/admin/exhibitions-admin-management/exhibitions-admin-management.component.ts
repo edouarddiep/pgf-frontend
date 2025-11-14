@@ -19,6 +19,7 @@ import { ImageUploadComponent } from '@shared/components/image-upload/image-uplo
 import { NotificationService } from '@shared/services/notification.service';
 import { catchError, EMPTY, fromEvent, finalize } from 'rxjs';
 import { Injectable } from '@angular/core';
+import {LoadingDirective} from '@/app/directives/loading.directive';
 
 interface ExhibitionFormData {
   title: string;
@@ -104,7 +105,8 @@ function endDateValidator(control: AbstractControl) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatProgressBarModule,
-    ImageUploadComponent
+    ImageUploadComponent,
+    LoadingDirective
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },

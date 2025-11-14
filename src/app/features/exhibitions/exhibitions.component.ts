@@ -52,12 +52,18 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
       .pipe(catchError(() => EMPTY))
       .subscribe(([upcoming, ongoing]) => {
         this.currentExhibitions.set([...ongoing, ...upcoming]);
+        setTimeout(() => {
+          [...ongoing, ...upcoming].forEach(ex => this.setupTouchListeners(ex.id));
+        });
       });
 
     this.apiService.getPastExhibitions()
       .pipe(catchError(() => EMPTY))
       .subscribe(exhibitions => {
         this.pastExhibitions.set(exhibitions);
+        setTimeout(() => {
+          exhibitions.forEach(ex => this.setupTouchListeners(ex.id));
+        });
       });
   }
 
@@ -75,6 +81,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
       newMap.set(exhibitionId, index);
       return newMap;
     });
+    this.centerThumbnail(exhibitionId, index);
   }
 
   protected previousImage(exhibitionId: number, totalImages: number): void {
@@ -154,5 +161,70 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
 
     const uniqueUrls = new Set(exhibition.imageUrls);
     return Array.from(uniqueUrls);
+  }
+
+  private setupTouchListeners(exhibitionId: number): void {
+    const gallery = document.querySelector(`[data-exhibition-id="${exhibitionId}"]`) as HTMLElement;
+    if (!gallery) return;
+
+    const container = gallery.querySelector('.main-image-container') as HTMLElement;
+    if (!container) return;
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].clientX;
+      this.handleSwipe(exhibitionId, touchStartX, touchEndX);
+    }, { passive: true });
+  }
+
+  private handleSwipe(exhibitionId: number, startX: number, endX: number): void {
+    const swipeThreshold = 50;
+    const diff = startX - endX;
+
+    const exhibition = [...this.currentExhibitions(), ...this.pastExhibitions()]
+      .find(e => e.id === exhibitionId);
+
+    if (!exhibition?.imageUrls) return;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        this.nextImage(exhibitionId, exhibition.imageUrls.length);
+      } else {
+        this.previousImage(exhibitionId, exhibition.imageUrls.length);
+      }
+    }
+  }
+
+  private centerThumbnail(exhibitionId: number, index: number): void {
+    requestAnimationFrame(() => {
+      const gallery = document.querySelector(`[data-exhibition-id="${exhibitionId}"]`) as HTMLElement;
+      if (!gallery) return;
+
+      const container = gallery.querySelector('.thumbnails-container') as HTMLElement;
+      if (!container) return;
+
+      const thumbnails = Array.from(container.children) as HTMLElement[];
+      const thumbnail = thumbnails[index];
+
+      if (!thumbnail) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const thumbnailRect = thumbnail.getBoundingClientRect();
+
+      const containerCenter = containerRect.width / 2;
+      const thumbnailCenter = thumbnailRect.left - containerRect.left + thumbnailRect.width / 2;
+      const scrollOffset = thumbnailCenter - containerCenter;
+
+      container.scrollBy({
+        left: scrollOffset,
+        behavior: 'smooth'
+      });
+    });
   }
 }

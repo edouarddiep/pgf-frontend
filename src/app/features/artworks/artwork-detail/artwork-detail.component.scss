@@ -1,7 +1,6 @@
 .artwork-detail-section {
   padding: 4rem 0;
   background: #fafafa;
-  min-height: 60vh;
 
   .container {
     max-width: 1200px;
@@ -19,7 +18,7 @@
   .artwork-gallery {
     .main-image-container {
       position: relative;
-      margin-bottom: 2rem;
+      margin-bottom: 0;
 
       .main-carousel-btn {
         position: absolute;
@@ -81,6 +80,7 @@
       display: flex;
       align-items: center;
       width: 580px;
+      margin-top: 2rem;
 
       .thumbnails-container {
         display: flex;
@@ -140,6 +140,10 @@
   }
 
   .artwork-info {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+
     .artwork-title {
       font-size: 2rem;
       font-weight: 500;
@@ -160,7 +164,8 @@
     .artwork-description {
       line-height: 1.8;
       color: #555;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
+      flex: 1;
 
       p {
         margin-bottom: 1.5rem;
@@ -172,6 +177,31 @@
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
+
+      .nav-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid #333 !important;
+        color: #333 !important;
+        background: transparent;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+
+        mat-icon {
+          font-size: 1.2rem;
+          width: 1.2rem;
+          height: 1.2rem;
+        }
+
+        &:hover {
+          background: #333 !important;
+          color: white !important;
+        }
+      }
     }
   }
 }
@@ -300,8 +330,6 @@
 
     .artwork-gallery {
       .main-image-container {
-        margin-bottom: 0;
-
         .main-carousel-btn {
           opacity: 1;
 
@@ -336,8 +364,12 @@
         font-size: 1.5rem;
       }
 
-      .artwork-description p {
-        text-align: left;
+      .artwork-description {
+        flex: none;
+
+        p {
+          text-align: left;
+        }
       }
 
       .navigation-buttons {

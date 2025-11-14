@@ -9,6 +9,7 @@ import { AdminService } from '@features/admin/services/admin.service';
 import { ArtworkCategory } from '@core/models/artwork.model';
 import { NotificationService } from '@shared/services/notification.service';
 import { catchError, EMPTY, forkJoin, finalize } from 'rxjs';
+import {LoadingDirective} from '@/app/directives/loading.directive';
 
 @Component({
   selector: 'app-categories-admin-management',
@@ -18,7 +19,8 @@ import { catchError, EMPTY, forkJoin, finalize } from 'rxjs';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    LoadingDirective
   ],
   templateUrl: './categories-admin-management.component.html',
   styleUrl: './categories-admin-management.component.scss',

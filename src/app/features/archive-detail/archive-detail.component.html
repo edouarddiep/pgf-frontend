@@ -27,6 +27,9 @@
             <div class="audio-grid">
               @for (file of audioFiles(); track file.id) {
                 <div class="audio-card">
+                  @if (file.fileName) {
+                    <div class="audio-name">{{ file.fileName }}</div>
+                  }
                   <div class="audio-player">
                     <audio controls [src]="file.fileUrl"></audio>
                   </div>
@@ -69,6 +72,9 @@
                       <div class="play-button">▶</div>
                     </div>
                   </div>
+                  @if (file.fileName) {
+                    <div class="video-title">{{ file.fileName }}</div>
+                  }
                 </div>
               }
             </div>
@@ -79,7 +85,7 @@
       @if (pdfFiles().length > 0) {
         <section class="pdf-section scroll-fade-in">
           <div class="container">
-            <h2>Documents PDF</h2>
+            <h2>Articles</h2>
             <div class="pdf-grid">
               @for (file of pdfFiles(); track file.id) {
                 <a [href]="file.fileUrl" target="_blank" rel="noopener noreferrer" class="pdf-card">
@@ -88,6 +94,9 @@
                     <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M10 13H8V17H10C10.5304 17 11.0391 16.7893 11.4142 16.4142C11.7893 16.0391 12 15.5304 12 15C12 14.4696 11.7893 13.9609 11.4142 13.5858C11.0391 13.2107 10.5304 13 10 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
+                  @if (file.fileName) {
+                    <span class="pdf-name">{{ file.fileName }}</span>
+                  }
                   <span class="pdf-label">PDF</span>
                 </a>
               }
@@ -96,6 +105,17 @@
         </section>
       }
     }
+
+    <section class="navigation-section">
+      <div class="container">
+        <div class="navigation-buttons">
+          <button mat-stroked-button routerLink="/archives" class="nav-button">
+            <mat-icon>arrow_back</mat-icon>
+            RETOUR AUX ARCHIVES
+          </button>
+        </div>
+      </div>
+    </section>
   }
 
   @if (modalImage()) {
