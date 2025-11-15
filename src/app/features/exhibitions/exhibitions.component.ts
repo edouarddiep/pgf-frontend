@@ -69,6 +69,9 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
 
   protected setActiveTab(tab: TabType): void {
     this.activeTab.set(tab);
+    if (tab === 'past') {
+      setTimeout(() => this.setupPersonalExhibitionsAnimations(), 100);
+    }
   }
 
   protected getSelectedImageIndex(exhibitionId: number): number {
@@ -261,5 +264,22 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
         behavior: 'smooth'
       });
     });
+  }
+
+  private setupPersonalExhibitionsAnimations(): void {
+    const timelineItems = document.querySelectorAll('.personal-exhibitions-section .timeline-item');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.2,
+      rootMargin: '0px 0px -100px 0px'
+    });
+
+    timelineItems.forEach(item => observer.observe(item));
   }
 }
