@@ -163,6 +163,32 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
     return Array.from(uniqueUrls);
   }
 
+  protected getTotalMediaCount(exhibition: Exhibition): number {
+    const imageCount = exhibition.imageUrls?.length || 0;
+    const videoCount = exhibition.videoUrls?.length || 0;
+    return imageCount + videoCount;
+  }
+
+  protected getAllMediaUrls(exhibition: Exhibition): string[] {
+    const images = exhibition.imageUrls || [];
+    const videos = exhibition.videoUrls || [];
+    return [...images, ...videos];
+  }
+
+  protected getCurrentMediaUrl(exhibition: Exhibition, index: number): string {
+    const allMedia = this.getAllMediaUrls(exhibition);
+    return allMedia[index] || '';
+  }
+
+  protected isVideoAtCurrentIndex(exhibition: Exhibition, index: number): boolean {
+    const imageCount = exhibition.imageUrls?.length || 0;
+    return index >= imageCount;
+  }
+
+  protected isVideoUrl(url: string): boolean {
+    return url.includes('.mp4') || url.includes('.webm') || url.includes('.ogg') || url.includes('video');
+  }
+
   private setupTouchListeners(exhibitionId: number): void {
     const gallery = document.querySelector(`[data-exhibition-id="${exhibitionId}"]`) as HTMLElement;
     if (!gallery) return;
