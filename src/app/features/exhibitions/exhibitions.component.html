@@ -88,11 +88,23 @@
                   }
 
                   @if (exhibition.address) {
-                    <p class="address">{{ exhibition.address }}</p>
+                    <p class="address clickable" (click)="onShowOnMap(exhibition)">
+                      {{ exhibition.address }}
+                    </p>
                   }
 
                   @if (exhibition.description) {
                     <p class="description">{{ exhibition.description }}</p>
+                  }
+
+                  @if (exhibition.credits) {
+                    <p class="credits">Crédits: {{ exhibition.credits }}</p>
+                  }
+
+                  @if (exhibition.websiteUrl) {
+                    <p class="website">
+                      Site web de l'exposition: <a [href]="exhibition.websiteUrl" target="_blank" rel="noopener noreferrer">{{ exhibition.websiteUrl }}</a>
+                    </p>
                   }
 
                   <div class="action-buttons">
@@ -250,11 +262,23 @@
                   }
 
                   @if (exhibition.address) {
-                    <p class="address">{{ exhibition.address }}</p>
+                    <p class="address clickable" (click)="onShowOnMap(exhibition)">
+                      {{ exhibition.address }}
+                    </p>
                   }
 
                   @if (exhibition.description) {
                     <p class="description">{{ exhibition.description }}</p>
+                  }
+
+                  @if (exhibition.credits) {
+                    <p class="credits">Crédits: {{ exhibition.credits }}</p>
+                  }
+
+                  @if (exhibition.websiteUrl) {
+                    <p class="website">
+                      Site web de l'exposition: <a [href]="exhibition.websiteUrl" target="_blank" rel="noopener noreferrer">{{ exhibition.websiteUrl }}</a>
+                    </p>
                   }
                 </div>
               </article>

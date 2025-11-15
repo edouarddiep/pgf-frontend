@@ -155,12 +155,21 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   protected getUniqueImageUrls(exhibition: Exhibition): string[] {
-    if (!exhibition.imageUrls || exhibition.imageUrls.length === 0) {
-      return exhibition.imageUrl ? [exhibition.imageUrl] : [];
+    const urls: string[] = [];
+
+    if (exhibition.imageUrl) {
+      urls.push(exhibition.imageUrl);
     }
 
-    const uniqueUrls = new Set(exhibition.imageUrls);
-    return Array.from(uniqueUrls);
+    if (exhibition.imageUrls && exhibition.imageUrls.length > 0) {
+      exhibition.imageUrls.forEach(url => {
+        if (url !== exhibition.imageUrl) {
+          urls.push(url);
+        }
+      });
+    }
+
+    return urls;
   }
 
   protected getTotalMediaCount(exhibition: Exhibition): number {

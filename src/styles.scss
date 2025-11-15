@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+
 @font-face {
   font-family: 'Roboto Flex';
   font-style: normal;
@@ -20,24 +21,26 @@ html {
   ));
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   color-scheme: light;
   background-color: white;
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
-  margin: 0;
-  height: 100%;
   font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, sans-serif;
   font-variation-settings: 'wght' 400, 'wdth' 100, 'opsz' 14;
-}
-
-html, body {
-  height: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 48;
   color: #706969;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
 }
 
 .hero-banner,
@@ -45,14 +48,27 @@ h1, h2, h3, h4, h5, h6 {
 .exhibitions-hero,
 .artworks-hero,
 .category-hero,
-.about-hero {
-  h1, h2, h3, h4, h5, h6 {
-    color: white !important;
-  }
-}
+.about-hero,
+.hero-section,
+.archives-section {
+  height: 40vh !important;
+  align-content: center !important;
 
-h2 {
-  text-transform: uppercase;
+  @media (max-width: 768px) {
+    height: 30vh !important;
+  }
+
+  h1 {
+    color: white !important;
+    font-size: 2.5rem !important;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 2rem !important;
+    }
+  }
 }
 
 p {
@@ -79,7 +95,6 @@ button {
     color: black !important;
     border-color: #f8f9fa !important;
     transform: translateY(-2px) !important;
-    box-shadow: none !important;
   }
 
   &:disabled {
@@ -151,7 +166,6 @@ button {
   h2 {
     font-size: 1.5rem;
     font-weight: 500;
-    color: #706969;
     margin-bottom: 1rem;
     border-bottom: 2px solid #f0f0f0;
     padding-bottom: 0.5rem;
@@ -160,24 +174,13 @@ button {
   h3 {
     font-size: 1.2rem;
     font-weight: 500;
-    color: #706969;
     margin: 1.5rem 0 0.75rem 0;
   }
 
   p {
     font-size: 1rem;
     line-height: 1.7;
-    color: #706969;
     margin-bottom: 1rem;
-
-    strong {
-      color: #706969;
-    }
-
-    em {
-      color: #706969;
-      font-style: italic;
-    }
   }
 
   ul {
@@ -189,10 +192,6 @@ button {
       line-height: 1.7;
       color: #706969;
       margin-bottom: 0.5rem;
-
-      strong {
-        color: #706969;
-      }
     }
   }
 
@@ -213,13 +212,11 @@ button {
 
   h3 {
     font-size: 1.3rem;
-    color: #706969;
     margin-bottom: 1rem;
   }
 
   p {
     margin-bottom: 0.5rem;
-    color: #706969;
 
     &:last-child {
       margin-bottom: 0;
@@ -231,18 +228,17 @@ button {
   }
 }
 
-.success-snackbar {
-  background-color: #4caf50 !important;
+.success-snackbar,
+.error-snackbar,
+.info-snackbar {
   color: white !important;
 
   .mdc-snackbar__surface {
-    background-color: #4caf50 !important;
     min-width: 400px !important;
     max-width: 600px !important;
     font-size: 1.2rem !important;
     padding: 20px 28px !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
   }
 
   .mdc-snackbar__label {
@@ -256,62 +252,33 @@ button {
     color: white !important;
     font-weight: 600 !important;
     font-size: 1.2rem !important;
+  }
+}
+
+.success-snackbar {
+  background-color: #4caf50 !important;
+
+  .mdc-snackbar__surface {
+    background-color: #4caf50 !important;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
   }
 }
 
 .error-snackbar {
   background-color: #f44336 !important;
-  color: white !important;
 
   .mdc-snackbar__surface {
     background-color: #f44336 !important;
-    min-width: 400px !important;
-    max-width: 600px !important;
-    font-size: 1.2rem !important;
-    padding: 20px 28px !important;
-    border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
-  }
-
-  .mdc-snackbar__label {
-    color: white !important;
-    font-weight: 500 !important;
-    font-size: 1.2rem !important;
-    line-height: 1.4 !important;
-  }
-
-  .mat-mdc-snack-bar-action {
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 1.2rem !important;
   }
 }
 
 .info-snackbar {
   background-color: #706969 !important;
-  color: white !important;
 
   .mdc-snackbar__surface {
     background-color: #706969 !important;
-    min-width: 400px !important;
-    max-width: 600px !important;
-    font-size: 1.2rem !important;
-    padding: 20px 28px !important;
-    border-radius: 8px !important;
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
-  }
-
-  .mdc-snackbar__label {
-    color: white !important;
-    font-weight: 500 !important;
-    font-size: 1.2rem !important;
-    line-height: 1.4 !important;
-  }
-
-  .mat-mdc-snack-bar-action {
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 1.2rem !important;
   }
 }
 
@@ -325,18 +292,9 @@ img {
   }
 }
 
-.contact-image img,
-.artist-image img,
-.exhibition-image img {
-  border-radius: 0;
-  box-shadow: none;
-}
 .loading-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(2px);
   display: flex;
@@ -353,39 +311,29 @@ img {
   }
 
   .square {
+    position: absolute;
+    left: 50%;
+    top: 50%;
     width: 4px;
     height: 24px;
     background: #8b7355;
     border-radius: 8px;
-    display: block;
     animation: turn 2.5s ease infinite;
   }
 
   .top {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%) rotate(90deg);
   }
 
   .bottom {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%) rotate(-90deg);
   }
 
   .left {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%) rotate(0deg);
   }
 
   .right {
-    position: absolute;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%) rotate(180deg);
   }
 
