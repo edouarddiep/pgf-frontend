@@ -195,9 +195,17 @@
 @media (max-width: 768px) {
   .hero-home-banner {
     height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .hero-content {
-      padding: 0 2rem;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
 
       h1 {
         font-size: 1.8rem !important;
@@ -212,7 +220,6 @@
       p {
         font-size: 1rem;
         text-align: center !important;
-        padding: 0 2rem;
       }
     }
   }
@@ -221,7 +228,7 @@
     padding: 2rem 0;
 
     .container {
-      padding: 0 2rem;
+      padding: 0 1rem;
     }
 
     .section-header h2 {

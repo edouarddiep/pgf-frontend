@@ -34,10 +34,6 @@ export const routes: Routes = [
     loadComponent: () => import('@features/terms/terms.component').then(m => m.TermsComponent)
   },
   {
-    path: 'privacy',
-    loadComponent: () => import('@features/privacy/privacy.component').then(m => m.PrivacyComponent)
-  },
-  {
     path: 'association',
     loadComponent: () => import('@features/association/association.component').then(m => m.AssociationComponent)
   },

@@ -31,14 +31,4 @@ export class ArtworkCardComponent {
     }
     return artwork.categorySlugs;
   }
-
-  getMainImage(artwork: Artwork): string {
-    if (artwork.mainImageUrl) {
-      return artwork.mainImageUrl;
-    }
-    if (artwork.imageUrls && artwork.imageUrls.length > 0) {
-      return artwork.imageUrls[0];
-    }
-    return '/assets/images/placeholder.jpg';
-  }
 }

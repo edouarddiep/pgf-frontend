@@ -74,6 +74,6 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   }
 
   getCategoryThumbnail(category: any): string {
-    return category.thumbnailUrl || category.mainImageUrl || '/assets/images/placeholder.jpg';
+    return category.thumbnailUrl || category.mainImageUrl;
   }
 }

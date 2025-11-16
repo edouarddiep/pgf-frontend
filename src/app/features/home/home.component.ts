@@ -60,6 +60,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getCategoryThumbnail(category: any): string {
-    return category.thumbnailUrl || category.mainImageUrl || '/assets/images/placeholder.jpg';
+    return category.thumbnailUrl || category.mainImageUrl;
   }
 }

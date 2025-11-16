@@ -1,21 +1,20 @@
 .archive-detail-page {
   min-height: 100vh;
+  overflow-x: hidden;
 
   .hero-banner {
     position: relative;
-    width: 100%;
-    height: 50vh;
-    min-height: 400px;
+    height: 40vh;
+    min-height: 300px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
 
     @media (max-width: 768px) {
-      height: 40vh;
-      min-height: 300px;
+      height: 30vh;
+      min-height: 250px;
     }
 
     .hero-image {
@@ -25,7 +24,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      background-position: center;
       z-index: 1;
     }
 
@@ -45,18 +43,18 @@
       text-align: center;
       padding: 0 2rem;
       max-width: 1200px;
-      width: 100%;
 
       @media (max-width: 768px) {
-        padding: 0 2rem
+        padding: 0 1rem;
       }
 
       .year {
         font-size: 2rem;
-        color: #f0f0f0 !important;
+        color: #f0f0f0;
         margin-bottom: 1.5rem;
         letter-spacing: 0.2em;
         font-weight: 300;
+        text-align: center !important;
 
         @media (max-width: 768px) {
           font-size: 1.5rem;
@@ -65,22 +63,14 @@
       }
 
       h1 {
-        font-size: 2.5rem;
         font-weight: 300;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.1em;
         margin: 0;
         text-transform: uppercase;
-        line-height: 1.4;
         color: white;
-        word-wrap: break-word;
 
         @media (max-width: 768px) {
-          font-size: 1.5rem;
-          line-height: 1.3;
-        }
-
-        @media (max-width: 480px) {
-          font-size: 1.2rem;
+          font-size: 1.5rem !important;
         }
       }
     }
@@ -90,6 +80,10 @@
     padding: 4rem 2rem;
     background: white;
 
+    @media (max-width: 768px) {
+      padding: 2rem 1rem;
+    }
+
     .container {
       max-width: 900px;
       margin: 0 auto;
@@ -97,17 +91,12 @@
       p {
         font-size: 1.1rem;
         line-height: 1.8;
-        text-align: center;
+        text-align: center !important;
         color: #666;
-      }
-    }
 
-    @media (max-width: 768px) {
-      padding: 2rem 1rem;
-
-      .container p {
-        font-size: 1rem;
-        line-height: 1.6;
+        @media (max-width: 768px) {
+          font-size: 1rem;
+        }
       }
     }
   }
@@ -149,14 +138,10 @@
       }
 
       .audio-card {
-        width: 100%;
         background: white;
         padding: 2rem;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+        transition: transform 0.3s ease;
 
         @media (max-width: 768px) {
           padding: 1.5rem;
@@ -164,7 +149,6 @@
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         }
 
         .audio-name {
@@ -172,19 +156,11 @@
           color: #333;
           font-weight: 500;
           text-align: center;
+          margin-bottom: 1rem;
         }
 
-        .audio-player {
+        audio {
           width: 100%;
-
-          audio {
-            width: 100%;
-            height: 50px;
-
-            &::-webkit-media-controls-panel {
-              background-color: #f8f9fa;
-            }
-          }
         }
       }
     }
@@ -199,7 +175,6 @@
       gap: 2rem;
       max-width: 1400px;
       margin: 0 auto;
-      justify-items: center;
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -208,16 +183,14 @@
 
       .image-card {
         position: relative;
-        width: 100%;
         aspect-ratio: 16/10;
         overflow: hidden;
         cursor: pointer;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.3s ease;
 
         &:hover {
           transform: scale(1.02);
-          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
         }
 
         img {
@@ -249,22 +222,23 @@
         gap: 1.5rem;
       }
 
+      &.single-video {
+        grid-template-columns: 1fr;
+      }
+
       .video-card {
-        width: 100%;
-        cursor: pointer;
         background: white;
+        cursor: pointer;
         overflow: hidden;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.3s ease;
 
         &:hover {
           transform: translateY(-4px);
-          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
         }
 
         .video-thumbnail {
           position: relative;
-          width: 100%;
           aspect-ratio: 16/9;
           background: #000;
           overflow: hidden;
@@ -277,10 +251,7 @@
 
           .play-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
@@ -297,7 +268,7 @@
               justify-content: center;
               font-size: 2rem;
               color: #706969;
-              transition: all 0.3s ease;
+              transition: transform 0.3s ease;
               padding-left: 5px;
             }
           }
@@ -307,7 +278,6 @@
 
             .play-button {
               transform: scale(1.1);
-              background: white;
             }
           }
         }
@@ -318,20 +288,11 @@
           color: #333;
           font-weight: 500;
           text-align: center;
-          line-height: 1.4;
-        }
-      }
-
-      &.single-video {
-        grid-template-columns: 1fr;
-        max-width: 1200px;
-
-        @media (max-width: 768px) {
-          grid-template-columns: 1fr;
         }
       }
     }
   }
+
   .pdf-section {
     background: white;
 
@@ -352,15 +313,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         gap: 1rem;
         padding: 2rem 1.5rem;
         background: #f8f9fa;
         text-decoration: none;
         color: #d32f2f;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        min-height: 180px;
+        transition: transform 0.3s ease;
 
         @media (max-width: 768px) {
           width: 180px;
@@ -368,14 +327,12 @@
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
           background: white;
         }
 
         .pdf-icon {
           width: 60px;
           height: 60px;
-          color: #d32f2f;
         }
 
         .pdf-name {
@@ -383,8 +340,6 @@
           color: #333;
           text-align: center;
           font-weight: 500;
-          line-height: 1.4;
-          word-break: break-word;
         }
 
         .pdf-label {
@@ -392,7 +347,6 @@
           font-size: 0.85rem;
           letter-spacing: 1px;
           text-transform: uppercase;
-          color: #d32f2f;
         }
       }
     }
@@ -406,24 +360,15 @@
       padding: 3rem 1rem;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
     .navigation-buttons {
       display: flex;
       justify-content: center;
-      gap: 1rem;
     }
   }
 
   .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0, 0, 0, 0.95);
     z-index: 9999;
     display: flex;
@@ -434,12 +379,8 @@
     cursor: pointer;
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
@@ -464,7 +405,6 @@
         max-width: 100%;
         max-height: 90vh;
         object-fit: contain;
-        border-radius: 8px;
       }
 
       &.video-modal {
@@ -475,7 +415,6 @@
         iframe, video {
           width: 100%;
           height: 100%;
-          border-radius: 8px;
         }
       }
 
@@ -484,8 +423,8 @@
         top: -50px;
         right: 0;
         background: transparent;
-        border: 2px solid white !important;
-        color: white !important;
+        border: 2px solid white;
+        color: white;
         font-size: 1.5rem;
         width: 40px;
         height: 40px;
@@ -494,12 +433,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 !important;
-        z-index: 10000;
+        padding: 0;
 
         &:hover {
-          background: white !important;
-          color: black !important;
+          background: white;
+          color: black;
         }
       }
     }

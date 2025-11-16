@@ -3,13 +3,11 @@
     @if (artwork().mainImageUrl) {
       <img
         [lazyLoad]="artwork().mainImageUrl"
-        [alt]="artwork().title"
-        [defaultImage]="'/assets/images/placeholder.jpg'">
+        [alt]="artwork().title">
     } @else if (artwork().imageUrls && artwork().imageUrls.length > 0) {
       <img
         [lazyLoad]="artwork().imageUrls[0]"
-        [alt]="artwork().title"
-        [defaultImage]="'/assets/images/placeholder.jpg'">
+        [alt]="artwork().title">
     } @else {
       <div class="placeholder-image">
         <mat-icon>image</mat-icon>

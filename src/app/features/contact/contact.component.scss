@@ -1,6 +1,7 @@
 .contact-page {
   min-height: 100vh;
-  background: #fafafa;
+  overflow-x: hidden;
+  padding: 2rem 0;
 }
 
 .contact-grid {
@@ -32,6 +33,10 @@
     .form-container {
       width: 100%;
       max-width: 600px;
+
+      @media (min-width: 1440px) {
+        max-width: 900px;
+      }
 
       .section-title {
         font-size: 2rem;

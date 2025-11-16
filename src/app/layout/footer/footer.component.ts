@@ -39,7 +39,6 @@ export class FooterComponent {
 
   readonly legalLinks = [
     { name: 'Mentions légales', route: '/legal' },
-    { name: 'Politique de confidentialité', route: '/privacy' },
     { name: 'Conditions générales', route: '/terms' }
   ];
 }
