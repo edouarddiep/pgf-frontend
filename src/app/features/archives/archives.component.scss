@@ -197,12 +197,13 @@
 
       .timeline-dot {
         position: absolute;
-        width: 20px;
-        height: 20px;
-        background: white;
-        border: 3px solid #706969;
+        left: 50%;
+        width: 15px;
+        height: 15px;
+        background: linear-gradient(180deg, transparent 0%, #706969 10%, #706969 90%, transparent 100%);
         border-radius: 50%;
-        z-index: 3;
+        transform: translateX(-50%);
+        z-index: 2;
 
         &::after {
           content: '';

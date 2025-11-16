@@ -193,14 +193,14 @@
 }
 
 @media (max-width: 768px) {
-  .hero-banner {
+  .hero-home-banner {
     height: 80vh;
 
     .hero-content {
       padding: 0 1rem;
 
       h1 {
-        font-size: 2rem;
+        font-size: 1.8rem !important;
         letter-spacing: 0.05em;
         white-space: normal;
       }

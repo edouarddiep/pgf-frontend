@@ -31,6 +31,8 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private touchStartX = 0;
   private touchEndX = 0;
   private totalImages = 0;
+  private modalTouchStartX = 0;
+  private modalTouchStartY = 0;
 
   readonly artwork$ = this.route.params.pipe(
     switchMap(params => this.artworkService.getArtworkById(+params['id']))
@@ -110,6 +112,32 @@ export class ArtworkDetailComponent implements AfterViewInit {
     const current = this.selectedImageIndex();
     const newIndex = current < totalImages - 1 ? current + 1 : 0;
     this.selectImage(newIndex);
+  }
+
+  onModalTouchStart(event: TouchEvent): void {
+    this.modalTouchStartX = event.touches[0].clientX;
+    this.modalTouchStartY = event.touches[0].clientY;
+  }
+
+  onModalTouchEnd(event: TouchEvent, totalImages: number): void {
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
+
+    const diffX = this.modalTouchStartX - touchEndX;
+    const diffY = Math.abs(this.modalTouchStartY - touchEndY);
+
+    if (diffY > 50) return;
+
+    const swipeThreshold = 50;
+
+    if (Math.abs(diffX) > swipeThreshold) {
+      const fakeEvent = new Event('click');
+      if (diffX > 0) {
+        this.nextModalImage(fakeEvent, totalImages);
+      } else {
+        this.previousModalImage(fakeEvent, totalImages);
+      }
+    }
   }
 
   openImageModal(index: number): void {

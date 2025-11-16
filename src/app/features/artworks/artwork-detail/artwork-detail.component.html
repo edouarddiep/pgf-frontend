@@ -77,7 +77,9 @@
   <div class="image-modal" (click)="closeImageModal()">
     <div class="modal-content">
       @if (artwork$ | async; as artwork) {
-        <div class="modal-image-wrapper">
+        <div class="modal-image-wrapper"
+             (touchstart)="onModalTouchStart($event)"
+             (touchend)="onModalTouchEnd($event, artwork.imageUrls.length)">
           <img
             [src]="artwork.imageUrls[modalImageIndex()]"
             [alt]="artwork.title"
