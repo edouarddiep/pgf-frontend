@@ -116,12 +116,6 @@
                     <p class="credits">Crédits: {{ exhibition.credits }}</p>
                   }
 
-                  @if (exhibition.websiteUrl) {
-                    <p class="website">
-                      Site web de l'exposition: <a [href]="exhibition.websiteUrl" target="_blank" rel="noopener noreferrer">{{ exhibition.websiteUrl }}</a>
-                    </p>
-                  }
-
                   <div class="action-buttons">
                     <div class="vernissage-button-container">
                       <button
@@ -142,6 +136,12 @@
                     <button mat-stroked-button (click)="onShowOnMap(exhibition)">
                       Où se rendre
                     </button>
+
+                    @if (exhibition.websiteUrl) {
+                      <button mat-stroked-button (click)="window.open(exhibition.websiteUrl, '_blank')">
+                        Vers le site de l'exposition
+                      </button>
+                    }
                   </div>
                 </div>
               </article>

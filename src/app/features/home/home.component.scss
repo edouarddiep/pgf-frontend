@@ -197,7 +197,7 @@
     height: 80vh;
 
     .hero-content {
-      padding: 0 1rem;
+      padding: 0 2rem;
 
       h1 {
         font-size: 1.8rem !important;
@@ -211,6 +211,8 @@
 
       p {
         font-size: 1rem;
+        text-align: center !important;
+        padding: 0 2rem;
       }
     }
   }
@@ -219,7 +221,7 @@
     padding: 2rem 0;
 
     .container {
-      padding: 0 1rem;
+      padding: 0 2rem;
     }
 
     .section-header h2 {
