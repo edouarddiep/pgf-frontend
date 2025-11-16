@@ -34,6 +34,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageIndex = signal(0);
   protected readonly modalExhibition = signal<Exhibition | null>(null);
+  protected readonly window = window;
 
   ngOnInit(): void {
     this.loadExhibitions();
@@ -70,7 +71,10 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected setActiveTab(tab: TabType): void {
     this.activeTab.set(tab);
     if (tab === 'past') {
-      setTimeout(() => this.setupPersonalExhibitionsAnimations(), 100);
+      setTimeout(() => {
+        this.setupPersonalExhibitionsAnimations();
+        this.pastExhibitions().forEach(ex => this.setupTouchListeners(ex.id));
+      }, 100);
     }
   }
 
@@ -208,36 +212,85 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
     const container = gallery.querySelector('.main-image-container') as HTMLElement;
     if (!container) return;
 
+    const existingHandler = (container as any)._swipeHandler;
+    if (existingHandler) return;
+
     let touchStartX = 0;
     let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
 
-    container.addEventListener('touchstart', (e) => {
+    const handleTouchStart = (e: TouchEvent) => {
       touchStartX = e.touches[0].clientX;
-    }, { passive: true });
+      touchStartY = e.touches[0].clientY;
+    };
 
-    container.addEventListener('touchend', (e) => {
+    const handleTouchEnd = (e: TouchEvent) => {
       touchEndX = e.changedTouches[0].clientX;
-      this.handleSwipe(exhibitionId, touchStartX, touchEndX);
-    }, { passive: true });
+      touchEndY = e.changedTouches[0].clientY;
+      this.handleSwipe(exhibitionId, touchStartX, touchEndX, touchStartY, touchEndY);
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    (container as any)._swipeHandler = true;
   }
 
-  private handleSwipe(exhibitionId: number, startX: number, endX: number): void {
+  private handleSwipe(exhibitionId: number, startX: number, endX: number, startY: number, endY: number): void {
     const swipeThreshold = 50;
-    const diff = startX - endX;
+    const diffX = startX - endX;
+    const diffY = Math.abs(startY - endY);
+
+    if (diffY > 50) return;
 
     const exhibition = [...this.currentExhibitions(), ...this.pastExhibitions()]
       .find(e => e.id === exhibitionId);
 
-    if (!exhibition?.imageUrls) return;
+    if (!exhibition) return;
 
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        this.nextImage(exhibitionId, exhibition.imageUrls.length);
+    const totalMedia = this.getTotalMediaCount(exhibition);
+
+    if (Math.abs(diffX) > swipeThreshold && totalMedia > 1) {
+      if (diffX > 0) {
+        this.nextImage(exhibitionId, totalMedia);
       } else {
-        this.previousImage(exhibitionId, exhibition.imageUrls.length);
+        this.previousImage(exhibitionId, totalMedia);
       }
     }
   }
+
+  protected onModalTouchStart(event: TouchEvent): void {
+    this.modalTouchStartX = event.touches[0].clientX;
+    this.modalTouchStartY = event.touches[0].clientY;
+  }
+
+  protected onModalTouchEnd(event: TouchEvent): void {
+    const touchEndX = event.changedTouches[0].clientX;
+    const touchEndY = event.changedTouches[0].clientY;
+
+    const diffX = this.modalTouchStartX - touchEndX;
+    const diffY = Math.abs(this.modalTouchStartY - touchEndY);
+
+    if (diffY > 50) return;
+
+    const exhibition = this.modalExhibition();
+    if (!exhibition?.imageUrls) return;
+
+    const swipeThreshold = 50;
+
+    if (Math.abs(diffX) > swipeThreshold) {
+      const fakeEvent = new Event('click');
+      if (diffX > 0) {
+        this.nextModalImage(fakeEvent, exhibition.imageUrls.length);
+      } else {
+        this.previousModalImage(fakeEvent, exhibition.imageUrls.length);
+      }
+    }
+  }
+
+  private modalTouchStartX = 0;
+  private modalTouchStartY = 0;
 
   private centerThumbnail(exhibitionId: number, index: number): void {
     requestAnimationFrame(() => {

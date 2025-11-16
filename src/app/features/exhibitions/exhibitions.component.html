@@ -32,46 +32,61 @@
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
-                    @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                    @if (getTotalMediaCount(exhibition) > 1) {
                       <button
                         type="button"
                         class="carousel-btn prev"
-                        (click)="previousImage(exhibition.id, exhibition.imageUrls.length)">
+                        (click)="previousImage(exhibition.id, getTotalMediaCount(exhibition))">
                         <mat-icon>chevron_left</mat-icon>
                       </button>
                       <button
                         type="button"
                         class="carousel-btn next"
-                        (click)="nextImage(exhibition.id, exhibition.imageUrls.length)">
+                        (click)="nextImage(exhibition.id, getTotalMediaCount(exhibition))">
                         <mat-icon>chevron_right</mat-icon>
                       </button>
                     }
 
                     <div class="main-image">
-                      @if (getUniqueImageUrls(exhibition).length > 0) {
-                        <img
-                          [src]="getUniqueImageUrls(exhibition)[getSelectedImageIndex(exhibition.id)]"
-                          [alt]="exhibition.title"
-                          (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
-                      } @else if (exhibition.imageUrl) {
-                        <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                      @if (getAllMediaUrls(exhibition).length > 0) {
+                        @if (isVideoAtCurrentIndex(exhibition, getSelectedImageIndex(exhibition.id))) {
+                          <video
+                            class="main-video"
+                            [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            controls
+                            autoplay
+                            muted
+                            loop>
+                          </video>
+                        } @else {
+                          <img
+                            [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            [alt]="exhibition.title"
+                            (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
+                        }
                       } @else {
                         <div class="no-image">
-                          <span>Aucune image</span>
+                          <span>Aucun média</span>
                         </div>
                       }
                     </div>
                   </div>
 
-                  @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                  @if (getTotalMediaCount(exhibition) > 1) {
                     <div class="thumbnail-carousel">
                       <div class="thumbnails-container">
-                        @for (imageUrl of exhibition.imageUrls; track $index) {
+                        @for (mediaUrl of getAllMediaUrls(exhibition); track $index) {
                           <div
                             class="thumbnail"
                             [class.active]="getSelectedImageIndex(exhibition.id) === $index"
                             (click)="selectImage(exhibition.id, $index)">
-                            <img [src]="imageUrl" [alt]="exhibition.title">
+                            @if (isVideoAtCurrentIndex(exhibition, $index)) {
+                              <div class="video-thumbnail">
+                                <mat-icon>play_circle_filled</mat-icon>
+                              </div>
+                            } @else {
+                              <img [src]="mediaUrl" [alt]="exhibition.title">
+                            }
                           </div>
                         }
                       </div>
@@ -131,9 +146,6 @@
                 </div>
               </article>
 
-              @if (!isLast) {
-                <hr class="exhibition-separator">
-              }
             }
           </div>
         } @else {
@@ -153,46 +165,61 @@
               <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
-                    @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                    @if (getTotalMediaCount(exhibition) > 1) {
                       <button
                         type="button"
                         class="carousel-btn prev"
-                        (click)="previousImage(exhibition.id, exhibition.imageUrls.length)">
+                        (click)="previousImage(exhibition.id, getTotalMediaCount(exhibition))">
                         <mat-icon>chevron_left</mat-icon>
                       </button>
                       <button
                         type="button"
                         class="carousel-btn next"
-                        (click)="nextImage(exhibition.id, exhibition.imageUrls.length)">
+                        (click)="nextImage(exhibition.id, getTotalMediaCount(exhibition))">
                         <mat-icon>chevron_right</mat-icon>
                       </button>
                     }
 
                     <div class="main-image">
-                      @if (getUniqueImageUrls(exhibition).length > 0) {
-                        <img
-                          [src]="getUniqueImageUrls(exhibition)[getSelectedImageIndex(exhibition.id)]"
-                          [alt]="exhibition.title"
-                          (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
-                      } @else if (exhibition.imageUrl) {
-                        <img [src]="exhibition.imageUrl" [alt]="exhibition.title">
+                      @if (getAllMediaUrls(exhibition).length > 0) {
+                        @if (isVideoAtCurrentIndex(exhibition, getSelectedImageIndex(exhibition.id))) {
+                          <video
+                            class="main-video"
+                            [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            controls
+                            autoplay
+                            muted
+                            loop>
+                          </video>
+                        } @else {
+                          <img
+                            [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            [alt]="exhibition.title"
+                            (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
+                        }
                       } @else {
                         <div class="no-image">
-                          <span>Aucune image</span>
+                          <span>Aucun média</span>
                         </div>
                       }
                     </div>
                   </div>
 
-                  @if (exhibition.imageUrls && exhibition.imageUrls.length > 1) {
+                  @if (getTotalMediaCount(exhibition) > 1) {
                     <div class="thumbnail-carousel">
                       <div class="thumbnails-container">
-                        @for (imageUrl of exhibition.imageUrls; track $index) {
+                        @for (mediaUrl of getAllMediaUrls(exhibition); track $index) {
                           <div
                             class="thumbnail"
                             [class.active]="getSelectedImageIndex(exhibition.id) === $index"
                             (click)="selectImage(exhibition.id, $index)">
-                            <img [src]="imageUrl" [alt]="exhibition.title">
+                            @if (isVideoAtCurrentIndex(exhibition, $index)) {
+                              <div class="video-thumbnail">
+                                <mat-icon>play_circle_filled</mat-icon>
+                              </div>
+                            } @else {
+                              <img [src]="mediaUrl" [alt]="exhibition.title">
+                            }
                           </div>
                         }
                       </div>
@@ -223,22 +250,20 @@
                   }
 
                   @if (exhibition.websiteUrl) {
-                    <p class="website">
-                      Site web de l'exposition: <a [href]="exhibition.websiteUrl" target="_blank" rel="noopener noreferrer">{{ exhibition.websiteUrl }}</a>
-                    </p>
+                    <div class="website-button">
+                      <button mat-stroked-button (click)="window.open(exhibition.websiteUrl, '_blank')">
+                        Vers le site de l'exposition
+                      </button>
+                    </div>
                   }
                 </div>
               </article>
-
-              @if (!isLast) {
-                <hr class="exhibition-separator">
-              }
             }
           </div>
         } @else {
           <div class="empty-state">
             <h3>Aucune exposition passée</h3>
-            <p>Les expositions précédentes apparaîtront ici</p>
+            <p>L'historique des expositions sera bientôt disponible</p>
           </div>
         }
 
@@ -247,7 +272,6 @@
             <h2>Historique des expositions</h2>
             <div class="timeline-legend">
               <span>P : Exposition personnelle</span>
-              <span class="separator"></span>
               <span>C : Exposition collective</span>
             </div>
           </div>
@@ -631,7 +655,9 @@
   <div class="image-modal" (click)="closeImageModal()">
     <div class="modal-content">
       @if (modalExhibition(); as exhibition) {
-        <div class="modal-image-wrapper">
+        <div class="modal-image-wrapper"
+             (touchstart)="onModalTouchStart($event)"
+             (touchend)="onModalTouchEnd($event)">
           <img
             [src]="exhibition.imageUrls![modalImageIndex()]"
             [alt]="exhibition.title"
