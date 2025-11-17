@@ -22,12 +22,9 @@
   text-decoration: none;
   color: inherit;
 
-  h1 {
-    margin: 0;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    font-size: 1.2rem;
-    color: #333;
+  img {
+    height: 60px;
+    width: auto;
   }
 }
 
@@ -60,13 +57,11 @@
 }
 
 .mobile-menu-button {
-  margin-left: auto;
   color: #333 !important;
   border: none !important;
 
   &.mat-mdc-button-base {
     border: none !important;
-    left: 10px;
   }
 
   ::ng-deep .mat-mdc-button-persistent-ripple {
@@ -153,7 +148,15 @@
 }
 
 @media (max-width: 768px) {
-  .logo h1 {
-    font-size: 1rem;
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .logo {
+    flex-shrink: 0;
+
+    img {
+      height: 60px;
+    }
   }
 }
