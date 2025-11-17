@@ -104,7 +104,7 @@
   .exhibition-item {
     display: grid !important;
     grid-template-columns: 50% 50% !important;
-    align-items: center;
+    align-items: start;
     margin: 0;
     padding: 3.5rem 0;
     width: 100%;
@@ -332,6 +332,7 @@
 
         .exhibition-dates {
           font-size: 0.9rem;
+          letter-spacing: 0.05em;
         }
 
         .action-buttons {
@@ -422,7 +423,7 @@
         display: block;
       }
 
-      img-current {
+      .img-current {
         max-height: 100% !important;
       }
 

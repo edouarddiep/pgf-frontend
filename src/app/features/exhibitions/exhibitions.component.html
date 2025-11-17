@@ -60,6 +60,7 @@
                           </video>
                         } @else {
                           <img
+                            class="img-current"
                             [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
                             [alt]="exhibition.title"
                             (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
