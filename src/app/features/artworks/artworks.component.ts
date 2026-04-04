@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +7,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-card.component';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
-import { switchMap, map, combineLatest } from 'rxjs';
+import { map, combineLatest, take } from 'rxjs';
 
 @Component({
   selector: 'app-artworks',
@@ -29,6 +29,8 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
 
+  private readonly SCROLL_KEY_CATEGORIES = 'artwork-categories';
+
   readonly categorySlug$ = this.route.params.pipe(
     map(params => params['category'])
   );
@@ -41,7 +43,6 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   ]).pipe(
     map(([categorySlug, artworks]) => {
       if (!categorySlug) return [];
-
       return artworks.filter(artwork =>
         artwork.categorySlugs && artwork.categorySlugs.includes(categorySlug)
       );
@@ -52,13 +53,14 @@ export class ArtworksComponent implements OnInit, OnDestroy {
     this.categorySlug$,
     this.categories$
   ]).pipe(
-    map(([categorySlug, categories]) => {
-      return categories.find(cat => cat.slug === categorySlug);
-    })
+    map(([categorySlug, categories]) => categories.find(cat => cat.slug === categorySlug))
   );
 
   ngOnInit(): void {
     this.scrollAnimationService.setupScrollAnimations();
+    this.categories$.pipe(take(1)).subscribe(() => {
+      this.scrollAnimationService.restoreScrollPosition(this.SCROLL_KEY_CATEGORIES);
+    });
   }
 
   ngOnDestroy(): void {
@@ -70,6 +72,7 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   }
 
   onCategoryClick(categorySlug: string): void {
+    this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY_CATEGORIES);
     this.router.navigate(['/artworks', categorySlug]);
   }
 

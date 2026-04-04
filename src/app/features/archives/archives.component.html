@@ -13,8 +13,8 @@
           <div class="timeline-item" [class.timeline-left]="idx % 2 === 0" [class.timeline-right]="idx % 2 !== 0">
             <div class="timeline-dot"></div>
             <div class="timeline-year">{{ archive.year }}</div>
-            <div class="archive-card" [routerLink]="['/archives', archive.id]">
-              @if (archive.thumbnailUrl) {
+            <div class="archive-card" (click)="onArchiveClick(archive.id)">
+            @if (archive.thumbnailUrl) {
                 <div class="archive-image">
                   <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
                   <div class="archive-overlay">

@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ArchiveService } from '@core/services/archive.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
@@ -17,11 +17,15 @@ import { catchError, EMPTY } from 'rxjs';
 export class ArchivesComponent implements OnInit, OnDestroy {
   private readonly archiveService = inject(ArchiveService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly router = inject(Router);
+
+  private readonly SCROLL_KEY = 'archives';
 
   protected readonly archives = signal<Archive[]>([]);
 
   ngOnInit(): void {
     this.loadArchives();
+    this.scrollAnimationService.restoreScrollPosition(this.SCROLL_KEY);
     this.scrollAnimationService.setupScrollAnimations();
   }
 
@@ -53,5 +57,10 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     });
 
     timelineItems.forEach(item => observer.observe(item));
+  }
+
+  onArchiveClick(archiveId: number): void {
+    this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
+    this.router.navigate(['/archives', archiveId]);
   }
 }

@@ -1,11 +1,20 @@
-import { Component, inject, ChangeDetectionStrategy, signal, computed, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import {ActivatedRoute, RouterModule} from '@angular/router';
-import { ArchiveService } from '@core/services/archive.service';
-import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
-import { Archive, ArchiveFile } from '@core/models/archive.model';
-import { catchError, EMPTY } from 'rxjs';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  signal,
+  computed,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef
+} from '@angular/core';
+import {CommonModule, Location} from '@angular/common';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {ArchiveService} from '@core/services/archive.service';
+import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
+import {Archive, ArchiveFile} from '@core/models/archive.model';
+import {catchError, EMPTY} from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 
@@ -22,6 +31,10 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly SCROLL_KEY = 'archives';
+
 
   protected readonly archive = signal<Archive | null>(null);
   protected readonly modalImage = signal<string | null>(null);
@@ -61,6 +74,14 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
         setTimeout(() => this.scrollAnimationService.setupScrollAnimations(), 100);
       });
+  }
+
+  goBack(): void {
+    if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY)) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/archives']);
+    }
   }
 
   protected getSafeUrl(url: string): SafeResourceUrl {

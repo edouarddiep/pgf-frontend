@@ -53,12 +53,12 @@
 
           <div class="navigation-buttons">
             @if (primaryCategory$ | async; as category) {
-              <button mat-stroked-button [routerLink]="['/artworks', category.slug]" class="nav-button">
+              <button mat-stroked-button (click)="goBack(category.slug)" class="nav-button">
                 <mat-icon>arrow_back</mat-icon>
                 {{ category.name.toUpperCase() }}
               </button>
             } @else {
-              <button mat-stroked-button routerLink="/artworks" class="nav-button">
+              <button mat-stroked-button (click)="goBack()" class="nav-button">
                 <mat-icon>arrow_back</mat-icon>
                 RETOUR
               </button>

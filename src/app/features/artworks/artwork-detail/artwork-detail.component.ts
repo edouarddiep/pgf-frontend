@@ -1,10 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { ArtworkService } from '@features/artworks/services/artwork.service';
-import { switchMap, combineLatest, map, take } from 'rxjs';
+import {Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {CommonModule, Location} from '@angular/common';
+import {RouterModule, ActivatedRoute, Router} from '@angular/router';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {ArtworkService} from '@features/artworks/services/artwork.service';
+import {switchMap, combineLatest, map, take} from 'rxjs';
+import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -21,6 +22,10 @@ import { switchMap, combineLatest, map, take } from 'rxjs';
 export class ArtworkDetailComponent implements AfterViewInit {
   private readonly artworkService = inject(ArtworkService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly SCROLL_KEY = 'artworks';
 
   readonly mainImageContainer = viewChild<ElementRef<HTMLElement>>('mainImageContainer');
   readonly thumbnailsContainer = viewChild<ElementRef<HTMLElement>>('thumbnailsContainer');
@@ -76,12 +81,12 @@ export class ArtworkDetailComponent implements AfterViewInit {
 
     container.addEventListener('touchstart', (e) => {
       this.touchStartX = e.touches[0].clientX;
-    }, { passive: true });
+    }, {passive: true});
 
     container.addEventListener('touchend', (e) => {
       this.touchEndX = e.changedTouches[0].clientX;
       this.handleSwipe();
-    }, { passive: true });
+    }, {passive: true});
   }
 
   private handleSwipe(): void {
@@ -94,6 +99,16 @@ export class ArtworkDetailComponent implements AfterViewInit {
       } else {
         this.previousImage(this.totalImages);
       }
+    }
+  }
+
+  goBack(categorySlug?: string): void {
+    if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY)) {
+      this.location.back();
+    } else if (categorySlug) {
+      this.router.navigate(['/artworks', categorySlug]);
+    } else {
+      this.router.navigate(['/artworks']);
     }
   }
 
