@@ -18,8 +18,8 @@ export class VideoService {
   readonly videos: Record<string, VideoConfig> = {
     home: {
       url: 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/videos/video1.mp4',
-      startTime: 2,
-      endTime: 15
+      startTime: 4,
+      endTime: 17
     }
   };
 
