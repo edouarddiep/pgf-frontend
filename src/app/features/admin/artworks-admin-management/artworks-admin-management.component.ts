@@ -75,13 +75,17 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly filteredArtworks = computed(() => {
     const field = this.sortField();
     const asc = this.sortAsc();
-    const query = this.searchQuery().trim().toLowerCase();
+    const query = this.normalize(this.searchQuery().trim());
+    const tokens = query.split(/\s+/).filter(t => t.length >= 1);
 
     let base = this.rawFilteredArtworks();
-    if (query.length >= 2) {
+    if (tokens.length > 0) {
       base = base.filter(a =>
-        a.title?.toLowerCase().includes(query) ||
-        a.descriptionShort?.toLowerCase().includes(query)
+        tokens.every(token =>
+          a.id?.toString().includes(token) ||
+          this.normalize(a.title ?? '').includes(token) ||
+          this.normalize(a.descriptionShort ?? '').includes(token)
+        )
       );
     }
 
@@ -139,14 +143,18 @@ export class ArtworksAdminManagementComponent implements OnInit {
   }
 
   private loadData(): void {
+    this.isLoading.set(true);
     forkJoin({
       artworks: this.adminService.getArtworks(),
       categories: this.adminService.getCategories()
     })
-      .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors du chargement des données');
-        return EMPTY;
-      }))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error('Erreur lors du chargement des données');
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
         this.categories.set(categories);
@@ -154,6 +162,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
         this.selectedCategoryFilter = '';
       });
   }
+
   protected getCategoryNames(categoryIds?: Set<number>): string[] {
     if (!categoryIds || categoryIds.size === 0) return [];
 
@@ -333,5 +342,9 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
+  }
+
+  private normalize(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   }
 }

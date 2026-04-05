@@ -154,7 +154,7 @@
               <th mat-header-cell *matHeaderCellDef (click)="sort('id')" class="sortable-header">
                 ID <span class="sort-icon">{{ sortField() === 'id' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
               </th>
-              <td mat-cell *matCellDef="let artwork">{{ artwork.id }}</td>
+              <td mat-cell *matCellDef="let artwork" [innerHTML]="artwork.id | highlight: searchQuery()"></td>
             </ng-container>
 
             <ng-container matColumnDef="title">
@@ -201,6 +201,10 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+        } @else if (isLoading()) {
+          <div class="no-data">
+            <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+          </div>
         } @else {
           <div class="no-data">
             <mat-icon>palette</mat-icon>

@@ -130,13 +130,13 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected readonly exhibitions = computed(() => {
     const field = this.sortField();
     const asc = this.sortAsc();
-    const query = this.searchQuery().trim().toLowerCase();
+    const query = this.normalize(this.searchQuery().trim());
 
     let base = this.rawExhibitions();
     if (query.length >= 2) {
       base = base.filter(e =>
-        e.title?.toLowerCase().includes(query) ||
-        e.location?.toLowerCase().includes(query)
+        this.normalize(e.title ?? '').includes(query) ||
+        this.normalize(e.location ?? '').includes(query)
       );
     }
 
@@ -446,5 +446,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
+  }
+
+  private normalize(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   }
 }
