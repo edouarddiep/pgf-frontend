@@ -1,6 +1,6 @@
-<div class="categories-container">
-  <div class="header">
-    <h1>Gestion des catégories</h1>
+<div class="admin-artworks-container">
+  <div class="admin-header">
+    <h2>Gestion des catégories</h2>
   </div>
 
   <mat-card class="table-card" appLoading>
@@ -11,30 +11,35 @@
     <mat-card-content>
       @if (categories().length > 0) {
         <table mat-table [dataSource]="categories()" class="categories-table">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef (click)="sort('id')" class="sortable-header">
+              ID <span class="sort-icon">{{ sortField() === 'id' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+            </th>
+            <td mat-cell *matCellDef="let category">{{ category.id }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>Nom</th>
-            <td mat-cell *matCellDef="let category">
-              <div class="category-info">
-                <div class="category-name">{{ category.name }}</div>
-                @if (category.description) {
-                  <div class="category-description">{{ category.description }}</div>
-                }
-              </div>
-            </td>
+            <th mat-header-cell *matHeaderCellDef (click)="sort('name')" class="sortable-header">
+              Nom <span class="sort-icon">{{ sortField() === 'name' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+            </th>
+            <td mat-cell *matCellDef="let category"><strong>{{ category.name }}</strong></td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let category" class="description-cell">{{ category.description }}</td>
           </ng-container>
 
           <ng-container matColumnDef="artworkCount">
-            <th mat-header-cell *matHeaderCellDef>Œuvres</th>
-            <td mat-cell *matCellDef="let category">
-              {{ category.artworkCount || 0 }} œuvre(s)
-            </td>
+            <th mat-header-cell *matHeaderCellDef>Nombre d'oeuvres</th>
+            <td mat-cell *matCellDef="let category">{{ category.artworkCount || 0 }}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       } @else {
-        <div class="no-categories">
+        <div class="no-data">
           <mat-icon>category</mat-icon>
           <p>Aucune catégorie trouvée</p>
         </div>

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import {Component, ChangeDetectionStrategy, inject, signal, OnInit, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -60,10 +60,25 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly selectedFiles = signal<FileList | null>(null);
   protected readonly imagesPreviews = signal<PreviewImage[]>([]);
 
-  protected readonly displayedColumns = ['image', 'title', 'categories', 'actions'];
+  protected readonly displayedColumns = ['id', 'image', 'title', 'categories', 'actions'];
+
   protected selectedCategoryFilter = '';
 
-  protected readonly filteredArtworks = signal<Artwork[]>([]);
+  private readonly rawArtworks = signal<Artwork[]>([]);
+  protected readonly sortField = signal<'id' | 'title'>('id');
+  protected readonly sortAsc = signal(true);
+
+  protected readonly filteredArtworks = computed(() => {
+    const field = this.sortField();
+    const asc = this.sortAsc();
+    return [...this.rawFilteredArtworks()].sort((a, b) => {
+      const va = field === 'id' ? a.id : (a.title ?? '');
+      const vb = field === 'id' ? b.id : (b.title ?? '');
+      return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+    });
+  });
+
+  private readonly rawFilteredArtworks = signal<Artwork[]>([]);
 
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -119,7 +134,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
         this.categories.set(categories);
-        this.filteredArtworks.set(artworks);
+        this.rawFilteredArtworks.set(artworks);
         this.selectedCategoryFilter = '';
       });
   }
@@ -130,6 +145,15 @@ export class ArtworksAdminManagementComponent implements OnInit {
     return Array.from(categoryIds)
       .map(id => categories.find(c => c.id === id)?.name)
       .filter(name => name !== undefined) as string[];
+  }
+
+  protected sort(field: 'id' | 'title'): void {
+    if (this.sortField() === field) {
+      this.sortAsc.update(v => !v);
+    } else {
+      this.sortField.set(field);
+      this.sortAsc.set(true);
+    }
   }
 
   protected openForm(): void {
@@ -252,12 +276,12 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   protected onCategoryFilterChange(): void {
     if (!this.selectedCategoryFilter) {
-      this.filteredArtworks.set(this.artworks());
+      this.rawFilteredArtworks.set(this.artworks());
     } else {
       this.adminService.getArtworksByCategory(+this.selectedCategoryFilter)
         .pipe(catchError(() => EMPTY))
         .subscribe(artworks => {
-          this.filteredArtworks.set(artworks);
+          this.rawFilteredArtworks.set(artworks);
         });
     }
   }

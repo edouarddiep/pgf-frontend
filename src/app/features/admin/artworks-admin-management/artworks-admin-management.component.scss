@@ -254,6 +254,18 @@
   margin-right: 0.5rem;
 }
 
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  &:hover { color: #1976d2; }
+}
+
+.sort-icon {
+  font-size: 0.8rem;
+  color: #999;
+  margin-left: 4px;
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container {
     padding: 1rem;

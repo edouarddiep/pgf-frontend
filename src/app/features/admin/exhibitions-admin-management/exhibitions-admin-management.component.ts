@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import {Component, ChangeDetectionStrategy, inject, signal, OnInit, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { NotificationService } from '@shared/services/notification.service';
 import { catchError, EMPTY, fromEvent, finalize } from 'rxjs';
 import { Injectable } from '@angular/core';
 import {LoadingDirective} from '@/app/directives/loading.directive';
+import {MatTableModule} from '@angular/material/table';
 
 interface ExhibitionFormData {
   title: string;
@@ -105,6 +106,7 @@ function endDateValidator(control: AbstractControl) {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatTableModule,
     ImageUploadComponent,
     LoadingDirective
   ],
@@ -123,13 +125,27 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
 
   protected readonly currentMode = signal<ViewMode>('list');
-  protected readonly exhibitions = signal<Exhibition[]>([]);
+  protected readonly exhibitions = computed(() => {
+    const field = this.sortField();
+    const asc = this.sortAsc();
+    return [...this.rawExhibitions()].sort((a, b) => {
+      const va = field === 'id' ? a.id : (a.title ?? '');
+      const vb = field === 'id' ? b.id : (b.title ?? '');
+      return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+    });
+  });
+
+  private readonly rawExhibitions = signal<Exhibition[]>([]);
+  protected readonly sortField = signal<'id' | 'title'>('id');
+  protected readonly sortAsc = signal(true);
   protected readonly editingExhibition = signal<Exhibition | null>(null);
   protected readonly uploadedImageUrls = signal<string[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly isSaving = signal(false);
   protected readonly uploadedVideoUrls = signal<string[]>([]);
   protected readonly uploadingVideos = signal(false);
+
+  protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
   protected readonly exhibitionForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(2)]],
@@ -155,7 +171,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
         return EMPTY;
       }))
       .subscribe(exhibitions => {
-        this.exhibitions.set(exhibitions);
+        this.rawExhibitions.set(exhibitions);
       });
   }
 
@@ -206,6 +222,15 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
 
     this.uploadedImageUrls.set(uniqueUrls);
     this.uploadedVideoUrls.set(exhibition.videoUrls || []);
+  }
+
+  protected sort(field: 'id' | 'title'): void {
+    if (this.sortField() === field) {
+      this.sortAsc.update(v => !v);
+    } else {
+      this.sortField.set(field);
+      this.sortAsc.set(true);
+    }
   }
 
   protected onImagesUploaded(imageUrls: string[]): void {

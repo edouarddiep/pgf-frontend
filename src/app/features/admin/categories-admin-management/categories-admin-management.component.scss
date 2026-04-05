@@ -1,103 +1,70 @@
-.categories-container {
-  max-width: 1200px;
+.admin-artworks-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.header {
+.admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-}
 
-.categories-table {
-  width: 100%;
+  h2 { margin: 0; color: #333; }
 }
 
 .table-card {
-  margin-top: 1rem;
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .categories-table { width: 100%; }
+
+  .artwork-info {
+    strong { display: block; margin-bottom: 0.25rem; }
+    .description-short { color: #666; font-size: 0.85rem; }
+  }
 }
 
-.category-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  p { margin: 0; font-size: 0.9rem; }
 }
 
-.category-name {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #333;
-}
-
-.category-description {
-  font-size: 0.875rem;
+.description-cell {
+  max-width: 400px;
   color: #666;
+  font-size: 0.85rem;
+  white-space: normal;
   line-height: 1.4;
 }
 
-.no-categories {
-  text-align: center;
-  padding: 3rem;
-  color: #666;
-
-  mat-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 1rem;
-    color: #ccc;
-  }
-
-  p {
-    margin: 0;
-    font-size: 0.9rem;
-  }
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  &:hover { color: #1976d2; }
 }
 
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  padding: 3rem;
-  gap: 1rem;
-
-  p {
-    margin: 0;
-    color: #666;
-    font-size: 1rem;
-    text-align: center;
-  }
+.sort-icon {
+  font-size: 0.8rem;
+  color: #999;
+  margin-left: 4px;
 }
 
-.loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.8);
-  z-index: 10;
-  gap: 1rem;
-
-  p {
-    margin: 0;
-    color: #666;
-    font-size: 1rem;
-    text-align: center;
-  }
-}
-
-.spinner-container {
-  position: relative;
-  min-height: 400px;
-}
-
-.inline-spinner {
-  margin-right: 0.5rem;
+@media (max-width: 768px) {
+  .admin-artworks-container { padding: 1rem; }
 }
