@@ -6,7 +6,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import {AdminService} from '@features/admin/services/admin.service';
+import { AdminService } from '@features/admin/services/admin.service';
+import { NotificationService } from '@shared/services/notification.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -27,10 +28,12 @@ import {AdminService} from '@features/admin/services/admin.service';
 })
 export class AdminLayoutComponent {
   private readonly adminService = inject(AdminService);
+  private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
 
   protected logout(): void {
     this.adminService.logout();
-    this.router.navigate(['/admin/login']);
+    this.notificationService.info('Déconnexion réussie. Merci et bonne visite !');
+    this.router.navigate(['/']);
   }
 }

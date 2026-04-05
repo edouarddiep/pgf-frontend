@@ -267,55 +267,44 @@ button {
 .success-snackbar,
 .error-snackbar,
 .info-snackbar {
-  color: white !important;
-
   .mdc-snackbar__surface {
-    min-width: 400px !important;
-    max-width: 600px !important;
-    font-size: 1.2rem !important;
-    padding: 20px 28px !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
+    min-width: unset !important;
+    width: auto !important;
+    max-width: min(500px, 90vw) !important;
+    padding: clamp(6px, 0.6vw, 14px) clamp(12px, 1.2vw, 28px) !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   .mdc-snackbar__label {
     color: white !important;
-    font-weight: 500 !important;
-    font-size: 1.2rem !important;
+    font-weight: 400 !important;
+    font-size: clamp(0.8rem, 1vw, 1.1rem) !important;
     line-height: 1.4 !important;
+    padding: clamp(4px, 0.5vw, 10px) 0 !important;
   }
 
   .mat-mdc-snack-bar-action {
     color: white !important;
-    font-weight: 600 !important;
-    font-size: 1.2rem !important;
+    font-weight: 500 !important;
+    font-size: clamp(0.75rem, 0.9vw, 1rem) !important;
   }
 }
 
-.success-snackbar {
+.success-snackbar .mdc-snackbar__surface {
   background-color: #4caf50 !important;
-
-  .mdc-snackbar__surface {
-    background-color: #4caf50 !important;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
-  }
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
 }
 
-.error-snackbar {
+.error-snackbar .mdc-snackbar__surface {
   background-color: #f44336 !important;
-
-  .mdc-snackbar__surface {
-    background-color: #f44336 !important;
-    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
-  }
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
 }
 
-.info-snackbar {
-  background-color: #706969 !important;
-
-  .mdc-snackbar__surface {
-    background-color: #706969 !important;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
-  }
+.info-snackbar .mdc-snackbar__surface {
+  background-color: #1a3a5c !important;
+  box-shadow: 0 4px 12px rgba(26, 58, 92, 0.3) !important;
 }
 
 img {

@@ -14,14 +14,14 @@ export class NotificationService {
   };
 
   success(message: string): void {
-    this.snackBar.open(message, '✓', {
+    this.snackBar.open(message, undefined, {
       ...this.defaultConfig,
       panelClass: ['success-snackbar']
     });
   }
 
   error(message: string): void {
-    this.snackBar.open(message, '✗', {
+    this.snackBar.open(message, undefined, {
       ...this.defaultConfig,
       duration: 6000,
       panelClass: ['error-snackbar']
@@ -29,7 +29,7 @@ export class NotificationService {
   }
 
   info(message: string): void {
-    this.snackBar.open(message, 'ℹ', {
+    this.snackBar.open(message, undefined, {
       ...this.defaultConfig,
       panelClass: ['info-snackbar']
     });
