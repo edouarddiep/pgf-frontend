@@ -1,12 +1,16 @@
-<app-header></app-header>
+@if (!isAdminRoute()) {
+  <app-header></app-header>
+}
 
-<main class="main-content">
+<main [class.main-content]="!isAdminRoute()">
   <router-outlet></router-outlet>
 </main>
 
-<app-footer></app-footer>
+@if (!isAdminRoute()) {
+  <app-footer></app-footer>
+}
 
-@if (this.isLoading()) {
+@if (isLoading()) {
   <div class="global-loading-overlay">
     <app-loading-spinner />
   </div>

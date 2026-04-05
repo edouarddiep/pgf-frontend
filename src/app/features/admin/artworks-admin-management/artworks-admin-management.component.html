@@ -110,6 +110,15 @@
     <mat-card class="table-card" appLoading>
       <mat-card-header>
         <mat-card-title>Liste des œuvres</mat-card-title>
+        <mat-form-field>
+          <mat-label>Rechercher une œuvre</mat-label>
+          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" placeholder="Veuillez saisir un nom ou une description">
+          @if (searchQuery()) {
+            <button matSuffix mat-icon-button (click)="onSearchChange('')">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Filtrer par catégorie</mat-label>
           <mat-select [(value)]="selectedCategoryFilter" (selectionChange)="onCategoryFilterChange()">
@@ -131,7 +140,8 @@
                   <img
                     [src]="artwork.mainImageUrl || artwork.imageUrls[0]"
                     [alt]="artwork.title"
-                    class="artwork-thumb">
+                    class="artwork-thumb"
+                    (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])">
                 } @else {
                   <div class="no-image">
                     <mat-icon>image</mat-icon>
@@ -153,9 +163,9 @@
               </th>
               <td mat-cell *matCellDef="let artwork">
                 <div class="artwork-info">
-                  <strong>{{ artwork.title }}</strong>
+                  <strong [innerHTML]="artwork.title | highlight: searchQuery()"></strong>
                   @if (artwork.descriptionShort) {
-                    <div class="description-short">{{ artwork.descriptionShort }}</div>
+                    <div class="description-short" [innerHTML]="artwork.descriptionShort | highlight: searchQuery()"></div>
                   }
                 </div>
               </td>
@@ -199,5 +209,15 @@
         }
       </mat-card-content>
     </mat-card>
+  }
+  @if (showImageModal()) {
+    <div class="image-modal" (click)="closeImageModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <img [src]="modalImageUrl()" alt="Aperçu" class="modal-image">
+        <button type="button" class="modal-close" (click)="closeImageModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
   }
 </div>

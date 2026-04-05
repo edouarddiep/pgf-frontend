@@ -21,6 +21,7 @@ import { catchError, EMPTY, fromEvent, finalize } from 'rxjs';
 import { Injectable } from '@angular/core';
 import {LoadingDirective} from '@/app/directives/loading.directive';
 import {MatTableModule} from '@angular/material/table';
+import {HighlightPipe} from '@core/pipes/highlight.pipe';
 
 interface ExhibitionFormData {
   title: string;
@@ -108,7 +109,8 @@ function endDateValidator(control: AbstractControl) {
     MatProgressBarModule,
     MatTableModule,
     ImageUploadComponent,
-    LoadingDirective
+    LoadingDirective,
+    HighlightPipe
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },
@@ -128,7 +130,17 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected readonly exhibitions = computed(() => {
     const field = this.sortField();
     const asc = this.sortAsc();
-    return [...this.rawExhibitions()].sort((a, b) => {
+    const query = this.searchQuery().trim().toLowerCase();
+
+    let base = this.rawExhibitions();
+    if (query.length >= 2) {
+      base = base.filter(e =>
+        e.title?.toLowerCase().includes(query) ||
+        e.location?.toLowerCase().includes(query)
+      );
+    }
+
+    return [...base].sort((a, b) => {
       const va = field === 'id' ? a.id : (a.title ?? '');
       const vb = field === 'id' ? b.id : (b.title ?? '');
       return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
@@ -136,6 +148,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   });
 
   private readonly rawExhibitions = signal<Exhibition[]>([]);
+  protected readonly searchQuery = signal('');
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
   protected readonly editingExhibition = signal<Exhibition | null>(null);
@@ -144,6 +157,8 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected readonly isSaving = signal(false);
   protected readonly uploadedVideoUrls = signal<string[]>([]);
   protected readonly uploadingVideos = signal(false);
+  protected readonly showImageModal = signal(false);
+  protected readonly modalImageUrl = signal<string>('');
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
@@ -293,6 +308,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     processNext();
   }
 
+  protected onSearchChange(value: string): void {
+    this.searchQuery.set(value);
+  }
+
   protected removeVideo(index: number): void {
     this.uploadedVideoUrls.update(urls => urls.filter((_, i) => i !== index));
   }
@@ -418,5 +437,14 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
+  }
+
+  protected openImageModal(url: string): void {
+    this.modalImageUrl.set(url);
+    this.showImageModal.set(true);
+  }
+
+  protected closeImageModal(): void {
+    this.showImageModal.set(false);
   }
 }

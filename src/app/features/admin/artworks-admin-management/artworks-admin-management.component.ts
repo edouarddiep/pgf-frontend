@@ -17,6 +17,7 @@ import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
 import {LoadingDirective} from '@/app/directives/loading.directive';
+import {HighlightPipe} from '@core/pipes/highlight.pipe';
 
 interface PreviewImage {
   file: File;
@@ -39,7 +40,8 @@ interface PreviewImage {
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    LoadingDirective
+    LoadingDirective,
+    HighlightPipe
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -67,11 +69,23 @@ export class ArtworksAdminManagementComponent implements OnInit {
   private readonly rawArtworks = signal<Artwork[]>([]);
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
+  protected readonly showImageModal = signal(false);
+  protected readonly modalImageUrl = signal<string>('');
 
   protected readonly filteredArtworks = computed(() => {
     const field = this.sortField();
     const asc = this.sortAsc();
-    return [...this.rawFilteredArtworks()].sort((a, b) => {
+    const query = this.searchQuery().trim().toLowerCase();
+
+    let base = this.rawFilteredArtworks();
+    if (query.length >= 2) {
+      base = base.filter(a =>
+        a.title?.toLowerCase().includes(query) ||
+        a.descriptionShort?.toLowerCase().includes(query)
+      );
+    }
+
+    return [...base].sort((a, b) => {
       const va = field === 'id' ? a.id : (a.title ?? '');
       const vb = field === 'id' ? b.id : (b.title ?? '');
       return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
@@ -79,6 +93,8 @@ export class ArtworksAdminManagementComponent implements OnInit {
   });
 
   private readonly rawFilteredArtworks = signal<Artwork[]>([]);
+
+  protected searchQuery = signal('');
 
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
@@ -154,6 +170,10 @@ export class ArtworksAdminManagementComponent implements OnInit {
       this.sortField.set(field);
       this.sortAsc.set(true);
     }
+  }
+
+  protected onSearchChange(value: string): void {
+    this.searchQuery.set(value);
   }
 
   protected openForm(): void {
@@ -304,5 +324,14 @@ export class ArtworksAdminManagementComponent implements OnInit {
     } else {
       return this.artworkForm.valid && (this.artworkForm.dirty || this.selectedFiles()?.length > 0);
     }
+  }
+
+  protected openImageModal(url: string): void {
+    this.modalImageUrl.set(url);
+    this.showImageModal.set(true);
+  }
+
+  protected closeImageModal(): void {
+    this.showImageModal.set(false);
   }
 }
