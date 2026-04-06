@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminGuard } from '@features/admin/guards/admin.guard';
+import {unsavedChangesGuard} from '@features/admin/guards/unsaved-changes.guard';
 
 export const adminRoutes: Routes = [
   {
@@ -17,15 +18,27 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('@features/admin/categories-admin-management/categories-admin-management.component').then(m => m.CategoriesAdminManagementComponent)
       },
       {
+        path: 'categories/create',
+        canDeactivate: [unsavedChangesGuard],
+        loadComponent: () => import('@features/admin/categories-admin-management/categories-admin-management.component').then(m => m.CategoriesAdminManagementComponent)
+      },
+      {
+        path: 'categories/:id/edit',
+        canDeactivate: [unsavedChangesGuard],
+        loadComponent: () => import('@features/admin/categories-admin-management/categories-admin-management.component').then(m => m.CategoriesAdminManagementComponent)
+      },
+      {
         path: 'artworks',
         loadComponent: () => import('@features/admin/artworks-admin-management/artworks-admin-management.component').then(m => m.ArtworksAdminManagementComponent)
       },
       {
         path: 'artworks/create',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('@features/admin/artworks-admin-management/artworks-admin-management.component').then(m => m.ArtworksAdminManagementComponent)
       },
       {
         path: 'artworks/:id/edit',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('@features/admin/artworks-admin-management/artworks-admin-management.component').then(m => m.ArtworksAdminManagementComponent)
       },
       {
@@ -34,10 +47,12 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'exhibitions/create',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('@features/admin/exhibitions-admin-management/exhibitions-admin-management.component').then(m => m.ExhibitionsAdminManagementComponent)
       },
       {
         path: 'exhibitions/:id/edit',
+        canDeactivate: [unsavedChangesGuard],
         loadComponent: () => import('@features/admin/exhibitions-admin-management/exhibitions-admin-management.component').then(m => m.ExhibitionsAdminManagementComponent)
       },
       {

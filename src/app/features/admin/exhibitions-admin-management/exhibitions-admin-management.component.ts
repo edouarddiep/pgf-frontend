@@ -23,6 +23,7 @@ import { catchError, EMPTY, finalize } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
+import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 
 interface ExhibitionFormData {
   title: string;
@@ -101,14 +102,13 @@ function endDateValidator(control: AbstractControl) {
   styleUrl: './exhibitions-admin-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExhibitionsAdminManagementComponent implements OnInit {
+export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedChanges {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly isFormMode = signal(false);
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
   protected readonly searchQuery = signal('');
   protected readonly sortField = signal<'id' | 'title'>('id');
@@ -120,6 +120,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected readonly uploadingVideos = signal(false);
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal<string>('');
+  protected readonly mainImageUrl = signal<string | undefined>(undefined);
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
@@ -152,6 +153,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     endDate: [null as Date | null]
   }, { validators: endDateValidator });
 
+  readonly hasUnsavedChanges = signal(false);
+  readonly isFormMode = signal(false);
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     const url = this.router.url;
@@ -160,6 +164,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
+      this.exhibitionForm.valueChanges.subscribe(() => {
+        if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+      });
       if (isEdit) {
         this.adminService.getExhibitions()
           .pipe(catchError(() => EMPTY))
@@ -210,7 +217,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       : (exhibition.imageUrl ? [exhibition.imageUrl] : []);
 
     this.uploadedImageUrls.set(uniqueUrls);
+    this.mainImageUrl.set(uniqueUrls[0]);
     this.uploadedVideoUrls.set(exhibition.videoUrls || []);
+    this.hasUnsavedChanges.set(false);
   }
 
   protected sort(field: 'id' | 'title'): void {
@@ -222,12 +231,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     }
   }
 
-  protected onImagesUploaded(imageUrls: string[]): void {
-    this.uploadedImageUrls.update(existing => [...existing, ...imageUrls]);
-  }
-
-  protected onImageRemoved(imageUrl: string): void {
-    this.uploadedImageUrls.update(urls => urls.filter(url => url !== imageUrl));
+  protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
+    this.uploadedImageUrls.set(event.urls);
+    this.mainImageUrl.set(event.mainUrl);
+    this.hasUnsavedChanges.set(true);
   }
 
   protected onVideoSelected(event: Event): void {
@@ -256,7 +263,12 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       const videoIndex = startIndex + uploadIndex + 1;
       this.adminService.uploadExhibitionVideo(files[uploadIndex], exhibitionSlug, videoIndex)
         .pipe(catchError(() => { this.notificationService.error(`Erreur upload: ${files[uploadIndex].name}`); return EMPTY; }))
-        .subscribe(result => { this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]); uploadIndex++; processNext(); });
+        .subscribe(result => {
+          this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]);
+          this.hasUnsavedChanges.set(true);
+          uploadIndex++;
+          processNext();
+        });
     };
     processNext();
   }
@@ -267,6 +279,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
 
   protected removeVideo(index: number): void {
     this.uploadedVideoUrls.update(urls => urls.filter((_, i) => i !== index));
+    this.hasUnsavedChanges.set(true);
   }
 
   protected saveExhibition(): void {
@@ -284,7 +297,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       address: formData.address || undefined,
       startDate: this.formatDateForBackend(formData.startDate!),
       endDate: formData.endDate ? this.formatDateForBackend(formData.endDate) : undefined,
-      imageUrl: imageUrls[0],
+      imageUrl: this.mainImageUrl() ?? imageUrls[0],
       imageUrls,
       videoUrls
     };
@@ -302,6 +315,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       .subscribe(() => {
         this.notificationService.success(editing ? 'Exposition modifiée avec succès' : 'Exposition créée avec succès');
         window.dispatchEvent(new CustomEvent('exhibitionChanged'));
+        this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/exhibitions']);
       });
   }

@@ -19,6 +19,8 @@ import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
+import {ImageUploadComponent} from '@shared/components/image-upload/image-upload.component';
+import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 
 interface PreviewImage {
   file: File;
@@ -42,13 +44,14 @@ interface PreviewImage {
     MatProgressSpinnerModule,
     MatSnackBarModule,
     LoadingDirective,
-    HighlightPipe
+    HighlightPipe,
+    ImageUploadComponent
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtworksAdminManagementComponent implements OnInit {
+export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChanges {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
@@ -60,10 +63,10 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly editingArtwork = signal<Artwork | null>(null);
   protected readonly isSubmitting = signal(false);
   protected readonly isLoading = signal(true);
-  protected readonly selectedFiles = signal<FileList | null>(null);
-  protected readonly imagesPreviews = signal<PreviewImage[]>([]);
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal<string>('');
+  protected readonly uploadedImageUrls = signal<string[]>([]);
+  protected readonly mainImageUrl = signal<string | undefined>(undefined);
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'categories', 'actions'];
   protected selectedCategoryFilter = '';
@@ -73,8 +76,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
   protected readonly searchQuery = signal('');
-
-  protected readonly isFormMode = signal(false);
 
   protected readonly filteredArtworks = computed(() => {
     const field = this.sortField();
@@ -108,6 +109,9 @@ export class ArtworksAdminManagementComponent implements OnInit {
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
   });
 
+  readonly hasUnsavedChanges = signal(false);
+  readonly isFormMode = signal(false);
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     const url = this.router.url;
@@ -116,6 +120,9 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
+      this.artworkForm.valueChanges.subscribe(() => {
+        if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+      });
       this.loadCategories().subscribe(categories => {
         this.categories.set(categories);
         if (isEdit) {
@@ -169,6 +176,9 @@ export class ArtworksAdminManagementComponent implements OnInit {
     });
     this.artworkForm.markAsPristine();
     this.artworkForm.markAsUntouched();
+    this.uploadedImageUrls.set(artwork.imageUrls || []);
+    this.mainImageUrl.set(artwork.mainImageUrl);
+    this.hasUnsavedChanges.set(false);
   }
 
   protected openForm(): void {
@@ -180,30 +190,9 @@ export class ArtworksAdminManagementComponent implements OnInit {
   }
 
   protected cancelForm(): void {
-    this.imagesPreviews().forEach(p => URL.revokeObjectURL(p.url));
+    this.uploadedImageUrls.set([]);
+    this.mainImageUrl.set(undefined);
     this.router.navigate(['/admin/artworks']);
-  }
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const files = input.files;
-    this.selectedFiles.set(files);
-
-    if (files && files.length > 0) {
-      this.imagesPreviews.set(Array.from(files).map(file => ({ file, url: URL.createObjectURL(file) })));
-    } else {
-      this.imagesPreviews.set([]);
-    }
-  }
-
-  removeImagePreview(index: number): void {
-    const previews = this.imagesPreviews();
-    URL.revokeObjectURL(previews[index].url);
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    this.imagesPreviews.set(updatedPreviews);
-    const dt = new DataTransfer();
-    updatedPreviews.forEach(p => dt.items.add(p.file));
-    this.selectedFiles.set(dt.files);
   }
 
   protected sort(field: 'id' | 'title'): void {
@@ -224,25 +213,20 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
     this.isSubmitting.set(true);
     const formValue = this.artworkForm.value;
-    const uploadData = new FormData();
+    const editing = this.editingArtwork();
 
-    uploadData.append('artwork', JSON.stringify({
+    const payload = {
       title: formValue.title!,
       description: formValue.description,
       descriptionShort: formValue.descriptionShort,
-      imageUrls: formValue.imageUrls!,
+      imageUrls: this.uploadedImageUrls(),
+      mainImageUrl: this.mainImageUrl(),
       categoryIds: formValue.categoryIds!
-    }));
+    };
 
-    const files = this.selectedFiles();
-    if (files && files.length > 0) {
-      Array.from(files).forEach(file => uploadData.append('images', file));
-    }
-
-    const editing = this.editingArtwork();
     const operation = editing
-      ? this.adminService.updateArtworkWithImages(editing.id, uploadData)
-      : this.adminService.createArtworkWithImages(uploadData);
+      ? this.adminService.updateArtwork(editing.id, payload)
+      : this.adminService.createArtwork(payload);
 
     operation
       .pipe(
@@ -255,6 +239,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
       .subscribe(() => {
         this.notificationService.success(editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès');
         window.dispatchEvent(new CustomEvent('artworkChanged'));
+        this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/artworks']);
       });
   }
@@ -294,7 +279,7 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   protected isFormValidForSubmit(): boolean {
     return this.editingArtwork()
-      ? this.artworkForm.valid && (this.artworkForm.dirty || (this.selectedFiles()?.length ?? 0) > 0)
+      ? this.artworkForm.valid && (this.artworkForm.dirty || this.hasUnsavedChanges())
       : this.artworkForm.valid;
   }
 
@@ -305,6 +290,18 @@ export class ArtworksAdminManagementComponent implements OnInit {
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
+  }
+
+  protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
+    this.uploadedImageUrls.set(event.urls);
+    this.mainImageUrl.set(event.mainUrl);
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected getCategorySlugForUpload(): string {
+    const ids = this.artworkForm.value.categoryIds;
+    if (!ids || ids.length === 0) return 'general';
+    return this.categories().find(c => c.id === ids[0])?.slug ?? 'general';
   }
 
   private normalize(str: string): string {

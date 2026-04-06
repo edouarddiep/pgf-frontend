@@ -13,7 +13,8 @@
         <mat-card-title>Liste des œuvres</mat-card-title>
         <mat-form-field>
           <mat-label>Rechercher une œuvre</mat-label>
-          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" placeholder="Veuillez saisir un nom ou une description">
+          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)"
+                 placeholder="Veuillez saisir un nom ou une description">
           @if (searchQuery()) {
             <button matSuffix mat-icon-button (click)="onSearchChange('')">
               <mat-icon>close</mat-icon>
@@ -39,9 +40,12 @@
               <td mat-cell *matCellDef="let artwork">
                 @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
                   <img [src]="artwork.mainImageUrl || artwork.imageUrls[0]" [alt]="artwork.title"
-                       class="artwork-thumb" (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])">
+                       class="artwork-thumb" (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])"
+                       matTooltip="Agrandir"/>
                 } @else {
-                  <div class="no-image"><mat-icon>image</mat-icon></div>
+                  <div class="no-image">
+                    <mat-icon>image</mat-icon>
+                  </div>
                 }
               </td>
             </ng-container>
@@ -61,7 +65,8 @@
                 <div class="artwork-info">
                   <strong [innerHTML]="artwork.title | highlight: searchQuery()"></strong>
                   @if (artwork.descriptionShort) {
-                    <div class="description-short" [innerHTML]="artwork.descriptionShort | highlight: searchQuery()"></div>
+                    <div class="description-short"
+                         [innerHTML]="artwork.descriptionShort | highlight: searchQuery()"></div>
                   }
                 </div>
               </td>
@@ -157,36 +162,26 @@
               }
             </mat-form-field>
 
-            <div class="full-width file-upload-section">
+            <div class="full-width">
               <label class="file-upload-label">Images</label>
-              <input type="file" multiple accept="image/*" (change)="onFileSelected($event)" #fileInput class="file-input">
-              <button type="button" mat-stroked-button (click)="fileInput.click()">
-                <mat-icon>cloud_upload</mat-icon>
-                Choisir des images
-              </button>
-              @if (selectedFiles()) {
-                <p class="file-info">{{ selectedFiles()?.length }} fichier(s) sélectionné(s)</p>
-              }
-              @if (imagesPreviews().length > 0) {
-                <div class="images-preview">
-                  @for (preview of imagesPreviews(); track $index) {
-                    <div class="preview-item">
-                      <img [src]="preview.url" [alt]="'Preview ' + ($index + 1)">
-                      <button type="button" mat-icon-button color="warn" (click)="removeImagePreview($index)" class="remove-btn">
-                        <mat-icon>close</mat-icon>
-                      </button>
-                    </div>
-                  }
-                </div>
-              }
+              <app-image-upload
+                [currentImages]="uploadedImageUrls()"
+                [mainImageUrl]="mainImageUrl()"
+                [category]="getCategorySlugForUpload()"
+                [multiple]="true"
+                (imagesChanged)="onImagesChanged($event)"
+                (hasChanges)="hasUnsavedChanges.set(true)"
+                (zoomImage)="openImageModal($event)">
+              </app-image-upload>
             </div>
-          </div>
 
-          <div class="form-actions">
-            <button type="button" mat-button (click)="cancelForm()">Annuler</button>
-            <button type="submit" mat-raised-button color="primary" [disabled]="!isFormValidForSubmit() || isSubmitting()">
-              {{ editingArtwork() ? 'Modifier' : 'Créer' }}
-            </button>
+            <div class="form-actions">
+              <button type="button" mat-button (click)="cancelForm()">Annuler</button>
+              <button type="submit" mat-raised-button color="primary"
+                      [disabled]="!isFormValidForSubmit() || isSubmitting()">
+                {{ editingArtwork() ? 'Enregistrer les modifications' : 'Sauvegarder' }}
+              </button>
+            </div>
           </div>
         </form>
       </mat-card-content>

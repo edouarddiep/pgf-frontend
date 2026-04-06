@@ -330,6 +330,42 @@
   }
 }
 
+.existing-images-section {
+  margin-bottom: 1rem;
+
+  .existing-images-label {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 0.5rem;
+  }
+}
+
+.preview-item {
+  cursor: pointer;
+
+  &:not(.thumbnail-item):hover {
+    border: 2px solid rgba(25, 118, 210, 0.4);
+  }
+
+  &.thumbnail-item {
+    border: 2px solid #1976d2;
+    cursor: default;
+  }
+
+  .thumbnail-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(25, 118, 210, 0.85);
+    color: white;
+    font-size: 0.65rem;
+    text-align: center;
+    padding: 2px 0;
+    z-index: 1;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container {
     padding: 1rem;

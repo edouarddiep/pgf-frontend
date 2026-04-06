@@ -36,7 +36,9 @@
               <th mat-header-cell *matHeaderCellDef>Image</th>
               <td mat-cell *matCellDef="let exhibition">
                 @if (exhibition.imageUrl) {
-                  <img [src]="exhibition.imageUrl" [alt]="exhibition.title" class="artwork-thumb" (click)="openImageModal(exhibition.imageUrl)">
+                  <img [src]="exhibition.imageUrl" [alt]="exhibition.title" class="artwork-thumb"
+                       (click)="openImageModal(exhibition.imageUrl)"
+                       matTooltip="Agrandir"/>
                 } @else {
                   <div class="no-image"><mat-icon>image</mat-icon></div>
                 }
@@ -153,11 +155,13 @@
               <label class="file-upload-label">Images de l'exposition</label>
               <app-image-upload
                 [currentImages]="uploadedImageUrls()"
+                [mainImageUrl]="mainImageUrl()"
                 [category]="'exhibitions'"
                 [exhibitionSlug]="getExhibitionSlug()"
                 [multiple]="true"
-                (imagesUploaded)="onImagesUploaded($event)"
-                (imageRemoved)="onImageRemoved($event)">
+                (imagesChanged)="onImagesChanged($event)"
+                (hasChanges)="hasUnsavedChanges.set(true)"
+                (zoomImage)="openImageModal($event)">
               </app-image-upload>
             </div>
 
@@ -190,8 +194,9 @@
 
           <div class="form-actions">
             <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">Annuler</button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="exhibitionForm.invalid || isSaving()">
-              {{ editingExhibition() ? 'Modifier' : 'Créer' }}
+            <button mat-raised-button color="primary" type="submit"
+                    [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())">
+              {{ editingExhibition() ? 'Enregistrer les modifications' : 'Sauvegarder' }}
             </button>
           </div>
         </form>

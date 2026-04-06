@@ -72,12 +72,12 @@ export class AdminService {
     return this.http.get<Artwork[]>(`${this.apiUrl}/artworks/category/${categoryId}`);
   }
 
-  createArtworkWithImages(formData: FormData): Observable<Artwork> {
-    return this.http.post<Artwork>(`${this.baseUrl}/artworks/with-images`, formData);
+  createArtwork(dto: Partial<Artwork>): Observable<Artwork> {
+    return this.http.post<Artwork>(`${this.baseUrl}/artworks`, dto);
   }
 
-  updateArtworkWithImages(id: number, formData: FormData): Observable<Artwork> {
-    return this.http.put<Artwork>(`${this.baseUrl}/artworks/${id}/with-images`, formData);
+  updateArtwork(id: number, dto: Partial<Artwork>): Observable<Artwork> {
+    return this.http.put<Artwork>(`${this.baseUrl}/artworks/${id}`, dto);
   }
 
   deleteArtwork(id: number): Observable<void> {

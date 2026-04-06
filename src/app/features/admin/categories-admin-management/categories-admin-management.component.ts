@@ -1,21 +1,23 @@
-import {Component, ChangeDetectionStrategy, inject, signal, computed, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {MatTableModule} from '@angular/material/table';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {MatCardModule} from '@angular/material/card';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatDialogModule} from '@angular/material/dialog';
-import {ReactiveFormsModule, FormBuilder, Validators} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {AdminService} from '@features/admin/services/admin.service';
-import {ArtworkCategory} from '@core/models/artwork.model';
-import {NotificationService} from '@shared/services/notification.service';
-import {catchError, EMPTY, forkJoin} from 'rxjs';
-import {LoadingDirective} from '@/app/directives/loading.directive';
-import {MatTooltip} from '@angular/material/tooltip';
-import {HighlightPipe} from '@core/pipes/highlight.pipe';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AdminService } from '@features/admin/services/admin.service';
+import { ArtworkCategory } from '@core/models/artwork.model';
+import { NotificationService } from '@shared/services/notification.service';
+import { catchError, EMPTY, forkJoin } from 'rxjs';
+import { LoadingDirective } from '@/app/directives/loading.directive';
+import { MatTooltip } from '@angular/material/tooltip';
+import { HighlightPipe } from '@core/pipes/highlight.pipe';
+import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 
 type SortField = 'id' | 'name';
 
@@ -31,15 +33,16 @@ type SortField = 'id' | 'name';
   styleUrl: './categories-admin-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CategoriesAdminManagementComponent implements OnInit {
+export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedChanges {
   private readonly adminService = inject(AdminService);
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
   protected readonly sortField = signal<SortField>('id');
   protected readonly sortAsc = signal(true);
-  protected readonly showForm = signal(false);
   protected readonly isSubmitting = signal(false);
   protected readonly editingCategory = signal<ArtworkCategory | null>(null);
   protected readonly displayedColumns = ['id', 'image', 'name', 'description', 'artworkCount', 'actions'];
@@ -76,8 +79,44 @@ export class CategoriesAdminManagementComponent implements OnInit {
     });
   });
 
+  readonly hasUnsavedChanges = signal(false);
+  readonly isFormMode = signal(false);
+
   ngOnInit(): void {
-    this.loadCategories();
+    const id = this.route.snapshot.paramMap.get('id');
+    const url = this.router.url;
+    const isCreate = url.endsWith('/create');
+    const isEdit = !!id && url.endsWith('/edit');
+
+    if (isCreate || isEdit) {
+      this.isFormMode.set(true);
+      this.categoryForm.valueChanges.pipe(
+        catchError(() => EMPTY)
+      ).subscribe(() => this.hasUnsavedChanges.set(true));
+      if (isEdit) {
+        this.adminService.getCategories()
+          .pipe(catchError(() => EMPTY))
+          .subscribe(categories => {
+            const category = categories.find(c => c.id === +id!);
+            if (category) this.fillForm(category);
+          });
+      }
+    } else {
+      this.loadCategories();
+    }
+  }
+
+  private fillForm(category: ArtworkCategory): void {
+    this.editingCategory.set(category);
+    this.categoryForm.setValue({
+      name: category.name,
+      slug: category.slug,
+      description: category.description ?? '',
+      descriptionShort: category.descriptionShort ?? ''
+    });
+    this.pendingImageFile.set(null);
+    this.previewImageUrl.set(category.thumbnailUrl ?? null);
+    this.hasUnsavedChanges.set(false);
   }
 
   protected sort(field: SortField): void {
@@ -90,28 +129,15 @@ export class CategoriesAdminManagementComponent implements OnInit {
   }
 
   protected openCreateForm(): void {
-    this.editingCategory.set(null);
-    this.categoryForm.reset();
-    this.pendingImageFile.set(null);
-    this.previewImageUrl.set(null);
-    this.showForm.set(true);
+    this.router.navigate(['/admin/categories/create']);
   }
 
   protected openEditForm(category: ArtworkCategory): void {
-    this.editingCategory.set(category);
-    this.categoryForm.setValue({
-      name: category.name,
-      slug: category.slug,
-      description: category.description ?? '',
-      descriptionShort: category.descriptionShort ?? ''
-    });
-    this.pendingImageFile.set(null);
-    this.previewImageUrl.set(category.thumbnailUrl ?? null);
-    this.showForm.set(true);
+    this.router.navigate(['/admin/categories', category.id, 'edit']);
   }
 
   protected cancelForm(): void {
-    this.showForm.set(false);
+    this.router.navigate(['/admin/categories']);
   }
 
   protected submitCategory(): void {
@@ -122,10 +148,7 @@ export class CategoriesAdminManagementComponent implements OnInit {
     const file = this.pendingImageFile();
 
     const save = (thumbnailUrl?: string) => {
-      const payload = {
-        ...this.categoryForm.value,
-        ...(thumbnailUrl ? {thumbnailUrl} : {})
-      };
+      const payload = { ...this.categoryForm.value, ...(thumbnailUrl ? { thumbnailUrl } : {}) };
       const operation = editing
         ? this.adminService.updateCategory(editing.id, payload)
         : this.adminService.createCategory(payload);
@@ -138,11 +161,9 @@ export class CategoriesAdminManagementComponent implements OnInit {
         })
       ).subscribe(() => {
         this.notificationService.success(editing ? 'Catégorie modifiée avec succès' : 'Catégorie créée avec succès');
-        this.showForm.set(false);
         this.isSubmitting.set(false);
-        this.pendingImageFile.set(null);
-        this.previewImageUrl.set(null);
-        this.loadCategories();
+        this.hasUnsavedChanges.set(false);
+        this.router.navigate(['/admin/categories']);
       });
     };
 
@@ -153,7 +174,7 @@ export class CategoriesAdminManagementComponent implements OnInit {
           this.isSubmitting.set(false);
           return EMPTY;
         })
-      ).subscribe(({thumbnailUrl}) => save(thumbnailUrl));
+      ).subscribe(({ thumbnailUrl }) => save(thumbnailUrl));
     } else {
       save();
     }
@@ -177,12 +198,12 @@ export class CategoriesAdminManagementComponent implements OnInit {
   }
 
   private loadCategories(): void {
-    forkJoin({categories: this.adminService.getCategories(), artworks: this.adminService.getArtworks()})
+    forkJoin({ categories: this.adminService.getCategories(), artworks: this.adminService.getArtworks() })
       .pipe(catchError(() => {
         this.notificationService.error('Erreur lors du chargement des catégories');
         return EMPTY;
       }))
-      .subscribe(({categories, artworks}) => {
+      .subscribe(({ categories, artworks }) => {
         this.rawCategories.set(categories.map(c => ({
           ...c,
           artworkCount: artworks.filter(a => a.categoryIds?.includes(c.id)).length
@@ -195,9 +216,12 @@ export class CategoriesAdminManagementComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
     this.pendingImageFile.set(file);
-    const reader = new FileReader();
-    reader.onload = () => this.previewImageUrl.set(reader.result as string);
-    reader.readAsDataURL(file);
+    this.previewImageUrl.set(URL.createObjectURL(file));
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected onSearchChange(value: string): void {
+    this.searchQuery.set(value);
   }
 
   protected openImageModal(url: string): void {
@@ -207,10 +231,6 @@ export class CategoriesAdminManagementComponent implements OnInit {
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
-  }
-
-  protected onSearchChange(value: string): void {
-    this.searchQuery.set(value);
   }
 
   private normalize(str: string): string {
