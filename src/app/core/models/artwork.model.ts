@@ -5,7 +5,6 @@ export interface ArtworkCategory {
   descriptionShort?: string;
   slug: string;
   displayOrder: number;
-  mainImageUrl?: string;
   thumbnailUrl?: string;
   createdAt: string;
   updatedAt: string;

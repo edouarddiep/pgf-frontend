@@ -118,6 +118,27 @@ export class AdminService {
     });
   }
 
+  createCategory(dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
+    return this.http.post<ArtworkCategory>(`${this.baseUrl}/categories`, dto);
+  }
+
+  updateCategory(id: number, dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
+    return this.http.put<ArtworkCategory>(`${this.baseUrl}/categories/${id}`, dto);
+  }
+
+  uploadCategoryImage(file: File, categorySlug: string): Observable<{ thumbnailUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('categorySlug', categorySlug);
+    return this.http.post<{ thumbnailUrl: string }>(
+      `${this.baseUrl}/upload/category-image`, formData
+    );
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/categories/${id}`);
+  }
+
   getMessages(): Observable<ContactMessage[]> {
     return this.http.get<ContactMessage[]>(`${this.baseUrl}/messages`);
   }
