@@ -95,8 +95,8 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     }
 
     return [...base].sort((a, b) => {
-      const va = field === 'id' ? a.id : (a.title ?? '');
-      const vb = field === 'id' ? b.id : (b.title ?? '');
+      const va = field === 'id' ? a.id : this.normalize(a.title ?? '');
+      const vb = field === 'id' ? b.id : this.normalize(b.title ?? '');
       return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
     });
   });
@@ -104,7 +104,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
-    descriptionShort: ['', [Validators.maxLength(255)]],
+    descriptionShort: ['', [Validators.maxLength(100)]],
     imageUrls: [[] as string[]],
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
   });
@@ -302,6 +302,10 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     const ids = this.artworkForm.value.categoryIds;
     if (!ids || ids.length === 0) return 'general';
     return this.categories().find(c => c.id === ids[0])?.slug ?? 'general';
+  }
+
+  protected asSet(ids: number[] | null | undefined): Set<number> {
+    return new Set(ids ?? []);
   }
 
   private normalize(str: string): string {

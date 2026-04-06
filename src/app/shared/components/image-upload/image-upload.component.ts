@@ -129,12 +129,12 @@ export class ImageUploadComponent {
   }
 
   removeImage(index: number): void {
-    const removed = this.images()[index];
-    this.images.update(imgs => {
-      const updated = imgs.filter((_, i) => i !== index);
-      if (removed.isMain && updated.length > 0) updated[0] = { ...updated[0], isMain: true };
-      return updated;
-    });
+    const img = this.images()[index];
+    if (img.isMain) {
+      this.snackBar.open('L\'image principale ne peut pas être supprimée', 'Fermer', { duration: 4000 });
+      return;
+    }
+    this.images.update(imgs => imgs.filter((_, i) => i !== index));
     this.emit();
     this.hasChanges.emit();
   }

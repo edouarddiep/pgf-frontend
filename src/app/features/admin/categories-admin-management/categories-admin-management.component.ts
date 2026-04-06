@@ -13,7 +13,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AdminService } from '@features/admin/services/admin.service';
 import { ArtworkCategory } from '@core/models/artwork.model';
 import { NotificationService } from '@shared/services/notification.service';
-import { catchError, EMPTY, forkJoin } from 'rxjs';
+import {catchError, EMPTY, finalize, forkJoin} from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
@@ -51,10 +51,12 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   protected readonly previewImageUrl = signal<string | null>(null);
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal<string>('');
+  protected readonly tooltipText = signal<string>('');
+  protected readonly tooltipX = signal(0);
+  protected readonly tooltipY = signal(0);
 
   protected readonly categoryForm = this.fb.group({
     name: ['', Validators.required],
-    slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+$')]],
     description: [''],
     descriptionShort: [''],
   });
@@ -63,18 +65,22 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     const field = this.sortField();
     const asc = this.sortAsc();
     const query = this.normalize(this.searchQuery().trim());
+    const tokens = query.split(/\s+/).filter(t => t.length >= 1);
 
     let base = this.rawCategories();
-    if (query.length >= 2) {
+    if (tokens.length > 0) {
       base = base.filter(c =>
-        this.normalize(c.name ?? '').includes(query) ||
-        this.normalize(c.description ?? '').includes(query)
+        tokens.every(token =>
+          c.id?.toString().includes(token) ||
+          this.normalize(c.name ?? '').includes(token) ||
+          this.normalize(c.description ?? '').includes(token)
+        )
       );
     }
 
     return [...base].sort((a, b) => {
-      const va = field === 'id' ? a.id : (a.name ?? '');
-      const vb = field === 'id' ? b.id : (b.name ?? '');
+      const va = field === 'id' ? a.id : this.normalize(a.name ?? '');
+      const vb = field === 'id' ? b.id : this.normalize(b.name ?? '');
       return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
     });
   });
@@ -110,7 +116,6 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     this.editingCategory.set(category);
     this.categoryForm.setValue({
       name: category.name,
-      slug: category.slug,
       description: category.description ?? '',
       descriptionShort: category.descriptionShort ?? ''
     });
@@ -141,14 +146,16 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   }
 
   protected submitCategory(): void {
-    if (this.categoryForm.invalid) return;
+    if (this.categoryForm.invalid || this.isSubmitting()) return;
     this.isSubmitting.set(true);
+
+    const { name, description, descriptionShort } = this.categoryForm.value;
     const editing = this.editingCategory();
-    const slug = this.categoryForm.value.slug!;
+    const slug = editing?.slug ?? this.generateSlug(name!);
     const file = this.pendingImageFile();
 
     const save = (thumbnailUrl?: string) => {
-      const payload = { ...this.categoryForm.value, ...(thumbnailUrl ? { thumbnailUrl } : {}) };
+      const payload = { name: name!, slug, description, descriptionShort, ...(thumbnailUrl ? { thumbnailUrl } : {}) };
       const operation = editing
         ? this.adminService.updateCategory(editing.id, payload)
         : this.adminService.createCategory(payload);
@@ -233,7 +240,28 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     this.showImageModal.set(false);
   }
 
+  protected showTooltip(event: MouseEvent, text: string): void {
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    this.tooltipText.set(text);
+    this.tooltipX.set(rect.left + rect.width / 2 - 210);
+    this.tooltipY.set(rect.top - 8);
+  }
+
+  protected hideTooltip(): void {
+    this.tooltipText.set('');
+  }
+
   private normalize(str: string): string {
     return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  private generateSlug(name: string): string {
+    return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
   }
 }

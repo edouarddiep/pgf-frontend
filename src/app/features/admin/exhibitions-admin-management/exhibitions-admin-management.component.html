@@ -12,7 +12,7 @@
       <mat-card-header>
         <mat-form-field>
           <mat-label>Rechercher une exposition</mat-label>
-          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" placeholder="Veuillez saisir un titre ou un lieu">
+          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" placeholder="Par ID, nom ou lieu">
           @if (searchQuery()) {
             <button matSuffix mat-icon-button (click)="onSearchChange('')">
               <mat-icon>close</mat-icon>
@@ -47,7 +47,7 @@
 
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef (click)="sort('title')" class="sortable-header">
-                Exposition <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+                Nom <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
               </th>
               <td mat-cell *matCellDef="let exhibition">
                 <div class="artwork-info">
@@ -136,8 +136,8 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Date de début</mat-label>
-              <input matInput [matDatepicker]="startPicker" formControlName="startDate" placeholder="dd.MM.yyyy" required>
-              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <input matInput [matDatepicker]="startPicker" formControlName="startDate" placeholder="jour.mois.année" required>
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker" class="no-border-toggle"></mat-datepicker-toggle>
               <mat-datepicker #startPicker></mat-datepicker>
               @if (exhibitionForm.get('startDate')?.errors?.['required'] && exhibitionForm.get('startDate')?.touched) {
                 <mat-error>La date de début est obligatoire</mat-error>
@@ -146,9 +146,16 @@
 
             <mat-form-field appearance="outline">
               <mat-label>Date de fin</mat-label>
-              <input matInput [matDatepicker]="endPicker" formControlName="endDate" placeholder="dd.MM.yyyy">
-              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <input matInput [matDatepicker]="endPicker" formControlName="endDate" placeholder="jour.mois.année"
+                     [min]="exhibitionForm.get('startDate')?.value">
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker" class="no-border-toggle"></mat-datepicker-toggle>
               <mat-datepicker #endPicker></mat-datepicker>
+              @if (exhibitionForm.errors?.['endDateBeforeStart'] && exhibitionForm.get('endDate')?.touched) {
+                <mat-error>La date de fin ne peut pas être antérieure à la date de début</mat-error>
+              }
+              @if (exhibitionForm.get('endDate')?.value && !exhibitionForm.get('startDate')?.value) {
+                <mat-error>Veuillez d'abord saisir une date de début</mat-error>
+              }
             </mat-form-field>
 
             <div class="full-width">
@@ -163,6 +170,7 @@
                 (hasChanges)="hasUnsavedChanges.set(true)"
                 (zoomImage)="openImageModal($event)">
               </app-image-upload>
+              <p class="image-legend">* L'image principale s'affiche en premier sur la page de l'exposition</p>
             </div>
 
             <div class="full-width">
@@ -176,8 +184,9 @@
               @if (uploadedVideoUrls().length > 0) {
                 <div class="uploaded-videos">
                   @for (videoUrl of uploadedVideoUrls(); track videoUrl; let i = $index) {
-                    <div class="video-item">
+                    <div class="video-item" (click)="openVideoModal(videoUrl)">
                       <video [src]="videoUrl" class="video-thumbnail"></video>
+                      <div class="video-overlay"><mat-icon>play_circle_outline</mat-icon></div>
                       <button type="button" mat-icon-button color="warn" (click)="removeVideo(i); $event.stopPropagation()" class="remove-video-btn">
                         <mat-icon>delete</mat-icon>
                       </button>
@@ -195,7 +204,8 @@
           <div class="form-actions">
             <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">Annuler</button>
             <button mat-raised-button color="primary" type="submit"
-                    [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())">
+                    [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())"
+                    [class.btn-active]="!(exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges()))">
               {{ editingExhibition() ? 'Enregistrer les modifications' : 'Sauvegarder' }}
             </button>
           </div>
@@ -209,6 +219,16 @@
       <div class="modal-content" (click)="$event.stopPropagation()">
         <img [src]="modalImageUrl()" alt="Aperçu" class="modal-image">
         <button type="button" class="modal-close" (click)="closeImageModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+  @if (showVideoModal()) {
+    <div class="image-modal" (click)="closeVideoModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <video [src]="modalVideoUrl()" controls autoplay class="modal-image" style="max-height:80vh; max-width:80vw;"></video>
+        <button type="button" class="modal-close" (click)="closeVideoModal()">
           <mat-icon>close</mat-icon>
         </button>
       </div>

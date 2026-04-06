@@ -1,5 +1,6 @@
 .admin-artworks-container {
   padding: 2rem;
+  padding-bottom: 6rem;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -58,10 +59,6 @@
     mat-form-field {
       flex: 1 1 220px;
       max-width: 320px;
-
-      &:last-child {
-        flex: 0 0 220px;
-      }
     }
   }
 
@@ -115,9 +112,63 @@
 
   .video-item {
     position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    overflow: hidden;
 
-    .video-thumbnail { width: 160px; height: 90px; object-fit: cover; border-radius: 4px; }
-    .remove-video-btn { position: absolute; top: -8px; right: -8px; background: white; }
+    &:hover .video-overlay { opacity: 1; }
+
+    .video-thumbnail { width: 160px; height: 90px; object-fit: cover; border-radius: 4px; display: block; }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border-radius: 4px;
+
+      mat-icon { font-size: 2.5rem; width: 2.5rem; height: 2.5rem; color: white; }
+    }
+
+    .remove-video-btn {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: rgba(255,255,255,0.9);
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+
+      mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    }
+  }
+}
+
+.no-border-toggle {
+  ::ng-deep .mat-mdc-icon-button {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+}
+
+.image-legend {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.5);
+  margin: 0.25rem 0 0;
+  font-style: italic;
+}
+
+.btn-active {
+  background-color: #1976d2 !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #1976d2 !important;
   }
 }
 
@@ -197,6 +248,11 @@
       }
     }
   }
+}
+
+tr.mat-mdc-row td.mat-mdc-cell {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 @media (max-width: 768px) {

@@ -94,7 +94,7 @@ function endDateValidator(control: AbstractControl) {
     HighlightPipe
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
     { provide: MAT_DATE_FORMATS, useValue: SWISS_DATE_FORMATS },
     { provide: DateAdapter, useClass: SwissDateAdapter }
   ],
@@ -121,6 +121,8 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal<string>('');
   protected readonly mainImageUrl = signal<string | undefined>(undefined);
+  protected readonly showVideoModal = signal(false);
+  protected readonly modalVideoUrl = signal<string>('');
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
@@ -130,16 +132,20 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     const query = this.normalize(this.searchQuery().trim());
 
     let base = this.rawExhibitions();
-    if (query.length >= 2) {
+    const tokens = query.split(/\s+/).filter(t => t.length >= 1);
+    if (tokens.length > 0) {
       base = base.filter(e =>
-        this.normalize(e.title ?? '').includes(query) ||
-        this.normalize(e.location ?? '').includes(query)
+        tokens.every(token =>
+          e.id?.toString().includes(token) ||
+          this.normalize(e.title ?? '').includes(token) ||
+          this.normalize(e.location ?? '').includes(token)
+        )
       );
     }
 
     return [...base].sort((a, b) => {
-      const va = field === 'id' ? a.id : (a.title ?? '');
-      const vb = field === 'id' ? b.id : (b.title ?? '');
+      const va = field === 'id' ? a.id : this.normalize(a.title ?? '');
+      const vb = field === 'id' ? b.id : this.normalize(b.title ?? '');
       return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
     });
   });
@@ -373,6 +379,15 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
+  }
+
+  protected openVideoModal(url: string): void {
+    this.modalVideoUrl.set(url);
+    this.showVideoModal.set(true);
+  }
+
+  protected closeVideoModal(): void {
+    this.showVideoModal.set(false);
   }
 
   private normalize(str: string): string {
