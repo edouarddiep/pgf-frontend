@@ -1,112 +1,13 @@
 <div class="admin-artworks-container">
-  <div class="admin-header">
-    <h2>Gestion des œuvres</h2>
-    @if (!showForm()) {
+  @if (!isFormMode()) {
+    <div class="admin-header">
+      <h2>Gestion des œuvres</h2>
       <button mat-raised-button color="primary" (click)="openForm()">
         <mat-icon>add</mat-icon>
         Nouvelle œuvre
       </button>
-    }
-  </div>
+    </div>
 
-  @if (showForm()) {
-    <mat-card class="form-card">
-      <mat-card-header>
-        <mat-card-title>
-          {{ editingArtwork() ? 'Modifier l\'œuvre' : 'Nouvelle œuvre' }}
-        </mat-card-title>
-      </mat-card-header>
-
-      <mat-card-content>
-        <form [formGroup]="artworkForm" (ngSubmit)="saveArtwork()">
-          <div class="form-grid">
-            <mat-form-field>
-              <mat-label>Titre</mat-label>
-              <input matInput formControlName="title" required>
-              @if (artworkForm.get('title')?.errors?.['required']) {
-                <mat-error>Le titre est obligatoire</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Description courte</mat-label>
-              <textarea matInput formControlName="descriptionShort" rows="2" maxlength="255"></textarea>
-              <mat-hint>Maximum 255 caractères - Utilisé pour les aperçus</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Description complète</mat-label>
-              <textarea matInput formControlName="description" rows="4" maxlength="1000"></textarea>
-              <mat-hint>Maximum 1000 caractères</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Ordre d'affichage</mat-label>
-              <input matInput type="number" formControlName="displayOrder" min="0">
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Catégories</mat-label>
-              <mat-select formControlName="categoryIds" multiple>
-                @for (category of categories(); track category.id) {
-                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
-                }
-              </mat-select>
-              @if (artworkForm.get('categoryIds')?.errors?.['required']) {
-                <mat-error>Veuillez sélectionner au moins une catégorie</mat-error>
-              }
-            </mat-form-field>
-
-            <div class="full-width file-upload-section">
-              <label class="file-upload-label">Images</label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                (change)="onFileSelected($event)"
-                #fileInput
-                class="file-input">
-              <button type="button" mat-stroked-button (click)="fileInput.click()">
-                <mat-icon>cloud_upload</mat-icon>
-                Choisir des images
-              </button>
-              @if (selectedFiles()) {
-                <p class="file-info">
-                  {{ selectedFiles()?.length }} fichier(s) sélectionné(s)
-                </p>
-              }
-
-              @if (imagesPreviews().length > 0) {
-                <div class="images-preview">
-                  @for (preview of imagesPreviews(); track $index) {
-                    <div class="preview-item">
-                      <img [src]="preview.url" [alt]="'Preview ' + ($index + 1)">
-                      <button type="button" mat-icon-button color="warn"
-                              (click)="removeImagePreview($index)" class="remove-btn">
-                        <mat-icon>close</mat-icon>
-                      </button>
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-
-          <div class="form-actions">
-            <button type="button" mat-button (click)="cancelForm()">
-              Annuler
-            </button>
-            <button type="submit" mat-raised-button color="primary"
-                    [disabled]="!isFormValidForSubmit() || isSubmitting()">
-              {{ editingArtwork() ? 'Modifier' : 'Créer' }}
-            </button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  }
-
-  @if (showList()) {
     <mat-card class="table-card" appLoading>
       <mat-card-header>
         <mat-card-title>Liste des œuvres</mat-card-title>
@@ -137,15 +38,10 @@
               <th mat-header-cell *matHeaderCellDef>Image</th>
               <td mat-cell *matCellDef="let artwork">
                 @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
-                  <img
-                    [src]="artwork.mainImageUrl || artwork.imageUrls[0]"
-                    [alt]="artwork.title"
-                    class="artwork-thumb"
-                    (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])">
+                  <img [src]="artwork.mainImageUrl || artwork.imageUrls[0]" [alt]="artwork.title"
+                       class="artwork-thumb" (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])">
                 } @else {
-                  <div class="no-image">
-                    <mat-icon>image</mat-icon>
-                  </div>
+                  <div class="no-image"><mat-icon>image</mat-icon></div>
                 }
               </td>
             </ng-container>
@@ -214,6 +110,94 @@
       </mat-card-content>
     </mat-card>
   }
+
+  @if (isFormMode()) {
+    <div class="admin-header">
+      <div style="display:flex; align-items:center; gap:0.5rem">
+        <button mat-icon-button (click)="cancelForm()" matTooltip="Retour à la liste">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2>{{ editingArtwork() ? 'Modifier l\'œuvre' : 'Nouvelle œuvre' }}</h2>
+      </div>
+    </div>
+
+    <mat-card class="form-card">
+      <mat-card-content>
+        <form [formGroup]="artworkForm" (ngSubmit)="saveArtwork()">
+          <div class="form-grid">
+            <mat-form-field>
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title" required>
+              @if (artworkForm.get('title')?.errors?.['required']) {
+                <mat-error>Le titre est obligatoire</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Description courte</mat-label>
+              <textarea matInput formControlName="descriptionShort" rows="2" maxlength="255"></textarea>
+              <mat-hint>Maximum 255 caractères - Utilisé pour les aperçus</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Description complète</mat-label>
+              <textarea matInput formControlName="description" rows="4" maxlength="1000"></textarea>
+              <mat-hint>Maximum 1000 caractères</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Ordre d'affichage</mat-label>
+              <input matInput type="number" formControlName="displayOrder" min="0">
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+              <mat-label>Catégories</mat-label>
+              <mat-select formControlName="categoryIds" multiple>
+                @for (category of categories(); track category.id) {
+                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                }
+              </mat-select>
+              @if (artworkForm.get('categoryIds')?.errors?.['required']) {
+                <mat-error>Veuillez sélectionner au moins une catégorie</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="full-width file-upload-section">
+              <label class="file-upload-label">Images</label>
+              <input type="file" multiple accept="image/*" (change)="onFileSelected($event)" #fileInput class="file-input">
+              <button type="button" mat-stroked-button (click)="fileInput.click()">
+                <mat-icon>cloud_upload</mat-icon>
+                Choisir des images
+              </button>
+              @if (selectedFiles()) {
+                <p class="file-info">{{ selectedFiles()?.length }} fichier(s) sélectionné(s)</p>
+              }
+              @if (imagesPreviews().length > 0) {
+                <div class="images-preview">
+                  @for (preview of imagesPreviews(); track $index) {
+                    <div class="preview-item">
+                      <img [src]="preview.url" [alt]="'Preview ' + ($index + 1)">
+                      <button type="button" mat-icon-button color="warn" (click)="removeImagePreview($index)" class="remove-btn">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" mat-button (click)="cancelForm()">Annuler</button>
+            <button type="submit" mat-raised-button color="primary" [disabled]="!isFormValidForSubmit() || isSubmitting()">
+              {{ editingArtwork() ? 'Modifier' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
   @if (showImageModal()) {
     <div class="image-modal" (click)="closeImageModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">

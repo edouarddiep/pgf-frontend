@@ -1,6 +1,7 @@
-import {Component, ChangeDetectionStrategy, inject, signal, OnInit, computed} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,15 +14,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
 import { AdminService } from '@features/admin/services/admin.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 import { NotificationService } from '@shared/services/notification.service';
-import { catchError, EMPTY, fromEvent, finalize } from 'rxjs';
+import { catchError, EMPTY, finalize } from 'rxjs';
 import { Injectable } from '@angular/core';
-import {LoadingDirective} from '@/app/directives/loading.directive';
-import {MatTableModule} from '@angular/material/table';
-import {HighlightPipe} from '@core/pipes/highlight.pipe';
+import { LoadingDirective } from '@/app/directives/loading.directive';
+import { HighlightPipe } from '@core/pipes/highlight.pipe';
 
 interface ExhibitionFormData {
   title: string;
@@ -32,62 +33,41 @@ interface ExhibitionFormData {
   endDate: Date | null;
 }
 
-type ViewMode = 'list' | 'create' | 'edit';
-
 @Injectable()
 export class SwissDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: Object): string {
     if (!date || isNaN(date.getTime())) return '';
-
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
+    return `${day}.${month}.${date.getFullYear()}`;
   }
 
   override parse(value: string): Date | null {
     if (!value || value.trim() === '') return null;
-
     const parts = value.split('.');
     if (parts.length === 3) {
       const day = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10) - 1;
       const year = parseInt(parts[2], 10);
-
-      if (!isNaN(day) && !isNaN(month) && !isNaN(year) &&
-        day > 0 && day <= 31 && month >= 0 && month <= 11 && year > 1900) {
+      if (!isNaN(day) && !isNaN(month) && !isNaN(year) && day > 0 && day <= 31 && month >= 0 && month <= 11 && year > 1900) {
         const date = new Date(year, month, day);
-        if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) {
-          return date;
-        }
+        if (date.getDate() === day && date.getMonth() === month && date.getFullYear() === year) return date;
       }
     }
-
     return null;
   }
 }
 
 const SWISS_DATE_FORMATS = {
-  parse: {
-    dateInput: 'DD.MM.YYYY',
-  },
-  display: {
-    dateInput: 'DD.MM.YYYY',
-    monthYearLabel: 'MMM YYYY',
-    dateA11yLabel: 'DD.MM.YYYY',
-    monthYearA11yLabel: 'MMMM YYYY',
-  },
+  parse: { dateInput: 'DD.MM.YYYY' },
+  display: { dateInput: 'DD.MM.YYYY', monthYearLabel: 'MMM YYYY', dateA11yLabel: 'DD.MM.YYYY', monthYearA11yLabel: 'MMMM YYYY' }
 };
 
 function endDateValidator(control: AbstractControl) {
   const startDate = control.get('startDate')?.value;
   const endDate = control.get('endDate')?.value;
-
   if (!startDate || !endDate) return null;
-
-  return new Date(endDate) < new Date(startDate)
-    ? { endDateBeforeStart: true }
-    : null;
+  return new Date(endDate) < new Date(startDate) ? { endDateBeforeStart: true } : null;
 }
 
 @Component({
@@ -125,8 +105,24 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  protected readonly currentMode = signal<ViewMode>('list');
+  protected readonly isFormMode = signal(false);
+  protected readonly rawExhibitions = signal<Exhibition[]>([]);
+  protected readonly searchQuery = signal('');
+  protected readonly sortField = signal<'id' | 'title'>('id');
+  protected readonly sortAsc = signal(true);
+  protected readonly editingExhibition = signal<Exhibition | null>(null);
+  protected readonly uploadedImageUrls = signal<string[]>([]);
+  protected readonly isSaving = signal(false);
+  protected readonly uploadedVideoUrls = signal<string[]>([]);
+  protected readonly uploadingVideos = signal(false);
+  protected readonly showImageModal = signal(false);
+  protected readonly modalImageUrl = signal<string>('');
+
+  protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
+
   protected readonly exhibitions = computed(() => {
     const field = this.sortField();
     const asc = this.sortAsc();
@@ -147,21 +143,6 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     });
   });
 
-  private readonly rawExhibitions = signal<Exhibition[]>([]);
-  protected readonly searchQuery = signal('');
-  protected readonly sortField = signal<'id' | 'title'>('id');
-  protected readonly sortAsc = signal(true);
-  protected readonly editingExhibition = signal<Exhibition | null>(null);
-  protected readonly uploadedImageUrls = signal<string[]>([]);
-  protected readonly isLoading = signal(true);
-  protected readonly isSaving = signal(false);
-  protected readonly uploadedVideoUrls = signal<string[]>([]);
-  protected readonly uploadingVideos = signal(false);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
-
-  protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
-
   protected readonly exhibitionForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
@@ -172,11 +153,24 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   }, { validators: endDateValidator });
 
   ngOnInit(): void {
-    this.loadExhibitions();
+    const id = this.route.snapshot.paramMap.get('id');
+    const url = this.router.url;
+    const isCreate = url.endsWith('/create');
+    const isEdit = !!id && url.endsWith('/edit');
 
-    fromEvent(window, 'exhibitionChanged').subscribe(() => {
+    if (isCreate || isEdit) {
+      this.isFormMode.set(true);
+      if (isEdit) {
+        this.adminService.getExhibitions()
+          .pipe(catchError(() => EMPTY))
+          .subscribe(exhibitions => {
+            const exhibition = exhibitions.find(e => e.id === +id!);
+            if (exhibition) this.fillForm(exhibition);
+          });
+      }
+    } else {
       this.loadExhibitions();
-    });
+    }
   }
 
   private loadExhibitions(): void {
@@ -185,43 +179,23 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
         this.notificationService.error('Erreur lors du chargement des expositions');
         return EMPTY;
       }))
-      .subscribe(exhibitions => {
-        this.rawExhibitions.set(exhibitions);
-      });
+      .subscribe(exhibitions => this.rawExhibitions.set(exhibitions));
   }
 
   protected showCreateForm(): void {
-    this.currentMode.set('create');
-    this.editingExhibition.set(null);
-    this.resetForm();
+    this.router.navigate(['/admin/exhibitions/create']);
   }
 
   protected showEditForm(exhibition: Exhibition): void {
-    this.currentMode.set('edit');
-    this.editingExhibition.set(exhibition);
-    this.fillForm(exhibition);
+    this.router.navigate(['/admin/exhibitions', exhibition.id, 'edit']);
   }
 
   protected showList(): void {
-    this.currentMode.set('list');
-    this.editingExhibition.set(null);
-    this.resetForm();
-  }
-
-  private resetForm(): void {
-    this.exhibitionForm.reset({
-      title: '',
-      description: '',
-      location: '',
-      address: '',
-      startDate: null,
-      endDate: null
-    });
-    this.uploadedImageUrls.set([]);
-    this.uploadedVideoUrls.set([]);
+    this.router.navigate(['/admin/exhibitions']);
   }
 
   private fillForm(exhibition: Exhibition): void {
+    this.editingExhibition.set(exhibition);
     this.exhibitionForm.patchValue({
       title: exhibition.title,
       description: exhibition.description || '',
@@ -231,7 +205,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       endDate: exhibition.endDate ? new Date(exhibition.endDate) : null
     });
 
-    const uniqueUrls = exhibition.imageUrls && exhibition.imageUrls.length > 0
+    const uniqueUrls = exhibition.imageUrls?.length
       ? Array.from(new Set(exhibition.imageUrls))
       : (exhibition.imageUrl ? [exhibition.imageUrl] : []);
 
@@ -260,51 +234,30 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
-    const files = Array.from(input.files);
+    const validFiles = Array.from(input.files).filter(f => {
+      if (f.size > 500 * 1024 * 1024) { this.notificationService.error(`${f.name}: Vidéo trop volumineuse (max 500MB)`); return false; }
+      if (f.type !== 'video/mp4') { this.notificationService.error(`${f.name}: Seuls les fichiers MP4 sont acceptés`); return false; }
+      return true;
+    });
 
-    for (const file of files) {
-      if (file.size > 500 * 1024 * 1024) {
-        this.notificationService.error(`${file.name}: Vidéo trop volumineuse (max 500MB)`);
-        continue;
-      }
-
-      if (file.type !== 'video/mp4') {
-        this.notificationService.error(`${file.name}: Seuls les fichiers MP4 sont acceptés`);
-        continue;
-      }
-    }
-
-    this.uploadVideos(files.filter(f => f.type === 'video/mp4' && f.size <= 500 * 1024 * 1024));
+    this.uploadVideos(validFiles);
     input.value = '';
   }
 
   private uploadVideos(files: File[]): void {
     if (files.length === 0) return;
-
     this.uploadingVideos.set(true);
     const exhibitionSlug = this.getExhibitionSlug();
     const startIndex = this.uploadedVideoUrls().length;
-
     let uploadIndex = 0;
-    const processNext = () => {
-      if (uploadIndex >= files.length) {
-        this.uploadingVideos.set(false);
-        return;
-      }
 
+    const processNext = () => {
+      if (uploadIndex >= files.length) { this.uploadingVideos.set(false); return; }
       const videoIndex = startIndex + uploadIndex + 1;
       this.adminService.uploadExhibitionVideo(files[uploadIndex], exhibitionSlug, videoIndex)
-        .pipe(catchError(() => {
-          this.notificationService.error(`Erreur upload: ${files[uploadIndex].name}`);
-          return EMPTY;
-        }))
-        .subscribe(result => {
-          this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]);
-          uploadIndex++;
-          processNext();
-        });
+        .pipe(catchError(() => { this.notificationService.error(`Erreur upload: ${files[uploadIndex].name}`); return EMPTY; }))
+        .subscribe(result => { this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]); uploadIndex++; processNext(); });
     };
-
     processNext();
   }
 
@@ -331,9 +284,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
       address: formData.address || undefined,
       startDate: this.formatDateForBackend(formData.startDate!),
       endDate: formData.endDate ? this.formatDateForBackend(formData.endDate) : undefined,
-      imageUrl: imageUrls.length > 0 ? imageUrls[0] : undefined,
-      imageUrls: imageUrls,
-      videoUrls: videoUrls
+      imageUrl: imageUrls[0],
+      imageUrls,
+      videoUrls
     };
 
     const editing = this.editingExhibition();
@@ -343,50 +296,32 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
 
     operation
       .pipe(
-        catchError(() => {
-          this.notificationService.error('Erreur lors de la sauvegarde de l\'exposition');
-          return EMPTY;
-        }),
+        catchError(() => { this.notificationService.error('Erreur lors de la sauvegarde de l\'exposition'); return EMPTY; }),
         finalize(() => this.isSaving.set(false))
       )
       .subscribe(() => {
-        const message = editing ? 'Exposition modifiée avec succès' : 'Exposition créée avec succès';
-        this.notificationService.success(message);
-        this.showList();
-        this.loadExhibitions();
+        this.notificationService.success(editing ? 'Exposition modifiée avec succès' : 'Exposition créée avec succès');
         window.dispatchEvent(new CustomEvent('exhibitionChanged'));
+        this.router.navigate(['/admin/exhibitions']);
       });
   }
 
   private formatDateForBackend(date: Date): string {
-    const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${date.getFullYear()}-${month}-${day}`;
   }
 
   protected deleteExhibition(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette exposition ?')) {
-      return;
-    }
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette exposition ?')) return;
 
     const exhibition = this.exhibitions().find(e => e.id === id);
-
     this.adminService.deleteExhibition(id)
-      .pipe(
-        catchError(() => {
-          this.notificationService.error('Erreur lors de la suppression de l\'exposition');
-          return EMPTY;
-        })
-      )
+      .pipe(catchError(() => { this.notificationService.error('Erreur lors de la suppression de l\'exposition'); return EMPTY; }))
       .subscribe(() => {
-        if (exhibition?.imageUrls) {
-          exhibition.imageUrls.forEach(imageUrl => {
-            this.adminService.deleteExhibitionImage(imageUrl)
-              .pipe(catchError(() => EMPTY))
-              .subscribe();
-          });
-        }
+        exhibition?.imageUrls?.forEach(imageUrl =>
+          this.adminService.deleteExhibitionImage(imageUrl).pipe(catchError(() => EMPTY)).subscribe()
+        );
         this.notificationService.success('Exposition supprimée avec succès');
         this.loadExhibitions();
         window.dispatchEvent(new CustomEvent('exhibitionChanged'));
@@ -396,47 +331,25 @@ export class ExhibitionsAdminManagementComponent implements OnInit {
   protected formatDate(date: string | Date): string {
     if (!date) return '';
     const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleDateString('de-CH', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    return d.toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
 
   protected getStatusLabel(status: ExhibitionStatus): string {
-    const labels = {
-      [ExhibitionStatus.UPCOMING]: 'À venir',
-      [ExhibitionStatus.ONGOING]: 'En cours',
-      [ExhibitionStatus.PAST]: 'Passée'
-    };
-    return labels[status] || status;
+    return { [ExhibitionStatus.UPCOMING]: 'À venir', [ExhibitionStatus.ONGOING]: 'En cours', [ExhibitionStatus.PAST]: 'Passée' }[status] || status;
   }
 
   protected getStatusColor(status: ExhibitionStatus): string {
-    const colors = {
-      [ExhibitionStatus.UPCOMING]: '#2196F3',
-      [ExhibitionStatus.ONGOING]: '#4CAF50',
-      [ExhibitionStatus.PAST]: '#9E9E9E'
-    };
-    return colors[status] || '#9E9E9E';
+    return { [ExhibitionStatus.UPCOMING]: '#2196F3', [ExhibitionStatus.ONGOING]: '#4CAF50', [ExhibitionStatus.PAST]: '#9E9E9E' }[status] || '#9E9E9E';
   }
 
   protected getExhibitionSlug(): string {
     const editing = this.editingExhibition();
-    if (editing) {
-      return this.generateSlug(editing.title);
-    }
-    const title = this.exhibitionForm.get('title')?.value;
-    return title ? this.generateSlug(title) : 'nouvelle-exposition';
+    const title = editing ? editing.title : (this.exhibitionForm.get('title')?.value || 'nouvelle-exposition');
+    return this.generateSlug(title);
   }
 
   private generateSlug(title: string): string {
-    return title
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+    return title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
   protected openImageModal(url: string): void {

@@ -1,6 +1,7 @@
-import {Component, ChangeDetectionStrategy, inject, signal, OnInit, computed} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,8 +17,8 @@ import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
-import {LoadingDirective} from '@/app/directives/loading.directive';
-import {HighlightPipe} from '@core/pipes/highlight.pipe';
+import { LoadingDirective } from '@/app/directives/loading.directive';
+import { HighlightPipe } from '@core/pipes/highlight.pipe';
 
 interface PreviewImage {
   file: File;
@@ -51,26 +52,29 @@ export class ArtworksAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
-  protected readonly showForm = signal(false);
-  protected readonly showList = signal(true);
   protected readonly editingArtwork = signal<Artwork | null>(null);
   protected readonly isSubmitting = signal(false);
   protected readonly isLoading = signal(true);
   protected readonly selectedFiles = signal<FileList | null>(null);
   protected readonly imagesPreviews = signal<PreviewImage[]>([]);
+  protected readonly showImageModal = signal(false);
+  protected readonly modalImageUrl = signal<string>('');
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'categories', 'actions'];
-
   protected selectedCategoryFilter = '';
 
   private readonly rawArtworks = signal<Artwork[]>([]);
+  private readonly rawFilteredArtworks = signal<Artwork[]>([]);
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
+  protected readonly searchQuery = signal('');
+
+  protected readonly isFormMode = signal(false);
 
   protected readonly filteredArtworks = computed(() => {
     const field = this.sortField();
@@ -96,10 +100,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
     });
   });
 
-  private readonly rawFilteredArtworks = signal<Artwork[]>([]);
-
-  protected searchQuery = signal('');
-
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
@@ -110,36 +110,31 @@ export class ArtworksAdminManagementComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadData();
-  }
+    const id = this.route.snapshot.paramMap.get('id');
+    const url = this.router.url;
+    const isCreate = url.endsWith('/create');
+    const isEdit = !!id && url.endsWith('/edit');
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const files = input.files;
-    this.selectedFiles.set(files);
-
-    if (files && files.length > 0) {
-      const previews: PreviewImage[] = [];
-      Array.from(files).forEach(file => {
-        const url = URL.createObjectURL(file);
-        previews.push({ file, url });
+    if (isCreate || isEdit) {
+      this.isFormMode.set(true);
+      this.loadCategories().subscribe(categories => {
+        this.categories.set(categories);
+        if (isEdit) {
+          this.adminService.getArtworks()
+            .pipe(catchError(() => EMPTY))
+            .subscribe(artworks => {
+              const artwork = artworks.find(a => a.id === +id!);
+              if (artwork) this.fillForm(artwork);
+            });
+        }
       });
-      this.imagesPreviews.set(previews);
     } else {
-      this.imagesPreviews.set([]);
+      this.loadData();
     }
   }
 
-  removeImagePreview(index: number): void {
-    const previews = this.imagesPreviews();
-    URL.revokeObjectURL(previews[index].url);
-
-    const updatedPreviews = previews.filter((_, i) => i !== index);
-    this.imagesPreviews.set(updatedPreviews);
-
-    const dt = new DataTransfer();
-    updatedPreviews.forEach(preview => dt.items.add(preview.file));
-    this.selectedFiles.set(dt.files);
+  private loadCategories() {
+    return this.adminService.getCategories().pipe(catchError(() => EMPTY));
   }
 
   private loadData(): void {
@@ -157,19 +152,60 @@ export class ArtworksAdminManagementComponent implements OnInit {
       )
       .subscribe(({ artworks, categories }) => {
         this.artworks.set(artworks);
+        this.rawArtworks.set(artworks);
         this.categories.set(categories);
         this.rawFilteredArtworks.set(artworks);
         this.selectedCategoryFilter = '';
       });
   }
 
-  protected getCategoryNames(categoryIds?: Set<number>): string[] {
-    if (!categoryIds || categoryIds.size === 0) return [];
+  private fillForm(artwork: Artwork): void {
+    this.editingArtwork.set(artwork);
+    this.artworkForm.setValue({
+      title: artwork.title,
+      description: artwork.description || '',
+      descriptionShort: artwork.descriptionShort || '',
+      imageUrls: artwork.imageUrls || [],
+      displayOrder: artwork.displayOrder,
+      categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
+    });
+    this.artworkForm.markAsPristine();
+    this.artworkForm.markAsUntouched();
+  }
 
-    const categories = this.categories();
-    return Array.from(categoryIds)
-      .map(id => categories.find(c => c.id === id)?.name)
-      .filter(name => name !== undefined) as string[];
+  protected openForm(): void {
+    this.router.navigate(['/admin/artworks/create']);
+  }
+
+  protected editArtwork(artwork: Artwork): void {
+    this.router.navigate(['/admin/artworks', artwork.id, 'edit']);
+  }
+
+  protected cancelForm(): void {
+    this.imagesPreviews().forEach(p => URL.revokeObjectURL(p.url));
+    this.router.navigate(['/admin/artworks']);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    this.selectedFiles.set(files);
+
+    if (files && files.length > 0) {
+      this.imagesPreviews.set(Array.from(files).map(file => ({ file, url: URL.createObjectURL(file) })));
+    } else {
+      this.imagesPreviews.set([]);
+    }
+  }
+
+  removeImagePreview(index: number): void {
+    const previews = this.imagesPreviews();
+    URL.revokeObjectURL(previews[index].url);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    this.imagesPreviews.set(updatedPreviews);
+    const dt = new DataTransfer();
+    updatedPreviews.forEach(p => dt.items.add(p.file));
+    this.selectedFiles.set(dt.files);
   }
 
   protected sort(field: 'id' | 'title'): void {
@@ -185,79 +221,25 @@ export class ArtworksAdminManagementComponent implements OnInit {
     this.searchQuery.set(value);
   }
 
-  protected openForm(): void {
-    this.showForm.set(true);
-    this.showList.set(false);
-    this.editingArtwork.set(null);
-    this.selectedFiles.set(null);
-    this.imagesPreviews.set([]);
-    this.artworkForm.reset({
-      title: '',
-      description: '',
-      descriptionShort: '',
-      imageUrls: [],
-      displayOrder: 0,
-      categoryIds: []
-    });
-  }
-
-  protected editArtwork(artwork: Artwork): void {
-    this.showForm.set(true);
-    this.showList.set(false);
-    this.editingArtwork.set(artwork);
-    this.selectedFiles.set(null);
-    this.imagesPreviews.set([]);
-
-    this.artworkForm.setValue({
-      title: artwork.title,
-      description: artwork.description || '',
-      descriptionShort: artwork.descriptionShort || '',
-      imageUrls: artwork.imageUrls || [],
-      displayOrder: artwork.displayOrder,
-      categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
-    });
-
-    this.artworkForm.markAsPristine();
-    this.artworkForm.markAsUntouched();
-    this.artworkForm.updateValueAndValidity();
-  }
-
-  protected cancelForm(): void {
-    this.showForm.set(false);
-    this.showList.set(true);
-    this.editingArtwork.set(null);
-    this.selectedFiles.set(null);
-
-    this.imagesPreviews().forEach(preview => URL.revokeObjectURL(preview.url));
-    this.imagesPreviews.set([]);
-
-    this.artworkForm.reset();
-  }
-
   protected saveArtwork(): void {
     if (this.artworkForm.invalid || this.isSubmitting()) return;
 
     this.isSubmitting.set(true);
     const formValue = this.artworkForm.value;
-
     const uploadData = new FormData();
 
-    const artworkDto = {
+    uploadData.append('artwork', JSON.stringify({
       title: formValue.title!,
       description: formValue.description,
       descriptionShort: formValue.descriptionShort,
       imageUrls: formValue.imageUrls!,
       displayOrder: formValue.displayOrder!,
       categoryIds: formValue.categoryIds!
-    };
-
-    uploadData.append('artwork', JSON.stringify(artworkDto));
+    }));
 
     const files = this.selectedFiles();
     if (files && files.length > 0) {
-      Array.from(files).forEach(file => {
-        uploadData.append('images', file);
-      });
+      Array.from(files).forEach(file => uploadData.append('images', file));
     }
 
     const editing = this.editingArtwork();
@@ -273,29 +255,21 @@ export class ArtworksAdminManagementComponent implements OnInit {
         }),
         finalize(() => this.isSubmitting.set(false))
       )
-      .subscribe({
-        next: () => {
-          const message = editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès';
-          this.notificationService.success(message);
-          this.cancelForm();
-          this.loadData();
-          window.dispatchEvent(new CustomEvent('artworkChanged'));
-        }
+      .subscribe(() => {
+        this.notificationService.success(editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès');
+        window.dispatchEvent(new CustomEvent('artworkChanged'));
+        this.router.navigate(['/admin/artworks']);
       });
   }
 
   protected deleteArtwork(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette œuvre ?')) {
-      return;
-    }
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette œuvre ?')) return;
 
     this.adminService.deleteArtwork(id)
-      .pipe(
-        catchError(() => {
-          this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
-          return EMPTY;
-        })
-      )
+      .pipe(catchError(() => {
+        this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
+        return EMPTY;
+      }))
       .subscribe(() => {
         this.notificationService.success('Œuvre supprimée avec succès');
         this.loadData();
@@ -309,30 +283,22 @@ export class ArtworksAdminManagementComponent implements OnInit {
     } else {
       this.adminService.getArtworksByCategory(+this.selectedCategoryFilter)
         .pipe(catchError(() => EMPTY))
-        .subscribe(artworks => {
-          this.rawFilteredArtworks.set(artworks);
-        });
+        .subscribe(artworks => this.rawFilteredArtworks.set(artworks));
     }
   }
 
-  protected getCleanImageUrl(artwork: Artwork): string | null {
-    let imageUrl = artwork.mainImageUrl;
-
-    if (!imageUrl && artwork.imageUrls && artwork.imageUrls.length > 0) {
-      imageUrl = artwork.imageUrls[0];
-    }
-
-    if (!imageUrl) return null;
-
-    return imageUrl.replace(/\\"/g, '"').replace(/^"|"$/g, '');
+  protected getCategoryNames(categoryIds?: Set<number>): string[] {
+    if (!categoryIds || categoryIds.size === 0) return [];
+    const categories = this.categories();
+    return Array.from(categoryIds)
+      .map(id => categories.find(c => c.id === id)?.name)
+      .filter((name): name is string => !!name);
   }
 
   protected isFormValidForSubmit(): boolean {
-    if (!this.editingArtwork()) {
-      return this.artworkForm.valid;
-    } else {
-      return this.artworkForm.valid && (this.artworkForm.dirty || this.selectedFiles()?.length > 0);
-    }
+    return this.editingArtwork()
+      ? this.artworkForm.valid && (this.artworkForm.dirty || (this.selectedFiles()?.length ?? 0) > 0)
+      : this.artworkForm.valid;
   }
 
   protected openImageModal(url: string): void {
