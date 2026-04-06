@@ -3,7 +3,6 @@ export interface ArchiveFile {
   fileType: 'IMAGE' | 'VIDEO' | 'AUDIO' | 'PDF';
   fileUrl: string;
   fileName?: string;
-  displayOrder: number;
 }
 
 export interface Archive {
@@ -12,6 +11,5 @@ export interface Archive {
   year: number;
   description?: string;
   thumbnailUrl?: string;
-  displayOrder: number;
   files: ArchiveFile[];
 }

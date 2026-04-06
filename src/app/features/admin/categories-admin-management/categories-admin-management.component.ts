@@ -54,7 +54,6 @@ export class CategoriesAdminManagementComponent implements OnInit {
     slug: ['', [Validators.required, Validators.pattern('^[a-z0-9-]+$')]],
     description: [''],
     descriptionShort: [''],
-    displayOrder: [0]
   });
 
   protected readonly categories = computed(() => {
@@ -92,7 +91,7 @@ export class CategoriesAdminManagementComponent implements OnInit {
 
   protected openCreateForm(): void {
     this.editingCategory.set(null);
-    this.categoryForm.reset({displayOrder: 0});
+    this.categoryForm.reset();
     this.pendingImageFile.set(null);
     this.previewImageUrl.set(null);
     this.showForm.set(true);
@@ -104,8 +103,7 @@ export class CategoriesAdminManagementComponent implements OnInit {
       name: category.name,
       slug: category.slug,
       description: category.description ?? '',
-      descriptionShort: category.descriptionShort ?? '',
-      displayOrder: category.displayOrder
+      descriptionShort: category.descriptionShort ?? ''
     });
     this.pendingImageFile.set(null);
     this.previewImageUrl.set(category.thumbnailUrl ?? null);

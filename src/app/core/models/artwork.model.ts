@@ -4,7 +4,6 @@ export interface ArtworkCategory {
   description?: string;
   descriptionShort?: string;
   slug: string;
-  displayOrder: number;
   thumbnailUrl?: string;
   createdAt: string;
   updatedAt: string;
@@ -17,7 +16,6 @@ export interface Artwork {
   descriptionShort?: string;
   imageUrls: string[];
   mainImageUrl?: string;
-  displayOrder: number;
   categoryIds?: number[];
   categoryNames?: string[];
   categorySlugs?: string[];

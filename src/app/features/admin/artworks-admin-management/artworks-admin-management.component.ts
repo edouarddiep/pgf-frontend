@@ -105,7 +105,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
     description: ['', [Validators.maxLength(1000)]],
     descriptionShort: ['', [Validators.maxLength(255)]],
     imageUrls: [[] as string[]],
-    displayOrder: [0, [Validators.required, Validators.min(0)]],
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
   });
 
@@ -166,7 +165,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
       description: artwork.description || '',
       descriptionShort: artwork.descriptionShort || '',
       imageUrls: artwork.imageUrls || [],
-      displayOrder: artwork.displayOrder,
       categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
     });
     this.artworkForm.markAsPristine();
@@ -233,7 +231,6 @@ export class ArtworksAdminManagementComponent implements OnInit {
       description: formValue.description,
       descriptionShort: formValue.descriptionShort,
       imageUrls: formValue.imageUrls!,
-      displayOrder: formValue.displayOrder!,
       categoryIds: formValue.categoryIds!
     }));
 

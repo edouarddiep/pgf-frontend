@@ -45,10 +45,6 @@
             <mat-label>Description</mat-label>
             <textarea matInput formControlName="description" rows="3"></textarea>
           </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Ordre d'affichage</mat-label>
-            <input matInput type="number" formControlName="displayOrder" />
-          </mat-form-field>
           <div class="form-actions">
             <button mat-button type="button" (click)="cancelForm()">Annuler</button>
             <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid || isSubmitting()">
