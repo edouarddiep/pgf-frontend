@@ -7,7 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import {AdminService} from '@features/admin/services/admin.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AdminService } from '@features/admin/services/admin.service';
 import { catchError, EMPTY } from 'rxjs';
 
 @Component({
@@ -19,7 +20,8 @@ import { catchError, EMPTY } from 'rxjs';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
@@ -29,13 +31,23 @@ export class AdminLoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly adminService = inject(AdminService);
   private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly isLoading = signal(false);
   protected readonly loginError = signal(false);
+  protected readonly showPassword = signal(false);
 
   protected readonly loginForm = this.fb.group({
     password: ['', [Validators.required]]
   });
+
+  protected togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
+
+  protected goHome(): void {
+    this.router.navigate(['/']);
+  }
 
   protected login(): void {
     if (this.loginForm.invalid) return;
@@ -55,6 +67,10 @@ export class AdminLoginComponent {
       )
       .subscribe(() => {
         this.isLoading.set(false);
+        this.snackBar.open('Connexion au panel admin réussie.', undefined, {
+          duration: 3000,
+          panelClass: ['success-snackbar']
+        });
         this.router.navigate(['/admin']);
       });
   }
