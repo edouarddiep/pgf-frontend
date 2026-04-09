@@ -21,6 +21,7 @@ import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {ImageUploadComponent} from '@shared/components/image-upload/image-upload.component';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
+import {ExportColumn, ExportService} from '@shared/services/export.service';
 
 interface PreviewImage {
   file: File;
@@ -57,6 +58,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly exportService = inject(ExportService);
 
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
@@ -67,6 +69,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly modalImageUrl = signal<string>('');
   protected readonly uploadedImageUrls = signal<string[]>([]);
   protected readonly mainImageUrl = signal<string | undefined>(undefined);
+  protected readonly imageRequired = signal(false);
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'categories', 'actions'];
   protected selectedCategoryFilter = '';
@@ -209,7 +212,8 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected saveArtwork(): void {
-    if (this.artworkForm.invalid || this.isSubmitting()) return;
+    this.imageRequired.set(this.uploadedImageUrls().length === 0);
+    if (this.artworkForm.invalid || this.isSubmitting() || this.uploadedImageUrls().length === 0) return;
 
     this.isSubmitting.set(true);
     const formValue = this.artworkForm.value;
@@ -295,6 +299,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
     this.uploadedImageUrls.set(event.urls);
     this.mainImageUrl.set(event.mainUrl);
+    this.imageRequired.set(false);
     this.hasUnsavedChanges.set(true);
   }
 
@@ -306,6 +311,17 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected asSet(ids: number[] | null | undefined): Set<number> {
     return new Set(ids ?? []);
+  }
+
+  protected exportData(): void {
+    const columns: ExportColumn<Artwork>[] = [
+      { header: 'ID', value: a => a.id },
+      { header: 'Titre', value: a => a.title },
+      { header: 'Description courte', value: a => a.descriptionShort ?? '' },
+      { header: 'Description complète', value: a => a.description ?? '' },
+      { header: 'Catégories', value: a => this.getCategoryNames(this.asSet(a.categoryIds)).join(', ') }
+    ];
+    this.exportService.exportToExcel(this.filteredArtworks(), columns, 'oeuvres');
   }
 
   private normalize(str: string): string {

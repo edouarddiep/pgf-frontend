@@ -24,6 +24,7 @@ import { Injectable } from '@angular/core';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
+import {ExportColumn, ExportService} from '@shared/services/export.service';
 
 interface ExhibitionFormData {
   title: string;
@@ -108,6 +109,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly exportService = inject(ExportService);
 
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
   protected readonly searchQuery = signal('');
@@ -123,6 +125,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   protected readonly mainImageUrl = signal<string | undefined>(undefined);
   protected readonly showVideoModal = signal(false);
   protected readonly modalVideoUrl = signal<string>('');
+  protected readonly imageRequired = signal(false);
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
@@ -156,7 +159,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     location: ['', [Validators.required, Validators.minLength(2)]],
     address: [''],
     startDate: [null as Date | null, [Validators.required]],
-    endDate: [null as Date | null]
+    endDate: [null as Date | null, [Validators.required]]
   }, { validators: endDateValidator });
 
   readonly hasUnsavedChanges = signal(false);
@@ -170,16 +173,23 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
-      this.exhibitionForm.valueChanges.subscribe(() => {
-        if (this.isFormMode()) this.hasUnsavedChanges.set(true);
-      });
       if (isEdit) {
         this.adminService.getExhibitions()
           .pipe(catchError(() => EMPTY))
           .subscribe(exhibitions => {
             const exhibition = exhibitions.find(e => e.id === +id!);
-            if (exhibition) this.fillForm(exhibition);
+            if (exhibition) {
+              this.fillForm(exhibition);
+              this.exhibitionForm.markAsPristine();
+            }
+            this.exhibitionForm.valueChanges.subscribe(() => {
+              if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+            });
           });
+      } else {
+        this.exhibitionForm.valueChanges.subscribe(() => {
+          if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+        });
       }
     } else {
       this.loadExhibitions();
@@ -240,6 +250,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
     this.uploadedImageUrls.set(event.urls);
     this.mainImageUrl.set(event.mainUrl);
+    this.imageRequired.set(false);
     this.hasUnsavedChanges.set(true);
   }
 
@@ -247,9 +258,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
+    const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
     const validFiles = Array.from(input.files).filter(f => {
       if (f.size > 500 * 1024 * 1024) { this.notificationService.error(`${f.name}: Vidéo trop volumineuse (max 500MB)`); return false; }
-      if (f.type !== 'video/mp4') { this.notificationService.error(`${f.name}: Seuls les fichiers MP4 sont acceptés`); return false; }
+      if (!validTypes.includes(f.type)) { this.notificationService.error(`${f.name}: Seuls les formats MP4, MOV et AVI sont acceptés`); return false; }
       return true;
     });
 
@@ -289,7 +301,8 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   }
 
   protected saveExhibition(): void {
-    if (this.exhibitionForm.invalid || this.isSaving()) return;
+    this.imageRequired.set(this.uploadedImageUrls().length === 0);
+    if (this.exhibitionForm.invalid || this.isSaving() || this.uploadedImageUrls().length === 0) return;
 
     this.isSaving.set(true);
     const formData = this.exhibitionForm.value as ExhibitionFormData;
@@ -388,6 +401,19 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
 
   protected closeVideoModal(): void {
     this.showVideoModal.set(false);
+  }
+
+  protected exportData(): void {
+    const columns: ExportColumn<Exhibition>[] = [
+      { header: 'ID', value: e => e.id },
+      { header: 'Titre', value: e => e.title },
+      { header: 'Lieu', value: e => e.location ?? '' },
+      { header: 'Adresse', value: e => e.address ?? '' },
+      { header: 'Date début', value: e => e.startDate ? this.formatDate(e.startDate) : '' },
+      { header: 'Date fin', value: e => e.endDate ? this.formatDate(e.endDate) : '' },
+      { header: 'Statut', value: e => this.getStatusLabel(e.status) }
+    ];
+    this.exportService.exportToExcel(this.exhibitions(), columns, 'expositions');
   }
 
   private normalize(str: string): string {

@@ -13,7 +13,7 @@ export interface ContactMessage {
 
 export enum MessageStatus {
   NEW = 'NEW',
-  READ = 'read',
+  READ = 'READ',
   REPLIED = 'REPLIED',
   ARCHIVED = 'ARCHIVED'
 }

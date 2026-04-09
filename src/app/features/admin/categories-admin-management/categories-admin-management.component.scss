@@ -197,6 +197,13 @@ tr.mat-mdc-row td.mat-mdc-cell {
   }
 }
 
+.image-required-error {
+  display: block;
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container { padding: 1rem; }
 }

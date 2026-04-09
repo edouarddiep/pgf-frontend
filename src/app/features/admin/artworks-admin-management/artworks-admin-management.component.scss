@@ -112,6 +112,18 @@
         font-size: 0.85rem;
       }
     }
+
+    .actions-cell {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .mat-column-actions {
+      width: 100px;
+      min-width: 100px;
+    }
   }
 }
 
@@ -210,6 +222,13 @@ tr.mat-mdc-row td.mat-mdc-cell {
       }
     }
   }
+}
+
+.image-required-error {
+  display: block;
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 @media (max-width: 768px) {

@@ -2,6 +2,10 @@
   @if (!isFormMode()) {
     <div class="admin-header">
       <h2>Gestion des catégories</h2>
+      <button mat-stroked-button (click)="exportData()" matTooltip="Exporte les données de la liste dans un fichier Excel">
+        <mat-icon>download</mat-icon>
+        Exporter la liste
+      </button>
       <button mat-raised-button color="primary" (click)="openCreateForm()">
         <mat-icon>add</mat-icon> Nouvelle catégorie
       </button>
@@ -63,7 +67,7 @@
             </ng-container>
 
             <ng-container matColumnDef="artworkCount">
-              <th mat-header-cell *matHeaderCellDef>Œuvres</th>
+              <th mat-header-cell *matHeaderCellDef>Nb œuvres liées</th>
               <td mat-cell *matCellDef="let category">
                 <span [matTooltip]="'Cette catégorie contient ' + (category.artworkCount ?? 0) + ' œuvre(s)'"
                       matTooltipShowDelay="400">
@@ -143,6 +147,9 @@
               {{ previewImageUrl() ? 'Changer l\'image' : 'Choisir une image' }}
             </button>
             <input #fileInput type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
+            @if (imageRequired()) {
+              <mat-error class="image-required-error">Une image est obligatoire</mat-error>
+            }
           </div>
 
           <div class="form-actions full-width">

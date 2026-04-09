@@ -1,16 +1,16 @@
 <div class="message-detail">
-  <h2 mat-dialog-title>Message de {{ data.name }}</h2>
+  <h2 mat-dialog-title>{{ data.subject }}</h2>
 
   <mat-dialog-content>
     <div class="message-info">
+      <p><strong>Expéditeur:</strong> {{ data.name }}</p>
       <p><strong>Email:</strong> {{ data.email }}</p>
       @if (data.phone) {
         <p><strong>Téléphone:</strong> {{ data.phone }}</p>
       }
+      <p><strong>Date:</strong> {{ data.createdAt | date:"dd.MM.yyyy HH:mm" }}</p>
       <p><strong>Sujet:</strong> {{ data.subject }}</p>
-      <p><strong>Date:</strong> {{ data.createdAt | date:'medium' }}</p>
     </div>
-
     <div class="message-content">
       <h3>Message:</h3>
       <p>{{ data.message }}</p>
@@ -18,11 +18,6 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-button mat-dialog-close>Fermer</button>
-    @if (!data.isRead) {
-      <button mat-raised-button color="primary" (click)="markAsRead()">
-        Marquer comme lu
-      </button>
-    }
+    <button mat-button (click)="close()">Fermer</button>
   </mat-dialog-actions>
 </div>

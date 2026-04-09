@@ -62,7 +62,21 @@
     }
   }
 
-  .exhibitions-table { width: 100%; }
+  .exhibitions-table {
+    width: 100%;
+
+    .actions-cell {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .mat-column-actions {
+      width: 100px;
+      min-width: 100px;
+    }
+  }
 
   .artwork-thumb {
     width: 60px;
@@ -253,6 +267,13 @@
 tr.mat-mdc-row td.mat-mdc-cell {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.image-required-error {
+  display: block;
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 @media (max-width: 768px) {

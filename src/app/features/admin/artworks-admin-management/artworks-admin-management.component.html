@@ -2,6 +2,10 @@
   @if (!isFormMode()) {
     <div class="admin-header">
       <h2>Gestion des œuvres</h2>
+      <button mat-stroked-button (click)="exportData()" matTooltip="Exporte les données de la liste dans un fichier Excel">
+        <mat-icon>download</mat-icon>
+        Exporter la liste
+      </button>
       <button mat-raised-button color="primary" (click)="openForm()">
         <mat-icon>add</mat-icon>
         Nouvelle œuvre
@@ -90,12 +94,14 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let artwork">
-                <button mat-icon-button (click)="editArtwork(artwork)" matTooltip="Modifier">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)" matTooltip="Supprimer">
-                  <mat-icon>delete</mat-icon>
-                </button>
+                <div class="actions-cell">
+                  <button mat-icon-button (click)="editArtwork(artwork)" matTooltip="Modifier">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteArtwork(artwork.id)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
               </td>
             </ng-container>
 
@@ -173,6 +179,9 @@
                 (hasChanges)="hasUnsavedChanges.set(true)"
                 (zoomImage)="openImageModal($event)">
               </app-image-upload>
+              @if (imageRequired()) {
+                <mat-error class="image-required-error">Au moins une image est obligatoire</mat-error>
+              }
               <p class="image-legend">* L'image principale s'affiche en premier sur la page de l'œuvre</p>
             </div>
           </div>

@@ -433,6 +433,11 @@ img {
   padding: 0;
 }
 
+.full-viewport-page {
+  height: calc(100dvh - 64px);
+  overflow: hidden;
+}
+
 mark {
   background-color: #fff9c4;
   color: inherit;

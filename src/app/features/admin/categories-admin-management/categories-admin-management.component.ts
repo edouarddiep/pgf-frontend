@@ -18,6 +18,7 @@ import { LoadingDirective } from '@/app/directives/loading.directive';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
+import {ExportColumn, ExportService} from '@shared/services/export.service';
 
 type SortField = 'id' | 'name';
 
@@ -39,6 +40,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly exportService = inject(ExportService);
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
   protected readonly sortField = signal<SortField>('id');
@@ -54,6 +56,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   protected readonly tooltipText = signal<string>('');
   protected readonly tooltipX = signal(0);
   protected readonly tooltipY = signal(0);
+  protected readonly imageRequired = signal(false);
 
   protected readonly categoryForm = this.fb.group({
     name: ['', Validators.required],
@@ -146,7 +149,8 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   }
 
   protected submitCategory(): void {
-    if (this.categoryForm.invalid || this.isSubmitting()) return;
+    this.imageRequired.set(!this.previewImageUrl());
+    if (this.categoryForm.invalid || this.isSubmitting() || !this.previewImageUrl()) return;
     this.isSubmitting.set(true);
 
     const { name, description, descriptionShort } = this.categoryForm.value;
@@ -224,6 +228,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     if (!file) return;
     this.pendingImageFile.set(file);
     this.previewImageUrl.set(URL.createObjectURL(file));
+    this.imageRequired.set(false);
     this.hasUnsavedChanges.set(true);
   }
 
@@ -263,5 +268,15 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
       .replace(/[^a-z0-9\s-]/g, '')
       .trim()
       .replace(/\s+/g, '-');
+  }
+
+  protected exportData(): void {
+    const columns: ExportColumn<ArtworkCategory>[] = [
+      { header: 'ID', value: c => c.id },
+      { header: 'Nom', value: c => c.name },
+      { header: 'Description', value: c => c.description ?? '' },
+      { header: 'Nb oeuvres', value: c => c.artworkCount ?? 0 }
+    ];
+    this.exportService.exportToExcel(this.categories(), columns, 'categories');
   }
 }

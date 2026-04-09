@@ -1,5 +1,5 @@
-<div class="contact-page">
-  <div class="contact-grid">
+<div class="contact-page full-viewport-page">
+<div class="contact-grid">
     <div class="contact-image">
       <img
         src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/fil-de-fer/images/arbre-coeur/image-1.jpeg"
@@ -8,6 +8,25 @@
     </div>
 
     <div class="contact-form-section">
+      @if (isSubmitting()) {
+        <div class="form-overlay">
+          <app-loading-spinner />
+          <span class="overlay-label">Envoi en cours...</span>
+        </div>
+      }
+
+      @if (submitSuccess()) {
+        <div class="inline-notification success">
+          <span>✓ Message envoyé avec succès !</span>
+        </div>
+      }
+
+      @if (submitError()) {
+        <div class="inline-notification error">
+          <span>✗ Erreur lors de l'envoi du message</span>
+        </div>
+      }
+
       <div class="form-container">
         <h2 class="section-title">Prendre contact</h2>
 
@@ -86,19 +105,21 @@
           </div>
 
           <div class="form-actions">
-            <button
-              mat-raised-button
-              color="primary"
-              type="submit"
-              class="submit-button"
-              [disabled]="contactForm.invalid || isSubmitting()">
-              @if (isSubmitting()) {
-                <mat-spinner diameter="20"></mat-spinner>
-                Envoi en cours...
-              } @else {
+            @if (isSubmitting()) {
+              <div class="submit-spinner">
+                <app-loading-spinner />
+                <span>Envoi en cours...</span>
+              </div>
+            } @else {
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="submit-button"
+                [disabled]="contactForm.invalid">
                 Envoyer
-              }
-            </button>
+              </button>
+            }
           </div>
         </form>
 
