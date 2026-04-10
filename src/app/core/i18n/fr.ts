@@ -75,24 +75,6 @@ export const fr = {
     emptyPastDetail: "L'historique des expositions sera bientôt disponible",
     dateConfirm: 'Date à confirmer'
   },
-  vernissage: {
-    hero: 'INSCRIPTION AU VERNISSAGE',
-    form: {
-      firstName: 'Prénom *',
-      lastName: 'Nom *',
-      email: 'Email *',
-      phone: 'Téléphone',
-      guests: 'Nombre de personnes',
-      guestOptionMore: '5+ personnes',
-      cancel: 'Annuler',
-      submit: "S'inscrire",
-      errors: {
-        firstName: 'Le prénom est requis',
-        lastName: 'Le nom est requis',
-        email: 'Un email valide est requis'
-      }
-    }
-  },
   archives: {
     hero: 'ARCHIVES',
     learnMore: 'En savoir plus',
@@ -210,8 +192,10 @@ export const fr = {
       quickActions: 'Actions rapides',
       addArtwork: 'Ajouter une œuvre',
       addCategory: 'Ajouter une catégorie',
-      createExhibition: 'Créer une exposition',
-      viewSite: 'Voir le site'
+      addExhibition: 'Ajouter une exposition',
+      addArchive: 'Ajouter une archive',
+      viewSite: 'Voir le site',
+      backToSite: 'Retourner sur le site',
     },
     common: {
       exportList: 'Exporter la liste',
@@ -258,7 +242,7 @@ export const fr = {
         categories: 'Catégories',
         categoryRequired: 'Veuillez sélectionner au moins une catégorie',
         imagesLabel: 'Images',
-        imageLegend: "* L'image principale s'affiche en premier sur la page de l'œuvre"
+        imageLegend: "*L'image principale s'affiche en premier sur la page de l'œuvre"
       }
     },
     categories: {
@@ -312,7 +296,7 @@ export const fr = {
         endDateBeforeStart: 'La date de fin ne peut pas être antérieure à la date de début',
         datePlaceholder: 'jour.mois.année',
         imagesLabel: "Images de l'exposition",
-        imageLegend: "* L'image principale s'affiche en premier sur la page de l'exposition",
+        imageLegend: "*L'image principale s'affiche en premier sur la page de l'exposition",
         imageRequired: 'Au moins une image est obligatoire',
         videosLabel: 'Vidéos rétrospective',
         videosHint: 'Ajouter des vidéos (formats acceptés: mp4, mov, avi)'
@@ -333,14 +317,14 @@ export const fr = {
       colYear: 'Année',
       colActions: 'Actions',
       form: {
-        title: 'Titre *',
+        title: 'Titre',
         titleRequired: 'Titre requis',
-        year: 'Année *',
+        year: 'Année',
         yearRequired: 'Année requise',
         description: 'Description',
-        filesLabel: "Fichiers de l'archive *",
+        filesLabel: "Fichiers de l'archive",
         imageRequired: 'Une image principale est obligatoire',
-        imageLegend: "* La première image ajoutée devient l'image principale de l'archive"
+        imageLegend: "*La première image ajoutée devient l'image principale de l'archive"
       }
     },
     messages: {

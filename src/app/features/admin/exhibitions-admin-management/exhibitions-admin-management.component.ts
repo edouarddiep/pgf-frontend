@@ -26,6 +26,7 @@ import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 
 interface ExhibitionFormData {
   title: string;
@@ -112,6 +113,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
   protected readonly searchQuery = signal('');
@@ -238,6 +240,12 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     this.mainImageUrl.set(uniqueUrls[0]);
     this.uploadedVideoUrls.set(exhibition.videoUrls || []);
     this.hasUnsavedChanges.set(false);
+
+    setTimeout(() => {
+      this.exhibitionForm.markAsPristine();
+      this.exhibitionForm.markAsUntouched();
+      this.hasUnsavedChanges.set(false);
+    });
   }
 
   protected sort(field: 'id' | 'title'): void {
@@ -348,19 +356,28 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   }
 
   protected deleteExhibition(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette exposition ?')) return;
-
-    const exhibition = this.exhibitions().find(e => e.id === id);
-    this.adminService.deleteExhibition(id)
-      .pipe(catchError(() => { this.notificationService.error('Erreur lors de la suppression de l\'exposition'); return EMPTY; }))
-      .subscribe(() => {
-        exhibition?.imageUrls?.forEach(imageUrl =>
-          this.adminService.deleteExhibitionImage(imageUrl).pipe(catchError(() => EMPTY)).subscribe()
-        );
-        this.notificationService.success('Exposition supprimée avec succès');
-        this.loadExhibitions();
-        window.dispatchEvent(new CustomEvent('exhibitionChanged'));
-      });
+    this.confirmDialog.confirm({
+      title: 'Supprimer l\'exposition',
+      message: 'Êtes-vous sûr de vouloir supprimer cette exposition ? Cette action est irréversible.',
+      confirmLabel: 'Supprimer',
+      cancelLabel: 'Annuler'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      const exhibition = this.exhibitions().find(e => e.id === id);
+      this.adminService.deleteExhibition(id)
+        .pipe(catchError(() => {
+          this.notificationService.error('Erreur lors de la suppression de l\'exposition');
+          return EMPTY;
+        }))
+        .subscribe(() => {
+          exhibition?.imageUrls?.forEach(imageUrl =>
+            this.adminService.deleteExhibitionImage(imageUrl).pipe(catchError(() => EMPTY)).subscribe()
+          );
+          this.notificationService.success('Exposition supprimée avec succès');
+          this.loadExhibitions();
+          window.dispatchEvent(new CustomEvent('exhibitionChanged'));
+        });
+    });
   }
 
   protected formatDate(date: string | Date): string {

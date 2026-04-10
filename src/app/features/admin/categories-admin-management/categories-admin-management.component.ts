@@ -20,6 +20,7 @@ import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 
 type SortField = 'id' | 'name';
 
@@ -42,6 +43,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
   protected readonly sortField = signal<SortField>('id');
@@ -197,16 +199,23 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
       this.notificationService.error(`Impossible de supprimer cette catégorie : elle contient ${artworkCount} œuvre(s) liée(s)`);
       return;
     }
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) return;
-    this.adminService.deleteCategory(id)
-      .pipe(catchError((err) => {
-        this.notificationService.error(err?.error?.message || 'Erreur lors de la suppression');
-        return EMPTY;
-      }))
-      .subscribe(() => {
-        this.notificationService.success('Catégorie supprimée');
-        this.loadCategories();
-      });
+    this.confirmDialog.confirm({
+      title: 'Supprimer la catégorie',
+      message: 'Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.',
+      confirmLabel: 'Supprimer',
+      cancelLabel: 'Annuler'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.adminService.deleteCategory(id)
+        .pipe(catchError(err => {
+          this.notificationService.error(err?.error?.message || 'Erreur lors de la suppression');
+          return EMPTY;
+        }))
+        .subscribe(() => {
+          this.notificationService.success('Catégorie supprimée');
+          this.loadCategories();
+        });
+    });
   }
 
   private loadCategories(): void {

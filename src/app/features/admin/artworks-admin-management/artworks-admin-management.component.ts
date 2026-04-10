@@ -23,6 +23,7 @@ import {ImageUploadComponent} from '@shared/components/image-upload/image-upload
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 
 interface PreviewImage {
   file: File;
@@ -61,6 +62,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
@@ -251,18 +253,24 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected deleteArtwork(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette œuvre ?')) return;
-
-    this.adminService.deleteArtwork(id)
-      .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
-        return EMPTY;
-      }))
-      .subscribe(() => {
-        this.notificationService.success('Œuvre supprimée avec succès');
-        this.loadData();
-        window.dispatchEvent(new CustomEvent('artworkChanged'));
-      });
+    this.confirmDialog.confirm({
+      title: 'Supprimer l\'œuvre',
+      message: 'Êtes-vous sûr de vouloir supprimer cette œuvre ? Cette action est irréversible.',
+      confirmLabel: 'Supprimer',
+      cancelLabel: 'Annuler'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.adminService.deleteArtwork(id)
+        .pipe(catchError(() => {
+          this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
+          return EMPTY;
+        }))
+        .subscribe(() => {
+          this.notificationService.success('Œuvre supprimée avec succès');
+          this.loadData();
+          window.dispatchEvent(new CustomEvent('artworkChanged'));
+        });
+    });
   }
 
   protected onCategoryFilterChange(): void {

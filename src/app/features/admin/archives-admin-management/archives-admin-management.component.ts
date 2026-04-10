@@ -19,6 +19,7 @@ import { Archive, ArchiveFile } from '@core/models/archive.model';
 import { catchError, EMPTY } from 'rxjs';
 import { ArchiveFileUploadComponent } from '@shared/components/archive-file-upload/archive-file-upload.component';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 
 type SortField = 'id' | 'title' | 'year';
 
@@ -40,6 +41,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   private readonly rawArchives = signal<Archive[]>([]);
   protected readonly searchQuery = signal('');
@@ -53,17 +55,23 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly tooltipText = signal('');
   protected readonly tooltipX = signal(0);
   protected readonly tooltipY = signal(0);
+  protected readonly submitAttempted = signal(false);
+  protected readonly imageRequired = computed(() => this.submitAttempted() && !this.thumbnailUrl());
 
   readonly hasUnsavedChanges = signal(false);
   readonly isFormMode = signal(false);
 
   protected readonly displayedColumns = ['id', 'thumbnail', 'title', 'year', 'actions'];
 
+  protected readonly isFormValidForSubmit = computed(() =>
+    this.editingArchive()
+      ? this.archiveForm.valid && (this.archiveForm.dirty || this.hasUnsavedChanges()) && !!this.thumbnailUrl()
+      : this.archiveForm.valid && !!this.thumbnailUrl()
+  );
+
   protected readonly thumbnailUrl = computed(() =>
     this.pendingFiles().find(f => f.fileType === 'IMAGE')?.fileUrl
   );
-
-  protected readonly imageRequired = computed(() => !this.thumbnailUrl());
 
   protected readonly archives = computed(() => {
     const field = this.sortField();
@@ -141,14 +149,29 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
       year: archive.year,
       description: archive.description ?? ''
     });
+
     const files = archive.files?.map(f => ({
       fileType: f.fileType,
       fileUrl: f.fileUrl,
       fileName: f.fileName ?? ''
     })) ?? [];
+
     const images = files.filter(f => f.fileType === 'IMAGE');
     const others = files.filter(f => f.fileType !== 'IMAGE');
+
+    if (images.length === 0 && archive.thumbnailUrl) {
+      images.push({ fileType: 'IMAGE', fileUrl: archive.thumbnailUrl, fileName: 'Image principale' });
+    } else if (archive.thumbnailUrl) {
+      const thumbIndex = images.findIndex(f => f.fileUrl === archive.thumbnailUrl);
+      if (thumbIndex > 0) {
+        const [thumb] = images.splice(thumbIndex, 1);
+        images.unshift(thumb);
+      }
+    }
+
     this.pendingFiles.set([...images, ...others]);
+    this.archiveForm.markAsPristine();
+    this.hasUnsavedChanges.set(false);
   }
 
   protected sort(field: SortField): void {
@@ -191,6 +214,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected saveArchive(): void {
+    this.submitAttempted.set(true);
     if (this.archiveForm.invalid) return;
     if (!this.thumbnailUrl()) {
       this.notificationService.error('Une image principale est obligatoire');
@@ -205,7 +229,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
       year: year!,
       description: description ?? undefined,
       thumbnailUrl: this.thumbnailUrl()!,
-      files: this.pendingFiles().map((f, i) => ({ id: editing?.files?.[i]?.id, ...f } as ArchiveFile))
+      files: this.pendingFiles().map(f => ({ ...f } as ArchiveFile))
     };
 
     const operation = editing
@@ -227,16 +251,23 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected deleteArchive(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette archive ?')) return;
-    this.adminService.deleteArchive(id)
-      .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors de la suppression');
-        return EMPTY;
-      }))
-      .subscribe(() => {
-        this.notificationService.success('Archive supprimée');
-        this.loadArchives();
-      });
+    this.confirmDialog.confirm({
+      title: 'Supprimer l\'archive',
+      message: 'Êtes-vous sûr de vouloir supprimer cette archive ? Cette action est irréversible.',
+      confirmLabel: 'Supprimer',
+      cancelLabel: 'Annuler'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.adminService.deleteArchive(id)
+        .pipe(catchError(() => {
+          this.notificationService.error('Erreur lors de la suppression');
+          return EMPTY;
+        }))
+        .subscribe(() => {
+          this.notificationService.success('Archive supprimée');
+          this.loadArchives();
+        });
+    });
   }
 
   protected exportData(): void {
@@ -259,6 +290,10 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected hideTooltip(): void {
     this.tooltipText.set('');
+  }
+
+  protected onMainImageChange(_url: string | undefined): void {
+    // thumbnailUrl est déjà computed depuis pendingFiles, rien à faire
   }
 
   private normalize(str: string): string {

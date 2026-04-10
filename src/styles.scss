@@ -438,6 +438,12 @@ img {
   overflow: hidden;
 }
 
+.confirm-dialog-panel {
+  .mdc-dialog__surface {
+    border-radius: 4px !important;
+  }
+}
+
 mark {
   background-color: #fff9c4;
   color: inherit;

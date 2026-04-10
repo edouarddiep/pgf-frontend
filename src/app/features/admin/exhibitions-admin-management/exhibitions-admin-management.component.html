@@ -209,7 +209,7 @@
             <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">{{ 'admin.common.cancel' | translate }}</button>
             <button mat-raised-button color="primary" type="submit"
                     [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())"
-                    [class.btn-active]="!exhibitionForm.invalid && !isSaving()">
+                    [class.btn-active]="!exhibitionForm.invalid && !isSaving() && (!editingExhibition() || exhibitionForm.dirty || hasUnsavedChanges())">
               {{ editingExhibition() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
             </button>
           </div>

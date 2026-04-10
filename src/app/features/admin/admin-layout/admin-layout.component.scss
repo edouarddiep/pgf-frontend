@@ -35,4 +35,21 @@
 .mat-mdc-list-item {
   border-radius: 8px;
   margin: 4px 8px;
+
+  ::ng-deep .mat-icon {
+    color: #64b5f6;
+    margin-right: 0.75rem;
+    bottom: 2px;
+    position: relative;
+    vertical-align: middle;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+
+  ::ng-deep .mdc-list-item__content {
+    display: flex;
+    align-items: center;
+  }
 }

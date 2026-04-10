@@ -141,14 +141,15 @@
               }
               <p class="image-legend">{{ 'admin.archives.form.imageLegend' | translate }}</p>
             </div>
+          </div>
 
-            <div class="form-actions">
-              <button mat-button type="button" (click)="showList()">{{ 'admin.common.cancel' | translate }}</button>
-              <button mat-raised-button color="primary" type="submit" [disabled]="archiveForm.invalid || isSaving()">
-                @if (isSaving()) { <mat-icon>hourglass_empty</mat-icon> }
-                {{ editingArchive() ? ('admin.common.edit' | translate) : ('admin.common.create' | translate) }}
-              </button>
-            </div>
+          <div class="form-actions">
+            <button type="button" mat-button (click)="showList()">{{ 'admin.common.cancel' | translate }}</button>
+            <button type="submit" mat-raised-button color="primary"
+                    [disabled]="!isFormValidForSubmit() || isSaving()"
+                    [class.btn-active]="isFormValidForSubmit() && !isSaving()">
+              {{ editingArchive() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
+            </button>
           </div>
         </form>
       </mat-card-content>

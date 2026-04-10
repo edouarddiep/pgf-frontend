@@ -13,6 +13,7 @@ import { MessageDetailDialogComponent } from './message-detail-dialog.component'
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {MatTooltip} from '@angular/material/tooltip';
+import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-messages-admin-management',
@@ -26,6 +27,7 @@ import {MatTooltip} from '@angular/material/tooltip';
 export class MessagesAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   protected readonly messages = signal<ContactMessage[]>([]);
   protected readonly unreadCount = signal(0);
@@ -52,9 +54,16 @@ export class MessagesAdminManagementComponent implements OnInit {
   }
 
   protected deleteMessage(id: number): void {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) return;
-    this.adminService.deleteMessage(id)
-      .pipe(catchError(() => EMPTY))
-      .subscribe(() => this.loadMessages());
+    this.confirmDialog.confirm({
+      title: 'Supprimer le message',
+      message: 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.',
+      confirmLabel: 'Supprimer',
+      cancelLabel: 'Annuler'
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.adminService.deleteMessage(id)
+        .pipe(catchError(() => EMPTY))
+        .subscribe(() => this.loadMessages());
+    });
   }
 }
