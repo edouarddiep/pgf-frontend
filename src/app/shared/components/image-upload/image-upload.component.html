@@ -16,6 +16,11 @@
         <mat-icon>add_photo_alternate</mat-icon>
         <span>Ajouter des images</span>
       </div>
+    } @else {
+      <div class="add-more">
+        <mat-icon>swap_horiz</mat-icon>
+        <span>Changer l'image</span>
+      </div>
     }
   </div>
 
@@ -39,12 +44,12 @@
                       matTooltip="Définir comme image principale">
                 <mat-icon>star</mat-icon>
               </button>
+              <button type="button" mat-icon-button class="action-btn remove-btn"
+                      (click)="removeImage(i); $event.stopPropagation()"
+                      matTooltip="Supprimer l'image">
+                <mat-icon>delete</mat-icon>
+              </button>
             }
-            <button type="button" mat-icon-button class="action-btn remove-btn"
-                    (click)="removeImage(i); $event.stopPropagation()"
-                    matTooltip="Supprimer l'image">
-              <mat-icon>delete</mat-icon>
-            </button>
           </div>
         </div>
       }

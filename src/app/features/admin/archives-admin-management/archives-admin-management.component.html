@@ -1,0 +1,185 @@
+<div class="admin-artworks-container">
+  @if (!isFormMode()) {
+    <div class="admin-header">
+      <h2>Gestion des archives</h2>
+      <button mat-stroked-button (click)="exportData()" matTooltip="Exporte les données dans un fichier Excel">
+        <mat-icon>download</mat-icon>
+        Exporter la liste
+      </button>
+      <button mat-raised-button color="primary" (click)="showCreateForm()">
+        <mat-icon>add</mat-icon>
+        Créer une archive
+      </button>
+    </div>
+
+    <mat-card class="table-card" appLoading>
+      <mat-card-header>
+        <mat-form-field>
+          <mat-label>Rechercher une archive</mat-label>
+          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)"
+                 placeholder="Par ID, titre, année ou description">
+          @if (searchQuery()) {
+            <button matSuffix mat-icon-button (click)="onSearchChange('')">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </mat-form-field>
+        <mat-card-title>Liste des archives</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (archives().length > 0) {
+          <table mat-table [dataSource]="archives()" class="archives-table">
+
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef (click)="sort('id')" class="sortable-header">
+                ID <span class="sort-icon">{{ sortField() === 'id' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+              </th>
+              <td mat-cell *matCellDef="let archive" [innerHTML]="archive.id | highlight: searchQuery()"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="thumbnail">
+              <th mat-header-cell *matHeaderCellDef>Image</th>
+              <td mat-cell *matCellDef="let archive">
+                @if (archive.thumbnailUrl) {
+                  <img [src]="archive.thumbnailUrl" [alt]="archive.title" class="artwork-thumb"
+                       (click)="openImageModal(archive.thumbnailUrl)" matTooltip="Agrandir"/>
+                } @else {
+                  <div class="no-image">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                }
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef (click)="sort('title')" class="sortable-header">
+                Titre <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+              </th>
+              <td mat-cell *matCellDef="let archive">
+                <div class="archive-info">
+                  <strong [innerHTML]="archive.title | highlight: searchQuery()"></strong>
+                  @if (archive.description) {
+                    <span class="description-cell"
+                          [innerHTML]="archive.description | highlight: searchQuery()"
+                          (mouseenter)="showTooltip($event, archive.description)"
+                          (mouseleave)="hideTooltip()">
+                    </span>
+                  }
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="year">
+              <th mat-header-cell *matHeaderCellDef (click)="sort('year')" class="sortable-header">
+                Année <span class="sort-icon">{{ sortField() === 'year' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+              </th>
+              <td mat-cell *matCellDef="let archive" [innerHTML]="archive.year | highlight: searchQuery()"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let archive">
+                <div class="actions-cell">
+                  <button mat-icon-button color="primary" (click)="showEditForm(archive)" matTooltip="Modifier">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteArchive(archive.id)" matTooltip="Supprimer">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        } @else {
+          <div class="no-data">
+            <mat-icon>archive</mat-icon>
+            <p>Aucune archive</p>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (isFormMode()) {
+    <div class="admin-header">
+      <div style="display:flex; align-items:center; gap:0.5rem">
+        <button mat-icon-button (click)="showList()" matTooltip="Retour à la liste">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2>{{ editingArchive() ? 'Modifier l\'archive' : 'Créer une archive' }}</h2>
+      </div>
+    </div>
+
+    <mat-card class="form-card">
+      <mat-card-content>
+        <form [formGroup]="archiveForm" (ngSubmit)="saveArchive()">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Titre *</mat-label>
+              <input matInput formControlName="title">
+              @if (archiveForm.get('title')?.errors?.['required']) {
+                <mat-error>Titre requis</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Année *</mat-label>
+              <input matInput type="number" formControlName="year">
+              @if (archiveForm.get('year')?.errors?.['required']) {
+                <mat-error>Année requise</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="4"></textarea>
+            </mat-form-field>
+
+            <div class="full-width">
+              <label class="file-upload-label">Fichiers de l'archive *</label>
+              <app-archive-file-upload
+                [files]="pendingFiles()"
+                (filesChange)="onFilesChanged($event)"
+                (hasChanges)="hasUnsavedChanges.set(true)">
+              </app-archive-file-upload>
+              @if (imageRequired()) {
+                <mat-error class="image-required-error">Une image principale est obligatoire</mat-error>
+              }
+              <p class="image-legend">* La première image ajoutée devient l'image principale de l'archive</p>
+            </div>
+
+            <div class="form-actions">
+              <button mat-button type="button" (click)="showList()">Annuler</button>
+              <button mat-raised-button color="primary" type="submit" [disabled]="archiveForm.invalid || isSaving()">
+                @if (isSaving()) {
+                  <mat-icon>hourglass_empty</mat-icon>
+                }
+                {{ editingArchive() ? 'Modifier' : 'Créer' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  @if (showImageModal()) {
+    <div class="image-modal" (click)="closeImageModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <img [src]="modalImageUrl()" alt="Aperçu" class="modal-image">
+        <button type="button" class="modal-close" (click)="closeImageModal()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  }
+  @if (tooltipText()) {
+    <div class="custom-tooltip" [style.top.px]="tooltipY()" [style.left.px]="tooltipX()">
+      {{ tooltipText() }}
+    </div>
+  }
+</div>

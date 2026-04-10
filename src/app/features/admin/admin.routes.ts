@@ -56,6 +56,20 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('@features/admin/exhibitions-admin-management/exhibitions-admin-management.component').then(m => m.ExhibitionsAdminManagementComponent)
       },
       {
+        path: 'archives',
+        loadComponent: () => import('@features/admin/archives-admin-management/archives-admin-management.component').then(m => m.ArchivesAdminManagementComponent)
+      },
+      {
+        path: 'archives/create',
+        canDeactivate: [unsavedChangesGuard],
+        loadComponent: () => import('@features/admin/archives-admin-management/archives-admin-management.component').then(m => m.ArchivesAdminManagementComponent)
+      },
+      {
+        path: 'archives/:id/edit',
+        canDeactivate: [unsavedChangesGuard],
+        loadComponent: () => import('@features/admin/archives-admin-management/archives-admin-management.component').then(m => m.ArchivesAdminManagementComponent)
+      },
+      {
         path: 'messages',
         loadComponent: () => import('@features/admin/messages-admin-management/messages-admin-management.component').then(m => m.MessagesAdminManagementComponent)
       }

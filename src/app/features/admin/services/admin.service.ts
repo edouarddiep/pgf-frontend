@@ -7,6 +7,7 @@ import {ArtworkCategory, Artwork} from '@core/models/artwork.model';
 import {Exhibition} from '@core/models/exhibition.model';
 import {ContactMessage} from '@core/models/contact.model';
 import {environment} from '@environments/environment';
+import {Archive} from '@core/models/archive.model';
 
 export interface AdminExhibitionRequest {
   title: string;
@@ -25,7 +26,7 @@ export interface AdminExhibitionRequest {
 export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly baseUrl = `${environment.apiUrl}/admin`;
+  private readonly adminApiUrl = `${environment.apiUrl}/admin`;
   private readonly apiUrl = environment.apiUrl;
   private readonly isAuthenticatedSignal = signal(false);
 
@@ -41,7 +42,7 @@ export class AdminService {
   isAuthenticated = this.isAuthenticatedSignal.asReadonly();
 
   login(password: string): Observable<boolean> {
-    return this.http.post<void>(`${this.baseUrl}/auth/login`, {password})
+    return this.http.post<void>(`${this.adminApiUrl}/auth/login`, {password})
       .pipe(
         map(() => true),
         tap(() => {
@@ -61,11 +62,11 @@ export class AdminService {
   }
 
   getCategories(): Observable<ArtworkCategory[]> {
-    return this.http.get<ArtworkCategory[]>(`${this.baseUrl}/categories`);
+    return this.http.get<ArtworkCategory[]>(`${this.adminApiUrl}/categories`);
   }
 
   getArtworks(): Observable<Artwork[]> {
-    return this.http.get<Artwork[]>(`${this.baseUrl}/artworks`);
+    return this.http.get<Artwork[]>(`${this.adminApiUrl}/artworks`);
   }
 
   getArtworksByCategory(categoryId: number): Observable<Artwork[]> {
@@ -73,27 +74,27 @@ export class AdminService {
   }
 
   createArtwork(dto: Partial<Artwork>): Observable<Artwork> {
-    return this.http.post<Artwork>(`${this.baseUrl}/artworks`, dto);
+    return this.http.post<Artwork>(`${this.adminApiUrl}/artworks`, dto);
   }
 
   updateArtwork(id: number, dto: Partial<Artwork>): Observable<Artwork> {
-    return this.http.put<Artwork>(`${this.baseUrl}/artworks/${id}`, dto);
+    return this.http.put<Artwork>(`${this.adminApiUrl}/artworks/${id}`, dto);
   }
 
   deleteArtwork(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/artworks/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/artworks/${id}`);
   }
 
   getExhibitions(): Observable<Exhibition[]> {
-    return this.http.get<Exhibition[]>(`${this.baseUrl}/exhibitions`);
+    return this.http.get<Exhibition[]>(`${this.adminApiUrl}/exhibitions`);
   }
 
   createExhibition(request: AdminExhibitionRequest): Observable<Exhibition> {
-    return this.http.post<Exhibition>(`${this.baseUrl}/exhibitions`, request);
+    return this.http.post<Exhibition>(`${this.adminApiUrl}/exhibitions`, request);
   }
 
   updateExhibition(id: number, request: AdminExhibitionRequest): Observable<Exhibition> {
-    return this.http.put<Exhibition>(`${this.baseUrl}/exhibitions/${id}`, request);
+    return this.http.put<Exhibition>(`${this.adminApiUrl}/exhibitions/${id}`, request);
   }
 
   uploadExhibitionVideo(file: File, exhibitionSlug: string, videoIndex: number): Observable<{ videoUrl: string }> {
@@ -103,27 +104,27 @@ export class AdminService {
     formData.append('videoIndex', videoIndex.toString());
 
     return this.http.post<{ videoUrl: string }>(
-      `${this.baseUrl}/upload/exhibition-video`,
+      `${this.adminApiUrl}/upload/exhibition-video`,
       formData
     );
   }
 
   deleteExhibition(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/exhibitions/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${id}`);
   }
 
   deleteExhibitionImage(imageUrl: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/images`, {
+    return this.http.delete<void>(`${this.adminApiUrl}/images`, {
       params: {imageUrl}
     });
   }
 
   createCategory(dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
-    return this.http.post<ArtworkCategory>(`${this.baseUrl}/categories`, dto);
+    return this.http.post<ArtworkCategory>(`${this.adminApiUrl}/categories`, dto);
   }
 
   updateCategory(id: number, dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
-    return this.http.put<ArtworkCategory>(`${this.baseUrl}/categories/${id}`, dto);
+    return this.http.put<ArtworkCategory>(`${this.adminApiUrl}/categories/${id}`, dto);
   }
 
   uploadCategoryImage(file: File, categorySlug: string): Observable<{ thumbnailUrl: string }> {
@@ -131,23 +132,39 @@ export class AdminService {
     formData.append('file', file);
     formData.append('categorySlug', categorySlug);
     return this.http.post<{ thumbnailUrl: string }>(
-      `${this.baseUrl}/upload/category-image`, formData
+      `${this.adminApiUrl}/upload/category-image`, formData
     );
   }
 
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/categories/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/categories/${id}`);
+  }
+
+  getArchives(): Observable<Archive[]> {
+    return this.http.get<Archive[]>(`${this.adminApiUrl}/archives`);
+  }
+
+  createArchive(dto: Partial<Archive>): Observable<Archive> {
+    return this.http.post<Archive>(`${this.adminApiUrl}/archives`, dto);
+  }
+
+  updateArchive(id: number, dto: Partial<Archive>): Observable<Archive> {
+    return this.http.put<Archive>(`${this.adminApiUrl}/archives/${id}`, dto);
+  }
+
+  deleteArchive(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.adminApiUrl}/archives/${id}`);
   }
 
   getMessages(): Observable<ContactMessage[]> {
-    return this.http.get<ContactMessage[]>(`${this.baseUrl}/messages`);
+    return this.http.get<ContactMessage[]>(`${this.adminApiUrl}/messages`);
   }
 
   markMessageAsRead(id: number): Observable<ContactMessage> {
-    return this.http.put<ContactMessage>(`${this.baseUrl}/messages/${id}/read`, {});
+    return this.http.put<ContactMessage>(`${this.adminApiUrl}/messages/${id}/read`, {});
   }
 
   deleteMessage(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/messages/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/messages/${id}`);
   }
 }

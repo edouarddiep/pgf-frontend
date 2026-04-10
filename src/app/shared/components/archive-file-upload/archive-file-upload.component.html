@@ -1,0 +1,94 @@
+<div class="archive-file-upload">
+  <label class="upload-btn">
+    <input type="file"
+           accept="image/*,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav,application/pdf,.docx,.doc"
+           multiple hidden
+           (change)="onFileSelected($event)">
+    <mat-icon>attach_file</mat-icon>
+    Joindre un fichier
+  </label>
+
+  @if (uploading()) {
+    <mat-progress-bar mode="indeterminate" class="upload-progress"></mat-progress-bar>
+  }
+
+  @if (files().length > 0) {
+    <div class="files-grid">
+      @for (file of files(); track file.fileUrl; let i = $index) {
+        <div class="file-card" [class.is-main]="isMain(file)">
+          <div class="file-preview" (click)="openModal(file)">
+            @if (isImage(file)) {
+              <img [src]="file.fileUrl" [alt]="file.fileName" loading="lazy">
+            } @else if (isVideo(file)) {
+              <video [src]="file.fileUrl" preload="metadata"></video>
+              <div class="play-overlay"><mat-icon>play_circle</mat-icon></div>
+            } @else if (isAudio(file)) {
+              <div class="file-icon-preview"><mat-icon>audiotrack</mat-icon></div>
+              <div class="play-overlay-soft"><mat-icon>play_arrow</mat-icon></div>
+            } @else {
+              <div class="file-icon-preview"><mat-icon>picture_as_pdf</mat-icon></div>
+              <div class="play-overlay-soft"><mat-icon>open_in_new</mat-icon></div>
+            }
+
+            @if (isMain(file)) {
+              <div class="main-badge">
+                <mat-icon>star</mat-icon>
+                <span>Principale*</span>
+              </div>
+            }
+          </div>
+
+          <div class="file-actions">
+            @if (isImage(file) && !isMain(file)) {
+              <button type="button" mat-icon-button class="action-btn set-main-btn"
+                      (click)="$event.stopPropagation(); setMain(i)"
+                      matTooltip="Définir comme image principale">
+                <mat-icon>star</mat-icon>
+              </button>
+            }
+            @if (!isMain(file)) {
+              <button type="button" mat-icon-button class="action-btn remove-btn"
+                      (click)="$event.stopPropagation(); removeFile(i)"
+                      matTooltip="Supprimer">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
+
+          <div class="file-name-bar">
+            <mat-icon class="type-icon">{{ getIcon(file.fileType) }}</mat-icon>
+            <span class="file-name" [matTooltip]="file.fileName">{{ file.fileName || file.fileType }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-hint">Aucun fichier — commencez par ajouter une image principale</p>
+  }
+</div>
+
+@if (modalFile(); as file) {
+  <div class="file-modal" (click)="closeModal()">
+    <div class="file-modal-content" (click)="$event.stopPropagation()">
+      <button type="button" class="modal-close" (click)="closeModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+      @if (isImage(file)) {
+        <img [src]="file.fileUrl" [alt]="file.fileName" class="modal-img">
+      } @else if (isVideo(file)) {
+        <video controls autoplay [src]="file.fileUrl" class="modal-video"></video>
+      } @else if (isAudio(file)) {
+        <div class="modal-audio">
+          <mat-icon class="audio-icon">audiotrack</mat-icon>
+          <p>{{ file.fileName }}</p>
+          <audio controls [src]="file.fileUrl"></audio>
+        </div>
+      } @else {
+        <iframe [src]="getSafeUrl(file.fileUrl)" class="modal-pdf"></iframe>
+      }
+      @if (file.fileName) {
+        <div class="modal-filename">{{ file.fileName }}</div>
+      }
+    </div>
+  </div>
+}

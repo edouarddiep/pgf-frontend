@@ -1,11 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, input, output, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, input, output, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ImageService } from '@core/services/image.service';
+import { NotificationService } from '@shared/services/notification.service';
+import { FileUploadService } from '@core/services/file-upload.service';
 
 export interface ImageItem {
   url: string;
@@ -14,14 +14,14 @@ export interface ImageItem {
 
 @Component({
   selector: 'app-image-upload',
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatTooltipModule, MatSnackBarModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatTooltipModule],
   templateUrl: './image-upload.component.html',
   styleUrl: './image-upload.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageUploadComponent {
-  private readonly imageService = inject(ImageService);
-  private readonly snackBar = inject(MatSnackBar);
+  private readonly fileUploadService = inject(FileUploadService);
+  private readonly notificationService = inject(NotificationService);
 
   readonly multiple = input(false);
   readonly currentImages = input<string[]>([]);
@@ -29,7 +29,6 @@ export class ImageUploadComponent {
   readonly category = input('artworks');
   readonly exhibitionSlug = input<string | undefined>(undefined);
   readonly zoomImage = output<string>();
-
   readonly imagesChanged = output<{ urls: string[]; mainUrl: string | undefined }>();
   readonly hasChanges = output<void>();
 
@@ -37,6 +36,8 @@ export class ImageUploadComponent {
   readonly isDragging = signal(false);
   readonly images = signal<ImageItem[]>([]);
   readonly errorMessage = signal<string | null>(null);
+
+  protected readonly mainImage = computed(() => this.images().find(i => i.isMain));
 
   constructor() {
     effect(() => {
@@ -97,28 +98,31 @@ export class ImageUploadComponent {
     this.uploading.set(true);
     const slug = this.exhibitionSlug();
     const uploads = slug
-      ? files.map((f, i) => this.imageService.uploadExhibitionImage(f, slug, this.images().length + i + 1))
-      : files.map(f => this.imageService.uploadImage(f, this.category()));
+      ? files.map((f, i) => this.fileUploadService.uploadExhibitionImage(f, slug, this.images().length + i + 1))
+      : files.map(f => this.fileUploadService.uploadImage(f, this.category()));
 
     let index = 0;
     const processNext = () => {
       if (index >= uploads.length) { this.uploading.set(false); this.emit(); return; }
       uploads[index].subscribe({
         next: result => {
-          const isFirst = this.images().length === 0;
-          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: isFirst && imgs.every(i => !i.isMain) }]);
+          const hasMain = this.images().some(i => i.isMain);
+          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: !hasMain }]);
           index++;
           processNext();
         },
-        error: () => { this.uploading.set(false); this.snackBar.open('Erreur lors de l\'upload', 'Fermer', { duration: 5000 }); }
+        error: () => { this.uploading.set(false); this.notificationService.error('Erreur lors de l\'upload'); }
       });
     };
     processNext();
   }
 
   setMain(index: number): void {
-    if (this.images()[index].isMain) return;
-    this.images.update(imgs => imgs.map((img, i) => ({ ...img, isMain: i === index })));
+    const target = this.images()[index];
+    if (target.isMain) return;
+    const reordered = [target, ...this.images().filter((_, i) => i !== index)];
+    const updated = reordered.map((img, i) => ({ ...img, isMain: i === 0 }));
+    this.images.set(updated);
     this.emit();
     this.hasChanges.emit();
   }
@@ -131,7 +135,7 @@ export class ImageUploadComponent {
   removeImage(index: number): void {
     const img = this.images()[index];
     if (img.isMain) {
-      this.snackBar.open('L\'image principale ne peut pas être supprimée', 'Fermer', { duration: 4000 });
+      this.notificationService.info('L\'image principale ne peut pas être supprimée');
       return;
     }
     this.images.update(imgs => imgs.filter((_, i) => i !== index));

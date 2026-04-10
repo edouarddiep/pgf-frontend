@@ -23,7 +23,6 @@ export class NotificationService {
   error(message: string): void {
     this.snackBar.open(message, undefined, {
       ...this.defaultConfig,
-      duration: 6000,
       panelClass: ['error-snackbar']
     });
   }
