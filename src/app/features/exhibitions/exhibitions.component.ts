@@ -7,6 +7,7 @@ import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { catchError, EMPTY, combineLatest } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 type TabType = 'current' | 'past';
 
@@ -16,7 +17,8 @@ type TabType = 'current' | 'past';
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslatePipe
   ],
   templateUrl: './exhibitions.component.html',
   styleUrl: './exhibitions.component.scss',

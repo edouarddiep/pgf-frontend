@@ -1,33 +1,33 @@
 <div class="admin-artworks-container">
   <div class="admin-header">
-    <h2>Messages de contact</h2>
+    <h2>{{ 'admin.messages.title' | translate }}</h2>
     <mat-chip-set>
-      <mat-chip>Total : {{ messages().length }}</mat-chip>
+      <mat-chip>{{ 'admin.messages.total' | translate: {count: messages().length} }}</mat-chip>
       <mat-chip color="primary" [highlighted]="unreadCount() > 0">
-        Non lus : {{ unreadCount() }}
+        {{ 'admin.messages.unread' | translate: {count: unreadCount()} }}
       </mat-chip>
     </mat-chip-set>
   </div>
 
   <mat-card class="table-card" appLoading>
     <mat-card-header>
-      <mat-card-title>Liste des messages</mat-card-title>
+      <mat-card-title>{{ 'admin.messages.listTitle' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <table mat-table [dataSource]="messages()" class="messages-table">
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Statut</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colStatus' | translate }}</th>
           <td mat-cell *matCellDef="let message">
             @if (message.isRead) {
-              <span class="status-badge read">Déjà lu</span>
+              <span class="status-badge read">{{ 'admin.messages.statusRead' | translate }}</span>
             } @else {
-              <span class="status-badge new">Nouveau</span>
+              <span class="status-badge new">{{ 'admin.messages.statusNew' | translate }}</span>
             }
           </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Expéditeur</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colSender' | translate }}</th>
           <td mat-cell *matCellDef="let message">
             <div class="sender-info">
               <strong>{{ message.name }}</strong>
@@ -37,25 +37,21 @@
         </ng-container>
 
         <ng-container matColumnDef="subject">
-          <th mat-header-cell *matHeaderCellDef>Sujet</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colSubject' | translate }}</th>
           <td mat-cell *matCellDef="let message">{{ message.subject }}</td>
         </ng-container>
 
         <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>Date</th>
-          <td mat-cell *matCellDef="let message">{{ message.createdAt | date:"Reçu le dd.MM.yyyy à HH:mm" }}</td>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colDate' | translate }}</th>
+          <td mat-cell *matCellDef="let message">{{ message.createdAt | date:"dd.MM.yyyy HH:mm" }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colActions' | translate }}</th>
           <td mat-cell *matCellDef="let message">
             <div class="actions-cell">
-              <button mat-icon-button (click)="viewMessage(message)" matTooltip="Lire le message">
-                <mat-icon>visibility</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="deleteMessage(message.id)" matTooltip="Supprimer le message">
-                <mat-icon>delete</mat-icon>
-              </button>
+              <button mat-icon-button (click)="viewMessage(message)" [matTooltip]="'admin.messages.read' | translate"><mat-icon>visibility</mat-icon></button>
+              <button mat-icon-button color="warn" (click)="deleteMessage(message.id)" [matTooltip]="'admin.common.delete' | translate"><mat-icon>delete</mat-icon></button>
             </div>
           </td>
         </ng-container>
@@ -67,7 +63,7 @@
       @if (messages().length === 0) {
         <div class="no-data">
           <mat-icon>inbox</mat-icon>
-          <p>Aucun message pour le moment</p>
+          <p>{{ 'admin.messages.notFound' | translate }}</p>
         </div>
       }
     </mat-card-content>

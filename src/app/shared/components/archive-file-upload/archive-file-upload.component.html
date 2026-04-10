@@ -5,7 +5,7 @@
            multiple hidden
            (change)="onFileSelected($event)">
     <mat-icon>attach_file</mat-icon>
-    Joindre un fichier
+    {{ 'shared.archiveFileUpload.attach' | translate }}
   </label>
 
   @if (uploading()) {
@@ -33,7 +33,7 @@
             @if (isMain(file)) {
               <div class="main-badge">
                 <mat-icon>star</mat-icon>
-                <span>Principale*</span>
+                <span>{{ 'shared.archiveFileUpload.mainBadge' | translate }}</span>
               </div>
             }
           </div>
@@ -42,14 +42,14 @@
             @if (isImage(file) && !isMain(file)) {
               <button type="button" mat-icon-button class="action-btn set-main-btn"
                       (click)="$event.stopPropagation(); setMain(i)"
-                      matTooltip="Définir comme image principale">
+                      [matTooltip]="'shared.archiveFileUpload.setMain' | translate">
                 <mat-icon>star</mat-icon>
               </button>
             }
             @if (!isMain(file)) {
               <button type="button" mat-icon-button class="action-btn remove-btn"
                       (click)="$event.stopPropagation(); removeFile(i)"
-                      matTooltip="Supprimer">
+                      [matTooltip]="'shared.archiveFileUpload.remove' | translate">
                 <mat-icon>delete</mat-icon>
               </button>
             }
@@ -63,7 +63,7 @@
       }
     </div>
   } @else {
-    <p class="empty-hint">Aucun fichier — commencez par ajouter une image principale</p>
+    <p class="empty-hint">{{ 'shared.archiveFileUpload.empty' | translate }}</p>
   }
 </div>
 

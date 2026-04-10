@@ -1,10 +1,10 @@
 <div class="admin-container">
   <mat-toolbar color="primary" class="admin-toolbar">
-    <span>Administration PGF</span>
+    <span>{{ 'admin.layout.title' | translate }}</span>
     <span class="spacer"></span>
     <button mat-button (click)="logout()">
       <mat-icon>logout</mat-icon>
-      Déconnexion
+      {{ 'admin.layout.logout' | translate }}
     </button>
   </mat-toolbar>
 
@@ -13,32 +13,27 @@
       <mat-nav-list>
         <a mat-list-item routerLink="/admin/dashboard" routerLinkActive="active">
           <mat-icon matListIcon>dashboard</mat-icon>
-          <span matLine>Tableau de bord</span>
+          <span matLine>{{ 'admin.layout.nav.dashboard' | translate }}</span>
         </a>
-
         <a mat-list-item routerLink="/admin/categories" routerLinkActive="active">
           <mat-icon matListIcon>category</mat-icon>
-          <span matLine>Catégories</span>
+          <span matLine>{{ 'admin.layout.nav.categories' | translate }}</span>
         </a>
-
         <a mat-list-item routerLink="/admin/artworks" routerLinkActive="active">
           <mat-icon matListIcon>palette</mat-icon>
-          <span matLine>Œuvres</span>
+          <span matLine>{{ 'admin.layout.nav.artworks' | translate }}</span>
         </a>
-
         <a mat-list-item routerLink="/admin/exhibitions" routerLinkActive="active">
           <mat-icon matListIcon>event</mat-icon>
-          <span matLine>Expositions</span>
+          <span matLine>{{ 'admin.layout.nav.exhibitions' | translate }}</span>
         </a>
-
         <a mat-list-item routerLink="/admin/archives" routerLinkActive="active">
           <mat-icon matListIcon>archive</mat-icon>
-          <span matLine>Archives</span>
+          <span matLine>{{ 'admin.layout.nav.archives' | translate }}</span>
         </a>
-
         <a mat-list-item routerLink="/admin/messages" routerLinkActive="active">
           <mat-icon matListIcon>mail</mat-icon>
-          <span matLine>Messages</span>
+          <span matLine>{{ 'admin.layout.nav.messages' | translate }}</span>
         </a>
       </mat-nav-list>
     </mat-sidenav>

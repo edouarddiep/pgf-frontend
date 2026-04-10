@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-terms',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './terms.component.html',
   styleUrl: './terms.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

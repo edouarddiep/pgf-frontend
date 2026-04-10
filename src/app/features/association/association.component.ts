@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-association',
-  imports: [CommonModule, RouterModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, TranslatePipe],
   templateUrl: './association.component.html',
   styleUrl: './association.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

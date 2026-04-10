@@ -8,6 +8,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { VideoService } from '@shared/services/video.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,8 @@ import { VideoService } from '@shared/services/video.service';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    TranslatePipe
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

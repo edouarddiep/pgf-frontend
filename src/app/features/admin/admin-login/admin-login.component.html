@@ -1,33 +1,26 @@
 <div class="login-container">
   <mat-card class="login-card">
     <mat-card-content>
-      <h1 class="card-title">Administration PGF</h1>
+      <h1 class="card-title">{{ 'admin.login.title' | translate }}</h1>
       <form [formGroup]="loginForm" (ngSubmit)="login()">
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Veuillez saisir un mot de passe</mat-label>
-          <input
-            matInput
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-          >
+          <mat-label>{{ 'admin.login.passwordLabel' | translate }}</mat-label>
+          <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password">
           <mat-icon matSuffix class="toggle-password" (click)="togglePassword()">
             {{ showPassword() ? 'visibility_off' : 'visibility' }}
           </mat-icon>
         </mat-form-field>
 
         @if (hasError()) {
-          <div class="error-message">Mot de passe incorrect</div>
+          <div class="error-message">{{ 'admin.login.wrongPassword' | translate }}</div>
         }
 
         <div class="actions">
-          <button mat-stroked-button type="button" class="action-btn" (click)="goHome()">Annuler</button>
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            class="action-btn"
-            [disabled]="loginForm.invalid || isLoading()">
-            {{ isLoading() ? 'Connexion...' : 'Se connecter' }}
+          <button mat-stroked-button type="button" class="action-btn" (click)="goHome()">
+            {{ 'admin.login.cancel' | translate }}
+          </button>
+          <button mat-raised-button color="primary" type="submit" class="action-btn" [disabled]="loginForm.invalid || isLoading()">
+            {{ isLoading() ? ('admin.login.submitting' | translate) : ('admin.login.submit' | translate) }}
           </button>
         </div>
       </form>

@@ -19,6 +19,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 type SortField = 'id' | 'name';
 
@@ -28,7 +29,7 @@ type SortField = 'id' | 'name';
     CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatCardModule,
     MatProgressSpinnerModule, LoadingDirective, MatDialogModule,
     ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltip,
-    HighlightPipe
+    HighlightPipe, TranslatePipe
   ],
   templateUrl: './categories-admin-management.component.html',
   styleUrl: './categories-admin-management.component.scss',

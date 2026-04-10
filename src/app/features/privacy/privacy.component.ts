@@ -4,13 +4,13 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
-  selector: 'app-legal',
+  selector: 'app-privacy',
   imports: [CommonModule, TranslatePipe],
-  templateUrl: './legal.component.html',
-  styleUrl: './legal.component.scss',
+  templateUrl: './privacy.component.html',
+  styleUrl: './privacy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LegalComponent implements OnInit, OnDestroy {
+export class PrivacyComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
 
   ngOnInit(): void {

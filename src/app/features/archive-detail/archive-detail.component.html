@@ -13,9 +13,7 @@
 
     @if (arch.description) {
       <section class="description-section scroll-fade-in">
-        <div class="container">
-          <p>{{ arch.description }}</p>
-        </div>
+        <div class="container"><p>{{ arch.description }}</p></div>
       </section>
     }
 
@@ -23,16 +21,12 @@
       @if (audioFiles().length > 0) {
         <section class="audio-section scroll-fade-in">
           <div class="container">
-            <h2>Fichiers Audio</h2>
+            <h2>{{ 'archives.sections.audio' | translate }}</h2>
             <div class="audio-grid">
               @for (file of audioFiles(); track file.id) {
                 <div class="audio-card">
-                  @if (file.fileName) {
-                    <div class="audio-name">{{ file.fileName }}</div>
-                  }
-                  <div class="audio-player">
-                    <audio controls [src]="file.fileUrl"></audio>
-                  </div>
+                  @if (file.fileName) { <div class="audio-name">{{ file.fileName }}</div> }
+                  <div class="audio-player"><audio controls [src]="file.fileUrl"></audio></div>
                 </div>
               }
             </div>
@@ -43,7 +37,7 @@
       @if (imageFiles().length > 0) {
         <section class="images-section scroll-fade-in">
           <div class="container">
-            <h2>Galerie</h2>
+            <h2>{{ 'archives.sections.gallery' | translate }}</h2>
             <div class="images-grid">
               @for (file of imageFiles(); track file.id) {
                 <div class="image-card" (click)="openImageModal(file.fileUrl, arch.title)">
@@ -58,23 +52,19 @@
       @if (videoFiles().length > 0) {
         <section class="videos-section scroll-fade-in">
           <div class="container">
-            <h2>Vidéos</h2>
+            <h2>{{ 'archives.sections.videos' | translate }}</h2>
             <div class="videos-grid" [class.single-video]="videoFiles().length === 1">
               @for (file of videoFiles(); track file.id) {
                 <div class="video-card" (click)="openVideoModal(file)">
                   <div class="video-thumbnail">
                     @if (isYouTubeUrl(file.fileUrl)) {
-                      <img [src]="getYouTubeThumbnail(file.fileUrl)" [alt]="'Vidéo'">
+                      <img [src]="getYouTubeThumbnail(file.fileUrl)" alt="Vidéo">
                     } @else {
                       <video [src]="file.fileUrl"></video>
                     }
-                    <div class="play-overlay">
-                      <div class="play-button">▶</div>
-                    </div>
+                    <div class="play-overlay"><div class="play-button">▶</div></div>
                   </div>
-                  @if (file.fileName) {
-                    <div class="video-title">{{ file.fileName }}</div>
-                  }
+                  @if (file.fileName) { <div class="video-title">{{ file.fileName }}</div> }
                 </div>
               }
             </div>
@@ -85,7 +75,7 @@
       @if (pdfFiles().length > 0) {
         <section class="pdf-section scroll-fade-in">
           <div class="container">
-            <h2>Articles</h2>
+            <h2>{{ 'archives.sections.articles' | translate }}</h2>
             <div class="pdf-grid">
               @for (file of pdfFiles(); track file.id) {
                 <a [href]="file.fileUrl" target="_blank" rel="noopener noreferrer" class="pdf-card">
@@ -94,9 +84,7 @@
                     <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M10 13H8V17H10C10.5304 17 11.0391 16.7893 11.4142 16.4142C11.7893 16.0391 12 15.5304 12 15C12 14.4696 11.7893 13.9609 11.4142 13.5858C11.0391 13.2107 10.5304 13 10 13Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  @if (file.fileName) {
-                    <span class="pdf-name">{{ file.fileName }}</span>
-                  }
+                  @if (file.fileName) { <span class="pdf-name">{{ file.fileName }}</span> }
                   <span class="pdf-label">PDF</span>
                 </a>
               }
@@ -111,7 +99,7 @@
         <div class="navigation-buttons">
           <button mat-stroked-button (click)="goBack()">
             <mat-icon>arrow_back</mat-icon>
-            RETOUR AUX ARCHIVES
+            {{ 'archives.back' | translate }}
           </button>
         </div>
       </div>
@@ -132,12 +120,7 @@
       <div class="modal-content video-modal" (click)="$event.stopPropagation()">
         <button class="modal-close" (click)="closeModal()">✕</button>
         @if (isYouTubeUrl(modalVideo()!.fileUrl)) {
-          <iframe
-            [src]="getSafeUrl(modalVideo()!.fileUrl)"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-          </iframe>
+          <iframe [src]="getSafeUrl(modalVideo()!.fileUrl)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         } @else {
           <video controls autoplay [src]="modalVideo()!.fileUrl"></video>
         }

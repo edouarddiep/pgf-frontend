@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { AdminService } from '@features/admin/services/admin.service';
 import { ApiService } from '@core/services/api.service';
 import { forkJoin, catchError, EMPTY, fromEvent } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,7 +16,8 @@ import { forkJoin, catchError, EMPTY, fromEvent } from 'rxjs';
     MatCardModule,
     MatIconModule,
     MatButtonModule,
-    RouterLink
+    RouterLink,
+    TranslatePipe
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',

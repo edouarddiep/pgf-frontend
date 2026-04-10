@@ -25,6 +25,7 @@ import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 interface ExhibitionFormData {
   title: string;
@@ -92,7 +93,8 @@ function endDateValidator(control: AbstractControl) {
     MatTableModule,
     ImageUploadComponent,
     LoadingDirective,
-    HighlightPipe
+    HighlightPipe,
+    TranslatePipe
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },

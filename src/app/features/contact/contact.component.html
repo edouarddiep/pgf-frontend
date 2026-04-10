@@ -1,9 +1,9 @@
 <div class="contact-page full-viewport-page">
-<div class="contact-grid">
+  <div class="contact-grid">
     <div class="contact-image">
       <img
         src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/fil-de-fer/images/arbre-coeur/image-1.jpeg"
-        alt="Atelier de l'artiste"
+        [alt]="'contact.imgAlt' | translate"
         loading="lazy">
     </div>
 
@@ -11,77 +11,77 @@
       @if (isSubmitting()) {
         <div class="form-overlay">
           <app-loading-spinner />
-          <span class="overlay-label">Envoi en cours...</span>
+          <span class="overlay-label">{{ 'contact.form.submitting' | translate }}</span>
         </div>
       }
 
       @if (submitSuccess()) {
         <div class="inline-notification success">
-          <span>✓ Message envoyé avec succès !</span>
+          <span>✓ {{ 'contact.form.successMessage' | translate }}</span>
         </div>
       }
 
       @if (submitError()) {
         <div class="inline-notification error">
-          <span>✗ Erreur lors de l'envoi du message</span>
+          <span>✗ {{ 'contact.form.errorMessage' | translate }}</span>
         </div>
       }
 
       <div class="form-container">
-        <h2 class="section-title">Prendre contact</h2>
+        <h2 class="section-title">{{ 'contact.title' | translate }}</h2>
 
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
 
           <div class="form-row">
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Nom</mat-label>
+              <mat-label>{{ 'contact.form.name' | translate }}</mat-label>
               <input matInput formControlName="name" required>
               @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
-                <mat-error>Le nom est requis</mat-error>
+                <mat-error>{{ 'contact.form.errors.nameRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Prénom</mat-label>
+              <mat-label>{{ 'contact.form.firstName' | translate }}</mat-label>
               <input matInput formControlName="firstName" required>
               @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
-                <mat-error>Le prénom est requis</mat-error>
+                <mat-error>{{ 'contact.form.errors.firstNameRequired' | translate }}</mat-error>
               }
             </mat-form-field>
           </div>
 
           <div class="form-row">
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Email</mat-label>
+              <mat-label>{{ 'contact.form.email' | translate }}</mat-label>
               <input matInput type="email" formControlName="email" required>
               @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
                 <mat-error>
                   @if (contactForm.get('email')?.errors?.['required']) {
-                    L'email est requis
+                    {{ 'contact.form.errors.emailRequired' | translate }}
                   } @else if (contactForm.get('email')?.errors?.['email']) {
-                    Email invalide
+                    {{ 'contact.form.errors.emailInvalid' | translate }}
                   }
                 </mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>Téléphone (optionnel)</mat-label>
+              <mat-label>{{ 'contact.form.phone' | translate }}</mat-label>
               <input matInput type="tel" formControlName="phone">
             </mat-form-field>
           </div>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Sujet</mat-label>
+            <mat-label>{{ 'contact.form.subject' | translate }}</mat-label>
             <input matInput formControlName="subject" required>
             @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
-              <mat-error>Le sujet est requis</mat-error>
+              <mat-error>{{ 'contact.form.errors.subjectRequired' | translate }}</mat-error>
             }
           </mat-form-field>
 
           <div class="form-group full-width">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Message</mat-label>
+              <mat-label>{{ 'contact.form.message' | translate }}</mat-label>
               <textarea
                 matInput
                 formControlName="message"
@@ -92,15 +92,15 @@
               @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
                 <mat-error>
                   @if (contactForm.get('message')?.errors?.['required']) {
-                    Le message est requis
+                    {{ 'contact.form.errors.messageRequired' | translate }}
                   } @else if (contactForm.get('message')?.errors?.['minlength']) {
-                    Le message doit contenir au moins 10 caractères
+                    {{ 'contact.form.errors.messageMinLength' | translate }}
                   }
                 </mat-error>
               }
             </mat-form-field>
             <div class="character-counter">
-              {{ getMessageLength() }} / 500 caractères
+              {{ getMessageLength() }} / 500
             </div>
           </div>
 
@@ -108,7 +108,7 @@
             @if (isSubmitting()) {
               <div class="submit-spinner">
                 <app-loading-spinner />
-                <span>Envoi en cours...</span>
+                <span>{{ 'contact.form.submitting' | translate }}</span>
               </div>
             } @else {
               <button
@@ -117,14 +117,14 @@
                 type="submit"
                 class="submit-button"
                 [disabled]="contactForm.invalid">
-                Envoyer
+                {{ 'contact.form.submit' | translate }}
               </button>
             }
           </div>
         </form>
 
         <div class="social-section">
-          <p class="social-text">Suivez mon actualité sur Instagram</p>
+          <p class="social-text">{{ 'contact.social' | translate }}</p>
           <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
             <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
             <span>pierrette_gf</span>

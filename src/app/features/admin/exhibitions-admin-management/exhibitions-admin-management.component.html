@@ -1,29 +1,28 @@
 <div class="admin-artworks-container">
   @if (!isFormMode()) {
     <div class="admin-header">
-      <h2>Gestion des expositions</h2>
-      <button mat-stroked-button (click)="exportData()" matTooltip="Exporte les données de la liste dans un fichier Excel">
+      <h2>{{ 'admin.exhibitions.title' | translate }}</h2>
+      <button mat-stroked-button (click)="exportData()" [matTooltip]="'admin.common.exportTooltip' | translate">
         <mat-icon>download</mat-icon>
-        Exporter la liste
+        {{ 'admin.common.exportList' | translate }}
       </button>
       <button mat-raised-button color="primary" (click)="showCreateForm()">
         <mat-icon>add</mat-icon>
-        Créer une exposition
+        {{ 'admin.exhibitions.new' | translate }}
       </button>
     </div>
 
     <mat-card class="table-card" appLoading>
       <mat-card-header>
         <mat-form-field>
-          <mat-label>Rechercher une exposition</mat-label>
-          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)" placeholder="Par ID, nom ou lieu">
+          <mat-label>{{ 'admin.exhibitions.searchLabel' | translate }}</mat-label>
+          <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)"
+                 [placeholder]="'admin.exhibitions.searchPlaceholder' | translate">
           @if (searchQuery()) {
-            <button matSuffix mat-icon-button (click)="onSearchChange('')">
-              <mat-icon>close</mat-icon>
-            </button>
+            <button matSuffix mat-icon-button (click)="onSearchChange('')"><mat-icon>close</mat-icon></button>
           }
         </mat-form-field>
-        <mat-card-title>Liste des expositions</mat-card-title>
+        <mat-card-title>{{ 'admin.exhibitions.listTitle' | translate }}</mat-card-title>
       </mat-card-header>
 
       <mat-card-content>
@@ -37,12 +36,12 @@
             </ng-container>
 
             <ng-container matColumnDef="image">
-              <th mat-header-cell *matHeaderCellDef>Image</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'admin.exhibitions.colImage' | translate }}</th>
               <td mat-cell *matCellDef="let exhibition">
                 @if (exhibition.imageUrl) {
                   <img [src]="exhibition.imageUrl" [alt]="exhibition.title" class="artwork-thumb"
                        (click)="openImageModal(exhibition.imageUrl)"
-                       matTooltip="Agrandir"/>
+                       [matTooltip]="'admin.common.zoom' | translate"/>
                 } @else {
                   <div class="no-image"><mat-icon>image</mat-icon></div>
                 }
@@ -51,7 +50,7 @@
 
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef (click)="sort('title')" class="sortable-header">
-                Nom <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+                {{ 'admin.exhibitions.colName' | translate }} <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
               </th>
               <td mat-cell *matCellDef="let exhibition">
                 <div class="artwork-info">
@@ -65,7 +64,9 @@
             </ng-container>
 
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef matTooltip="À venir · En cours · Passée">Statut</th>
+              <th mat-header-cell *matHeaderCellDef [matTooltip]="'admin.exhibitions.statusTooltip' | translate">
+                {{ 'admin.exhibitions.colStatus' | translate }}
+              </th>
               <td mat-cell *matCellDef="let exhibition">
                 <mat-chip [style.background-color]="getStatusColor(exhibition.status)" [style.color]="'white'">
                   {{ getStatusLabel(exhibition.status) }}
@@ -74,15 +75,11 @@
             </ng-container>
 
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'admin.exhibitions.colActions' | translate }}</th>
               <td mat-cell *matCellDef="let exhibition">
                 <div class="actions-cell">
-                  <button mat-icon-button color="primary" (click)="showEditForm(exhibition)" matTooltip="Modifier">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)" matTooltip="Supprimer">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                  <button mat-icon-button color="primary" (click)="showEditForm(exhibition)" [matTooltip]="'admin.common.edit' | translate"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="deleteExhibition(exhibition.id)" [matTooltip]="'admin.common.delete' | translate"><mat-icon>delete</mat-icon></button>
                 </div>
               </td>
             </ng-container>
@@ -93,7 +90,7 @@
         } @else {
           <div class="no-data">
             <mat-icon>event</mat-icon>
-            <p>Aucune exposition</p>
+            <p>{{ 'admin.exhibitions.notFound' | translate }}</p>
           </div>
         }
       </mat-card-content>
@@ -103,10 +100,8 @@
   @if (isFormMode()) {
     <div class="admin-header">
       <div style="display:flex; align-items:center; gap:0.5rem">
-        <button mat-icon-button (click)="showList()" matTooltip="Retour à la liste">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <h2>{{ editingExhibition() ? 'Modifier l\'exposition' : 'Créer une exposition' }}</h2>
+        <button mat-icon-button (click)="showList()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
+        <h2>{{ editingExhibition() ? ('admin.exhibitions.editTitle' | translate) : ('admin.exhibitions.createTitle' | translate) }}</h2>
       </div>
     </div>
 
@@ -115,57 +110,59 @@
         <form [formGroup]="exhibitionForm" (ngSubmit)="saveExhibition()">
           <div class="form-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Titre</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.title' | translate }}</mat-label>
               <input matInput formControlName="title" required>
               @if (exhibitionForm.get('title')?.errors?.['required'] && exhibitionForm.get('title')?.touched) {
-                <mat-error>Le titre est obligatoire</mat-error>
+                <mat-error>{{ 'admin.common.titleRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Lieu</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.location' | translate }}</mat-label>
               <input matInput formControlName="location" required>
               @if (exhibitionForm.get('location')?.errors?.['required'] && exhibitionForm.get('location')?.touched) {
-                <mat-error>Le lieu est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.locationRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Adresse</mat-label>
-              <input matInput formControlName="address" placeholder="Rue, numéro, code postal, localité">
+              <mat-label>{{ 'admin.exhibitions.form.address' | translate }}</mat-label>
+              <input matInput formControlName="address" [placeholder]="'admin.exhibitions.form.addressPlaceholder' | translate">
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Description</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.description' | translate }}</mat-label>
               <textarea matInput formControlName="description" rows="3"></textarea>
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Date de début</mat-label>
-              <input matInput [matDatepicker]="startPicker" formControlName="startDate" placeholder="jour.mois.année" required>
+              <mat-label>{{ 'admin.exhibitions.form.startDate' | translate }}</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="startDate"
+                     [placeholder]="'admin.exhibitions.form.datePlaceholder' | translate" required>
               <mat-datepicker-toggle matIconSuffix [for]="startPicker" class="no-border-toggle"></mat-datepicker-toggle>
               <mat-datepicker #startPicker></mat-datepicker>
               @if (exhibitionForm.get('startDate')?.errors?.['required'] && exhibitionForm.get('startDate')?.touched) {
-                <mat-error>La date de début est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.startDateRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Date de fin</mat-label>
-              <input matInput [matDatepicker]="endPicker" formControlName="endDate" placeholder="jour.mois.année"
+              <mat-label>{{ 'admin.exhibitions.form.endDate' | translate }}</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="endDate"
+                     [placeholder]="'admin.exhibitions.form.datePlaceholder' | translate"
                      [min]="exhibitionForm.get('startDate')?.value" required>
               <mat-datepicker-toggle matIconSuffix [for]="endPicker" class="no-border-toggle"></mat-datepicker-toggle>
               <mat-datepicker #endPicker></mat-datepicker>
               @if (exhibitionForm.get('endDate')?.errors?.['required'] && exhibitionForm.get('endDate')?.touched) {
-                <mat-error>La date de fin est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.endDateRequired' | translate }}</mat-error>
               }
               @if (exhibitionForm.errors?.['endDateBeforeStart'] && exhibitionForm.get('endDate')?.touched) {
-                <mat-error>La date de fin ne peut pas être antérieure à la date de début</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.endDateBeforeStart' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <div class="full-width">
-              <label class="file-upload-label">Images de l'exposition</label>
+              <label class="file-upload-label">{{ 'admin.exhibitions.form.imagesLabel' | translate }}</label>
               <app-image-upload
                 [currentImages]="uploadedImageUrls()"
                 [mainImageUrl]="mainImageUrl()"
@@ -177,17 +174,17 @@
                 (zoomImage)="openImageModal($event)">
               </app-image-upload>
               @if (imageRequired()) {
-                <mat-error class="image-required-error">Au moins une image est obligatoire</mat-error>
+                <mat-error class="image-required-error">{{ 'admin.exhibitions.form.imageRequired' | translate }}</mat-error>
               }
-              <p class="image-legend">* L'image principale s'affiche en premier sur la page de l'exposition</p>
+              <p class="image-legend">{{ 'admin.exhibitions.form.imageLegend' | translate }}</p>
             </div>
 
             <div class="full-width">
-              <label class="file-upload-label">Vidéos rétrospective</label>
+              <label class="file-upload-label">{{ 'admin.exhibitions.form.videosLabel' | translate }}</label>
               <input type="file" #videoInput (change)="onVideoSelected($event)" accept="video/mp4,video/quicktime,video/x-msvideo" multiple style="display: none;">
               <div class="video-upload-zone" (click)="videoInput.click()">
                 <mat-icon>videocam</mat-icon>
-                <span>Ajouter des vidéos (formats acceptés: mp4, mov, avi)</span>
+                <span>{{ 'admin.exhibitions.form.videosHint' | translate }}</span>
               </div>
               @if (uploadedVideoUrls().length > 0) {
                 <div class="uploaded-videos">
@@ -202,7 +199,6 @@
                   }
                 </div>
               }
-
               @if (uploadingVideos()) {
                 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
               }
@@ -210,11 +206,11 @@
           </div>
 
           <div class="form-actions">
-            <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">Annuler</button>
+            <button mat-button type="button" (click)="showList()" [disabled]="isSaving()">{{ 'admin.common.cancel' | translate }}</button>
             <button mat-raised-button color="primary" type="submit"
                     [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())"
                     [class.btn-active]="!exhibitionForm.invalid && !isSaving()">
-              {{ editingExhibition() ? 'Enregistrer les modifications' : 'Sauvegarder' }}
+              {{ editingExhibition() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
             </button>
           </div>
         </form>
@@ -225,10 +221,8 @@
   @if (showImageModal()) {
     <div class="image-modal" (click)="closeImageModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <img [src]="modalImageUrl()" alt="Aperçu" class="modal-image">
-        <button type="button" class="modal-close" (click)="closeImageModal()">
-          <mat-icon>close</mat-icon>
-        </button>
+        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
+        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
       </div>
     </div>
   }
@@ -238,9 +232,7 @@
         <video [src]="modalVideoUrl()" controls autoplay class="modal-image" style="max-height:80vh; max-width:80vw;">
           <source [src]="modalVideoUrl()">
         </video>
-        <button type="button" class="modal-close" (click)="closeVideoModal()">
-          <mat-icon>close</mat-icon>
-        </button>
+        <button type="button" class="modal-close" (click)="closeVideoModal()"><mat-icon>close</mat-icon></button>
       </div>
     </div>
   }

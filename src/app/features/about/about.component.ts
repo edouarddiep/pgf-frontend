@@ -5,13 +5,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { ExhibitionService } from '@features/exhibitions/services/exhibition.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { map } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-about',
   imports: [
     CommonModule,
     RouterModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslatePipe
   ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss',

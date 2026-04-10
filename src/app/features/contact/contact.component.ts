@@ -9,6 +9,7 @@ import { ApiService } from '@core/services/api.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { delay } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-contact',
@@ -19,7 +20,8 @@ import { delay } from 'rxjs';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    TranslatePipe
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',

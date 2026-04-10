@@ -1,7 +1,7 @@
 <div class="archives-page">
   <section class="hero-banner scroll-fade-in">
     <div class="hero-content">
-      <h1>ARCHIVES</h1>
+      <h1>{{ 'archives.hero' | translate }}</h1>
     </div>
   </section>
 
@@ -14,20 +14,20 @@
             <div class="timeline-dot"></div>
             <div class="timeline-year">{{ archive.year }}</div>
             <div class="archive-card" (click)="onArchiveClick(archive.id)">
-            @if (archive.thumbnailUrl) {
+              @if (archive.thumbnailUrl) {
                 <div class="archive-image">
                   <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
                   <div class="archive-overlay">
                     <div class="archive-info">
                       <h3>{{ archive.title }}</h3>
-                      <button mat-raised-button>En savoir plus</button>
+                      <button mat-raised-button>{{ 'archives.learnMore' | translate }}</button>
                     </div>
                   </div>
                 </div>
               } @else {
                 <div class="archive-content">
                   <h3>{{ archive.title }}</h3>
-                  <button mat-raised-button>En savoir plus</button>
+                  <button mat-raised-button>{{ 'archives.learnMore' | translate }}</button>
                 </div>
               }
             </div>
@@ -36,8 +36,8 @@
       </div>
     } @else {
       <div class="empty-state">
-        <h3>Aucune archive disponible</h3>
-        <p>Les archives seront bientôt disponibles</p>
+        <h3>{{ 'archives.empty' | translate }}</h3>
+        <p>{{ 'archives.emptyDetail' | translate }}</p>
       </div>
     }
   </div>

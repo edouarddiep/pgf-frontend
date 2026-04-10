@@ -5,10 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ContactMessage } from '@core/models/contact.model';
 import { AdminService } from '@features/admin/services/admin.service';
 import { catchError, EMPTY } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-message-detail-dialog',
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
+  imports: [CommonModule, MatDialogModule, MatButtonModule, TranslatePipe],
   templateUrl: './message-detail-dialog.component.html',
   styleUrl: './message-detail-dialog.component.scss'
 })

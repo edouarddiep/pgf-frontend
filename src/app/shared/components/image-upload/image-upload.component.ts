@@ -6,6 +6,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@shared/services/notification.service';
 import { FileUploadService } from '@core/services/file-upload.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 export interface ImageItem {
   url: string;
@@ -14,7 +15,7 @@ export interface ImageItem {
 
 @Component({
   selector: 'app-image-upload',
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatTooltipModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule, MatTooltipModule, TranslatePipe],
   templateUrl: './image-upload.component.html',
   styleUrl: './image-upload.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

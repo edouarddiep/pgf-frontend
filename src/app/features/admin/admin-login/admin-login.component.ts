@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AdminService } from '@features/admin/services/admin.service';
 import { catchError, EMPTY } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-admin-login',
@@ -21,7 +22,8 @@ import { catchError, EMPTY } from 'rxjs';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslatePipe
   ],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',

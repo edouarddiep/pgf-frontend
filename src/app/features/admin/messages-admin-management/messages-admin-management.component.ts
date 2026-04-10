@@ -11,12 +11,14 @@ import { ContactMessage } from '@core/models/contact.model';
 import { catchError, EMPTY } from 'rxjs';
 import { MessageDetailDialogComponent } from './message-detail-dialog.component';
 import { LoadingDirective } from '@/app/directives/loading.directive';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-messages-admin-management',
   imports: [
     CommonModule, MatTableModule, MatButtonModule, MatIconModule,
-    MatCardModule, MatChipsModule, MatDialogModule, LoadingDirective
+    MatCardModule, MatChipsModule, MatDialogModule, LoadingDirective, TranslatePipe, MatTooltip
   ],
   templateUrl: './messages-admin-management.component.html',
   styleUrl: './messages-admin-management.component.scss'

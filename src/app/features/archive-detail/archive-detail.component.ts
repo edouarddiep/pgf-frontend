@@ -17,10 +17,11 @@ import {Archive, ArchiveFile} from '@core/models/archive.model';
 import {catchError, EMPTY} from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-archive-detail',
-  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './archive-detail.component.html',
   styleUrl: './archive-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

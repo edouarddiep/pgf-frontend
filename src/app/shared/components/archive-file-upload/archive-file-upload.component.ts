@@ -9,6 +9,7 @@ import { catchError, EMPTY, Observable, map } from 'rxjs';
 import { ArchiveFile } from '@core/models/archive.model';
 import { FileUploadService } from '@core/services/file-upload.service';
 import { NotificationService } from '@shared/services/notification.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 export interface PendingFile {
   fileType: ArchiveFile['fileType'];
@@ -29,7 +30,7 @@ const TYPE_BY_MIME: { pattern: RegExp; fileType: ArchiveFile['fileType'] }[] = [
 
 @Component({
   selector: 'app-archive-file-upload',
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule, TranslatePipe],
   templateUrl: './archive-file-upload.component.html',
   styleUrl: './archive-file-upload.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

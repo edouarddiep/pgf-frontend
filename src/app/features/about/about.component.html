@@ -1,36 +1,32 @@
 <div class="about-page">
   <section class="hero-banner scroll-fade-in">
     <div class="hero-content">
-      <h1>À PROPOS</h1>
+      <h1>{{ 'about.hero' | translate }}</h1>
     </div>
   </section>
 
   <section class="artist-content scroll-fade-in">
     <div class="content-grid">
       <div class="artist-text">
-        <h2 class="section-title">Mon parcours</h2>
+        <h2 class="section-title">{{ 'about.journey.title' | translate }}</h2>
         <div class="artist-bio">
-          <p>
-            Pierrette Gonseth Favre est née en 1943 à Genève. Elle passe son enfance dans la ferme familiale à Founex (canton de Vaud). De 1968 à 1970, elle étudie la haute lice avec Claire Jobin et le dessin avec Arthur Jobin à Ecublens. Elle épouse en 1974 Denis Gonseth. Elle est mère de trois enfants. Elle vit et travaille à Founex.
-          </p>
+          <p>{{ 'about.journey.bio1' | translate }}</p>
 
           <div class="artist-image mobile-only">
             <img
               src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-9.jpeg"
-              alt="Portrait de Pierrette Gonseth Favre"
+              [alt]="'about.journey.imgAlt' | translate"
               loading="lazy">
           </div>
 
-          <p>
-            Elle expose pour la première fois au Musée de l'Ancien-Evêché à Lausanne en 1971 et a par la suite exposé en Suisse, en France, en Allemagne, au Canada. Dans le cadre des célébrations liées aux 700 ans de la Confédération Helvétique, elle a représenté la Suisse en Argentine, au Chili, au Paraguay et en Uruguay.
-          </p>
+          <p>{{ 'about.journey.bio2' | translate }}</p>
         </div>
       </div>
 
       <div class="artist-image desktop-only">
         <img
           src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-9.jpeg"
-          alt="Portrait de Pierrette Gonseth Favre"
+          [alt]="'about.journey.imgAlt' | translate"
           loading="lazy">
       </div>
     </div>
@@ -38,20 +34,16 @@
 
   <section class="page-section section-gray scroll-fade-in">
     <div class="vision-container">
-      <h2 class="section-title">Une artiste passionnée</h2>
+      <h2 class="section-title">{{ 'about.vision.title' | translate }}</h2>
       <div class="vision-content">
-        <p>
-          On évoquera, à propos du travail de Pierrette Gonseth Favre, une œuvre habitée. Habitée de parole, de souvenirs, d'humanité. Une bouche pleine de foin, de linéaments, de matière vivante et végétale, une bouche pleine de parole rentrée, et qui ne demande qu'à sortir.
-          Les totems créés par l'artiste se dressent à la façon des arbres : normal, puisqu'une planche en constitue l'armature. Ces figures, comme les arbres, résistent - on a même l'impression qu'elles sont là pour ça, résister. Rester debout face aux vicissitudes.
-          C'est donc un hommage que tisse ce peuple de figures hautes, plates, voilées et enturbannées, revêtues d'une étoffe grossière, peu flatteuse, peu engageante, mais combien expressive.
-        </p>
+        <p>{{ 'about.vision.text' | translate }}</p>
       </div>
     </div>
   </section>
 
   <section class="page-section section-white scroll-fade-in">
     <div class="container">
-      <h2 class="section-title">Expositions récentes</h2>
+      <h2 class="section-title">{{ 'about.recentExhibitions.title' | translate }}</h2>
 
       @if (recentExhibitions$ | async; as exhibitions) {
         <div class="exhibitions-grid">
@@ -78,7 +70,7 @@
 
       <div class="section-actions">
         <button mat-raised-button color="primary" routerLink="/exhibitions">
-          Voir toutes les expositions
+          {{ 'about.recentExhibitions.cta' | translate }}
         </button>
       </div>
     </div>
@@ -86,16 +78,14 @@
 
   <section class="page-section section-gray scroll-fade-in">
     <div class="container">
-      <h2 class="section-title">Association "Amis de Pierrette Gonseth Favre"</h2>
+      <h2 class="section-title">{{ 'about.association.title' | translate }}</h2>
       <div class="association-content">
-        <p>
-          L'Association « Amis de Pierrette Gonseth Favre » a été fondée en novembre 2022 pour assurer l'organisation et la promotion des expositions de l'artiste.
-        </p>
-        <p>
-          Elle organise régulièrement des expositions et reverse une partie des recettes à des œuvres caritatives, notamment la Genolier Foundation.
-        </p>
+        <p>{{ 'about.association.text1' | translate }}</p>
+        <p>{{ 'about.association.text2' | translate }}</p>
         <div class="association-actions">
-          <button mat-raised-button color="primary" routerLink="/association">En savoir plus</button>
+          <button mat-raised-button color="primary" routerLink="/association">
+            {{ 'about.association.cta' | translate }}
+          </button>
         </div>
       </div>
     </div>

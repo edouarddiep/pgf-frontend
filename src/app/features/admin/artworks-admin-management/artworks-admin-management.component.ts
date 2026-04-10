@@ -22,6 +22,7 @@ import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import {ImageUploadComponent} from '@shared/components/image-upload/image-upload.component';
 import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 interface PreviewImage {
   file: File;
@@ -46,7 +47,8 @@ interface PreviewImage {
     MatSnackBarModule,
     LoadingDirective,
     HighlightPipe,
-    ImageUploadComponent
+    ImageUploadComponent,
+    TranslatePipe
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',

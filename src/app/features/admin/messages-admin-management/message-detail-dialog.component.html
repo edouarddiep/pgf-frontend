@@ -3,21 +3,21 @@
 
   <mat-dialog-content>
     <div class="message-info">
-      <p><strong>Expéditeur:</strong> {{ data.name }}</p>
-      <p><strong>Email:</strong> {{ data.email }}</p>
+      <p><strong>{{ 'admin.messages.dialog.sender' | translate }}</strong> {{ data.name }}</p>
+      <p><strong>{{ 'admin.messages.dialog.email' | translate }}</strong> {{ data.email }}</p>
       @if (data.phone) {
-        <p><strong>Téléphone:</strong> {{ data.phone }}</p>
+        <p><strong>{{ 'admin.messages.dialog.phone' | translate }}</strong> {{ data.phone }}</p>
       }
-      <p><strong>Date:</strong> {{ data.createdAt | date:"dd.MM.yyyy HH:mm" }}</p>
-      <p><strong>Sujet:</strong> {{ data.subject }}</p>
+      <p><strong>{{ 'admin.messages.dialog.date' | translate }}</strong> {{ data.createdAt | date:"dd.MM.yyyy HH:mm" }}</p>
+      <p><strong>{{ 'admin.messages.dialog.subject' | translate }}</strong> {{ data.subject }}</p>
     </div>
     <div class="message-content">
-      <h3>Message:</h3>
+      <h3>{{ 'admin.messages.dialog.message' | translate }}</h3>
       <p>{{ data.message }}</p>
     </div>
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-button (click)="close()">Fermer</button>
+    <button mat-button (click)="close()">{{ 'admin.messages.dialog.close' | translate }}</button>
   </mat-dialog-actions>
 </div>

@@ -18,6 +18,7 @@ import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard'
 import { Archive, ArchiveFile } from '@core/models/archive.model';
 import { catchError, EMPTY } from 'rxjs';
 import { ArchiveFileUploadComponent } from '@shared/components/archive-file-upload/archive-file-upload.component';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 type SortField = 'id' | 'title' | 'year';
 
@@ -26,7 +27,7 @@ type SortField = 'id' | 'title' | 'year';
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatButtonModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatCardModule, MatTooltipModule,
-    LoadingDirective, HighlightPipe, ArchiveFileUploadComponent
+    LoadingDirective, HighlightPipe, ArchiveFileUploadComponent, TranslatePipe
   ],
   templateUrl: './archives-admin-management.component.html',
   styleUrl: './archives-admin-management.component.scss',

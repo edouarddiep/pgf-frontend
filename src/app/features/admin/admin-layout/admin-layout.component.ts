@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-admin-layout',
@@ -20,7 +21,8 @@ import { NotificationService } from '@shared/services/notification.service';
     MatToolbarModule,
     MatListModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslatePipe
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss',

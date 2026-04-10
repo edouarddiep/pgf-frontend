@@ -4,33 +4,29 @@
       <div class="footer-sections">
 
         <div class="footer-section navigation-section">
-          <h4>Navigation</h4>
+          <h4>{{ 'footer.navigation' | translate }}</h4>
           <nav class="footer-nav">
             @for (link of quickLinks; track link.route) {
-              <a [routerLink]="link.route"
-                 routerLinkActive="active"
-                 [routerLinkActiveOptions]="{ exact: true }">
-                {{ link.name }}
+              <a [routerLink]="link.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                {{ link.key | translate }}
               </a>
             }
           </nav>
         </div>
 
         <div class="footer-section categories-section">
-          <h4>Techniques</h4>
+          <h4>{{ 'footer.categories' | translate }}</h4>
           @if (categories$ | async; as categories) {
             <nav class="footer-nav">
               @for (category of categories; track category.id) {
-                <a [routerLink]="['/artworks', category.slug]">
-                  {{ category.name }}
-                </a>
+                <a [routerLink]="['/artworks', category.slug]">{{ category.name }}</a>
               }
             </nav>
           }
         </div>
 
         <div class="footer-section contact-section">
-          <h4>Suivez-moi</h4>
+          <h4>{{ 'footer.follow' | translate }}</h4>
           <div class="contact-info">
             <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
               <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
@@ -49,12 +45,11 @@
     <div class="container">
       <div class="footer-bottom-content">
         <div class="copyright">
-          <p>&copy; {{ currentYear }} PGF. Tous droits réservés.</p>
+          <p>&copy; {{ currentYear }} PGF. {{ 'footer.allRights' | translate }}</p>
         </div>
-
         <nav class="legal-nav">
           @for (legal of legalLinks; track legal.route) {
-            <a [routerLink]="legal.route">{{ legal.name }}</a>
+            <a [routerLink]="legal.route">{{ legal.key | translate }}</a>
           }
         </nav>
       </div>

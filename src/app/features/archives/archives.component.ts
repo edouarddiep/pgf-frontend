@@ -6,10 +6,11 @@ import { ArchiveService } from '@core/services/archive.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { Archive } from '@core/models/archive.model';
 import { catchError, EMPTY } from 'rxjs';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-archives',
-  imports: [CommonModule, RouterModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, TranslatePipe],
   templateUrl: './archives.component.html',
   styleUrl: './archives.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

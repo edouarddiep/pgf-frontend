@@ -1,39 +1,34 @@
 <div class="association-page">
   <section class="hero-banner scroll-fade-in">
     <div class="hero-content">
-      <h1>ASSOCIATION</h1>
-      <h1>"AMIS DE PIERRETTE GONSETH FAVRE"</h1>
+      <h1>{{ 'association.hero1' | translate }}</h1>
+      <h1>{{ 'association.hero2' | translate }}</h1>
     </div>
   </section>
 
   <section class="association-content scroll-fade-in">
     <div class="content-grid">
       <div class="main-content">
-        <h2 class="section-title">Présentation</h2>
-        <p>Fondée en novembre 2022, l'association « Amis de Pierrette Gonseth Favre » a vu le jour dans le cadre de l'organisation de l'exposition « Totems » à l'Abbaye de Bonmont. Le succès rencontré par cette première manifestation, conjugué aux nombreux témoignages et encouragements reçus, a naturellement conduit le comité à inscrire son action dans la durée.</p>
+        <h2 class="section-title">{{ 'association.presentation.title' | translate }}</h2>
+        <p>{{ 'association.presentation.p1' | translate }}</p>
 
         <div class="image-content mobile-only">
           <img
             src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-10.jpg"
-            alt="Association Amis de Pierrette Gonseth Favre"
+            [alt]="'association.presentation.imgAlt' | translate"
             loading="lazy">
         </div>
 
-        <p>Cette pérennisation répond pleinement à la vocation inscrite dans les statuts de l'association, qui se consacre à la présentation et à la valorisation des œuvres de Pierrette Gonseth Favre, particulièrement ses créations emblématiques en toile de jute.</p>
-
-        <blockquote>
-          « L'Association a pour vocation de présenter les œuvres, notamment en toile de jute, de Pierrette Gonseth Favre et en organisant des expositions de ses créations. »
-        </blockquote>
-
-        <p>L'année 2025 témoigne de cette dynamique : une vingtaine d'œuvres en fil de fer et toile de jute ont été exposées dans le cadre d'une exposition collective à l'Espace Culturel d'Assens. En octobre, l'artiste présentera ses nouvelles créations « Collages » dans les locaux de la clinique de Genolier, une collaboration qui revêt une dimension particulièrement signifiante.</p>
-
-        <p>En effet, la majeure partie de la recette des ventes sera reversée à la Genolier Foundation, dont la mission est de financer des soins de haute technologie, non encore couverts par les assurances, pour des personnes n'ayant pas les moyens de les prendre à leur charge. L'art se fait ainsi vecteur de solidarité et d'engagement social.</p>
+        <p>{{ 'association.presentation.p2' | translate }}</p>
+        <blockquote>{{ 'association.presentation.quote' | translate }}</blockquote>
+        <p>{{ 'association.presentation.p3' | translate }}</p>
+        <p>{{ 'association.presentation.p4' | translate }}</p>
       </div>
 
       <div class="image-content desktop-only">
         <img
           src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/image-10.jpg"
-          alt="Association Amis de Pierrette Gonseth Favre"
+          [alt]="'association.presentation.imgAlt' | translate"
           loading="lazy">
       </div>
     </div>
@@ -44,35 +39,33 @@
       <div class="membership-image">
         <img
           src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/expositions/bonmont-2023/images/image-2.jpg"
-          alt="Devenir membre"
+          [alt]="'association.membership.imgAlt' | translate"
           loading="lazy">
       </div>
 
       <div class="membership-content">
-        <h2 class="section-title">Devenir Membre</h2>
-        <p class="intro-text">
-          Si vous désirez soutenir le travail de Pierrette Gonseth Favre et participer à la promotion de son œuvre, contactez notre trésorier ou acquittez-vous de la cotisation annuelle de 50 CHF à l'aide du code QR ci-dessous.
-        </p>
+        <h2 class="section-title">{{ 'association.membership.title' | translate }}</h2>
+        <p class="intro-text">{{ 'association.membership.intro' | translate }}</p>
 
         <div class="payment-info">
-          <h3>Cotisation annuelle : 50 CHF</h3>
+          <h3>{{ 'association.membership.fee' | translate }}</h3>
           <div class="qr-code-container">
             <img
               src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/qr-facture.jpeg"
-              alt="QR Code pour paiement"
+              [alt]="'association.membership.qrAlt' | translate"
               class="qr-code"
               loading="lazy">
           </div>
           <div class="bank-details">
-            <p><strong>Banque :</strong> Banque Cantonale Vaudoise</p>
-            <p><strong>IBAN :</strong> CH56 0076 7000 C557 1812 5</p>
-            <p><strong>Bénéficiaire :</strong></p>
-            <p>Association "Amis de Pierrette Gonseth Favre"</p>
+            <p><strong>{{ 'association.membership.bank' | translate }}</strong> {{ 'association.membership.bankName' | translate }}</p>
+            <p><strong>{{ 'association.membership.iban' | translate }}</strong> {{ 'association.membership.ibanValue' | translate }}</p>
+            <p><strong>{{ 'association.membership.beneficiary' | translate }}</strong></p>
+            <p>{{ 'association.membership.beneficiaryName' | translate }}</p>
           </div>
         </div>
 
         <button mat-raised-button routerLink="/contact" class="cta-button">
-          Prendre contact
+          {{ 'association.membership.cta' | translate }}
         </button>
       </div>
     </div>
@@ -80,15 +73,13 @@
 
   <section class="page-section section-white scroll-fade-in">
     <div class="container">
-      <h2 class="section-title">Informations générales</h2>
-
+      <h2 class="section-title">{{ 'association.info.title' | translate }}</h2>
       <div class="organization-content">
-        <h3>Comité</h3>
-        <p>Le comité de l'association se compose de : <strong>Claude Gaignard</strong> (Président), Micheline Altwegg, Myriam Yrazabal Glasson, Pierrette Gonseth Favre et Camille Gonseth.</p>
-
-        <h3>Autres fonctions</h3>
-        <p><strong>Denis Gonseth</strong> - Trésorier - secrétaire (hors comité)</p>
-        <p><strong>Dr. Philippe Glasson</strong> - Contrôleur aux comptes</p>
+        <h3>{{ 'association.info.committee' | translate }}</h3>
+        <p [innerHTML]="'association.info.committeeText' | translate"></p>
+        <h3>{{ 'association.info.other' | translate }}</h3>
+        <p [innerHTML]="'association.info.treasurer' | translate"></p>
+        <p [innerHTML]="'association.info.auditor' | translate"></p>
       </div>
     </div>
   </section>

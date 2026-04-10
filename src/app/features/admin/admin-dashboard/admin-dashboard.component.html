@@ -1,94 +1,78 @@
 <div class="dashboard">
-  <h1>Tableau de bord</h1>
+  <h1>{{ 'admin.dashboard.title' | translate }}</h1>
 
   <div class="stats-grid">
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
-          <div class="stat-icon">
-            <mat-icon>category</mat-icon>
-          </div>
+          <div class="stat-icon"><mat-icon>category</mat-icon></div>
           <div class="stat-info">
             <h2>{{ stats().categories }}</h2>
-            <p>Catégories</p>
+            <p>{{ 'admin.dashboard.stats.categories' | translate }}</p>
           </div>
         </div>
-        <button mat-button routerLink="/admin/categories" color="primary">
-          Gérer
-        </button>
+        <button mat-button routerLink="/admin/categories" color="primary">{{ 'admin.dashboard.manage' | translate }}</button>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
-          <div class="stat-icon">
-            <mat-icon>palette</mat-icon>
-          </div>
+          <div class="stat-icon"><mat-icon>palette</mat-icon></div>
           <div class="stat-info">
             <h2>{{ stats().artworks }}</h2>
-            <p>Œuvres</p>
+            <p>{{ 'admin.dashboard.stats.artworks' | translate }}</p>
           </div>
         </div>
-        <button mat-button routerLink="/admin/artworks" color="primary">
-          Gérer
-        </button>
+        <button mat-button routerLink="/admin/artworks" color="primary">{{ 'admin.dashboard.manage' | translate }}</button>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
-          <div class="stat-icon">
-            <mat-icon>event</mat-icon>
-          </div>
+          <div class="stat-icon"><mat-icon>event</mat-icon></div>
           <div class="stat-info">
             <h2>{{ stats().exhibitions }}</h2>
-            <p>Expositions</p>
+            <p>{{ 'admin.dashboard.stats.exhibitions' | translate }}</p>
           </div>
         </div>
-        <button mat-button routerLink="/admin/exhibitions" color="primary">
-          Gérer
-        </button>
+        <button mat-button routerLink="/admin/exhibitions" color="primary">{{ 'admin.dashboard.manage' | translate }}</button>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
-          <div class="stat-icon">
-            <mat-icon>mail</mat-icon>
-          </div>
+          <div class="stat-icon"><mat-icon>mail</mat-icon></div>
           <div class="stat-info">
             <h2>{{ stats().messages }}</h2>
-            <p>Messages</p>
+            <p>{{ 'admin.dashboard.stats.messages' | translate }}</p>
           </div>
         </div>
-        <button mat-button routerLink="/admin/messages" color="primary">
-          Consulter
-        </button>
+        <button mat-button routerLink="/admin/messages" color="primary">{{ 'admin.dashboard.consult' | translate }}</button>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div class="quick-actions">
-    <h2>Actions rapides</h2>
+    <h2>{{ 'admin.dashboard.quickActions' | translate }}</h2>
     <div class="actions-grid">
       <button mat-raised-button color="primary" routerLink="/admin/artworks/create">
         <mat-icon>add</mat-icon>
-        Ajouter une œuvre
+        {{ 'admin.dashboard.addArtwork' | translate }}
       </button>
       <button mat-raised-button color="primary" routerLink="/admin/categories/create">
         <mat-icon>add</mat-icon>
-        Ajouter une catégorie
+        {{ 'admin.dashboard.addCategory' | translate }}
       </button>
       <button mat-raised-button color="accent" routerLink="/admin/exhibitions/create">
         <mat-icon>add</mat-icon>
-        Créer une exposition
+        {{ 'admin.dashboard.createExhibition' | translate }}
       </button>
       <button mat-raised-button routerLink="/">
         <mat-icon>public</mat-icon>
-        Voir le site
+        {{ 'admin.dashboard.viewSite' | translate }}
       </button>
     </div>
   </div>

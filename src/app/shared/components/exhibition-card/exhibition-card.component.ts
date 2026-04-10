@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-exhibition-card',
@@ -15,7 +16,8 @@ import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    TranslatePipe
   ],
   templateUrl: './exhibition-card.component.html',
   styleUrl: './exhibition-card.component.scss',
