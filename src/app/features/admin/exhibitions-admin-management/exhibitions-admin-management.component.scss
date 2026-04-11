@@ -242,11 +242,12 @@
 
     .modal-close {
       position: absolute;
-      top: -48px;
-      right: 0;
-      background: white !important;
-      border: none !important;
-      border-radius: 50% !important;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.45) !important;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 4px !important;
       width: 40px !important;
       height: 40px !important;
       min-width: 40px !important;
@@ -254,13 +255,13 @@
       align-items: center !important;
       justify-content: center !important;
       cursor: pointer;
-      color: #333 !important;
+      color: white !important;
       transform: none !important;
       margin-left: 0 !important;
-
+      transition: background 0.2s ease, transform 0.2s ease !important;
       &:hover {
-        background: #f0f0f0 !important;
-        transform: none !important;
+        background: rgba(112, 105, 105, 0.75) !important;
+        transform: scale(1.05) !important;
       }
     }
   }

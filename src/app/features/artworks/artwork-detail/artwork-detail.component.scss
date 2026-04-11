@@ -210,26 +210,28 @@
 
       .modal-close {
         position: absolute;
-        top: -60px;
-        right: 0;
-        background: white !important;
-        border: none !important;
-        border-radius: 100% !important;
-        width: 45px;
-        height: 45px;
-        min-width: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        top: 8px;
+        right: 8px;
+        background: rgba(0, 0, 0, 0.45) !important;
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 4px !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         cursor: pointer;
+        color: white !important;
         z-index: 10;
         padding: 0;
-        color: #333 !important;
         transform: none !important;
-
+        transition: background 0.2s ease, transform 0.2s ease !important;
+        mat-icon { font-size: 22px; width: 22px; height: 22px; }
         &:hover {
-          background: #f0f0f0 !important;
-          transform: none !important;
+          background: rgba(112, 105, 105, 0.75) !important;
+          transform: scale(1.05) !important;
         }
 
         mat-icon {
@@ -303,13 +305,8 @@
         .main-carousel-btn {
           opacity: 1;
 
-          &.prev {
-            left: 5px;
-          }
-
-          &.next {
-            right: 5px;
-          }
+          &.prev { left: 5px; }
+          &.next { right: 5px; }
 
           mat-icon {
             font-size: 36px;
@@ -330,21 +327,15 @@
     }
 
     .artwork-info {
-      .artwork-title {
-        font-size: 1.5rem;
-      }
+      .artwork-title { font-size: 1.5rem; }
 
       .artwork-description {
         flex: none;
-
-        p {
-          text-align: left;
-        }
+        p { text-align: left; }
       }
 
       .navigation-buttons {
         flex-direction: column;
-
         button {
           width: 100%;
           justify-content: center;
@@ -354,24 +345,6 @@
   }
 
   .image-modal .modal-content .modal-image-wrapper {
-    .modal-close {
-      top: 10px;
-      right: 10px;
-      background: transparent !important;
-      color: white !important;
-
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-      }
-
-      &:hover {
-        background: transparent !important;
-        color: #f0f0f0 !important;
-      }
-    }
-
     .modal-prev,
     .modal-next {
       background: transparent !important;
@@ -390,12 +363,7 @@
       }
     }
 
-    .modal-prev {
-      left: 10px;
-    }
-
-    .modal-next {
-      right: 10px;
-    }
+    .modal-prev { left: 10px; }
+    .modal-next { right: 10px; }
   }
 }

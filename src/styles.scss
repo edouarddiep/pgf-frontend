@@ -429,6 +429,28 @@ img {
   }
 }
 
+@mixin modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer;
+  color: white !important;
+  border: none !important;
+  transition: background 0.2s ease;
+  transform: none !important;
+  margin-left: 0 !important;
+  &:hover { background: rgba(0, 0, 0, 0.75) !important; }
+}
+
 .form-card .mat-mdc-form-field-hint-wrapper {
   padding: 0;
 }
@@ -436,6 +458,11 @@ img {
 .full-viewport-page {
   height: calc(100dvh - 64px);
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .confirm-dialog-panel {
