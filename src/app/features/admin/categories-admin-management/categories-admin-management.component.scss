@@ -156,7 +156,10 @@ tr.mat-mdc-row td.mat-mdc-cell {
 
 .image-modal {
   position: fixed;
-  inset: 0;
+  top: 64px;
+  left: 250px;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
@@ -202,6 +205,22 @@ tr.mat-mdc-row td.mat-mdc-cell {
   color: #f44336;
   font-size: 0.75rem;
   margin-top: 0.25rem;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #999;
+
+  mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  p { margin: 0; font-size: 0.9rem; }
 }
 
 @media (max-width: 768px) {

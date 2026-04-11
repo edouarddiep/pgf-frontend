@@ -136,6 +136,9 @@ tr.mat-mdc-row td.mat-mdc-cell {
   text-align: center;
   padding: 3rem;
   color: #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   mat-icon {
     font-size: 3rem;
@@ -176,7 +179,10 @@ tr.mat-mdc-row td.mat-mdc-cell {
 
 .image-modal {
   position: fixed;
-  inset: 0;
+  top: 64px;
+  left: 250px;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;

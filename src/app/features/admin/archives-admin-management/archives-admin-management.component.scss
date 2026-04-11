@@ -169,7 +169,10 @@
 
 .image-modal {
   position: fixed;
-  inset: 0;
+  top: 64px;
+  left: 250px;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
@@ -273,6 +276,13 @@ tr.mat-mdc-row td.mat-mdc-cell {
   color: white !important;
 
   &:hover { background-color: #1976d2 !important; }
+}
+
+.image-required-hint {
+  font-size: 0.75rem;
+  color: #f44336;
+  margin: 0 0 0.5rem;
+  font-style: italic;
 }
 
 @media (max-width: 768px) {

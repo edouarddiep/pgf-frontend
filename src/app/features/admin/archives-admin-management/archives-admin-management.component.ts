@@ -20,6 +20,8 @@ import { catchError, EMPTY } from 'rxjs';
 import { ArchiveFileUploadComponent } from '@shared/components/archive-file-upload/archive-file-upload.component';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
+import {toSignal} from '@angular/core/rxjs-interop';
+import {map} from 'rxjs/operators';
 
 type SortField = 'id' | 'title' | 'year';
 
@@ -63,12 +65,6 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected readonly displayedColumns = ['id', 'thumbnail', 'title', 'year', 'actions'];
 
-  protected readonly isFormValidForSubmit = computed(() =>
-    this.editingArchive()
-      ? this.archiveForm.valid && (this.archiveForm.dirty || this.hasUnsavedChanges()) && !!this.thumbnailUrl()
-      : this.archiveForm.valid && !!this.thumbnailUrl()
-  );
-
   protected readonly thumbnailUrl = computed(() =>
     this.pendingFiles().find(f => f.fileType === 'IMAGE')?.fileUrl
   );
@@ -100,9 +96,19 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected readonly archiveForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(2)]],
-    year: [new Date().getFullYear(), [Validators.required, Validators.min(1900), Validators.max(2100)]],
+    year: [null as number | null, [Validators.required, Validators.min(1900), Validators.max(2100)]],
     description: ['']
   });
+
+  private readonly formValid = toSignal(this.archiveForm.statusChanges.pipe(
+    map(status => status === 'VALID')
+  ), { initialValue: this.archiveForm.valid });
+
+  protected readonly isFormValidForSubmit = computed(() =>
+    this.editingArchive()
+      ? this.formValid() && (this.archiveForm.dirty || this.hasUnsavedChanges()) && !!this.thumbnailUrl()
+      : this.formValid() && !!this.thumbnailUrl()
+  );
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

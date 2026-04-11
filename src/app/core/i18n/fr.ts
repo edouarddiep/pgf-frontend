@@ -67,13 +67,19 @@ export const fr = {
     vernissage: {
       register: "S'inscrire au vernissage",
       disabled: "L'exposition est actuellement en cours. Il n'est plus possible de s'inscrire au vernissage.",
-      map: 'Où se rendre'
+      map: 'Où se rendre',
+      website: "Vers le site de l'exposition"
     },
     emptyCurrent: 'Aucune exposition en cours',
     emptyCurrentDetail: 'Consultez les expositions passées ou revenez bientôt',
     emptyPast: 'Aucune exposition passée',
     emptyPastDetail: "L'historique des expositions sera bientôt disponible",
-    dateConfirm: 'Date à confirmer'
+    dateConfirm: 'Date à confirmer',
+    history: {
+      title: 'Historique des expositions',
+      personal: 'P : Exposition personnelle',
+      collective: 'C : Exposition collective'
+    }
   },
   archives: {
     hero: 'ARCHIVES',
@@ -135,15 +141,15 @@ export const fr = {
       message: 'Message',
       submit: 'Envoyer',
       submitting: 'Envoi en cours...',
-      successMessage: 'Message envoyé avec succès !',
+      successMessage: 'Message envoyé avec succès',
       errorMessage: "Erreur lors de l'envoi du message",
       errors: {
-        nameRequired: 'Le nom est requis',
-        firstNameRequired: 'Le prénom est requis',
-        emailRequired: "L'email est requis",
-        emailInvalid: 'Email invalide',
-        subjectRequired: 'Le sujet est requis',
-        messageRequired: 'Le message est requis',
+        nameRequired: 'Veuillez renseigner un nom',
+        firstNameRequired: 'Veuillez renseigner un prénom',
+        emailRequired: "Veuillez renseigner une adresse e-mail",
+        emailInvalid: "L'adresse e-mail n'est pas valide",
+        subjectRequired: 'Veuillez renseigner un sujet',
+        messageRequired: 'Veuillez renseigner un message',
         messageMinLength: 'Le message doit contenir au moins 10 caractères'
       }
     },
@@ -211,9 +217,9 @@ export const fr = {
       backToList: 'Retour à la liste',
       preview: 'Aperçu',
       zoom: 'Agrandir',
-      imageRequired: 'Au moins une image est obligatoire',
-      titleRequired: 'Le titre est obligatoire',
-      nameRequired: 'Le nom est obligatoire',
+      imageRequired: 'Veuillez ajouter au moins une image',
+      titleRequired: 'Veuillez renseigner un titre',
+      nameRequired: 'Veuillez renseigner un nom',
       noImage: 'Aucune image',
       chooseImage: 'Choisir une image',
       changeImage: "Changer l'image"
@@ -252,7 +258,7 @@ export const fr = {
       editTitle: 'Modifier la catégorie',
       searchLabel: 'Rechercher une catégorie',
       searchPlaceholder: 'Par ID, titre ou description',
-      notFound: 'Aucune catégorie trouvée.',
+      notFound: 'Aucune catégorie trouvée',
       colId: 'ID',
       colImage: 'Image',
       colName: 'Titre',
@@ -264,7 +270,7 @@ export const fr = {
         descriptionShort: 'Description courte',
         description: 'Description',
         imageLabel: 'Image de la catégorie',
-        imageRequired: 'Une image est obligatoire'
+        imageRequired: 'Veuillez ajouter une image pour créer la catégorie'
       }
     },
     exhibitions: {
@@ -275,7 +281,7 @@ export const fr = {
       createTitle: 'Créer une exposition',
       searchLabel: 'Rechercher une exposition',
       searchPlaceholder: 'Par ID, nom ou lieu',
-      notFound: 'Aucune exposition',
+      notFound: 'Aucune exposition trouvée',
       colId: 'ID',
       colImage: 'Image',
       colName: 'Nom',
@@ -285,19 +291,19 @@ export const fr = {
       form: {
         title: 'Titre',
         location: 'Lieu',
-        locationRequired: 'Le lieu est obligatoire',
+        locationRequired: 'Veuillez renseigner un lieu',
         address: 'Adresse',
         addressPlaceholder: 'Rue, numéro, code postal, localité',
         description: 'Description',
         startDate: 'Date de début',
-        startDateRequired: 'La date de début est obligatoire',
+        startDateRequired: 'Veuillez renseigner une date de début',
         endDate: 'Date de fin',
-        endDateRequired: 'La date de fin est obligatoire',
+        endDateRequired: 'Veuillez renseigner une date de fin',
         endDateBeforeStart: 'La date de fin ne peut pas être antérieure à la date de début',
         datePlaceholder: 'jour.mois.année',
         imagesLabel: "Images de l'exposition",
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'exposition",
-        imageRequired: 'Au moins une image est obligatoire',
+        imageRequired: 'Veuillez ajouter au moins une image principale pour créer une exposition',
         videosLabel: 'Vidéos rétrospective',
         videosHint: 'Ajouter des vidéos (formats acceptés: mp4, mov, avi)'
       }
@@ -310,7 +316,7 @@ export const fr = {
       createTitle: 'Créer une archive',
       searchLabel: 'Rechercher une archive',
       searchPlaceholder: 'Par ID, titre, année ou description',
-      notFound: 'Aucune archive',
+      notFound: 'Aucune archive trouvée',
       colId: 'ID',
       colImage: 'Image',
       colTitle: 'Titre',
@@ -318,12 +324,13 @@ export const fr = {
       colActions: 'Actions',
       form: {
         title: 'Titre',
-        titleRequired: 'Titre requis',
+        titleRequired: 'Veuillez renseigner un titre',
         year: 'Année',
-        yearRequired: 'Année requise',
+        yearRequired: 'Veuillez renseigner une année',
+        yearInvalid: 'L\'année doit être comprise entre 1900 et 2100',
         description: 'Description',
         filesLabel: "Fichiers de l'archive",
-        imageRequired: 'Une image principale est obligatoire',
+        imageRequired: 'Veuillez ajouter au moins une image principale pour créer une archive',
         imageLegend: "*La première image ajoutée devient l'image principale de l'archive"
       }
     },
@@ -357,7 +364,7 @@ export const fr = {
     imageUpload: {
       dropMultiple: 'Glissez vos images ici ou cliquez pour sélectionner',
       dropSingle: 'Cliquez ou glissez une image ici',
-      dropHint: 'JPG, PNG, GIF, WebP — max 10MB',
+      dropHint: 'Formats acceptés: JPEG, JPG, PNG — max. 10mo',
       addMore: 'Ajouter des images',
       changeImage: "Changer l'image",
       mainBadge: 'Principale*',

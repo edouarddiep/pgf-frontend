@@ -24,6 +24,7 @@ import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
+import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
 
 interface PreviewImage {
   file: File;
@@ -49,7 +50,8 @@ interface PreviewImage {
     LoadingDirective,
     HighlightPipe,
     ImageUploadComponent,
-    TranslatePipe
+    TranslatePipe,
+    LoadingSpinnerComponent
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',

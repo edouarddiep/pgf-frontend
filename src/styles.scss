@@ -444,6 +444,10 @@ img {
   }
 }
 
+.cdk-overlay-container {
+  z-index: 99999 !important;
+}
+
 mark {
   background-color: #fff9c4;
   color: inherit;

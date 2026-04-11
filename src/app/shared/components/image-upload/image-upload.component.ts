@@ -136,7 +136,7 @@ export class ImageUploadComponent {
   removeImage(index: number): void {
     const img = this.images()[index];
     if (img.isMain) {
-      this.notificationService.info('L\'image principale ne peut pas être supprimée');
+      this.notificationService.info('L\'image principale ne peut pas être supprimée. Si vous voulez la modifier, ajouter en une autre d\'abord.');
       return;
     }
     this.images.update(imgs => imgs.filter((_, i) => i !== index));

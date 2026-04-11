@@ -44,12 +44,12 @@
                       [matTooltip]="'shared.imageUpload.setMain' | translate">
                 <mat-icon>star</mat-icon>
               </button>
-              <button type="button" mat-icon-button class="action-btn remove-btn"
-                      (click)="removeImage(i); $event.stopPropagation()"
-                      [matTooltip]="'shared.imageUpload.removeImage' | translate">
-                <mat-icon>delete</mat-icon>
-              </button>
             }
+            <button type="button" mat-icon-button class="action-btn remove-btn"
+                    (click)="removeImage(i); $event.stopPropagation()"
+                    [matTooltip]="'shared.imageUpload.removeImage' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </div>
       }

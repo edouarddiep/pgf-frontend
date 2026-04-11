@@ -46,13 +46,11 @@
                 <mat-icon>star</mat-icon>
               </button>
             }
-            @if (!isMain(file)) {
-              <button type="button" mat-icon-button class="action-btn remove-btn"
-                      (click)="$event.stopPropagation(); removeFile(i)"
-                      [matTooltip]="'shared.archiveFileUpload.remove' | translate">
-                <mat-icon>delete</mat-icon>
-              </button>
-            }
+            <button type="button" mat-icon-button class="action-btn remove-btn"
+                    (click)="$event.stopPropagation(); removeFile(i)"
+                    [matTooltip]="'shared.archiveFileUpload.remove' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
 
           <div class="file-name-bar">

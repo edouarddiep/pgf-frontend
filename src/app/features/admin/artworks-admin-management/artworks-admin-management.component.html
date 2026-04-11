@@ -100,7 +100,9 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         } @else if (isLoading()) {
-          <div class="no-data"><mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner></div>
+          <div class="no-data">
+            <app-loading-spinner />
+          </div>
         } @else {
           <div class="no-data">
             <mat-icon>palette</mat-icon>

@@ -118,9 +118,12 @@
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'admin.archives.form.year' | translate }}</mat-label>
-              <input matInput type="number" formControlName="year">
-              @if (archiveForm.get('year')?.errors?.['required']) {
+              <input matInput type="number" formControlName="year" placeholder="ex: 2024">
+              @if (archiveForm.get('year')?.errors?.['required'] && archiveForm.get('year')?.touched) {
                 <mat-error>{{ 'admin.archives.form.yearRequired' | translate }}</mat-error>
+              }
+              @if ((archiveForm.get('year')?.errors?.['min'] || archiveForm.get('year')?.errors?.['max']) && archiveForm.get('year')?.touched) {
+                <mat-error>{{ 'admin.archives.form.yearInvalid' | translate }}</mat-error>
               }
             </mat-form-field>
 
@@ -131,6 +134,9 @@
 
             <div class="full-width">
               <label class="file-upload-label">{{ 'admin.archives.form.filesLabel' | translate }}</label>
+              @if (!thumbnailUrl()) {
+                <p class="image-required-hint">{{ 'admin.archives.form.imageRequired' | translate }}</p>
+              }
               <app-archive-file-upload
                 [files]="pendingFiles()"
                 (filesChange)="onFilesChanged($event)"
