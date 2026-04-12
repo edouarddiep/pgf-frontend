@@ -5,6 +5,9 @@ export interface ArtworkCategory {
   descriptionShort?: string;
   slug: string;
   thumbnailUrl?: string;
+  thumbnailZoom?: number;
+  thumbnailPositionX?: number;
+  thumbnailPositionY?: number;
   artworkCount?: number;
   createdAt: string;
   updatedAt: string;

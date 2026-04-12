@@ -39,9 +39,15 @@
               <th mat-header-cell *matHeaderCellDef>{{ 'admin.categories.colImage' | translate }}</th>
               <td mat-cell *matCellDef="let category">
                 @if (category.thumbnailUrl) {
-                  <img [src]="category.thumbnailUrl" [alt]="category.name" class="category-thumbnail"
-                       (click)="openImageModal(category.thumbnailUrl)"
-                       [matTooltip]="'admin.common.zoom' | translate"/>
+                  <div class="thumbnail-wrapper" (click)="openImageModal(category.thumbnailUrl)"
+                       [matTooltip]="'admin.common.zoom' | translate">
+                    <img [src]="category.thumbnailUrl"
+                         [alt]="category.name"
+                         class="category-thumbnail"
+                         [style.object-position]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"
+                         [style.transform]="'scale(' + ((category.thumbnailZoom ?? 100) / 100) + ')'"
+                         [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"/>
+                  </div>
                 } @else {
                   <mat-icon class="no-image-icon">image_not_supported</mat-icon>
                 }
@@ -81,7 +87,6 @@
               <td mat-cell *matCellDef="let category">
                 <div class="actions-cell">
                   <button mat-icon-button color="primary" (click)="openEditForm(category)" [matTooltip]="'admin.common.edit' | translate"><mat-icon>edit</mat-icon></button>
-                  <button mat-icon-button color="warn" (click)="deleteCategory(category.id, category.artworkCount ?? 0)" [matTooltip]="'admin.common.delete' | translate"><mat-icon>delete</mat-icon></button>
                 </div>
               </td>
             </ng-container>
@@ -136,11 +141,34 @@
 
           <div class="image-upload-field full-width">
             <label>{{ 'admin.categories.form.imageLabel' | translate }}</label>
+
             @if (previewImageUrl()) {
-              <div class="image-preview">
-                <img [src]="previewImageUrl()!" [alt]="'admin.common.preview' | translate" (click)="openImageModal(previewImageUrl()!)">
+              <div class="image-preview-wrapper">
+                <div class="image-preview"
+                     (mousedown)="startDrag($event)"
+                     (mousemove)="onDrag($event)"
+                     (mouseup)="stopDrag()"
+                     (mouseleave)="stopDrag()">
+                  <img [src]="previewImageUrl()!"
+                       [alt]="'admin.common.preview' | translate"
+                       [style.object-position]="positionX() + '% ' + positionY() + '%'"
+                       [style.transform]="'scale(' + zoom() / 100 + ')'"
+                       [style.transform-origin]="positionX() + '% ' + positionY() + '%'">
+                  <div class="crop-hint">
+                    <mat-icon>open_with</mat-icon>
+                    <span>Glisser pour recadrer</span>
+                  </div>
+                </div>
+                <div class="zoom-controls">
+                  <mat-icon>zoom_out</mat-icon>
+                  <input type="range" [value]="zoom()"
+                         (input)="onZoomChange($any($event.target).value)"
+                         min="100" max="300" step="5">
+                  <mat-icon>zoom_in</mat-icon>
+                </div>
               </div>
             }
+
             <button mat-stroked-button type="button" (click)="fileInput.click()">
               <mat-icon>upload</mat-icon>
               {{ previewImageUrl() ? ('admin.common.changeImage' | translate) : ('admin.common.chooseImage' | translate) }}

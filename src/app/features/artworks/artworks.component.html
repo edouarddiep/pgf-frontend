@@ -7,13 +7,17 @@
 @if (!(categorySlug$ | async)) {
   <section class="categories-section scroll-fade-in">
     <div class="container">
-      <h2>{{ 'artworks.techniques' | translate }}</h2>
+      <h2>{{ 'artworks.categories' | translate }}</h2>
       @if (categories$ | async; as categories) {
         <div class="categories-grid">
           @for (category of categories; track category.id) {
             <div class="category-card" (click)="onCategoryClick(category.slug)">
               <div class="category-image">
-                <img [lazyLoad]="getCategoryThumbnail(category)" [alt]="category.name">
+                <img [lazyLoad]="getCategoryThumbnail(category)"
+                     [alt]="category.name"
+                     [style.object-position]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"
+                     [style.transform]="'scale(' + ((category.thumbnailZoom ?? 100) / 100) + ')'"
+                     [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'">
               </div>
               <div class="category-info">
                 <h3>{{ category.name }}</h3>
@@ -22,6 +26,34 @@
             </div>
           }
         </div>
+      }
+    </div>
+  </section>
+}
+
+@if (categorySlug$ | async; as categorySlug) {
+  <section class="artworks-section scroll-fade-in">
+    <div class="container">
+      @if (currentCategory$ | async; as category) {
+        <div class="section-header">
+          <h2>{{ category.name }}</h2>
+          @if (category.descriptionShort) { <p class="category-description">{{ category.descriptionShort }}</p> }
+        </div>
+      }
+      @if (filteredArtworks$ | async; as artworks) {
+        @if (artworks.length > 0) {
+          <div class="artworks-grid">
+            @for (artwork of artworks; track artwork.id) {
+              <app-artwork-card [artwork]="artwork" (click)="onArtworkClick(artwork.id)"></app-artwork-card>
+            }
+          </div>
+        } @else {
+          <div class="empty-state">
+            <mat-icon>palette</mat-icon>
+            <h3>{{ 'artworks.empty' | translate }}</h3>
+            <p>{{ 'artworks.emptyDetail' | translate }}</p>
+          </div>
+        }
       }
     </div>
   </section>

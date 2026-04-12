@@ -54,7 +54,7 @@ export const fr = {
   },
   artworks: {
     hero: 'LES ŒUVRES',
-    techniques: 'Techniques',
+    categories: 'Catégories',
     empty: 'Aucune œuvre disponible',
     emptyDetail: "Cette catégorie ne contient pas encore d'œuvres."
   },
@@ -300,7 +300,7 @@ export const fr = {
         endDate: 'Date de fin',
         endDateRequired: 'Veuillez renseigner une date de fin',
         endDateBeforeStart: 'La date de fin ne peut pas être antérieure à la date de début',
-        datePlaceholder: 'jour.mois.année',
+        datePlaceholder: 'JJ.MM.AAAA',
         imagesLabel: "Images de l'exposition",
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'exposition",
         imageRequired: 'Veuillez ajouter au moins une image principale pour créer une exposition',

@@ -23,10 +23,11 @@
           @for (category of categories; track category.id) {
             <div class="category-card" (click)="onCategoryClick(category.slug)">
               <div class="category-image">
-                <img
-                  [lazyLoad]="getCategoryThumbnail(category)"
-                  [alt]="category.name"
-                  [defaultImage]="'/assets/images/placeholder.jpg'">
+                <img [lazyLoad]="getCategoryThumbnail(category)"
+                     [alt]="category.name"
+                     [style.object-position]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"
+                     [style.transform]="'scale(' + ((category.thumbnailZoom ?? 100) / 100) + ')'"
+                     [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'">
               </div>
               <div class="category-info">
                 <h3>{{ category.name }}</h3>

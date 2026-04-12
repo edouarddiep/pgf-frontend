@@ -13,14 +13,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AdminService } from '@features/admin/services/admin.service';
 import { ArtworkCategory } from '@core/models/artwork.model';
 import { NotificationService } from '@shared/services/notification.service';
-import {catchError, EMPTY, finalize, forkJoin} from 'rxjs';
+import { catchError, EMPTY, forkJoin } from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
-import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
-import {ExportColumn, ExportService} from '@shared/services/export.service';
-import {TranslatePipe} from '@core/pipes/translate.pipe';
-import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
+import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard';
+import { ExportColumn, ExportService } from '@shared/services/export.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
 
 type SortField = 'id' | 'name';
 
@@ -43,9 +42,14 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
-  private readonly confirmDialog = inject(ConfirmDialogService);
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
+  private isDragging = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private dragStartPosX = 50;
+  private dragStartPosY = 50;
+
   protected readonly sortField = signal<SortField>('id');
   protected readonly sortAsc = signal(true);
   protected readonly isSubmitting = signal(false);
@@ -60,6 +64,12 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   protected readonly tooltipX = signal(0);
   protected readonly tooltipY = signal(0);
   protected readonly imageRequired = signal(false);
+  protected readonly positionX = signal(50);
+  protected readonly positionY = signal(50);
+  protected readonly zoom = signal(100);
+
+  readonly hasUnsavedChanges = signal(false);
+  readonly isFormMode = signal(false);
 
   protected readonly categoryForm = this.fb.group({
     name: ['', Validators.required],
@@ -91,9 +101,6 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     });
   });
 
-  readonly hasUnsavedChanges = signal(false);
-  readonly isFormMode = signal(false);
-
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     const url = this.router.url;
@@ -102,9 +109,9 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
-      this.categoryForm.valueChanges.pipe(
-        catchError(() => EMPTY)
-      ).subscribe(() => this.hasUnsavedChanges.set(true));
+      this.categoryForm.valueChanges
+        .pipe(catchError(() => EMPTY))
+        .subscribe(() => this.hasUnsavedChanges.set(true));
       if (isEdit) {
         this.adminService.getCategories()
           .pipe(catchError(() => EMPTY))
@@ -127,6 +134,9 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     });
     this.pendingImageFile.set(null);
     this.previewImageUrl.set(category.thumbnailUrl ?? null);
+    this.positionX.set(category.thumbnailPositionX ?? 50);
+    this.positionY.set(category.thumbnailPositionY ?? 50);
+    this.zoom.set(category.thumbnailZoom ?? 100);
     this.hasUnsavedChanges.set(false);
   }
 
@@ -140,6 +150,9 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   }
 
   protected openCreateForm(): void {
+    this.positionX.set(50);
+    this.positionY.set(50);
+    this.zoom.set(100);
     this.router.navigate(['/admin/categories/create']);
   }
 
@@ -162,13 +175,22 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     const file = this.pendingImageFile();
 
     const save = (thumbnailUrl?: string) => {
-      const payload = { name: name!, slug, description, descriptionShort, ...(thumbnailUrl ? { thumbnailUrl } : {}) };
+      const payload = {
+        name: name!,
+        slug,
+        description,
+        descriptionShort,
+        thumbnailPositionX: Math.round(this.positionX()),
+        thumbnailPositionY: Math.round(this.positionY()),
+        thumbnailZoom: this.zoom(),
+        ...(thumbnailUrl ? { thumbnailUrl } : {})
+      };
       const operation = editing
         ? this.adminService.updateCategory(editing.id, payload)
         : this.adminService.createCategory(payload);
 
       operation.pipe(
-        catchError((err) => {
+        catchError(err => {
           this.notificationService.error(err?.error?.message || 'Erreur lors de la sauvegarde');
           this.isSubmitting.set(false);
           return EMPTY;
@@ -190,32 +212,52 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
         })
       ).subscribe(({ thumbnailUrl }) => save(thumbnailUrl));
     } else {
-      save();
+      save(this.previewImageUrl() ?? undefined);
     }
   }
 
-  protected deleteCategory(id: number, artworkCount: number): void {
-    if (artworkCount > 0) {
-      this.notificationService.error(`Impossible de supprimer cette catégorie : elle contient ${artworkCount} œuvre(s) liée(s)`);
-      return;
-    }
-    this.confirmDialog.confirm({
-      title: 'Supprimer la catégorie',
-      message: 'Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.',
-      confirmLabel: 'Supprimer',
-      cancelLabel: 'Annuler'
-    }).subscribe(confirmed => {
-      if (!confirmed) return;
-      this.adminService.deleteCategory(id)
-        .pipe(catchError(err => {
-          this.notificationService.error(err?.error?.message || 'Erreur lors de la suppression');
-          return EMPTY;
-        }))
-        .subscribe(() => {
-          this.notificationService.success('Catégorie supprimée');
-          this.loadCategories();
-        });
-    });
+  protected onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.pendingImageFile.set(file);
+    this.previewImageUrl.set(URL.createObjectURL(file));
+    this.positionX.set(50);
+    this.positionY.set(50);
+    this.zoom.set(100);
+    this.imageRequired.set(false);
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected startDrag(event: MouseEvent): void {
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    this.dragStartPosX = this.positionX();
+    this.dragStartPosY = this.positionY();
+    event.preventDefault();
+  }
+
+  protected onDrag(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    const previewEl = event.currentTarget as HTMLElement;
+    const sensitivity = 100 / this.zoom();
+    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
+    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
+    this.positionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
+    this.positionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
+    this.hasUnsavedChanges.set(true);
+    this.categoryForm.markAsDirty();
+  }
+
+  protected stopDrag(): void {
+    this.isDragging = false;
+  }
+
+  protected onZoomChange(value: string): void {
+    this.zoom.set(+value);
+    this.hasUnsavedChanges.set(true);
+    this.categoryForm.markAsDirty();
   }
 
   private loadCategories(): void {
@@ -230,16 +272,6 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
           artworkCount: artworks.filter(a => a.categoryIds?.includes(c.id)).length
         })));
       });
-  }
-
-  protected onImageSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.pendingImageFile.set(file);
-    this.previewImageUrl.set(URL.createObjectURL(file));
-    this.imageRequired.set(false);
-    this.hasUnsavedChanges.set(true);
   }
 
   protected onSearchChange(value: string): void {
