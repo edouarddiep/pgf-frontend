@@ -345,7 +345,7 @@ export const fr = {
       colSubject: 'Sujet',
       colDate: 'Date',
       colActions: 'Actions',
-      statusRead: 'Déjà lu',
+      statusRead: 'Ouvert',
       statusNew: 'Nouveau',
       read: 'Lire le message',
       receivedAt: "Reçu le dd.MM.yyyy à HH:mm",

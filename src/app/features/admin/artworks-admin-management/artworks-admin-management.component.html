@@ -41,9 +41,13 @@
               <th mat-header-cell *matHeaderCellDef>{{ 'admin.artworks.colImage' | translate }}</th>
               <td mat-cell *matCellDef="let artwork">
                 @if (artwork.mainImageUrl || (artwork.imageUrls && artwork.imageUrls.length > 0)) {
-                  <img [src]="artwork.mainImageUrl || artwork.imageUrls[0]" [alt]="artwork.title"
-                       class="artwork-thumb" (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])"
-                       [matTooltip]="'admin.common.zoom' | translate"/>
+                  <div class="artwork-thumb-wrapper" (click)="openImageModal(artwork.mainImageUrl || artwork.imageUrls[0])"
+                       [matTooltip]="'admin.common.zoom' | translate">
+                    <img [src]="artwork.mainImageUrl || artwork.imageUrls[0]" [alt]="artwork.title"
+                         [style.object-position]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
+                         [style.transform]="'scale(' + ((artwork.mainImageZoom ?? 100) / 100) + ')'"
+                         [style.transform-origin]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"/>
+                  </div>
                 } @else {
                   <div class="no-image"><mat-icon>image</mat-icon></div>
                 }
@@ -157,20 +161,59 @@
               }
             </mat-form-field>
 
+            <!-- Image principale -->
+            <div class="full-width">
+              <label class="file-upload-label">Image principale *</label>
+
+              @if (mainImageUrl()) {
+                <div class="image-preview-wrapper">
+                  <div class="image-preview"
+                       (mousedown)="startDrag($event)"
+                       (mousemove)="onDrag($event)"
+                       (mouseup)="stopDrag()"
+                       (mouseleave)="stopDrag()">
+                    <img [src]="mainImageUrl()!"
+                         [alt]="'admin.common.preview' | translate"
+                         [style.object-position]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'"
+                         [style.transform]="'scale(' + mainImageZoom() / 100 + ')'"
+                         [style.transform-origin]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'">
+                    <div class="crop-hint">
+                      <mat-icon>open_with</mat-icon>
+                      <span>Glisser pour recadrer</span>
+                    </div>
+                  </div>
+                  <div class="zoom-controls">
+                    <mat-icon>zoom_out</mat-icon>
+                    <input type="range" [value]="mainImageZoom()"
+                           (input)="onZoomChange($any($event.target).value)"
+                           min="100" max="300" step="5">
+                    <mat-icon>zoom_in</mat-icon>
+                  </div>
+                </div>
+              }
+
+              <button mat-stroked-button type="button" (click)="mainFileInput.click()">
+                <mat-icon>upload</mat-icon>
+                {{ mainImageUrl() ? 'Changer l\'image principale' : 'Choisir l\'image principale' }}
+              </button>
+              <input #mainFileInput type="file" accept="image/*" style="display:none" (change)="onMainImageSelected($event)">
+
+              @if (imageRequired()) {
+                <mat-error class="image-required-error">{{ 'admin.common.imageRequired' | translate }}</mat-error>
+              }
+            </div>
+            <!-- Autres images -->
             <div class="full-width">
               <label class="file-upload-label">{{ 'admin.artworks.form.imagesLabel' | translate }}</label>
               <app-image-upload
                 [currentImages]="uploadedImageUrls()"
-                [mainImageUrl]="mainImageUrl()"
+                [mainImageUrl]="undefined"
                 [category]="getCategorySlugForUpload()"
                 [multiple]="true"
-                (imagesChanged)="onImagesChanged($event)"
+                (imagesChanged)="onOtherImagesChanged($event)"
                 (hasChanges)="hasUnsavedChanges.set(true)"
                 (zoomImage)="openImageModal($event)">
               </app-image-upload>
-              @if (imageRequired()) {
-                <mat-error class="image-required-error">{{ 'admin.common.imageRequired' | translate }}</mat-error>
-              }
               <p class="image-legend">{{ 'admin.artworks.form.imageLegend' | translate }}</p>
             </div>
           </div>

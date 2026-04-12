@@ -20,6 +20,9 @@ export interface Artwork {
   descriptionShort?: string;
   imageUrls: string[];
   mainImageUrl?: string;
+  mainImagePositionX?: number;
+  mainImagePositionY?: number;
+  mainImageZoom?: number;
   categoryIds?: number[];
   categoryNames?: string[];
   categorySlugs?: string[];

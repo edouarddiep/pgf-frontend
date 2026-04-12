@@ -22,7 +22,10 @@
                 @if (artwork.mainImageUrl) {
                   <img
                     [lazyLoad]="artwork.mainImageUrl"
-                    [alt]="artwork.title">
+                    [alt]="artwork.title"
+                    [style.object-position]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
+                    [style.transform]="'scale(' + ((artwork.mainImageZoom ?? 100) / 100) + ')'"
+                    [style.transform-origin]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'">
                 } @else if (artwork.imageUrls && artwork.imageUrls.length > 0) {
                   <img
                     [lazyLoad]="artwork.imageUrls[0]"

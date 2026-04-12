@@ -19,39 +19,21 @@ import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { forkJoin, EMPTY, catchError, finalize } from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
-import {ImageUploadComponent} from '@shared/components/image-upload/image-upload.component';
-import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
-import {ExportColumn, ExportService} from '@shared/services/export.service';
-import {TranslatePipe} from '@core/pipes/translate.pipe';
-import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
-import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
-
-interface PreviewImage {
-  file: File;
-  url: string;
-}
+import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
+import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard';
+import { ExportColumn, ExportService } from '@shared/services/export.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
+import { FileUploadService } from '@core/services/file-upload.service';
 
 @Component({
   selector: 'app-artworks-admin-management',
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCardModule,
-    MatChipsModule,
-    MatTooltipModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    LoadingDirective,
-    HighlightPipe,
-    ImageUploadComponent,
-    TranslatePipe,
-    LoadingSpinnerComponent
+    CommonModule, ReactiveFormsModule, MatTableModule, MatButtonModule, MatIconModule,
+    MatFormFieldModule, MatInputModule, MatSelectModule, MatCardModule, MatChipsModule,
+    MatTooltipModule, MatProgressSpinnerModule, MatSnackBarModule,
+    LoadingDirective, HighlightPipe, ImageUploadComponent, TranslatePipe, LoadingSpinnerComponent
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -65,6 +47,13 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly fileUploadService = inject(FileUploadService);
+
+  private isDragging = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private dragStartPosX = 50;
+  private dragStartPosY = 50;
 
   protected readonly artworks = signal<Artwork[]>([]);
   protected readonly categories = signal<ArtworkCategory[]>([]);
@@ -73,9 +62,14 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly isLoading = signal(true);
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal<string>('');
-  protected readonly uploadedImageUrls = signal<string[]>([]);
-  protected readonly mainImageUrl = signal<string | undefined>(undefined);
   protected readonly imageRequired = signal(false);
+
+  protected readonly mainImageUrl = signal<string | undefined>(undefined);
+  protected readonly mainImageFile = signal<File | null>(null);
+  protected readonly mainImagePositionX = signal(50);
+  protected readonly mainImagePositionY = signal(50);
+  protected readonly mainImageZoom = signal(100);
+  protected readonly uploadedImageUrls = signal<string[]>([]);
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'categories', 'actions'];
   protected selectedCategoryFilter = '';
@@ -85,6 +79,9 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
   protected readonly searchQuery = signal('');
+
+  readonly hasUnsavedChanges = signal(false);
+  readonly isFormMode = signal(false);
 
   protected readonly filteredArtworks = computed(() => {
     const field = this.sortField();
@@ -117,9 +114,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     imageUrls: [[] as string[]],
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
   });
-
-  readonly hasUnsavedChanges = signal(false);
-  readonly isFormMode = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -185,8 +179,12 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     });
     this.artworkForm.markAsPristine();
     this.artworkForm.markAsUntouched();
-    this.uploadedImageUrls.set(artwork.imageUrls || []);
     this.mainImageUrl.set(artwork.mainImageUrl);
+    this.mainImageFile.set(null);
+    this.mainImagePositionX.set(artwork.mainImagePositionX ?? 50);
+    this.mainImagePositionY.set(artwork.mainImagePositionY ?? 50);
+    this.mainImageZoom.set(artwork.mainImageZoom ?? 100);
+    this.uploadedImageUrls.set((artwork.imageUrls || []).filter(u => u !== artwork.mainImageUrl));
     this.hasUnsavedChanges.set(false);
   }
 
@@ -201,6 +199,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected cancelForm(): void {
     this.uploadedImageUrls.set([]);
     this.mainImageUrl.set(undefined);
+    this.mainImageFile.set(null);
     this.router.navigate(['/admin/artworks']);
   }
 
@@ -217,41 +216,119 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     this.searchQuery.set(value);
   }
 
+  protected onMainImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.mainImageFile.set(file);
+    this.mainImageUrl.set(URL.createObjectURL(file));
+    this.mainImagePositionX.set(50);
+    this.mainImagePositionY.set(50);
+    this.mainImageZoom.set(100);
+    this.imageRequired.set(false);
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected startDrag(event: MouseEvent): void {
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    this.dragStartPosX = this.mainImagePositionX();
+    this.dragStartPosY = this.mainImagePositionY();
+    event.preventDefault();
+  }
+
+  protected onDrag(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    const previewEl = event.currentTarget as HTMLElement;
+    const sensitivity = 100 / this.mainImageZoom();
+    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
+    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
+    this.mainImagePositionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
+    this.mainImagePositionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected stopDrag(): void {
+    this.isDragging = false;
+  }
+
+  protected onZoomChange(value: string): void {
+    this.mainImageZoom.set(+value);
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected onOtherImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
+    if (event.mainUrl) {
+      const previousMain = this.mainImageUrl();
+      const otherUrls = [
+        ...(previousMain ? [previousMain] : []),
+        ...event.urls.filter(u => u !== event.mainUrl)
+      ];
+      this.uploadedImageUrls.set(otherUrls);
+      this.mainImageUrl.set(event.mainUrl);
+      this.mainImageFile.set(null);
+      this.mainImagePositionX.set(50);
+      this.mainImagePositionY.set(50);
+      this.mainImageZoom.set(100);
+    } else {
+      this.uploadedImageUrls.set(event.urls.filter(u => u !== this.mainImageUrl()));
+    }
+    this.hasUnsavedChanges.set(true);
+  }
+
   protected saveArtwork(): void {
-    this.imageRequired.set(this.uploadedImageUrls().length === 0);
-    if (this.artworkForm.invalid || this.isSubmitting() || this.uploadedImageUrls().length === 0) return;
+    this.imageRequired.set(!this.mainImageUrl());
+    if (this.artworkForm.invalid || this.isSubmitting() || !this.mainImageUrl()) return;
 
     this.isSubmitting.set(true);
     const formValue = this.artworkForm.value;
     const editing = this.editingArtwork();
 
-    const payload = {
-      title: formValue.title!,
-      description: formValue.description,
-      descriptionShort: formValue.descriptionShort,
-      imageUrls: this.uploadedImageUrls(),
-      mainImageUrl: this.mainImageUrl(),
-      categoryIds: formValue.categoryIds!
-    };
+    const save = (finalMainImageUrl?: string) => {
+      const resolvedMain = finalMainImageUrl ?? this.mainImageUrl()!;
+      const payload = {
+        title: formValue.title!,
+        description: formValue.description,
+        descriptionShort: formValue.descriptionShort,
+        imageUrls: [resolvedMain, ...this.uploadedImageUrls()],
+        mainImageUrl: resolvedMain,
+        mainImagePositionX: Math.round(this.mainImagePositionX()),
+        mainImagePositionY: Math.round(this.mainImagePositionY()),
+        mainImageZoom: this.mainImageZoom(),
+        categoryIds: formValue.categoryIds!
+      };
 
-    const operation = editing
-      ? this.adminService.updateArtwork(editing.id, payload)
-      : this.adminService.createArtwork(payload);
+      const operation = editing
+        ? this.adminService.updateArtwork(editing.id, payload)
+        : this.adminService.createArtwork(payload);
 
-    operation
-      .pipe(
+      operation.pipe(
         catchError(() => {
           this.notificationService.error('Erreur lors de la sauvegarde de l\'œuvre');
           return EMPTY;
         }),
         finalize(() => this.isSubmitting.set(false))
-      )
-      .subscribe(() => {
+      ).subscribe(() => {
         this.notificationService.success(editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès');
         window.dispatchEvent(new CustomEvent('artworkChanged'));
         this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/artworks']);
       });
+    };
+
+    const file = this.mainImageFile();
+    if (file) {
+      this.fileUploadService.uploadImage(file, this.getCategorySlugForUpload()).pipe(
+        catchError(() => {
+          this.notificationService.error('Erreur lors de l\'upload de l\'image principale');
+          this.isSubmitting.set(false);
+          return EMPTY;
+        })
+      ).subscribe(result => save(result.imageUrl));
+    } else {
+      save();
+    }
   }
 
   protected deleteArtwork(id: number): void {
@@ -294,9 +371,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected isFormValidForSubmit(): boolean {
-    return this.editingArtwork()
-      ? this.artworkForm.valid && (this.artworkForm.dirty || this.hasUnsavedChanges())
-      : this.artworkForm.valid;
+    return this.artworkForm.valid && !!this.mainImageUrl();
   }
 
   protected openImageModal(url: string): void {
@@ -306,13 +381,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected closeImageModal(): void {
     this.showImageModal.set(false);
-  }
-
-  protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
-    this.uploadedImageUrls.set(event.urls);
-    this.mainImageUrl.set(event.mainUrl);
-    this.imageRequired.set(false);
-    this.hasUnsavedChanges.set(true);
   }
 
   protected getCategorySlugForUpload(): string {

@@ -45,10 +45,12 @@ export class ImageUploadComponent {
       const urls = this.currentImages();
       const main = this.mainImageUrl();
       if (urls.length > 0) {
-        this.images.set(urls.map((url, i) => ({
+        this.images.set(urls.map(url => ({
           url,
-          isMain: main ? url === main : i === 0
+          isMain: main ? url === main : false
         })));
+      } else {
+        this.images.set([]);
       }
     });
   }
@@ -107,8 +109,9 @@ export class ImageUploadComponent {
       if (index >= uploads.length) { this.uploading.set(false); this.emit(); return; }
       uploads[index].subscribe({
         next: result => {
-          const hasMain = this.images().some(i => i.isMain);
-          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: !hasMain }]);
+          const main = this.mainImageUrl();
+          const hasMain = main !== undefined ? this.images().some(i => i.isMain) : true; // Si pas de main attendu, jamais isMain
+          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: main !== undefined && !hasMain }]);
           index++;
           processNext();
         },
