@@ -1,15 +1,19 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { ApiService } from '@core/services/api.service';
-import { NotificationService } from '@shared/services/notification.service';
-import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
-import { delay } from 'rxjs';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {ApiService} from '@core/services/api.service';
+import {NotificationService} from '@shared/services/notification.service';
+import {delay, startWith} from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {CountryCode, getCountries, getCountryCallingCode} from 'libphonenumber-js';
+import {MatOption, MatSelect, MatSelectTrigger} from "@angular/material/select";
+import {toSignal} from '@angular/core/rxjs-interop';
+import {map} from 'rxjs/operators';
+import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-contact',
@@ -20,8 +24,11 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
+    TranslatePipe,
+    MatOption,
     LoadingSpinnerComponent,
-    TranslatePipe
+    MatSelect,
+    MatSelectTrigger
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
@@ -43,10 +50,57 @@ export class ContactComponent {
     name: ['', [Validators.required]],
     firstName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
+    phonePrefix: ['+41'],
     phone: [''],
     subject: ['', [Validators.required]],
     message: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
   });
+
+  readonly phonePrefixes = (() => {
+    const priority = ['CH', 'FR', 'IT', 'DE', 'AT'];
+    const all = getCountries().map(country => ({
+      code: country as CountryCode,
+      prefix: `+${getCountryCallingCode(country as CountryCode)}`,
+      label: new Intl.DisplayNames(['fr'], { type: 'region' }).of(country) ?? country
+    }));
+
+    const pinned = priority
+      .map(c => all.find(p => p.code === c)!)
+      .filter(Boolean);
+
+    const rest = all
+      .filter(p => !priority.includes(p.code))
+      .sort((a, b) => a.label.localeCompare(b.label, 'fr'));
+
+    return [...pinned, ...rest];
+  })();
+
+  readonly prefixSearch = new FormControl('');
+  protected selectedPrefix = '+41';
+
+  readonly filteredPrefixes = toSignal(
+    this.prefixSearch.valueChanges.pipe(
+      startWith(''),
+      map(q => {
+        const search = (q || '').toLowerCase().replace('+', '').trim();
+        if (!search) return this.phonePrefixes.slice(0, 20);
+        return this.phonePrefixes.filter(p =>
+          p.prefix.replace('+', '').startsWith(search) ||
+          p.label.toLowerCase().includes(search)
+        ).slice(0, 20);
+      })
+    ),
+    { initialValue: this.phonePrefixes.slice(0, 20) }
+  );
+
+  protected onPrefixSelected(p: { code: CountryCode; prefix: string; label: string }): void {
+    this.selectedPrefix = p.prefix;
+    this.prefixSearch.setValue('', { emitEvent: false });
+  }
+
+  protected getPrefixDisplay(): string {
+    return this.selectedPrefix;
+  }
 
   getMessageLength(): number {
     return this.contactForm.get('message')?.value?.length || 0;
@@ -62,8 +116,9 @@ export class ContactComponent {
     this.submitSuccess.set(false);
     this.submitError.set(false);
 
-    const { name, firstName, email, phone, subject, message } = this.contactForm.value;
-    const payload = { name: `${firstName} ${name}`, email, phone, subject, message };
+    const { name, firstName, email, phonePrefix, phone, subject, message } = this.contactForm.value;
+    const fullPhone = phone ? `${phonePrefix} ${phone}` : '';
+    const payload = { name: `${firstName} ${name}`, email, phone: fullPhone, subject, message }
 
     this.apiService.sendContactMessage(payload).pipe(delay(2500)).subscribe({
       next: () => {
@@ -80,8 +135,19 @@ export class ContactComponent {
     });
   }
 
+  protected onPrefixFocus(): void {
+    this.prefixSearch.setValue('', { emitEvent: true });
+  }
+
+  protected onPrefixBlur(): void {
+    setTimeout(() => {
+      if (!this.selectedPrefix) return;
+      this.prefixSearch.setValue(this.selectedPrefix, { emitEvent: false });
+    }, 200);
+  }
+
   private resetForm(): void {
-    this.contactForm.reset({ name: '', firstName: '', email: '', phone: '', subject: '', message: '' });
+    this.contactForm.reset({ name: '', firstName: '', email: '', phonePrefix: '+41', phone: '', subject: '', message: '' });
     Object.keys(this.contactForm.controls).forEach(key => {
       this.contactForm.get(key)?.setErrors(null);
       this.contactForm.get(key)?.markAsPristine();

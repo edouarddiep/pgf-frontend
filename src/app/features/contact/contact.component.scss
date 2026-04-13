@@ -31,7 +31,7 @@
 
     .form-container {
       width: 100%;
-      max-width: clamp(600px, 75%, 900px);
+      max-width: clamp(692px, 75%, 900px);
       margin: 0 auto;
       padding: 2rem;
       overflow-y: auto;
@@ -120,8 +120,6 @@
             .mat-mdc-form-field-focus-overlay {
               background-color: transparent !important;
             }
-
-            label { font-size: 14px; }
           }
 
           &.full-width ::ng-deep {
@@ -242,6 +240,31 @@
   &.error {
     background-color: #f44336;
     box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+  }
+}
+
+.phone-field {
+  display: grid;
+  grid-template-columns: 0.8fr 2fr;
+  gap: 0.5rem;
+  align-items: flex-end;
+  flex: 1;
+
+  @media (min-width: 2160px) {
+    grid-template-columns: 0.5fr 2fr;
+  }
+
+  .prefix-field {
+    flex-shrink: 0;
+
+    ::ng-deep .mat-mdc-select-value {
+      text-align: center;
+      font-size: 14px;
+    }
+  }
+
+  .number-field {
+    flex: 1;
   }
 }
 

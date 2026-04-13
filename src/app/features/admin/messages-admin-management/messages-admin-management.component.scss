@@ -81,6 +81,11 @@ tr.mat-mdc-row.unread td {
   }
 }
 
+.email-link {
+  cursor: pointer;
+  &:hover { text-decoration: underline; }
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container { padding: 1rem; }
 }

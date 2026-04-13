@@ -66,4 +66,10 @@ export class MessagesAdminManagementComponent implements OnInit {
         .subscribe(() => this.loadMessages());
     });
   }
+
+  protected replyToMessage(message: ContactMessage): void {
+    const subject = encodeURIComponent(`Re: ${message.subject}`);
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(message.email)}&su=${subject}`;
+    window.open(gmailUrl, '_blank');
+  }
 }
