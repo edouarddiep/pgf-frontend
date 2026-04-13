@@ -65,10 +65,24 @@
               }
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>{{ 'contact.form.phone' | translate }}</mat-label>
-              <input matInput type="tel" formControlName="phone">
-            </mat-form-field>
+            <div class="phone-field half-width">
+              <mat-form-field appearance="outline" class="prefix-field">
+                <input matInput
+                       [formControl]="prefixSearch"
+                       [matAutocomplete]="prefixAuto">
+                <mat-autocomplete #prefixAuto="matAutocomplete"
+                                  [panelWidth]="220"
+                                  (optionSelected)="onPrefixSelected($event.option.value)">
+                  @for (p of filteredPrefixes(); track p.code) {
+                    <mat-option [value]="p">{{ p.label }} ({{ p.prefix }})</mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="number-field">
+                <mat-label>{{ 'contact.form.phone' | translate }}</mat-label>
+                <input matInput type="tel" formControlName="phone" placeholder="79 123 45 67">
+              </mat-form-field>
+            </div>
           </div>
 
           <mat-form-field appearance="outline" class="full-width">

@@ -42,33 +42,29 @@ export class AddressService {
       .filter((result: any) => result.attrs?.origin === 'address')
       .map((result: any) => {
         const attrs = result.attrs;
-        const address: SwissAddress = {
-          street: attrs.street || '',
-          houseNumber: attrs.house_number || '',
-          postalCode: attrs.zip || '',
-          locality: attrs.city || '',
-          formattedAddress: this.formatAddress(attrs)
-        };
-        return address;
+        const label = (attrs.label || '').replace(/<[^>]+>/g, '').replace(/#/g, '').trim();
+        // Format après nettoyage: "Chemin des Faucons 2362 Montfaucon" ou "Rue du Lac 1 1898 St-Gingolph"
+        const cpMatch = label.match(/^(.+?)\s+(\d{4})\s+(.+)$/);
+        if (!cpMatch) {
+          return { street: label, houseNumber: '', postalCode: '', locality: '', formattedAddress: label };
+        }
+
+        const streetFull = cpMatch[1].trim();
+        const postalCode = cpMatch[2];
+        const locality = cpMatch[3].trim();
+
+        // Numéro de rue = dernier token numérique à la fin de streetFull
+        const streetMatch = streetFull.match(/^(.+?)\s+(\d+\w*)$/);
+        const street = streetMatch ? streetMatch[1] : streetFull;
+        const houseNumber = streetMatch ? streetMatch[2] : '';
+
+        const formattedAddress = houseNumber
+          ? `${street} ${houseNumber}, ${postalCode} ${locality}`
+          : `${street}, ${postalCode} ${locality}`;
+
+        return { street, houseNumber, postalCode, locality, formattedAddress };
       })
+      .filter((a: SwissAddress) => a.street)
       .slice(0, 8);
-  }
-
-  private formatAddress(attrs: any): string {
-    const parts = [];
-
-    if (attrs.street) {
-      let streetPart = attrs.street;
-      if (attrs.house_number) {
-        streetPart += `, ${attrs.house_number}`;
-      }
-      parts.push(streetPart);
-    }
-
-    if (attrs.zip && attrs.city) {
-      parts.push(`${attrs.zip} ${attrs.city}`);
-    }
-
-    return parts.join(', ');
   }
 }

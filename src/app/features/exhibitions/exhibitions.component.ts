@@ -136,7 +136,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   protected isVernissageRegistrationDisabled(exhibition: Exhibition): boolean {
-    return exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
+    return !exhibition.vernissageUrl || exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
   }
 
   protected formatDateBlock(startDate?: string, endDate?: string): string {
@@ -150,9 +150,8 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   protected onVernissageRegistration(exhibition: Exhibition): void {
-    if (this.isVernissageRegistrationDisabled(exhibition)) return;
-    const vernissageUrl = 'https://forms.cloud.microsoft/pages/responsepage.aspx?id=wmJHDV9sh06TKIDkc-144X_K4JQ2f1ZDpqkc-BlhTspUQkQ3N0JHNUJJVUNGNzdBTzZCOEdWWEhISy4u&utm_source=print&utm_medium=paper&utm_campaign=20250902_cdg_flyer_vernissage_pierette&route=shorturl';
-    window.open(vernissageUrl, '_blank');
+    if (!exhibition.vernissageUrl) return;
+    window.open(exhibition.vernissageUrl, '_blank');
   }
 
   protected onShowOnMap(exhibition: Exhibition): void {

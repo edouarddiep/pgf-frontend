@@ -3,6 +3,7 @@ export interface Exhibition {
   title: string;
   description?: string;
   credits?: string;
+  vernissageUrl?: string;
   websiteUrl?: string;
   descriptionShort?: string;
   location?: string;

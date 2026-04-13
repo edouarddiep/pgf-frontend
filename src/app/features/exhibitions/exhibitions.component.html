@@ -191,6 +191,24 @@
                             autoplay
                             muted
                             loop>
+                            <div class="vernissage-button-container">
+                              @if (exhibition.vernissageUrl) {
+                                <button
+                                  mat-raised-button
+                                  color="primary"
+                                  [disabled]="isVernissageRegistrationDisabled(exhibition)"
+                                  [matTooltip]="isVernissageRegistrationDisabled(exhibition) ? ('exhibitions.vernissage.disabled' | translate) : ''"
+                                  matTooltipPosition="below"
+                                  (click)="onVernissageRegistration(exhibition)">
+                                  {{ 'exhibitions.vernissage.register' | translate }}
+                                </button>
+                                @if (isVernissageRegistrationDisabled(exhibition)) {
+                                  <small class="disabled-info">
+                                    {{ 'exhibitions.vernissage.disabled' | translate }}
+                                  </small>
+                                }
+                              }
+                            </div>
                           </video>
                         } @else {
                           <img

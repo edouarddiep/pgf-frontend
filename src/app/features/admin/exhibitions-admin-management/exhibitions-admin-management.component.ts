@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  signal,
+  OnInit,
+  computed,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -8,7 +16,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter, NativeDateAdapter } from '@angular/material/core';
+import {
+  MatNativeDateModule,
+  MAT_DATE_LOCALE,
+  MAT_DATE_FORMATS,
+  DateAdapter,
+  NativeDateAdapter,
+  MatOption
+} from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,7 +34,7 @@ import { AdminService } from '@features/admin/services/admin.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 import { NotificationService } from '@shared/services/notification.service';
-import { catchError, EMPTY, finalize } from 'rxjs';
+import {catchError, EMPTY, filter, finalize, Subject, switchMap, takeUntil} from 'rxjs';
 import { Injectable } from '@angular/core';
 import { LoadingDirective } from '@/app/directives/loading.directive';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
@@ -27,14 +42,24 @@ import {HasUnsavedChanges} from '@features/admin/guards/unsaved-changes.guard';
 import {ExportColumn, ExportService} from '@shared/services/export.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
+import {FileUploadService} from '@core/services/file-upload.service';
+import {AddressService, SwissAddress} from '@core/services/adresse.service';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
 
 interface ExhibitionFormData {
   title: string;
   description?: string;
   location: string;
-  address?: string;
+  street?: string;
+  streetNumber?: string;
+  postalCode?: string;
+  city?: string;
+  country?: string;
   startDate: Date | null;
   endDate: Date | null;
+  vernissageUrl?: string;
+  websiteUrl?: string;
 }
 
 @Injectable()
@@ -95,7 +120,10 @@ function endDateValidator(control: AbstractControl) {
     ImageUploadComponent,
     LoadingDirective,
     HighlightPipe,
-    TranslatePipe
+    TranslatePipe,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
@@ -106,7 +134,7 @@ function endDateValidator(control: AbstractControl) {
   styleUrl: './exhibitions-admin-management.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedChanges {
+export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
@@ -114,6 +142,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly fileUploadService = inject(FileUploadService);
 
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
   protected readonly searchQuery = signal('');
@@ -130,6 +159,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   protected readonly showVideoModal = signal(false);
   protected readonly modalVideoUrl = signal<string>('');
   protected readonly imageRequired = signal(false);
+  protected readonly addressSuggestions = signal<SwissAddress[]>([]);
+  private readonly addressService = inject(AddressService);
+  private readonly destroy$ = new Subject<void>();
+  private readonly streetSearch$ = new Subject<string>();
 
   protected readonly displayedColumns = ['id', 'image', 'title', 'status', 'actions'];
 
@@ -161,7 +194,13 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     title: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
     location: ['', [Validators.required, Validators.minLength(2)]],
-    address: [''],
+    street: ['', Validators.required],
+    streetNumber: ['', Validators.required],
+    postalCode: ['', Validators.required],
+    city: ['', Validators.required],
+    vernissageUrl: [''],
+    websiteUrl: [''],
+    country: ['Suisse', Validators.required],
     startDate: [null as Date | null, [Validators.required]],
     endDate: [null as Date | null, [Validators.required]]
   }, { validators: endDateValidator });
@@ -174,6 +213,18 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     const url = this.router.url;
     const isCreate = url.endsWith('/create');
     const isEdit = !!id && url.endsWith('/edit');
+
+    this.streetSearch$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      filter(v => v.length >= 3),
+      switchMap(v => this.addressService.searchAddresses(v)),
+      takeUntil(this.destroy$)
+    )
+      .subscribe(results => {
+        console.log('address results', results);
+        this.addressSuggestions.set(results);
+      });
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
@@ -200,6 +251,11 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   private loadExhibitions(): void {
     this.adminService.getExhibitions()
       .pipe(catchError(() => {
@@ -207,6 +263,27 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
         return EMPTY;
       }))
       .subscribe(exhibitions => this.rawExhibitions.set(exhibitions));
+  }
+
+  protected onStreetInput(value: string): void {
+    if (!value || value.length < 3) {
+      this.addressSuggestions.set([]);
+    }
+    this.streetSearch$.next(value);
+  }
+
+  protected onAddressSelected(addr: SwissAddress): void {
+    this.exhibitionForm.patchValue({
+      street: addr.street,
+      streetNumber: addr.houseNumber || '',
+      postalCode: addr.postalCode,
+      city: addr.locality
+    });
+    this.addressSuggestions.set([]);
+  }
+
+  protected displayAddress(addr: SwissAddress): string {
+    return addr?.formattedAddress || '';
   }
 
   protected showCreateForm(): void {
@@ -223,11 +300,18 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
 
   private fillForm(exhibition: Exhibition): void {
     this.editingExhibition.set(exhibition);
+    const addr = this.parseAddress(exhibition.address || '');
     this.exhibitionForm.patchValue({
       title: exhibition.title,
       description: exhibition.description || '',
       location: exhibition.location,
-      address: exhibition.address || '',
+      street: addr.street,
+      vernissageUrl: exhibition.vernissageUrl || '',
+      websiteUrl: exhibition.websiteUrl || '',
+      streetNumber: addr.streetNumber,
+      postalCode: addr.postalCode,
+      city: addr.city,
+      country: addr.country || 'Suisse',
       startDate: exhibition.startDate ? new Date(exhibition.startDate) : null,
       endDate: exhibition.endDate ? new Date(exhibition.endDate) : null
     });
@@ -236,8 +320,9 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
       ? Array.from(new Set(exhibition.imageUrls))
       : (exhibition.imageUrl ? [exhibition.imageUrl] : []);
 
-    this.uploadedImageUrls.set(uniqueUrls);
-    this.mainImageUrl.set(uniqueUrls[0]);
+    const mainUrl = exhibition.imageUrl ?? uniqueUrls[0];
+    this.mainImageUrl.set(mainUrl);
+    this.uploadedImageUrls.set(uniqueUrls.filter(url => url !== mainUrl));
     this.uploadedVideoUrls.set(exhibition.videoUrls || []);
     this.hasUnsavedChanges.set(false);
 
@@ -246,6 +331,24 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
       this.exhibitionForm.markAsUntouched();
       this.hasUnsavedChanges.set(false);
     });
+  }
+
+  private parseAddress(address: string): { street: string; streetNumber: string; postalCode: string; city: string; country: string } {
+    const parts = address.split(',').map(p => p.trim());
+    const cityPostalMatch = parts[2]?.match(/^(\d+)\s+(.+)$/);
+    return {
+      street: parts[0] || '',
+      streetNumber: parts[1] || '',
+      postalCode: cityPostalMatch ? cityPostalMatch[1] : '',
+      city: cityPostalMatch ? cityPostalMatch[2] : (parts[2] || ''),
+      country: parts[3] || ''
+    };
+  }
+
+  private buildAddress(): string {
+    const v = this.exhibitionForm.value;
+    return [v.street, v.streetNumber, v.postalCode && v.city ? `${v.postalCode} ${v.city}` : v.city, v.country]
+      .filter(Boolean).join(', ');
   }
 
   protected sort(field: 'id' | 'title'): void {
@@ -257,10 +360,37 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
     }
   }
 
-  protected onImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
-    this.uploadedImageUrls.set(event.urls);
-    this.mainImageUrl.set(event.mainUrl);
-    this.imageRequired.set(false);
+  protected onMainImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    const file = input.files[0];
+    input.value = '';
+
+    this.fileUploadService.uploadExhibitionImage(file, this.getExhibitionSlug(), 1)
+      .pipe(catchError(() => { this.notificationService.error('Erreur lors de l\'upload'); return EMPTY; }))
+      .subscribe(result => {
+        const previousMain = this.mainImageUrl();
+        if (previousMain) {
+          this.uploadedImageUrls.update(urls => [previousMain, ...urls]);
+        }
+        this.mainImageUrl.set(result.imageUrl);
+        this.imageRequired.set(false);
+        this.hasUnsavedChanges.set(true);
+      });
+  }
+
+  protected onOtherImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
+    const newMain = event.mainUrl;
+    const previousMain = this.mainImageUrl();
+
+    if (newMain && previousMain && newMain !== previousMain) {
+      const othersWithoutNewMain = event.urls.filter(url => url !== newMain);
+      this.uploadedImageUrls.set([previousMain, ...othersWithoutNewMain]);
+      this.mainImageUrl.set(newMain);
+    } else {
+      this.uploadedImageUrls.set(event.urls);
+    }
+
     this.hasUnsavedChanges.set(true);
   }
 
@@ -311,22 +441,28 @@ export class ExhibitionsAdminManagementComponent implements OnInit, HasUnsavedCh
   }
 
   protected saveExhibition(): void {
-    this.imageRequired.set(this.uploadedImageUrls().length === 0);
-    if (this.exhibitionForm.invalid || this.isSaving() || this.uploadedImageUrls().length === 0) return;
+    if (!this.mainImageUrl()) {
+      this.imageRequired.set(true);
+    }
+    if (this.exhibitionForm.invalid || this.isSaving() || !this.mainImageUrl()) return;
 
     this.isSaving.set(true);
     const formData = this.exhibitionForm.value as ExhibitionFormData;
-    const imageUrls = this.uploadedImageUrls();
+    const mainUrl = this.mainImageUrl()!;
+    const otherUrls = this.uploadedImageUrls();
+    const imageUrls = [mainUrl, ...otherUrls];
     const videoUrls = this.uploadedVideoUrls();
 
     const exhibitionData = {
       title: formData.title!,
       description: formData.description || undefined,
       location: formData.location!,
-      address: formData.address || undefined,
+      address: this.buildAddress() || undefined,
+      vernissageUrl: formData.vernissageUrl || undefined,
+      websiteUrl: formData.websiteUrl || undefined,
       startDate: this.formatDateForBackend(formData.startDate!),
       endDate: formData.endDate ? this.formatDateForBackend(formData.endDate) : undefined,
-      imageUrl: this.mainImageUrl() ?? imageUrls[0],
+      imageUrl: mainUrl,
       imageUrls,
       videoUrls
     };

@@ -18,6 +18,8 @@ export interface AdminExhibitionRequest {
   endDate?: string;
   imageUrl?: string;
   imageUrls?: string[];
+  vernissageUrl?: string;
+  websiteUrl?: string;
 }
 
 @Injectable({
