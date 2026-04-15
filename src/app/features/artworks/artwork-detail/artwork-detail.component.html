@@ -47,6 +47,16 @@
         <div class="artwork-info">
           <h3 class="artwork-title">{{ artwork.title }}</h3>
 
+          @if (artworkCategories$ | async; as artworkCategories) {
+            @if (artworkCategories.length > 0) {
+              <div class="artwork-categories">
+                @for (category of artworkCategories; track category.id) {
+                  <mat-chip class="category-chip">{{ category.name }}</mat-chip>
+                }
+              </div>
+            }
+          }
+
           <div class="artwork-description">
             <p>{{ artwork.description }}</p>
           </div>

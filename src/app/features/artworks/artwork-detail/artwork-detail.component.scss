@@ -287,6 +287,20 @@
   }
 }
 
+.artwork-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+
+  .category-chip {
+    font-size: 0.75rem;
+    height: 24px;
+    background-color: #e3f2fd;
+    color: #706969;
+  }
+}
+
 @media (max-width: 768px) {
   .artwork-detail-section {
     padding: 2rem 0;

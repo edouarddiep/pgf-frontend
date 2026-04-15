@@ -70,7 +70,10 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   }
 
   onArtworkClick(artworkId: number): void {
-    this.router.navigate(['/artworks/detail', artworkId]);
+    const categorySlug = this.route.snapshot.params['category'];
+    this.router.navigate(['/artworks', artworkId], {
+      queryParams: categorySlug ? { from: categorySlug } : {}
+    });
   }
 
   onCategoryClick(categorySlug: string): void {

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { switchMap, map, combineLatest } from 'rxjs';
+import {switchMap, map, combineLatest, take} from 'rxjs';
 import { ApiService } from '@core/services/api.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 
@@ -56,7 +56,12 @@ export class ArtworkCategoryComponent implements OnInit {
 
   onArtworkClick(artworkId: number): void {
     this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
-    this.router.navigate(['/artworks/detail', artworkId]);
+    this.slug$.pipe(take(1)).subscribe(slug => {
+      this.router.navigate(['/artworks', artworkId],
+        { queryParams:
+            { from: slug }
+        });
+    });
   }
 
   onAllCategoriesClick(): void {

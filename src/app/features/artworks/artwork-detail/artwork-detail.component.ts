@@ -6,6 +6,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {ArtworkService} from '@features/artworks/services/artwork.service';
 import {switchMap, combineLatest, map, take} from 'rxjs';
 import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
+import {MatChip} from '@angular/material/chips';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -13,7 +14,8 @@ import {ScrollAnimationService} from '@shared/services/scroll-animation.service'
     CommonModule,
     RouterModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatChip
   ],
   templateUrl: './artwork-detail.component.html',
   styleUrl: './artwork-detail.component.scss',
@@ -39,30 +41,27 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private modalTouchStartX = 0;
   private modalTouchStartY = 0;
 
-  readonly artwork$ = this.route.params.pipe(
-    switchMap(params => this.artworkService.getArtworkById(+params['id']))
+  readonly artwork$ = this.route.url.pipe(
+    switchMap(segments => this.artworkService.getArtworkById(+segments[0].path))
   );
 
   readonly categories$ = this.artworkService.getCategories();
 
-  readonly primaryCategory$ = combineLatest([
-    this.artwork$,
-    this.categories$
-  ]).pipe(
+  readonly artworkCategories$ = combineLatest([this.artwork$, this.categories$]).pipe(
     map(([artwork, allCategories]) => {
-      if (!artwork || !allCategories.length) return null;
+      if (!artwork?.categoryIds?.length) return [];
+      return allCategories.filter(c => artwork.categoryIds!.includes(c.id));
+    })
+  );
 
-      if (artwork.categoryIds && artwork.categoryIds.length > 0) {
-        const categoryId = artwork.categoryIds[0];
-        return allCategories.find(category => category.id === categoryId) || null;
-      }
-
-      if (artwork.categorySlugs && artwork.categorySlugs.length > 0) {
-        const categorySlug = artwork.categorySlugs[0];
-        return allCategories.find(category => category.slug === categorySlug) || null;
-      }
-
-      return null;
+  readonly primaryCategory$ = combineLatest([
+    this.categories$,
+    this.route.queryParams
+  ]).pipe(
+    map(([allCategories, queryParams]) => {
+      const fromSlug = queryParams['from'];
+      if (!fromSlug) return null;
+      return allCategories.find(c => c.slug === fromSlug) ?? null;
     })
   );
 
