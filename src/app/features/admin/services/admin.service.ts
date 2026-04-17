@@ -43,17 +43,53 @@ export class AdminService {
 
   isAuthenticated = this.isAuthenticatedSignal.asReadonly();
 
-  login(password: string): Observable<boolean> {
-    return this.http.post<void>(`${this.adminApiUrl}/auth/login`, {password})
-      .pipe(
-        map(() => true),
-        tap(() => {
-          this.isAuthenticatedSignal.set(true);
-          if (isPlatformBrowser(this.platformId)) {
-            sessionStorage.setItem('pgf-admin-auth', 'true');
-          }
-        })
-      );
+  login(emailOrPassword: string, password?: string): Observable<boolean> {
+    if (password !== undefined) {
+      return this.loginWithEmail(emailOrPassword, password);
+    }
+    return this.loginWithLegacyPassword(emailOrPassword);
+  }
+
+  private loginWithEmail(email: string, password: string): Observable<boolean> {
+    return this.http.post<{ access_token: string }>(
+      `${environment.supabaseUrl}/auth/v1/token?grant_type=password`,
+      { email, password },
+      { headers: { apikey: environment.supabasePublishableKey } }
+    ).pipe(
+      map(res => {
+        this.isAuthenticatedSignal.set(true);
+        if (isPlatformBrowser(this.platformId)) {
+          sessionStorage.setItem('pgf-admin-auth', 'true');
+          sessionStorage.setItem('pgf-admin-jwt', res.access_token);
+          sessionStorage.removeItem('pgf-admin-legacy');
+        }
+        return true;
+      })
+    );
+  }
+
+  private loginWithLegacyPassword(password: string): Observable<boolean> {
+    return this.http.post<void>(`${this.adminApiUrl}/auth/login`, { password }).pipe(
+      map(() => true),
+      tap(() => {
+        this.isAuthenticatedSignal.set(true);
+        if (isPlatformBrowser(this.platformId)) {
+          sessionStorage.setItem('pgf-admin-auth', 'true');
+          sessionStorage.setItem('pgf-admin-legacy', password);
+          sessionStorage.removeItem('pgf-admin-jwt');
+        }
+      })
+    );
+  }
+
+  getAuthHeader(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      const jwt = sessionStorage.getItem('pgf-admin-jwt');
+      if (jwt) return `Bearer ${jwt}`;
+      const legacy = sessionStorage.getItem('pgf-admin-legacy');
+      if (legacy) return `Basic ${btoa(':' + legacy)}`;
+    }
+    return '';
   }
 
   logout(): void {

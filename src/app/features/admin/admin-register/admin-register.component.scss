@@ -1,0 +1,78 @@
+.login-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0ede8;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(180, 170, 155, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(160, 150, 135, 0.1) 0%, transparent 50%);
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
+
+  .card-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.action-btn {
+  flex: 1;
+  height: 44px;
+  font-size: 0.8rem !important;
+  white-space: nowrap;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.success-message {
+  text-align: center;
+  color: #2e7d32;
+  font-size: 1.05rem;
+  padding: 1rem 0;
+}
+
+.validation-errors {
+  margin: 0.5rem 0 1rem 0;
+  p {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin: 0.2rem 0;
+  }
+}
+
+.toggle-password {
+  cursor: pointer;
+  font-size: 18px;
+  color: #888;
+  margin-right: 4px;
+  user-select: none;
+
+  &:hover {
+    color: #333;
+  }
+}

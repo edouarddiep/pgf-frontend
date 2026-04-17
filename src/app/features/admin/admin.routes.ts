@@ -78,5 +78,9 @@ export const adminRoutes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('@features/admin/admin-login/admin-login.component').then(m => m.AdminLoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./admin-register/admin-register.component').then(m => m.AdminRegisterComponent)
   }
 ];

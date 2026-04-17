@@ -5,6 +5,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { loadingInterceptor } from '@shared/interceptors/loading.interceptor';
+import {adminHeaderInterceptor} from '@shared/interceptors/admin-header.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(
       withFetch(),
-      withInterceptors([loadingInterceptor])
+      withInterceptors([loadingInterceptor, adminHeaderInterceptor])
     ),
     provideAnimations()
   ]

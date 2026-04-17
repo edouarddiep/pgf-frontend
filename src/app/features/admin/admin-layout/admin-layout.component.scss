@@ -7,6 +7,27 @@
 .admin-toolbar {
   position: relative;
   z-index: 2;
+  background: white !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.toolbar-title {
+  font-family: 'Roboto Flex', sans-serif;
+  font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 48;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #706969;
+  font-size: 1.3rem;
+}
+
+.greeting {
+  font-family: 'Roboto Flex', sans-serif;
+  font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 36;
+  color: #706969;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  margin-right: 0.5rem;
 }
 
 .spacer {

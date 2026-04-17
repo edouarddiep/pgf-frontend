@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, ChangeDetectionStrategy, inject, signal, PLATFORM_ID} from '@angular/core';
+import {CommonModule, isPlatformBrowser} from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -39,45 +39,50 @@ export class AdminLoginComponent {
   protected readonly loginError = signal(false);
   protected readonly showPassword = signal(false);
 
+  protected readonly loginMode = signal<'legacy' | 'email'>('email');
+
   protected readonly loginForm = this.fb.group({
+    email: ['', [Validators.email]],
     password: ['', [Validators.required]]
   });
+
+  constructor() {
+    if (isPlatformBrowser(inject(PLATFORM_ID))) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('legacy') === 'true') {
+        this.loginMode.set('legacy');
+      }
+    }
+  }
 
   protected togglePassword(): void {
     this.showPassword.update(v => !v);
   }
 
-  protected goHome(): void {
-    this.router.navigate(['/']);
+  protected toggleMode(): void {
+    this.loginMode.update(m => m === 'email' ? 'legacy' : 'email');
+    this.loginError.set(false);
   }
 
   protected login(): void {
     if (this.loginForm.invalid) return;
-
     this.isLoading.set(true);
     this.loginError.set(false);
+    const { email, password } = this.loginForm.value;
 
-    const password = this.loginForm.value.password!;
+    const login$ = this.loginMode() === 'email'
+      ? this.adminService.login(email!, password!)
+      : this.adminService.login(password!);
 
-    this.adminService.login(password)
-      .pipe(
-        catchError(() => {
-          this.loginError.set(true);
-          this.isLoading.set(false);
-          return EMPTY;
-        })
-      )
-      .subscribe(() => {
+    login$.pipe(
+      catchError(() => {
+        this.loginError.set(true);
         this.isLoading.set(false);
-        this.snackBar.open('Connexion au panel admin réussie.', undefined, {
-          duration: 3000,
-          panelClass: ['success-snackbar']
-        });
-        this.router.navigate(['/admin']);
-      });
-  }
-
-  protected hasError(): boolean {
-    return this.loginError();
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      this.isLoading.set(false);
+      this.router.navigate(['/admin']);
+    });
   }
 }
