@@ -1,28 +1,28 @@
 <div class="login-container">
   <mat-card class="login-card">
     <mat-card-content>
-      <h1 class="card-title">Demande d'accès admin</h1>
+      <h1 class="card-title">{{ 'admin.register.title' | translate }}</h1>
       @if (submitted()) {
-        <p class="success-message">Votre demande a bien été envoyée à l'administrateur du site. Vous recevrez un e-mail de confirmation une fois approuvée.</p>
+        <p class="success-message">{{ 'admin.register.successMessage' | translate }}</p>
         <div class="actions">
-          <button mat-stroked-button class="action-btn" routerLink="/">Retourner sur le site</button>
+          <button mat-stroked-button class="action-btn" routerLink="/">{{ 'admin.register.backToSite' | translate }}</button>
         </div>
       } @else {
         <form [formGroup]="form" (ngSubmit)="submit()">
           <input type="hidden" formControlName="secret">
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Votre nom</mat-label>
+            <mat-label>{{ 'admin.register.displayName' | translate }}</mat-label>
             <input matInput formControlName="displayName">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>E-mail</mat-label>
+            <mat-label>{{ 'admin.register.email' | translate }}</mat-label>
             <input matInput formControlName="email" type="email" autocomplete="email">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Mot de passe</mat-label>
+            <mat-label>{{ 'admin.register.password' | translate }}</mat-label>
             <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
             <mat-icon matSuffix class="toggle-password" (click)="togglePassword()">
               {{ showPassword() ? 'visibility_off' : 'visibility' }}
@@ -30,7 +30,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Confirmer le mot de passe</mat-label>
+            <mat-label>{{ 'admin.register.confirmPassword' | translate }}</mat-label>
             <input matInput [type]="showConfirmPassword() ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
             <mat-icon matSuffix class="toggle-password" (click)="toggleConfirmPassword()">
               {{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}
@@ -39,13 +39,13 @@
 
           <div class="validation-errors">
             @if (form.get('email')?.invalid && form.get('email')?.dirty) {
-              <p>Veuillez saisir un e-mail valide.</p>
+              <p>{{ 'admin.register.errors.emailInvalid' | translate }}</p>
             }
             @if (form.get('password')?.invalid && form.get('password')?.dirty) {
-              <p>Le mot de passe doit contenir au moins 8 caractères.</p>
+              <p>{{ 'admin.register.errors.passwordTooShort' | translate }}</p>
             }
             @if (form.hasError('passwordMismatch') && form.get('confirmPassword')?.dirty) {
-              <p>Les mots de passe ne correspondent pas.</p>
+              <p>{{ 'admin.register.errors.passwordMismatch' | translate }}</p>
             }
             @if (error()) {
               <p>{{ errorMessage() }}</p>
@@ -55,7 +55,7 @@
           <div class="actions">
             <button mat-raised-button color="primary" type="submit" class="action-btn"
                     [disabled]="form.invalid || isLoading()">
-              {{ isLoading() ? 'Envoi...' : 'Envoyer la demande' }}
+              {{ isLoading() ? ('admin.register.submitting' | translate) : ('admin.register.submit' | translate) }}
             </button>
           </div>
         </form>

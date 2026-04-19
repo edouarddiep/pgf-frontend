@@ -7,6 +7,7 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
 import {switchMap, map, combineLatest, take} from 'rxjs';
 import { ApiService } from '@core/services/api.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-artwork-category',
@@ -15,7 +16,8 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    TranslatePipe
   ],
   templateUrl: './artwork-category.component.html',
   styleUrl: './artwork-category.component.scss',

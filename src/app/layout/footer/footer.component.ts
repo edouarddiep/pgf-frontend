@@ -23,18 +23,18 @@ export class FooterComponent {
   readonly instagramLogoUrl = 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/insta-logo.jpg';
 
   readonly quickLinks = [
-    { key: 'nav.home', route: '/' },
-    { key: 'nav.about', route: '/about' },
-    { key: 'nav.artworks', route: '/artworks' },
-    { key: 'nav.exhibitions', route: '/exhibitions' },
-    { key: 'nav.archives', route: '/archives' },
-    { key: 'nav.association', route: '/association' },
-    { key: 'nav.contact', route: '/contact' }
+    { nameKey: 'nav.home', route: '/' },
+    { nameKey: 'nav.about', route: '/about' },
+    { nameKey: 'nav.artworks', route: '/artworks' },
+    { nameKey: 'nav.exhibitions', route: '/exhibitions' },
+    { nameKey: 'nav.archives', route: '/archives' },
+    { nameKey: 'nav.association', route: '/association' },
+    { nameKey: 'nav.contact', route: '/contact' }
   ];
 
   readonly legalLinks = [
-    { key: 'footer.legal', route: '/legal' },
-    { key: 'footer.privacy', route: '/privacy' },
-    { key: 'footer.terms', route: '/terms' }
+    { nameKey: 'footer.legal', route: '/legal' },
+    { nameKey: 'footer.privacy', route: '/privacy' },
+    { nameKey: 'footer.terms', route: '/terms' }
   ];
 }

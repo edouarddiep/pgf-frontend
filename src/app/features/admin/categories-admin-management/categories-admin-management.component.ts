@@ -20,6 +20,7 @@ import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard';
 import { ExportColumn, ExportService } from '@shared/services/export.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 type SortField = 'id' | 'name';
 
@@ -42,6 +43,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
+  private readonly translateService = inject(TranslateService);
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
   private isDragging = false;
@@ -191,12 +193,14 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
 
       operation.pipe(
         catchError(err => {
-          this.notificationService.error(err?.error?.message || 'Erreur lors de la sauvegarde');
+          this.notificationService.error(this.translateService.translate('admin.categories.saveError'));
           this.isSubmitting.set(false);
           return EMPTY;
         })
       ).subscribe(() => {
-        this.notificationService.success(editing ? 'Catégorie modifiée avec succès' : 'Catégorie créée avec succès');
+        this.notificationService.success(
+          this.translateService.translate(editing ? 'admin.categories.saveSuccess' : 'admin.categories.createSuccess')
+        );
         this.isSubmitting.set(false);
         this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/categories']);
@@ -206,7 +210,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     if (file) {
       this.adminService.uploadCategoryImage(file, slug).pipe(
         catchError(() => {
-          this.notificationService.error('Erreur lors de l\'upload de l\'image');
+          this.notificationService.error(this.translateService.translate('admin.categories.uploadError'));
           this.isSubmitting.set(false);
           return EMPTY;
         })
@@ -263,7 +267,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private loadCategories(): void {
     forkJoin({ categories: this.adminService.getCategories(), artworks: this.adminService.getArtworks() })
       .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors du chargement des catégories');
+        this.notificationService.error(this.translateService.translate('admin.categories.loadError'));
         return EMPTY;
       }))
       .subscribe(({ categories, artworks }) => {

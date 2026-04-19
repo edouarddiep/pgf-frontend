@@ -10,6 +10,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {AdminService} from '@features/admin/services/admin.service';
 import {NotificationService} from '@shared/services/notification.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -34,6 +35,7 @@ export class AdminLayoutComponent {
   private readonly adminService = inject(AdminService);
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
+  private readonly translateService = inject(TranslateService);
   private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly displayName = signal<string>('');
@@ -56,7 +58,7 @@ export class AdminLayoutComponent {
 
   protected logout(): void {
     this.adminService.logout();
-    this.notificationService.info('Déconnexion réussie. Merci et bonne visite !');
+    this.notificationService.info(this.translateService.translate('admin.layout.logoutSuccess'));
     this.router.navigate(['/']);
   }
 }

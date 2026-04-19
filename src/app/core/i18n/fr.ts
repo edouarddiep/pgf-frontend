@@ -56,7 +56,11 @@ export const fr = {
     hero: 'LES ŒUVRES',
     categories: 'Catégories',
     empty: 'Aucune œuvre disponible',
-    emptyDetail: "Cette catégorie ne contient pas encore d'œuvres."
+    emptyDetail: "Cette catégorie ne contient pas encore d'œuvres.",
+    emptyCategory: "Aucune œuvre n'est disponible dans cette catégorie pour le moment.",
+    backToCategories: 'TOUTES LES CATÉGORIES',
+    backToAll: 'TOUTES LES ŒUVRES',
+    contact: 'CONTACT'
   },
   exhibitions: {
     hero: 'EXPOSITIONS',
@@ -64,6 +68,7 @@ export const fr = {
     noImage: 'Aucune image',
     retrospective: 'Rétrospective en vidéo',
     videoUnsupported: 'Votre navigateur ne supporte pas la lecture de vidéos.',
+    credits: 'Crédits',
     vernissage: {
       register: "S'inscrire au vernissage",
       disabled: "L'exposition est actuellement en cours. Il n'est plus possible de s'inscrire au vernissage.",
@@ -75,11 +80,14 @@ export const fr = {
     emptyPast: 'Aucune exposition passée',
     emptyPastDetail: "L'historique des expositions sera bientôt disponible",
     dateConfirm: 'Date à confirmer',
+    status: { upcoming: 'À venir', ongoing: 'En cours', past: 'Terminé' },
     history: {
       title: 'Historique des expositions',
       personal: 'P : Exposition personnelle',
-      collective: 'C : Exposition collective'
-    }
+      collective: 'C : Exposition collective',
+      tooltipPersonal: 'Exposition personnelle',
+      tooltipCollective: 'Exposition collective'
+    },
   },
   archives: {
     hero: 'ARCHIVES',
@@ -143,6 +151,7 @@ export const fr = {
       submitting: 'Envoi en cours...',
       successMessage: 'Message envoyé avec succès',
       errorMessage: "Erreur lors de l'envoi du message",
+      charactersCount: '{{count}} / 500 caractères',
       errors: {
         nameRequired: 'Veuillez renseigner un nom',
         firstNameRequired: 'Veuillez renseigner un prénom',
@@ -156,18 +165,82 @@ export const fr = {
     social: 'Suivez mon actualité sur Instagram'
   },
   legal: {
-    hero: 'MENTIONS LÉGALES'
+    hero: 'MENTIONS LÉGALES',
+    s1: { title: "1. Informations sur l'éditeur", name: 'Nom :', nameValue: 'Pierrette Gonseth-Favre', status: 'Statut :', statusValue: 'Artiste indépendante' },
+    s2: { title: '2. Hébergement du site', p1: "Le site est hébergé par un prestataire externe. Les informations d'hébergement sont disponibles sur demande." },
+    s3: { title: '3. Propriété intellectuelle', p1: "L'ensemble des œuvres présentées sur ce site (peintures, sculptures, photographies) sont la propriété exclusive de Pierrette Gonseth-Favre.", p2: "Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable de l'artiste.", p3: "Les images des œuvres ne peuvent être utilisées sans l'accord express et écrit de l'artiste." },
+    s4: { title: "4. Vente d'œuvres", p1: 'Les œuvres présentées sur ce site sont proposées à la vente. Les prix indiqués sont en euros, toutes taxes comprises.', p2: "La vente est considérée comme définitive après confirmation écrite de l'artiste et réception du paiement intégral.", p3: "Les œuvres sont vendues avec certificat d'authenticité signé par l'artiste.", p4: "L'expédition des œuvres se fait aux frais de l'acquéreur, avec assurance obligatoire." },
+    s5: { title: '5. Droit de rétractation', p1: "Conformément au Code de la consommation suisse, l'acquéreur dispose d'un délai de 14 jours à compter de la réception de l'œuvre pour exercer son droit de rétractation.", p2: "L'œuvre doit être retournée dans son état d'origine, avec son emballage et son certificat d'authenticité.", p3: "Les frais de retour sont à la charge de l'acquéreur." },
+    s6: { title: '6. Protection des données personnelles', p1: 'Les informations recueillies via le formulaire de contact sont destinées uniquement à Pierrette Gonseth-Favre pour répondre à vos demandes.', p2: "Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles.", p3: "Aucune donnée personnelle n'est transmise à des tiers.", p4: 'Pour exercer vos droits, contactez : denis.gonseth@dfinet.ch' },
+    s7: { title: '7. Cookies', p1: 'Ce site utilise des cookies techniques nécessaires à son bon fonctionnement.', p2: "Aucun cookie de traçage ou publicitaire n'est utilisé." },
+    s8: { title: '8. Responsabilité', p1: "L'artiste s'efforce de fournir des informations exactes et à jour sur ce site, mais ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations mises à disposition.", p2: "L'artiste ne peut être tenue responsable de dommages directs ou indirects résultant de l'utilisation du site." },
+    s9: { title: '9. Droit applicable et juridiction', p1: 'Les présentes mentions légales sont régies par le droit suisse.', p2: 'En cas de litige, les tribunaux du Canton de Vaud seront seuls compétents.' },
+    s10: { title: '10. Modification des mentions légales', p1: "L'artiste se réserve le droit de modifier à tout moment ces mentions légales.", p2: 'Les modifications prendront effet dès leur publication sur le site.' },
+    contact: { title: 'Contact pour toute question juridique', p1: 'Pour toute question concernant ces mentions légales, veuillez contacter :', email: 'Email :', emailValue: 'denis.gonseth@dfinet.ch' }
   },
   privacy: {
-    hero: 'POLITIQUE DE CONFIDENTIALITÉ'
+    hero: 'POLITIQUE DE CONFIDENTIALITÉ',
+    s1: { title: '1. Responsable du traitement', responsible: 'Responsable :', responsibleValue: 'Pierrette Gonseth-Favre', status: 'Statut :', statusValue: 'Artiste indépendante', contact: 'Contact :', contactValue: 'denis.gonseth@dfinet.ch' },
+    s2: {
+      title: '2. Données collectées',
+      t1: '2.1 Données collectées via le formulaire de contact', li1_1: 'Nom et prénom', li1_2: 'Adresse email', li1_3: 'Numéro de téléphone (optionnel)', li1_4: 'Sujet et message',
+      t2: '2.2 Données de navigation', li2_1: 'Adresse IP', li2_2: 'Type de navigateur', li2_3: 'Pages visitées', li2_4: "Date et heure de connexion",
+      t3: "2.3 Données lors d'un achat", li3_1: 'Informations de facturation', li3_2: 'Adresse de livraison', li3_3: 'Historique des commandes'
+    },
+    s3: { title: '3. Finalités du traitement', intro: 'Les données personnelles sont collectées et traitées pour les finalités suivantes :', li1: 'Gestion des demandes de contact :', li1v: 'répondre à vos questions et demandes d\'information', li2: 'Gestion des ventes :', li2v: 'traitement des commandes, facturation, livraison', li3: 'Amélioration du site :', li3v: "analyse du trafic et de l'utilisation (données anonymisées)", li4: 'Obligations légales :', li4v: 'conservation des factures et documents comptables' },
+    s4: { title: '4. Base légale du traitement', intro: 'Les traitements de données personnelles sont fondés sur :', li1: 'Le consentement :', li1v: 'pour les demandes de contact volontaires', li2: "L'exécution d'un contrat :", li2v: 'pour le traitement des commandes', li3: "L'intérêt légitime :", li3v: "pour l'amélioration du site et la sécurité", li4: "L'obligation légale :", li4v: 'pour la conservation des documents comptables' },
+    s5: { title: '5. Destinataires des données', p1: 'Vos données personnelles ne sont', p1b: 'jamais transmises à des tiers', p1c: 'à des fins commerciales.', p2: 'Elles peuvent être partagées uniquement avec :', li1: 'Prestataires techniques :', li1v: 'hébergeur du site (sous contrat de confidentialité)', li2: 'Transporteurs :', li2v: 'uniquement les données nécessaires à la livraison', li3: 'Autorités compétentes :', li3v: "en cas d'obligation légale" },
+    s6: { title: '6. Transferts de données', p1: "Les données sont traitées et stockées en Suisse et dans l'Union Européenne.", p2: "Aucun transfert vers des pays tiers n'est effectué sans garanties appropriées." },
+    s7: { title: '7. Durée de conservation', li1: 'Demandes de contact :', li1v: '3 ans après la dernière interaction', li2: 'Données de commande :', li2v: '10 ans (obligation légale comptable)', li3: 'Données de navigation :', li3v: '13 mois maximum', li4: 'Cookies techniques :', li4v: 'durée de la session', p1: 'Passé ces délais, les données sont automatiquement supprimées.' },
+    s8: {
+      title: '8. Vos droits', intro: 'Conformément au RGPD et à la législation suisse, vous disposez des droits suivants :',
+      t1: "8.1 Droit d'accès", p1: 'Vous pouvez demander à connaître les données personnelles que nous détenons sur vous.',
+      t2: '8.2 Droit de rectification', p2: 'Vous pouvez demander la correction de données inexactes ou incomplètes.',
+      t3: "8.3 Droit à l'effacement", p3: 'Vous pouvez demander la suppression de vos données dans certains cas.',
+      t4: '8.4 Droit à la limitation', p4: 'Vous pouvez demander la limitation du traitement de vos données.',
+      t5: '8.5 Droit à la portabilité', p5: 'Vous pouvez récupérer vos données dans un format structuré.',
+      t6: "8.6 Droit d'opposition", p6: 'Vous pouvez vous opposer au traitement de vos données pour des raisons légitimes.',
+      t7: '8.7 Droit de retrait du consentement', p7: 'Vous pouvez retirer votre consentement à tout moment.',
+      exercise: 'Pour exercer ces droits, contactez :', exerciseValue: 'denis.gonseth@dfinet.ch'
+    },
+    s9: {
+      title: '9. Cookies et technologies similaires',
+      t1: '9.1 Cookies utilisés', p1: 'Ce site utilise uniquement des', p1b: 'cookies techniques strictement nécessaires', p1c: 'au fonctionnement :', li1_1: 'Cookies de session (navigation)', li1_2: 'Cookies de sécurité',
+      t2: '9.2 Cookies non utilisés', p2: 'Ce site n\'utilise', p2b: 'aucun cookie', p2c: 'de :', li2_1: 'Traçage publicitaire', li2_2: 'Analyse comportementale', li2_3: 'Réseaux sociaux',
+      t3: '9.3 Gestion des cookies', p3: 'Vous pouvez paramétrer votre navigateur pour refuser les cookies, mais cela peut affecter le fonctionnement du site.'
+    },
+    s10: { title: '10. Sécurité des données', intro: 'Nous mettons en œuvre les mesures techniques et organisationnelles appropriées pour protéger vos données :', li1: 'Chiffrement des connexions (HTTPS)', li2: 'Accès restreint aux données', li3: 'Sauvegardes sécurisées', li4: 'Mise à jour régulière des systèmes' },
+    s11: { title: '11. Mineurs', p1: "Ce site ne s'adresse pas spécifiquement aux mineurs.", p2: 'Nous ne collectons pas sciemment de données personnelles de personnes de moins de 16 ans.', p3: "Si vous êtes mineur, demandez l'autorisation de vos parents avant de nous contacter." },
+    s12: { title: '12. Modifications de la politique', p1: 'Cette politique de confidentialité peut être mise à jour pour refléter les changements dans nos pratiques.', p2: 'La date de dernière modification est indiquée en bas de cette page.', p3: "Les modifications importantes vous seront notifiées par email si vous avez fourni votre adresse." },
+    s13: { title: '13. Réclamations', intro: 'Si vous estimez que le traitement de vos données ne respecte pas la réglementation, vous pouvez :', li1: 'Nous contacter directement : denis.gonseth@dfinet.ch', li2: "Déposer une réclamation auprès de l'autorité de contrôle compétente", authority: 'Autorité suisse :', authorityValue: 'Préposé fédéral à la protection des données et à la transparence (PFPDT)' },
+    s14: { title: '14. Contact', p1: 'Pour toute question concernant cette politique de confidentialité ou vos données personnelles :', email: 'Email :', emailValue: 'denis.gonseth@dfinet.ch', guarantee: 'Réponse garantie sous 30 jours.' },
+    contact: { title: 'Informations de contact', name: 'Pierrette Gonseth-Favre', email: 'Email :', emailValue: 'denis.gonseth@dfinet.ch' }
   },
   terms: {
-    hero: 'CONDITIONS GÉNÉRALES DE VENTE'
+    hero: 'CONDITIONS GÉNÉRALES DE VENTE',
+    s1: { title: '1. Objet et champ d\'application', p1: "Les présentes conditions générales de vente s'appliquent à toutes les ventes d'œuvres d'art réalisées par Pierrette Gonseth-Favre, artiste indépendante.", p2: "Toute commande implique l'acceptation pleine et entière des présentes conditions générales de vente.", p3: "Aucune modification ne pourra être apportée aux présentes conditions générales de vente sans accord écrit préalable de l'artiste." },
+    s2: { title: '2. Œuvres proposées', p1: 'Toutes les œuvres présentées sont des créations originales et uniques de Pierrette Gonseth-Favre.', p2: "Chaque œuvre est accompagnée d'un certificat d'authenticité signé par l'artiste.", p3: "Les photographies des œuvres sont non contractuelles. Des variations de couleurs peuvent apparaître selon l'écran utilisé.", p4: 'Les dimensions indiquées sont données à titre indicatif et peuvent présenter une tolérance de 1 cm.' },
+    s3: { title: '3. Prix et modalités de paiement', p1: 'Les prix sont exprimés en euros, toutes taxes comprises.', p2: "Les prix peuvent être modifiés à tout moment, seul le prix en vigueur au moment de la commande fait foi.", paymentMethods: 'Modalités de paiement acceptées :', li1: 'Virement bancaire', li2: 'Chèque (uniquement pour la Suisse et la France)', li3: 'Espèces lors de remise en main propre', p3: "Le paiement intégral est exigé avant expédition ou remise de l'œuvre." },
+    s4: { title: '4. Commande et confirmation', p1: 'Toute commande doit être confirmée par écrit (email : denis.gonseth@dfinet.ch).', p2: "L'artiste se réserve le droit d'accepter ou de refuser toute commande.", p3: 'Une facture sera établie pour chaque vente confirmée.', p4: "La vente n'est définitive qu'après confirmation écrite de l'artiste et réception du paiement intégral." },
+    s5: { title: '5. Livraison et transport', p1: "Les frais de transport et d'assurance sont à la charge de l'acquéreur.", p2: 'Les œuvres sont expédiées dans un emballage sécurisé adapté.', p3: "L'assurance transport est obligatoire pour toute expédition.", p4: 'Les délais de livraison sont donnés à titre indicatif et ne sont pas contractuels.', p5: "L'artiste ne peut être tenue responsable des retards de livraison dus au transporteur.", p6: 'Remise en main propre possible sur rendez-vous dans la région de Founex.' },
+    s6: { title: '6. Réception et vérification', p1: "L'acquéreur doit vérifier l'état de l'œuvre dès réception.", p2: 'Toute détérioration ou non-conformité doit être signalée dans les 48 heures suivant la réception.', p3: "Passé ce délai, l'œuvre sera considérée comme conforme et en bon état.", p4: "En cas de dommage pendant le transport, l'acquéreur doit formuler des réserves auprès du transporteur." },
+    s7: { title: '7. Droit de rétractation', p1: "Conformément à la législation en vigueur, l'acquéreur dispose d'un délai de 14 jours calendaires à compter de la réception pour exercer son droit de rétractation.", p2: "L'œuvre doit être retournée dans son état d'origine avec :", li1: "Son emballage d'origine", li2: "Son certificat d'authenticité", li3: 'Sa facture', p3: "Les frais de retour sont à la charge de l'acquéreur.", p4: "Le remboursement sera effectué dans les 14 jours suivant la réception de l'œuvre en bon état." },
+    s8: { title: '8. Garanties', p1: "L'artiste garantit l'authenticité de ses œuvres.", p2: "Les œuvres sont vendues en l'état, avec leurs imperfections éventuelles qui font partie du caractère artisanal de la création.", p3: "Aucune garantie n'est accordée sur la conservation de l'œuvre, celle-ci dépendant des conditions de conservation choisies par l'acquéreur." },
+    s9: { title: '9. Propriété intellectuelle et droits d\'auteur', p1: "L'acquéreur devient propriétaire de l'œuvre physique mais pas des droits d'auteur.", p2: "L'artiste conserve tous les droits moraux et patrimoniaux sur ses créations.", p3: "Toute reproduction, même partielle, est interdite sans autorisation écrite de l'artiste.", p4: "L'usage commercial de l'image de l'œuvre est strictement interdit.", p5: "L'acquéreur s'engage à mentionner le nom de l'artiste lors de toute présentation publique de l'œuvre." },
+    s10: { title: '10. Revente et droit de suite', p1: "En cas de revente de l'œuvre, l'artiste doit être informée par l'acquéreur.", p2: 'Le droit de suite peut s\'appliquer conformément à la législation en vigueur.', p3: "L'acquéreur s'engage à transmettre le certificat d'authenticité au nouveau propriétaire." },
+    s11: { title: '11. Responsabilité', p1: "La responsabilité de l'artiste est limitée au prix de vente de l'œuvre.", p2: "L'artiste ne peut être tenue responsable des dommages indirects ou de la perte de valeur de l'œuvre.", p3: "L'acquéreur est seul responsable de l'assurance et de la conservation de l'œuvre après livraison." },
+    s12: { title: '12. Force majeure', p1: "L'artiste ne peut être tenue responsable de l'inexécution de ses obligations en cas de force majeure.", p2: 'Sont considérés comme cas de force majeure tous événements imprévisibles, irrésistibles et extérieurs aux parties.' },
+    s13: { title: '13. Données personnelles', p1: 'Les données collectées sont utilisées uniquement pour la gestion de la commande et la relation client.', p2: "Elles ne sont jamais transmises à des tiers.", p3: "L'acquéreur dispose d'un droit d'accès, de rectification et de suppression de ses données." },
+    s14: { title: '14. Droit applicable et règlement des litiges', p1: 'Les présentes conditions générales sont régies par le droit suisse.', p2: "En cas de litige, les parties s'efforceront de trouver une solution amiable.", p3: 'À défaut, les tribunaux du Canton de Vaud seront seuls compétents.' },
+    s15: { title: '15. Dispositions finales', p1: "Si une clause des présentes conditions générales était déclarée nulle, les autres clauses resteraient applicables.", p2: "L'artiste se réserve le droit de modifier ces conditions générales à tout moment.", p3: 'Les modifications prendront effet dès leur publication sur le site.' },
+    contact: { title: 'Contact', intro: 'Pour toute question concernant ces conditions générales de vente :', name: 'Pierrette Gonseth-Favre', email: 'Email :', emailValue: 'denis.gonseth@dfinet.ch' }
   },
   admin: {
     layout: {
+      greeting: 'Bonjour',
       title: 'Administration PGF',
       logout: 'Déconnexion',
+      logoutSuccess: 'Déconnexion réussie. Merci et bonne visite !',
       nav: {
         dashboard: 'Tableau de bord',
         categories: 'Catégories',
@@ -177,8 +250,27 @@ export const fr = {
         messages: 'Messages'
       }
     },
+    register: {
+      title: "Demande d'accès admin",
+      successMessage: "Votre demande a bien été envoyée à l'administrateur du site. Vous recevrez un e-mail de confirmation une fois approuvée.",
+      backToSite: 'Retourner sur le site',
+      displayName: 'Votre nom',
+      email: 'E-mail',
+      password: 'Mot de passe',
+      confirmPassword: 'Confirmer le mot de passe',
+      generic: 'Une erreur est survenue. Veuillez réessayer.',
+      errors: {
+        emailInvalid: 'Veuillez saisir un e-mail valide.',
+        passwordTooShort: 'Le mot de passe doit contenir au moins 8 caractères.',
+        passwordMismatch: 'Les mots de passe ne correspondent pas.',
+        generic: 'Une erreur est survenue. Veuillez réessayer.'
+      },
+      submitting: 'Envoi...',
+      submit: 'Envoyer la demande'
+    },
     login: {
       title: 'Administration PGF',
+      email: 'Adresse e-mail',
       passwordLabel: 'Veuillez saisir un mot de passe',
       wrongPassword: 'Mot de passe incorrect',
       cancel: 'Annuler',
@@ -222,7 +314,14 @@ export const fr = {
       nameRequired: 'Veuillez renseigner un nom',
       noImage: 'Aucune image',
       chooseImage: 'Choisir une image',
-      changeImage: "Changer l'image"
+      changeImage: "Changer l'image",
+      errors: {
+        loadFailed: 'Erreur lors du chargement des données',
+        saveFailed: 'Erreur lors de la sauvegarde',
+        deleteFailed: 'Erreur lors de la suppression',
+        uploadFailed: "Erreur lors de l'upload",
+        generic: 'Une erreur est survenue. Veuillez réessayer.'
+      },
     },
     artworks: {
       title: 'Gestion des œuvres',
@@ -239,6 +338,14 @@ export const fr = {
       colTitle: 'Titre',
       colCategories: 'Catégories',
       colActions: 'Actions',
+      saveSuccess: 'Œuvre modifiée avec succès',
+      createSuccess: 'Œuvre créée avec succès',
+      deleteSuccess: 'Œuvre supprimée avec succès',
+      deleteConfirmTitle: "Supprimer l'œuvre",
+      deleteConfirmMessage: 'Êtes-vous sûr de vouloir supprimer cette œuvre ? Cette action est irréversible.',
+      loadError: 'Erreur lors du chargement des données',
+      saveError: "Erreur lors de la sauvegarde de l'œuvre",
+      deleteError: "Erreur lors de la suppression de l'œuvre",
       form: {
         title: 'Titre',
         descriptionShort: 'Description courte',
@@ -249,7 +356,7 @@ export const fr = {
         categoryRequired: 'Veuillez sélectionner au moins une catégorie',
         imagesLabel: 'Images',
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'œuvre"
-      }
+      },
     },
     categories: {
       title: 'Gestion des catégories',
@@ -265,13 +372,19 @@ export const fr = {
       colDescription: 'Description',
       colArtworkCount: 'Nb œuvres liées',
       artworkCountTooltip: 'Cette catégorie contient {{count}} œuvre(s)',
+      saveSuccess: 'Catégorie modifiée avec succès',
+      createSuccess: 'Catégorie créée avec succès',
+      saveError: 'Erreur lors de la sauvegarde',
+      uploadError: "Erreur lors de l'upload de l'image",
+      loadError: 'Erreur lors du chargement des catégories',
       form: {
         name: 'Nom',
         descriptionShort: 'Description courte',
         description: 'Description',
         imageLabel: 'Image de la catégorie',
-        imageRequired: 'Veuillez ajouter une image pour créer la catégorie'
-      }
+        imageRequired: 'Veuillez ajouter une image pour créer la catégorie',
+        cropHint: 'Glisser pour recadrer'
+      },
     },
     exhibitions: {
       title: 'Gestion des expositions',
@@ -288,6 +401,19 @@ export const fr = {
       colStatus: 'Statut',
       colActions: 'Actions',
       statusTooltip: 'À venir · En cours · Passée',
+      saveSuccess: 'Exposition modifiée avec succès',
+      createSuccess: 'Exposition créée avec succès',
+      deleteSuccess: 'Exposition supprimée avec succès',
+      deleteConfirmTitle: "Supprimer l'exposition",
+      deleteConfirmMessage: "Êtes-vous sûr de vouloir supprimer cette exposition ? Cette action est irréversible.",
+      loadError: 'Erreur lors du chargement des expositions',
+      saveError: "Erreur lors de la sauvegarde de l'exposition",
+      uploadError: "Erreur lors de l'upload",
+      uploadVideoError: 'Erreur upload',
+      videoTooLarge: 'Vidéo trop volumineuse (max 500MB)',
+      videoInvalidFormat: 'Seuls les formats MP4, MOV et AVI sont acceptés',
+      deleteError: "Erreur lors de la suppression de l'exposition",
+      status: { upcoming: 'À venir', ongoing: 'En cours', past: 'Passée' },
       form: {
         title: 'Titre',
         location: 'Lieu',
@@ -295,12 +421,34 @@ export const fr = {
         address: 'Adresse',
         addressPlaceholder: 'Rue, numéro, code postal, localité',
         description: 'Description',
+        street: 'Rue',
+        streetPlaceholder: 'Veuillez rechercher une adresse postale',
+        streetRequired: 'La rue est obligatoire',
+        streetNumber: 'N° de rue',
+        streetNumberPlaceholder: 'Ex: 12',
+        streetNumberRequired: 'Le numéro est obligatoire',
+        postalCode: 'Code postal',
+        postalCodePlaceholder: 'Ex: 1277',
+        postalCodeRequired: 'Le code postal est obligatoire',
+        city: 'Ville',
+        cityPlaceholder: 'Ex: Chéserex',
+        cityRequired: 'La ville est obligatoire',
+        country: 'Pays',
+        countryPlaceholder: 'Ex: Suisse',
+        countryRequired: 'Le pays est obligatoire',
+        vernissageUrl: "Lien d'inscription au vernissage",
+        websiteUrl: "Lien du site web de l'exposition",
+        credits: 'Crédits',
         startDate: 'Date de début',
         startDateRequired: 'Veuillez renseigner une date de début',
         endDate: 'Date de fin',
         endDateRequired: 'Veuillez renseigner une date de fin',
         endDateBeforeStart: 'La date de fin ne peut pas être antérieure à la date de début',
         datePlaceholder: 'JJ.MM.AAAA',
+        mainImageLabel: 'Image principale *',
+        changeMainImage: "Changer l'image principale",
+        chooseMainImage: "Choisir l'image principale",
+        mainImageRequired: 'Veuillez ajouter une image principale',
         imagesLabel: "Images de l'exposition",
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'exposition",
         imageRequired: 'Veuillez ajouter au moins une image principale pour créer une exposition',
@@ -322,12 +470,21 @@ export const fr = {
       colTitle: 'Titre',
       colYear: 'Année',
       colActions: 'Actions',
+      saveSuccess: 'Archive modifiée avec succès',
+      createSuccess: 'Archive créée avec succès',
+      deleteSuccess: 'Archive supprimée',
+      deleteConfirmTitle: "Supprimer l'archive",
+      deleteConfirmMessage: "Êtes-vous sûr de vouloir supprimer cette archive ? Cette action est irréversible.",
+      loadError: 'Erreur lors du chargement des archives',
+      saveError: 'Erreur lors de la sauvegarde',
+      deleteError: 'Erreur lors de la suppression',
+      mainImageRequired: 'Une image principale est obligatoire',
       form: {
         title: 'Titre',
         titleRequired: 'Veuillez renseigner un titre',
         year: 'Année',
         yearRequired: 'Veuillez renseigner une année',
-        yearInvalid: 'L\'année doit être comprise entre 1900 et 2100',
+        yearInvalid: "L'année doit être comprise entre 1900 et 2100",
         description: 'Description',
         filesLabel: "Fichiers de l'archive",
         imageRequired: 'Veuillez ajouter au moins une image principale pour créer une archive',
@@ -349,6 +506,8 @@ export const fr = {
       statusNew: 'Nouveau',
       read: 'Lire le message',
       receivedAt: "Reçu le dd.MM.yyyy à HH:mm",
+      deleteConfirmTitle: 'Supprimer le message',
+      deleteConfirmMessage: 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.',
       dialog: {
         sender: 'Expéditeur:',
         email: 'Email:',
@@ -369,6 +528,10 @@ export const fr = {
       changeImage: "Changer l'image",
       mainBadge: 'Principale*',
       setMain: 'Définir comme image principale',
+      mainImageCannotBeDeleted: "L'image principale ne peut pas être supprimée",
+      singleImageOnly: 'Une seule image est autorisée',
+      fileTooLarge: 'Fichier trop volumineux (max 10MB)',
+      formatNotSupported: 'Format non supporté',
       removeImage: "Supprimer l'image",
       uploading: 'Upload en cours...',
       zoom: 'Agrandir'
@@ -382,7 +545,13 @@ export const fr = {
     },
     exhibitionCard: {
       moreInfo: "Plus d'infos"
-    }
+    },
+    unsavedChanges: {
+      title: 'Modifications non enregistrées',
+      message: 'Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter cette page ?',
+      confirm: 'Confirmer',
+      cancel: 'Annuler'
+    },
   }
 } as const;
 

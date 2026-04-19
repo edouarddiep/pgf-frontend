@@ -22,6 +22,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
+import {TranslateService} from '@core/services/translate.service';
 
 type SortField = 'id' | 'title' | 'year';
 
@@ -44,6 +45,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly translateService = inject(TranslateService);
 
   private readonly rawArchives = signal<Archive[]>([]);
   protected readonly searchQuery = signal('');
@@ -142,7 +144,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   private loadArchives(): void {
     this.adminService.getArchives()
       .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors du chargement des archives');
+        this.notificationService.error(this.translateService.translate('admin.archives.loadError'));
         return EMPTY;
       }))
       .subscribe(archives => this.rawArchives.set(archives));
@@ -223,7 +225,7 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
     this.submitAttempted.set(true);
     if (this.archiveForm.invalid) return;
     if (!this.thumbnailUrl()) {
-      this.notificationService.error('Une image principale est obligatoire');
+      this.notificationService.error(this.translateService.translate('admin.archives.mainImageRequired'));
       return;
     }
     this.isSaving.set(true);
@@ -244,12 +246,14 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
 
     operation.pipe(
       catchError(err => {
-        this.notificationService.error(err?.error?.message || 'Erreur lors de la sauvegarde');
+        this.notificationService.error(this.translateService.translate('admin.archives.saveError'));
         this.isSaving.set(false);
         return EMPTY;
       })
     ).subscribe(() => {
-      this.notificationService.success(editing ? 'Archive modifiée avec succès' : 'Archive créée avec succès');
+      this.notificationService.success(
+        this.translateService.translate(editing ? 'admin.archives.saveSuccess' : 'admin.archives.createSuccess')
+      );
       this.isSaving.set(false);
       this.hasUnsavedChanges.set(false);
       this.router.navigate(['/admin/archives']);
@@ -258,19 +262,19 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected deleteArchive(id: number): void {
     this.confirmDialog.confirm({
-      title: 'Supprimer l\'archive',
-      message: 'Êtes-vous sûr de vouloir supprimer cette archive ? Cette action est irréversible.',
-      confirmLabel: 'Supprimer',
-      cancelLabel: 'Annuler'
+      title: this.translateService.translate('admin.archives.deleteConfirmTitle'),
+      message: this.translateService.translate('admin.archives.deleteConfirmMessage'),
+      confirmLabel: this.translateService.translate('admin.common.delete'),
+      cancelLabel: this.translateService.translate('admin.common.cancel')
     }).subscribe(confirmed => {
       if (!confirmed) return;
       this.adminService.deleteArchive(id)
         .pipe(catchError(() => {
-          this.notificationService.error('Erreur lors de la suppression');
+          this.notificationService.error(this.translateService.translate('admin.archives.deleteError'));
           return EMPTY;
         }))
         .subscribe(() => {
-          this.notificationService.success('Archive supprimée');
+          this.notificationService.success(this.translateService.translate('admin.archives.deleteSuccess'));
           this.loadArchives();
         });
     });

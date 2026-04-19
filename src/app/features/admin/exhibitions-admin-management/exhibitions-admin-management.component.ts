@@ -46,6 +46,7 @@ import {FileUploadService} from '@core/services/file-upload.service';
 import {AddressService, SwissAddress} from '@core/services/adresse.service';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
+import {TranslateService} from '@core/services/translate.service';
 
 interface ExhibitionFormData {
   title: string;
@@ -142,8 +143,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly addressService = inject(AddressService);
   private readonly fileUploadService = inject(FileUploadService);
 
+  private readonly translateService = inject(TranslateService);
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
   protected readonly searchQuery = signal('');
   protected readonly sortField = signal<'id' | 'title'>('id');
@@ -160,7 +163,6 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   protected readonly modalVideoUrl = signal<string>('');
   protected readonly imageRequired = signal(false);
   protected readonly addressSuggestions = signal<SwissAddress[]>([]);
-  private readonly addressService = inject(AddressService);
   private readonly destroy$ = new Subject<void>();
   private readonly streetSearch$ = new Subject<string>();
 
@@ -259,7 +261,7 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   private loadExhibitions(): void {
     this.adminService.getExhibitions()
       .pipe(catchError(() => {
-        this.notificationService.error('Erreur lors du chargement des expositions');
+        this.notificationService.error(this.translateService.translate('admin.exhibitions.loadError'));
         return EMPTY;
       }))
       .subscribe(exhibitions => this.rawExhibitions.set(exhibitions));
@@ -367,7 +369,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
     input.value = '';
 
     this.fileUploadService.uploadExhibitionImage(file, this.getExhibitionSlug(), 1)
-      .pipe(catchError(() => { this.notificationService.error('Erreur lors de l\'upload'); return EMPTY; }))
+      .pipe(catchError(() => {
+        this.notificationService.error(this.translateService.translate('admin.exhibitions.uploadError'));
+        return EMPTY;
+      }))
       .subscribe(result => {
         const previousMain = this.mainImageUrl();
         if (previousMain) {
@@ -400,8 +405,14 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
 
     const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo'];
     const validFiles = Array.from(input.files).filter(f => {
-      if (f.size > 500 * 1024 * 1024) { this.notificationService.error(`${f.name}: Vidéo trop volumineuse (max 500MB)`); return false; }
-      if (!validTypes.includes(f.type)) { this.notificationService.error(`${f.name}: Seuls les formats MP4, MOV et AVI sont acceptés`); return false; }
+      if (f.size > 500 * 1024 * 1024) {
+        this.notificationService.error(`${f.name}: ${this.translateService.translate('admin.exhibitions.videoTooLarge')}`);
+        return false;
+      }
+      if (!validTypes.includes(f.type)) {
+        this.notificationService.error(`${f.name}: ${this.translateService.translate('admin.exhibitions.videoInvalidFormat')}`);
+        return false;
+      }
       return true;
     });
 
@@ -420,7 +431,10 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
       if (uploadIndex >= files.length) { this.uploadingVideos.set(false); return; }
       const videoIndex = startIndex + uploadIndex + 1;
       this.adminService.uploadExhibitionVideo(files[uploadIndex], exhibitionSlug, videoIndex)
-        .pipe(catchError(() => { this.notificationService.error(`Erreur upload: ${files[uploadIndex].name}`); return EMPTY; }))
+        .pipe(catchError(() => {
+          this.notificationService.error(`${this.translateService.translate('admin.exhibitions.uploadVideoError')}: ${files[uploadIndex].name}`);
+          return EMPTY;
+        }))
         .subscribe(result => {
           this.uploadedVideoUrls.update(urls => [...urls, result.videoUrl]);
           this.hasUnsavedChanges.set(true);
@@ -474,11 +488,16 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
 
     operation
       .pipe(
-        catchError(() => { this.notificationService.error('Erreur lors de la sauvegarde de l\'exposition'); return EMPTY; }),
+        catchError(() => {
+          this.notificationService.error(this.translateService.translate('admin.exhibitions.saveError'));
+          return EMPTY;
+        }),
         finalize(() => this.isSaving.set(false))
       )
       .subscribe(() => {
-        this.notificationService.success(editing ? 'Exposition modifiée avec succès' : 'Exposition créée avec succès');
+        this.notificationService.success(
+          this.translateService.translate(editing ? 'admin.exhibitions.saveSuccess' : 'admin.exhibitions.createSuccess')
+        );
         window.dispatchEvent(new CustomEvent('exhibitionChanged'));
         this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/exhibitions']);
@@ -493,25 +512,20 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
 
   protected deleteExhibition(id: number): void {
     this.confirmDialog.confirm({
-      title: 'Supprimer l\'exposition',
-      message: 'Êtes-vous sûr de vouloir supprimer cette exposition ? Cette action est irréversible.',
-      confirmLabel: 'Supprimer',
-      cancelLabel: 'Annuler'
+      title: this.translateService.translate('admin.exhibitions.deleteConfirmTitle'),
+      message: this.translateService.translate('admin.exhibitions.deleteConfirmMessage'),
+      confirmLabel: this.translateService.translate('admin.common.delete'),
+      cancelLabel: this.translateService.translate('admin.common.cancel')
     }).subscribe(confirmed => {
       if (!confirmed) return;
-      const exhibition = this.exhibitions().find(e => e.id === id);
       this.adminService.deleteExhibition(id)
         .pipe(catchError(() => {
-          this.notificationService.error('Erreur lors de la suppression de l\'exposition');
+          this.notificationService.error(this.translateService.translate('admin.exhibitions.deleteError'));
           return EMPTY;
         }))
         .subscribe(() => {
-          exhibition?.imageUrls?.forEach(imageUrl =>
-            this.adminService.deleteExhibitionImage(imageUrl).pipe(catchError(() => EMPTY)).subscribe()
-          );
-          this.notificationService.success('Exposition supprimée avec succès');
+          this.notificationService.success(this.translateService.translate('admin.exhibitions.deleteSuccess'));
           this.loadExhibitions();
-          window.dispatchEvent(new CustomEvent('exhibitionChanged'));
         });
     });
   }
@@ -523,7 +537,12 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   }
 
   protected getStatusLabel(status: ExhibitionStatus): string {
-    return { [ExhibitionStatus.UPCOMING]: 'À venir', [ExhibitionStatus.ONGOING]: 'En cours', [ExhibitionStatus.PAST]: 'Passée' }[status] || status;
+    const keys: Record<ExhibitionStatus, string> = {
+      [ExhibitionStatus.UPCOMING]: 'admin.exhibitions.status.upcoming',
+      [ExhibitionStatus.ONGOING]: 'admin.exhibitions.status.ongoing',
+      [ExhibitionStatus.PAST]: 'admin.exhibitions.status.past'
+    };
+    return this.translateService.translate(keys[status] ?? status);
   }
 
   protected getStatusColor(status: ExhibitionStatus): string {

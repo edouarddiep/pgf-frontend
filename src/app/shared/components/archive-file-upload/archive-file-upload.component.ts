@@ -10,6 +10,7 @@ import { ArchiveFile } from '@core/models/archive.model';
 import { FileUploadService } from '@core/services/file-upload.service';
 import { NotificationService } from '@shared/services/notification.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 export interface PendingFile {
   fileType: ArchiveFile['fileType'];
@@ -39,6 +40,7 @@ export class ArchiveFileUploadComponent {
   private readonly fileUploadService = inject(FileUploadService);
   private readonly notificationService = inject(NotificationService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly translateService = inject(TranslateService);
 
   readonly files = input<PendingFile[]>([]);
   readonly filesChange = output<PendingFile[]>();
@@ -98,7 +100,7 @@ export class ArchiveFileUploadComponent {
   protected removeFile(index: number): void {
     const file = this.files()[index];
     if (this.isMain(file)) {
-      this.notificationService.info('L\'image principale ne peut pas être supprimée');
+      this.notificationService.info(this.translateService.translate('shared.imageUpload.mainImageCannotBeDeleted'));
       return;
     }
     const updated = this.files().filter((_, i) => i !== index);

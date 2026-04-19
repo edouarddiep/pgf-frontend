@@ -126,11 +126,11 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="street-field">
-              <mat-label>Rue</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.street' | translate }}</mat-label>
               <input matInput formControlName="street"
                      [matAutocomplete]="streetAuto"
                      (input)="onStreetInput($any($event.target).value)"
-                     placeholder="Veuillez rechercher une adresse postale"
+                     [placeholder]="'admin.exhibitions.form.streetPlaceholder' | translate"
                      required>
               <mat-autocomplete #streetAuto="matAutocomplete" (optionSelected)="onAddressSelected($event.option.value)">
                 @for (addr of addressSuggestions(); track $index) {
@@ -138,55 +138,50 @@
                 }
               </mat-autocomplete>
               @if (exhibitionForm.get('street')?.errors?.['required'] && exhibitionForm.get('street')?.touched) {
-                <mat-error>La rue est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.streetRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>N° de rue</mat-label>
-              <input matInput formControlName="streetNumber" placeholder="Ex: 12" required>
+              <mat-label>{{ 'admin.exhibitions.form.streetNumber' | translate }}</mat-label>
+              <input matInput formControlName="streetNumber" [placeholder]="'admin.exhibitions.form.streetNumberPlaceholder' | translate" required>
               @if (exhibitionForm.get('streetNumber')?.errors?.['required'] && exhibitionForm.get('streetNumber')?.touched) {
-                <mat-error>Le numéro est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.streetNumberRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Code postal</mat-label>
-              <input matInput formControlName="postalCode" placeholder="Ex: 1277" required>
+              <mat-label>{{ 'admin.exhibitions.form.postalCode' | translate }}</mat-label>
+              <input matInput formControlName="postalCode" [placeholder]="'admin.exhibitions.form.postalCodePlaceholder' | translate" required>
               @if (exhibitionForm.get('postalCode')?.errors?.['required'] && exhibitionForm.get('postalCode')?.touched) {
-                <mat-error>Le code postal est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.postalCodeRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Ville</mat-label>
-              <input matInput formControlName="city" placeholder="Ex: Chéserex" required>
+              <mat-label>{{ 'admin.exhibitions.form.city' | translate }}</mat-label>
+              <input matInput formControlName="city" [placeholder]="'admin.exhibitions.form.cityPlaceholder' | translate" required>
               @if (exhibitionForm.get('city')?.errors?.['required'] && exhibitionForm.get('city')?.touched) {
-                <mat-error>La ville est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.cityRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Pays</mat-label>
-              <input matInput formControlName="country" placeholder="Ex: Suisse" required>
+              <mat-label>{{ 'admin.exhibitions.form.country' | translate }}</mat-label>
+              <input matInput formControlName="country" [placeholder]="'admin.exhibitions.form.countryPlaceholder' | translate" required>
               @if (exhibitionForm.get('country')?.errors?.['required'] && exhibitionForm.get('country')?.touched) {
-                <mat-error>Le pays est obligatoire</mat-error>
+                <mat-error>{{ 'admin.exhibitions.form.countryRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ 'admin.exhibitions.form.description' | translate }}</mat-label>
-              <textarea matInput formControlName="description" rows="3"></textarea>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Lien d'inscription au vernissage</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.vernissageUrl' | translate }}</mat-label>
               <input matInput formControlName="vernissageUrl" placeholder="https://...">
               <mat-icon matSuffix>link</mat-icon>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Lien du site web de l'exposition</mat-label>
+              <mat-label>{{ 'admin.exhibitions.form.websiteUrl' | translate }}</mat-label>
               <input matInput formControlName="websiteUrl" placeholder="https://...">
               <mat-icon matSuffix>link</mat-icon>
             </mat-form-field>
@@ -217,10 +212,8 @@
               }
             </mat-form-field>
 
-            <!-- Remplacer le div "full-width" contenant app-image-upload par ces deux blocs -->
-
             <div class="full-width">
-              <label class="file-upload-label">Image principale *</label>
+              <label class="file-upload-label">{{ 'admin.exhibitions.form.mainImageLabel' | translate }}</label>
 
               @if (mainImageUrl()) {
                 <div class="image-preview-wrapper">
@@ -232,12 +225,12 @@
 
               <button mat-stroked-button type="button" (click)="mainFileInput.click()">
                 <mat-icon>upload</mat-icon>
-                {{ mainImageUrl() ? 'Changer l\'image principale' : 'Choisir l\'image principale' }}
+                {{ mainImageUrl() ? ('admin.exhibitions.form.changeMainImage' | translate) : ('admin.exhibitions.form.chooseMainImage' | translate) }}
               </button>
               <input #mainFileInput type="file" accept="image/*" style="display:none" (change)="onMainImageSelected($event)">
 
               @if (imageRequired()) {
-                <mat-error class="image-required-error">Veuillez ajouter une image principale</mat-error>
+                <mat-error class="image-required-error">{{ 'admin.exhibitions.form.mainImageRequired' | translate }}</mat-error>
               }
             </div>
 

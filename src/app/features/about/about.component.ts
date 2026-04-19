@@ -6,6 +6,7 @@ import { ExhibitionService } from '@features/exhibitions/services/exhibition.ser
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { map } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-about',
@@ -22,6 +23,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 export class AboutComponent implements OnInit, OnDestroy {
   private readonly exhibitionService = inject(ExhibitionService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly translateService = inject(TranslateService);
 
   readonly recentExhibitions$ = this.exhibitionService.getAllExhibitions().pipe(
     map(exhibitions => exhibitions.slice(0, 3))
@@ -36,7 +38,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   }
 
   formatDateBlock(startDate?: string, endDate?: string): string {
-    if (!startDate) return 'Date à confirmer';
+    if (!startDate) return this.translateService.translate('exhibitions.dateConfirm');
 
     const start = new Date(startDate);
     const startDay = start.getDate().toString().padStart(2, '0');

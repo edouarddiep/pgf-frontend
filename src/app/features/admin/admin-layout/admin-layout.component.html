@@ -3,7 +3,7 @@
     <span class="toolbar-title">{{ 'admin.layout.title' | translate }}</span>
     <span class="spacer"></span>
     @if (displayName()) {
-      <span class="greeting">Bonjour {{ displayName() }}</span>
+      <span class="greeting">{{ 'admin.layout.greeting' | translate }} {{ displayName() }}</span>
     }
     <button mat-button (click)="logout()">
       <mat-icon>logout</mat-icon>

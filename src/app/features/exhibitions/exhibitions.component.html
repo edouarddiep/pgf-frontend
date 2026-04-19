@@ -265,7 +265,7 @@
                   }
 
                   @if (exhibition.credits) {
-                    <p class="credits">Crédits: {{ exhibition.credits }}</p>
+                    <p class="credits">{{ 'exhibitions.credits' | translate }}: {{ exhibition.credits }}</p>
                   }
 
                   @if (exhibition.websiteUrl) {
@@ -301,8 +301,358 @@
               <div class="timeline-dot"></div>
               <div class="timeline-year">2025</div>
               <div class="timeline-content">
-                <p class="personal" matTooltip="Exposition personnelle" matTooltipPosition="below">Clinique de Genolier - P</p>
-                <p class="collective" matTooltip="Exposition collective" matTooltipPosition="below">Espace Culturel, Assens - C</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Clinique de Genolier - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Espace Culturel, Assens - C</p>
+              </div>
+            </div>
+
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2024</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Goldau - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Gallerie Junod, Vich - 20 ans de la galerie - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2023</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Abbaye de Bonmont (Chéserex - Vaud) - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2019</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Junod, Vich - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Espace Culturel, Assens - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2018</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Goldau - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2016</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Junod, Nyon - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2015</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie de l'Univers, Lausanne - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Goldau - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2014</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Espace Culturel, Assens - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2013</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Espace Arlaud, Lausanne - Rétrospective - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2012</div>
+              <div class="timeline-content">
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Meier, Arth am See - 20 ans de la galerie - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2009</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Chapelle de Collex - Collex(Ge) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Catherine Niederhauser - Lausanne - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2008</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet - Genève - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2006</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Guy Baertchi, Genève - "Masques & Colliers" - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Atelier Céramique Duplain, Allaman (Vd) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2005</div>
+              <div class="timeline-content">
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Espace PR 36, Neuchâtel - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2004</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Art Trium, UBS Genève - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2003</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Espace Culturel, Assens (Vd) - Parcours sculpture "Au fil du Talent" pour le bicentennaire du canton de Vaud - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2002</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2001</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - "Entre Terre et Ciel" (catalogue) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Espace culturel d'Assens, Assens (Vd) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Presbytère du Palais de Beaulieu, Lausanne - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Fallet, Genève - "Entre Terre et Ciel" (catalogue) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Espace culturel d'Assens, Assens (Vd) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Presbytère du Palais de Beaulieu, Lausanne - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">2000</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie de l'Orangerie, Neuchâtel - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Kunst Forum, Winterthur (Zh) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1999</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - "Eclats d'enfance" - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Bex et Arts, Bex (Vd) - Triennale de la sculpture suisse - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1998</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Esplanade de Montbenon, Lausanne - "Espace d'une culture" - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Europ'Art, Salon du livre, Genève - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Salon d'Automne, Paris (France) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1997</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Kultur Arena, Berne - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Europ'Art, Salon du livre, Genève - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1996</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Monserrat Gallery, New York - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Catherine Niederhauser, Lausanne - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Europ'Art, Salon du livre, Genève - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Capazza, Nancy (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Centre culturel "Usine à Gaz", Nyon (Vd) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Centre culturel de Morges, Morges (Vd) - 50 artistes pour Amnesty International - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1995</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Musée National Kunstatu Podébrad, Prague - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Musée National Slovaque, Bratislava - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Europ'Art, Salon du livre, Genève - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Usine à Gaz, Nyon (VD) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1994</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Château de Nyon, Nyon (Vd) - Exposition rétrospective "Solitude peuplée" (avec livre édité par Art Nyon) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Fallet, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Fondation Louis Moret, Martigny (Vs) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie des Amis des Arts, Neuchâtel - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1993</div>
+              <div class="timeline-content">
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Capazza, Nancy (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Association culturelle Suisse, Buenos Aires (Argentine) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Verdaine, Genève - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1992</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Museo Nacional, Santiago-du-Chili (Chili) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie C. Malingue, Asuncion (Paraguay) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Meier, Arth-am-See - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Capazza, Nancy - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Nicole Buck, Strasbourg - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie des Amis des Arts, Neuchâtel - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1991</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie des Amis des Arts, Neuchâtel - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Centre d'Art Visuel, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie "Der Brücke", Buenos Aires (Argentine) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Maison de la Culture, Asuncion (Paraguay) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Bruzzone, Montevideo (Uruguay) - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Capazza, Nancy (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Union des Femmes Peintres et Sculpteurs, Grand Palais, Paris (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Festival International d'Osaka, Osaka (Japon) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Miniature Art, Toronto (Canada) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1989</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Centre Culturel de Buenos Aires, Buenos Aires (Argentine) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Musée Eduardo Sivory, Buenos Aires (Argentine) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Musée de Cordoba, Codoba (Argentine) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Art Dialogue Gallery, Toronto (Canada) - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Festival International d'Osaka, Osaka (Japon) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Figuration Critique, Grand Palais, Paris (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Union des Femmes Peintres et Sculpteurs, Grand Palais, Paris (France) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1988</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie des Amis des Arts, Neuchâtel - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1987</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Centre Educatif et Culturel, Talence/Bordeaux (France) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie de la Louve, Gland (Vd) - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Art Textile Contemporain, Galerie Filambule, Lausanne - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Figuration Critique, Grand Palais, Paris (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Union des Femmes Peintres et Sculpteurs, Grand Palais, Paris (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie des Beaux-Arts, Bordeaux (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie Delpha, Paris (France) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1986</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Calart, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Künstlerhaus, Lübeck (Allemagne) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Filambule, Lausanne - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Musée de Bagnes, Le Châble (Vs) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Xhosa, Zurich - P</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Figuration Critique, Grand Palais, Paris (France) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Galerie des Architectes, Stuttgart (Allemagne) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Figuration Critique, Anvers, (Belgique) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">The 3rd International Contemporary Art Fair, Londres (Angleterre) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Art Basel - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">Park Kontakte 80, Künstlerzentrum, Grieskirchen (Autriche) - C</p>
+                <p class="collective" [matTooltip]="'exhibitions.history.tooltipCollective' | translate" matTooltipPosition="below">First Annual International Exhibition of Miniature Art, Toronto (Canada) - C</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1985</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Toni Brechbüchi, Granges (So) (avec le peintre Paul Racle) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Steiner, Bad Rappenau/Heideberg (Allemagne) (avec l'architecte Alberto Sartoris) - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-left">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1983</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Filambule, Lausanne - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Cour Saint-Pierre, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie de l'Atelier, Nyon (Vd) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Centre d'art Visuel, Genève - P</p>
+              </div>
+            </div>
+
+            <div class="timeline-item timeline-right">
+              <div class="timeline-dot"></div>
+              <div class="timeline-year">1982</div>
+              <div class="timeline-content">
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">GATT, Genève - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Club Diplomatique Genève - P</p>
               </div>
             </div>
 
@@ -310,8 +660,8 @@
               <div class="timeline-dot"></div>
               <div class="timeline-year">1981</div>
               <div class="timeline-content">
-                <p class="personal" matTooltip="Exposition personnelle" matTooltipPosition="below">Galerie Filambule, Lausanne - P</p>
-                <p class="personal" matTooltip="Exposition personnelle" matTooltipPosition="below">Galerie Regards, Coppet (VD) - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Filambule, Lausanne - P</p>
+                <p class="personal" [matTooltip]="'exhibitions.history.tooltipPersonal' | translate" matTooltipPosition="below">Galerie Regards, Coppet (VD) - P</p>
               </div>
             </div>
           </div>

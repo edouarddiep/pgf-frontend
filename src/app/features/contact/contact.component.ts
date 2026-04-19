@@ -10,7 +10,6 @@ import {NotificationService} from '@shared/services/notification.service';
 import {delay, startWith} from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {CountryCode, getCountries, getCountryCallingCode} from 'libphonenumber-js';
-import {MatOption, MatSelect, MatSelectTrigger} from "@angular/material/select";
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
 import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
@@ -25,10 +24,7 @@ import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loadin
     MatInputModule,
     MatFormFieldModule,
     TranslatePipe,
-    MatOption,
-    LoadingSpinnerComponent,
-    MatSelect,
-    MatSelectTrigger
+    LoadingSpinnerComponent
   ],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',

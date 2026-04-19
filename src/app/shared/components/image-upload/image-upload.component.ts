@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@shared/services/notification.service';
 import { FileUploadService } from '@core/services/file-upload.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 export interface ImageItem {
   url: string;
@@ -23,6 +24,7 @@ export interface ImageItem {
 export class ImageUploadComponent {
   private readonly fileUploadService = inject(FileUploadService);
   private readonly notificationService = inject(NotificationService);
+  private readonly translateService = inject(TranslateService);
 
   readonly multiple = input(false);
   readonly currentImages = input<string[]>([]);
@@ -82,7 +84,7 @@ export class ImageUploadComponent {
   private handleFiles(files: File[]): void {
     this.errorMessage.set(null);
     if (!this.multiple() && this.images().length > 0) {
-      this.errorMessage.set('Une seule image est autorisée');
+      this.errorMessage.set(this.translateService.translate('shared.imageUpload.singleImageOnly'));
       return;
     }
     const validFiles = files.filter(f => this.validateFile(f));
@@ -90,9 +92,13 @@ export class ImageUploadComponent {
   }
 
   private validateFile(file: File): boolean {
-    if (file.size > 10 * 1024 * 1024) { this.errorMessage.set('Fichier trop volumineux (max 10MB)'); return false; }
+    if (file.size > 10 * 1024 * 1024) {
+      this.errorMessage.set(this.translateService.translate('shared.imageUpload.fileTooLarge'));
+      return false;
+    }
     if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
-      this.errorMessage.set('Format non supporté'); return false;
+      this.errorMessage.set(this.translateService.translate('shared.imageUpload.formatNotSupported'));
+      return false;
     }
     return true;
   }
@@ -115,7 +121,10 @@ export class ImageUploadComponent {
           index++;
           processNext();
         },
-        error: () => { this.uploading.set(false); this.notificationService.error('Erreur lors de l\'upload'); }
+        error: () => {
+          this.uploading.set(false);
+          this.notificationService.error(this.translateService.translate('admin.common.errors.uploadFailed'));
+        }
       });
     };
     processNext();
@@ -139,7 +148,7 @@ export class ImageUploadComponent {
   removeImage(index: number): void {
     const img = this.images()[index];
     if (img.isMain) {
-      this.notificationService.info('L\'image principale ne peut pas être supprimée. Si vous voulez la modifier, ajouter en une autre d\'abord.');
+      this.notificationService.info(this.translateService.translate('shared.imageUpload.mainImageCannotBeDeleted'));
       return;
     }
     this.images.update(imgs => imgs.filter((_, i) => i !== index));

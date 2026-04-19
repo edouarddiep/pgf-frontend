@@ -10,12 +10,14 @@ import {catchError, EMPTY} from 'rxjs';
 import {environment} from '@environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {RouterLink} from '@angular/router';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-admin-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, RouterLink, MatIcon],
+    MatInputModule, MatButtonModule, RouterLink, MatIcon, TranslatePipe],
   templateUrl: './admin-register.component.html',
   styleUrl: './admin-register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -23,12 +25,13 @@ import {RouterLink} from '@angular/router';
 export class AdminRegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
+  private readonly translateService = inject(TranslateService);
   protected readonly isLoading = signal(false);
   protected readonly submitted = signal(false);
   protected readonly showPassword = signal(false);
   protected readonly showConfirmPassword = signal(false);
   protected readonly error = signal(false);
-  protected readonly errorMessage = signal<string>('Une erreur est survenue. Veuillez réessayer.');
+  protected readonly errorMessage = signal<string>('');
 
   protected readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -52,6 +55,7 @@ export class AdminRegisterComponent {
         this.form.patchValue({ secret });
       }
     }
+    this.errorMessage.set(this.translateService.translate('admin.register.errors.generic'));
   }
 
   protected togglePassword(): void {
@@ -73,7 +77,7 @@ export class AdminRegisterComponent {
       { responseType: 'text' as 'json' }
     ).pipe(
       catchError((err) => {
-        this.errorMessage.set(err.error ?? 'Une erreur est survenue. Veuillez réessayer.');
+        this.errorMessage.set(err.error ?? this.translateService.translate('admin.register.errors.generic'));
         this.error.set(true);
         this.isLoading.set(false);
         return EMPTY;

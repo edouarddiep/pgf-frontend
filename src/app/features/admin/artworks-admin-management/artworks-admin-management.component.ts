@@ -26,6 +26,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { FileUploadService } from '@core/services/file-upload.service';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-artworks-admin-management',
@@ -48,6 +49,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly fileUploadService = inject(FileUploadService);
+  private readonly translateService = inject(TranslateService);
 
   private isDragging = false;
   private dragStartX = 0;
@@ -154,7 +156,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     })
       .pipe(
         catchError(() => {
-          this.notificationService.error('Erreur lors du chargement des données');
+          this.notificationService.error(this.translateService.translate('admin.artworks.loadError'));
           return EMPTY;
         }),
         finalize(() => this.isLoading.set(false))
@@ -305,12 +307,14 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
       operation.pipe(
         catchError(() => {
-          this.notificationService.error('Erreur lors de la sauvegarde de l\'œuvre');
+          this.notificationService.error(this.translateService.translate('admin.artworks.saveError'));
           return EMPTY;
         }),
         finalize(() => this.isSubmitting.set(false))
       ).subscribe(() => {
-        this.notificationService.success(editing ? 'Œuvre modifiée avec succès' : 'Œuvre créée avec succès');
+        this.notificationService.success(
+          this.translateService.translate(editing ? 'admin.artworks.saveSuccess' : 'admin.artworks.createSuccess')
+        );
         window.dispatchEvent(new CustomEvent('artworkChanged'));
         this.hasUnsavedChanges.set(false);
         this.router.navigate(['/admin/artworks']);
@@ -333,21 +337,20 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
   protected deleteArtwork(id: number): void {
     this.confirmDialog.confirm({
-      title: 'Supprimer l\'œuvre',
-      message: 'Êtes-vous sûr de vouloir supprimer cette œuvre ? Cette action est irréversible.',
-      confirmLabel: 'Supprimer',
-      cancelLabel: 'Annuler'
+      title: this.translateService.translate('admin.artworks.deleteConfirmTitle'),
+      message: this.translateService.translate('admin.artworks.deleteConfirmMessage'),
+      confirmLabel: this.translateService.translate('admin.common.delete'),
+      cancelLabel: this.translateService.translate('admin.common.cancel')
     }).subscribe(confirmed => {
       if (!confirmed) return;
       this.adminService.deleteArtwork(id)
         .pipe(catchError(() => {
-          this.notificationService.error('Erreur lors de la suppression de l\'œuvre');
+          this.notificationService.error(this.translateService.translate('admin.artworks.deleteError'));
           return EMPTY;
         }))
         .subscribe(() => {
-          this.notificationService.success('Œuvre supprimée avec succès');
+          this.notificationService.success(this.translateService.translate('admin.artworks.deleteSuccess'));
           this.loadData();
-          window.dispatchEvent(new CustomEvent('artworkChanged'));
         });
     });
   }

@@ -7,6 +7,7 @@ import {ArtworkService} from '@features/artworks/services/artwork.service';
 import {switchMap, combineLatest, map, take} from 'rxjs';
 import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
 import {MatChip} from '@angular/material/chips';
+import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -15,7 +16,8 @@ import {MatChip} from '@angular/material/chips';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    MatChip
+    MatChip,
+    TranslatePipe
   ],
   templateUrl: './artwork-detail.component.html',
   styleUrl: './artwork-detail.component.scss',

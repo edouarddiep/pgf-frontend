@@ -14,6 +14,7 @@ import { LoadingDirective } from '@/app/directives/loading.directive';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-messages-admin-management',
@@ -28,6 +29,7 @@ export class MessagesAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly translateService = inject(TranslateService);
 
   protected readonly messages = signal<ContactMessage[]>([]);
   protected readonly unreadCount = signal(0);
@@ -55,10 +57,10 @@ export class MessagesAdminManagementComponent implements OnInit {
 
   protected deleteMessage(id: number): void {
     this.confirmDialog.confirm({
-      title: 'Supprimer le message',
-      message: 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.',
-      confirmLabel: 'Supprimer',
-      cancelLabel: 'Annuler'
+      title: this.translateService.translate('admin.messages.deleteConfirmTitle'),
+      message: this.translateService.translate('admin.messages.deleteConfirmMessage'),
+      confirmLabel: this.translateService.translate('admin.common.delete'),
+      cancelLabel: this.translateService.translate('admin.common.cancel')
     }).subscribe(confirmed => {
       if (!confirmed) return;
       this.adminService.deleteMessage(id)
