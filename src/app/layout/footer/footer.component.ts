@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-footer',
@@ -16,6 +17,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 })
 export class FooterComponent {
   private readonly artworkService = inject(ArtworkService);
+  private readonly translateService = inject(TranslateService);
 
   readonly categories$ = this.artworkService.getCategories();
   readonly currentYear = new Date().getFullYear();
@@ -37,4 +39,8 @@ export class FooterComponent {
     { nameKey: 'footer.privacy', route: '/privacy' },
     { nameKey: 'footer.terms', route: '/terms' }
   ];
+
+  protected toggleLang(): void {
+    this.translateService.setLang(this.translateService.currentLang() === 'fr' ? 'en' : 'fr');
+  }
 }

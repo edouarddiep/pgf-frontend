@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +18,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 })
 export class HeaderComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly translateService = inject(TranslateService);
+
   private lastScrollY = 0;
 
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -33,11 +36,15 @@ export class HeaderComponent {
     this.lastScrollY = currentScrollY;
   }
 
-  toggleMobileMenu(): void {
+  protected toggleMobileMenu(): void {
     this.isMobileMenuOpen.update(value => !value);
   }
 
-  closeMobileMenu(): void {
+  protected closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  protected toggleLang(): void {
+    this.translateService.setLang(this.translateService.currentLang() === 'fr' ? 'en' : 'fr');
   }
 }

@@ -1,7 +1,7 @@
-<mat-toolbar class="header-toolbar" [class.hidden]="isHidden()">
+<mat-toolbar class="header-toolbar">
   <div class="container">
     <a routerLink="/" class="logo">
-      <img src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/Logo_site_yaya-03.png" alt="Pierrette Gonseth-Favre">
+      <h1>Pierrette Gonseth-Favre</h1>
     </a>
 
     @if (isHandset$ | async) {
@@ -21,6 +21,9 @@
         <a mat-button routerLink="/archives" routerLinkActive="active">{{ 'nav.archives' | translate }}</a>
         <a mat-button routerLink="/association" routerLinkActive="active">{{ 'nav.association' | translate }}</a>
         <a mat-button routerLink="/contact" routerLinkActive="active">{{ 'nav.contact' | translate }}</a>
+        <button class="lang-switch-btn" (click)="toggleLang()">
+          {{ 'shared.langSwitch' | translate }}
+        </button>
       </nav>
     }
   </div>
@@ -35,5 +38,8 @@
     <a routerLink="/archives" (click)="closeMobileMenu()">{{ 'nav.archives' | translate }}</a>
     <a routerLink="/association" (click)="closeMobileMenu()">{{ 'nav.association' | translate }}</a>
     <a routerLink="/contact" (click)="closeMobileMenu()">{{ 'nav.contact' | translate }}</a>
+    <button class="lang-switch-btn-mobile" (click)="toggleLang(); closeMobileMenu()">
+      {{ 'shared.langSwitch' | translate }}
+    </button>
   </nav>
 }

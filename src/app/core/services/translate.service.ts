@@ -1,12 +1,11 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { translations, Lang } from '@core/i18n/translations';
-import { Translations } from '@core/i18n/fr';
 
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
   readonly currentLang = signal<Lang>('fr');
 
-  private readonly dict = computed<Translations>(() => translations[this.currentLang()]);
+  private readonly dict = computed(() => translations[this.currentLang()]);
 
   translate(key: string, params?: Record<string, string | number>): string {
     const value = key.split('.').reduce<unknown>((obj, k) =>

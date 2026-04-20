@@ -182,7 +182,7 @@ export const fr = {
     hero: 'POLITIQUE DE CONFIDENTIALITÉ',
     s1: { title: '1. Responsable du traitement', responsible: 'Responsable :', responsibleValue: 'Pierrette Gonseth-Favre', status: 'Statut :', statusValue: 'Artiste indépendante', contact: 'Contact :', contactValue: 'denis.gonseth@dfinet.ch' },
     s2: {
-      title: '2. Données collectées',
+      title: '2.pgf-fr-labels.ts Données collectées',
       t1: '2.1 Données collectées via le formulaire de contact', li1_1: 'Nom et prénom', li1_2: 'Adresse email', li1_3: 'Numéro de téléphone (optionnel)', li1_4: 'Sujet et message',
       t2: '2.2 Données de navigation', li2_1: 'Adresse IP', li2_2: 'Type de navigateur', li2_3: 'Pages visitées', li2_4: "Date et heure de connexion",
       t3: "2.3 Données lors d'un achat", li3_1: 'Informations de facturation', li3_2: 'Adresse de livraison', li3_3: 'Historique des commandes'
@@ -552,7 +552,8 @@ export const fr = {
       confirm: 'Confirmer',
       cancel: 'Annuler'
     },
+    langSwitch: 'EN',
   }
 } as const;
 
-export type Translations = typeof fr;
+export type Translations = Record<string, unknown>;
