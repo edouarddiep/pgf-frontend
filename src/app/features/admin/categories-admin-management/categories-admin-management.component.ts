@@ -76,7 +76,6 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   protected readonly categoryForm = this.fb.group({
     name: ['', Validators.required],
     description: [''],
-    descriptionShort: [''],
   });
 
   protected readonly categories = computed(() => {
@@ -131,8 +130,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     this.editingCategory.set(category);
     this.categoryForm.setValue({
       name: category.name,
-      description: category.description ?? '',
-      descriptionShort: category.descriptionShort ?? ''
+      description: category.description ?? ''
     });
     this.pendingImageFile.set(null);
     this.previewImageUrl.set(category.thumbnailUrl ?? null);
@@ -171,7 +169,7 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
     if (this.categoryForm.invalid || this.isSubmitting() || !this.previewImageUrl()) return;
     this.isSubmitting.set(true);
 
-    const { name, description, descriptionShort } = this.categoryForm.value;
+    const { name, description } = this.categoryForm.value;
     const editing = this.editingCategory();
     const slug = editing?.slug ?? this.generateSlug(name!);
     const file = this.pendingImageFile();
@@ -181,7 +179,6 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
         name: name!,
         slug,
         description,
-        descriptionShort,
         thumbnailPositionX: Math.round(this.positionX()),
         thumbnailPositionY: Math.round(this.positionY()),
         thumbnailZoom: this.zoom(),

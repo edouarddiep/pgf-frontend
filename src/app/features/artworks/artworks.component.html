@@ -21,7 +21,9 @@
               </div>
               <div class="category-info">
                 <h3>{{ category.name }}</h3>
-                @if (category.descriptionShort) { <p>{{ category.descriptionShort }}</p> }
+                @if (category.description) {
+                  <p>{{ category.description | truncate:90 }}</p>
+                }
               </div>
             </div>
           }
@@ -37,7 +39,9 @@
       @if (currentCategory$ | async; as category) {
         <div class="section-header">
           <h2>{{ category.name }}</h2>
-          @if (category.descriptionShort) { <p class="category-description">{{ category.descriptionShort }}</p> }
+          @if (category.description) {
+            <p class="category-description">{{ category.description | truncate:160 }}</p>
+          }
         </div>
       }
       @if (filteredArtworks$ | async; as artworks) {
@@ -65,7 +69,9 @@
       @if (currentCategory$ | async; as category) {
         <div class="section-header">
           <h2>{{ category.name }}</h2>
-          @if (category.descriptionShort) { <p class="category-description">{{ category.descriptionShort }}</p> }
+          @if (category.description) {
+            <p class="category-description">{{ category.description | truncate:160 }}</p>
+          }
         </div>
       }
       @if (filteredArtworks$ | async; as artworks) {

@@ -11,7 +11,7 @@
   <section class="artworks-section">
     <div class="container">
       <div class="section-header">
-        <blockquote>{{vm.category.description}}</blockquote>
+        <blockquote>{{ vm.category.description }}</blockquote>
       </div>
 
       @if (vm.artworks.length > 0) {
@@ -38,8 +38,8 @@
               </div>
               <div class="artwork-info">
                 <h3>{{ artwork.title }}</h3>
-                @if (artwork.descriptionShort) {
-                  <p class="artwork-description">{{ artwork.descriptionShort }}</p>
+                @if (artwork.description) {
+                  <p class="artwork-description">{{ artwork.description | truncate:110 }}</p>
                 }
               </div>
             </div>

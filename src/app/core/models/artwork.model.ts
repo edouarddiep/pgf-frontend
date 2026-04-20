@@ -1,8 +1,9 @@
 export interface ArtworkCategory {
   id: number;
   name: string;
+  nameEn?: string;
   description?: string;
-  descriptionShort?: string;
+  descriptionEn?: string;
   slug: string;
   thumbnailUrl?: string;
   thumbnailZoom?: number;
@@ -16,8 +17,9 @@ export interface ArtworkCategory {
 export interface Artwork {
   id: number;
   title: string;
+  titleEn?: string;
   description?: string;
-  descriptionShort?: string;
+  descriptionEn?: string;
   imageUrls: string[];
   mainImageUrl?: string;
   mainImagePositionX?: number;

@@ -348,10 +348,8 @@ export const en = {
       deleteError: 'Error deleting artwork',
       form: {
         title: 'Title',
-        descriptionShort: 'Short description',
-        descriptionShortHint: 'Maximum 100 characters — Used for previews',
-        descriptionFull: 'Full description',
-        descriptionFullHint: 'Maximum 1000 characters',
+        description: 'Description',
+        descriptionFull: 'Maximum 1000 characters',
         categories: 'Categories',
         categoryRequired: 'Please select at least one category',
         imagesLabel: 'Images',

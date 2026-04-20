@@ -96,8 +96,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
       base = base.filter(a =>
         tokens.every(token =>
           a.id?.toString().includes(token) ||
-          this.normalize(a.title ?? '').includes(token) ||
-          this.normalize(a.descriptionShort ?? '').includes(token)
+          this.normalize(a.title ?? '').includes(token)
         )
       );
     }
@@ -112,7 +111,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   protected readonly artworkForm = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
-    descriptionShort: ['', [Validators.maxLength(100)]],
     imageUrls: [[] as string[]],
     categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
   });
@@ -175,7 +173,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     this.artworkForm.setValue({
       title: artwork.title,
       description: artwork.description || '',
-      descriptionShort: artwork.descriptionShort || '',
       imageUrls: artwork.imageUrls || [],
       categoryIds: artwork.categoryIds ? Array.from(artwork.categoryIds) : []
     });
@@ -292,7 +289,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
       const payload = {
         title: formValue.title!,
         description: formValue.description,
-        descriptionShort: formValue.descriptionShort,
         imageUrls: [resolvedMain, ...this.uploadedImageUrls()],
         mainImageUrl: resolvedMain,
         mainImagePositionX: Math.round(this.mainImagePositionX()),
@@ -400,8 +396,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     const columns: ExportColumn<Artwork>[] = [
       { header: 'ID', value: a => a.id },
       { header: 'Titre', value: a => a.title },
-      { header: 'Description courte', value: a => a.descriptionShort ?? '' },
-      { header: 'Description complète', value: a => a.description ?? '' },
+      { header: 'Description', value: a => a.description ?? '' },
       { header: 'Catégories', value: a => this.getCategoryNames(this.asSet(a.categoryIds)).join(', ') }
     ];
     this.exportService.exportToExcel(this.filteredArtworks(), columns, 'oeuvres');

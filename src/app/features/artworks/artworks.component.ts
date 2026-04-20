@@ -9,6 +9,7 @@ import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-ca
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { map, combineLatest, take } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-artworks',
@@ -19,7 +20,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
     MatIconModule,
     LazyLoadImageModule,
     ArtworkCardComponent,
-    TranslatePipe
+    TranslatePipe,
+    TruncatePipe
   ],
   templateUrl: './artworks.component.html',
   styleUrl: './artworks.component.scss',

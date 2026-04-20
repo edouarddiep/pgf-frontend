@@ -4,15 +4,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Artwork } from '@core/models/artwork.model';
+import { TruncatePipe } from '@core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-artwork-card',
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatIconModule,
-    LazyLoadImageModule
-  ],
+  imports: [CommonModule, MatCardModule, MatIconModule, LazyLoadImageModule, TruncatePipe],
   templateUrl: './artwork-card.component.html',
   styleUrl: './artwork-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,9 +22,7 @@ export class ArtworkCardComponent {
   }
 
   getCategorySlugsArray(artwork: Artwork): string[] {
-    if (!artwork.categorySlugs || artwork.categorySlugs.length === 0) {
-      return [];
-    }
+    if (!artwork.categorySlugs || artwork.categorySlugs.length === 0) return [];
     return artwork.categorySlugs;
   }
 }

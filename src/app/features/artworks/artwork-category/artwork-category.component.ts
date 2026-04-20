@@ -8,6 +8,7 @@ import {switchMap, map, combineLatest, take} from 'rxjs';
 import { ApiService } from '@core/services/api.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-artwork-category',
@@ -17,7 +18,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
     MatButtonModule,
     MatIconModule,
     LazyLoadImageModule,
-    TranslatePipe
+    TranslatePipe,
+    TruncatePipe
   ],
   templateUrl: './artwork-category.component.html',
   styleUrl: './artwork-category.component.scss',

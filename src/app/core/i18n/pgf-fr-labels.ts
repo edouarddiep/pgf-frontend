@@ -348,10 +348,8 @@ export const fr = {
       deleteError: "Erreur lors de la suppression de l'œuvre",
       form: {
         title: 'Titre',
-        descriptionShort: 'Description courte',
-        descriptionShortHint: "Maximum 100 caractères - Utilisé pour les aperçus",
-        descriptionFull: 'Description complète',
-        descriptionFullHint: 'Maximum 1000 caractères',
+        description: 'Description',
+        descriptionHint: 'Maximum 1000 caractères',
         categories: 'Catégories',
         categoryRequired: 'Veuillez sélectionner au moins une catégorie',
         imagesLabel: 'Images',
