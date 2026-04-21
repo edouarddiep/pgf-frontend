@@ -28,7 +28,7 @@
           <mat-select [(value)]="selectedCategoryFilter" (selectionChange)="onCategoryFilterChange()">
             <mat-option value="">{{ 'admin.artworks.allCategories' | translate }}</mat-option>
             @for (category of categories(); track category.id) {
-              <mat-option [value]="category.id">{{ category.name }}</mat-option>
+              <mat-option [value]="category.id">{{ localeService.resolve(category, 'name') }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
@@ -63,13 +63,14 @@
 
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef (click)="sort('title')" class="sortable-header">
-                {{ 'admin.artworks.colTitle' | translate }} <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+                {{ 'admin.artworks.colTitle' | translate }}
+                <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
               </th>
               <td mat-cell *matCellDef="let artwork">
                 <div class="artwork-info">
-                  <strong [innerHTML]="artwork.title | highlight: searchQuery()"></strong>
-                  @if (artwork.descriptionShort) {
-                    <div class="description-short" [innerHTML]="artwork.descriptionShort | highlight: searchQuery()"></div>
+                  <strong>{{ localeService.resolve(artwork, 'title') }}</strong>
+                  @if (localeService.resolve(artwork, 'description'); as desc) {
+                    <div class="description-short">{{ desc | truncate:80 }}</div>
                   }
                 </div>
               </td>
@@ -147,7 +148,7 @@
               <mat-label>{{ 'admin.artworks.form.categories' | translate }}</mat-label>
               <mat-select formControlName="categoryIds" multiple>
                 @for (category of categories(); track category.id) {
-                  <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                  <mat-option [value]="category.id">{{ localeService.resolve(category, 'name') }}</mat-option>
                 }
               </mat-select>
               @if (artworkForm.get('categoryIds')?.errors?.['required']) {

@@ -22,7 +22,7 @@
             <nav class="footer-nav">
               @for (category of categories; track category.id) {
                 <a [routerLink]="['/artworks', category.slug]">
-                  {{ category.name }}
+                  {{ localeService.resolve(category, 'name') }}
                 </a>
               }
             </nav>

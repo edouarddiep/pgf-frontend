@@ -50,19 +50,14 @@
 
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef (click)="sort('title')" class="sortable-header">
-                {{ 'admin.archives.colTitle' | translate }} <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+                {{ 'admin.archives.colTitle' | translate }}
+                <span class="sort-icon">{{ sortField() === 'title' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
               </th>
               <td mat-cell *matCellDef="let archive">
-                <div class="archive-info">
-                  <strong [innerHTML]="archive.title | highlight: searchQuery()"></strong>
-                  @if (archive.description) {
-                    <span class="description-cell"
-                          [innerHTML]="archive.description | highlight: searchQuery()"
-                          (mouseenter)="showTooltip($event, archive.description)"
-                          (mouseleave)="hideTooltip()">
-                    </span>
-                  }
-                </div>
+                <strong>{{ localeService.resolve(archive, 'title') }}</strong>
+                @if (localeService.resolve(archive, 'description'); as desc) {
+                  <div class="description-short">{{ desc | truncate:80 }}</div>
+                }
               </td>
             </ng-container>
 

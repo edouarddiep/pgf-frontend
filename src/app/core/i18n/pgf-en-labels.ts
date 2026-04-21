@@ -349,7 +349,7 @@ export const en = {
       form: {
         title: 'Title',
         description: 'Description',
-        descriptionFull: 'Maximum 1000 characters',
+        descriptionHint: 'Maximum 1000 characters',
         categories: 'Categories',
         categoryRequired: 'Please select at least one category',
         imagesLabel: 'Images',

@@ -8,8 +8,10 @@ export interface ArchiveFile {
 export interface Archive {
   id: number;
   title: string;
+  titleEn?: string;
   year: number;
   description?: string;
+  descriptionEn?: string;
   thumbnailUrl?: string;
   files: ArchiveFile[];
 }

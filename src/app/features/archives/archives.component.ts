@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, OnInit, OnDestroy } from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, signal, OnInit, OnDestroy, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,8 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { Archive } from '@core/models/archive.model';
 import { catchError, EMPTY } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-archives',
@@ -19,6 +21,9 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   private readonly archiveService = inject(ArchiveService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly router = inject(Router);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY = 'archives';
 

@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, OnInit, computed} from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,8 @@ import { ApiService } from '@core/services/api.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TruncatePipe} from '@core/pipes/truncate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-artwork-category',
@@ -31,6 +33,9 @@ export class ArtworkCategoryComponent implements OnInit {
   private readonly location = inject(Location);
   private readonly apiService = inject(ApiService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY = 'artworks';
   private readonly SCROLL_KEY_CATEGORIES = 'artwork-categories';

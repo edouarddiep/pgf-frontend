@@ -5,6 +5,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatOption, MatSelect, MatSelectTrigger} from '@angular/material/select';
 import {ApiService} from '@core/services/api.service';
 import {NotificationService} from '@shared/services/notification.service';
 import {delay, startWith} from 'rxjs';
@@ -23,6 +24,9 @@ import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loadin
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
+    MatOption,
+    MatSelect,
+    MatSelectTrigger,
     TranslatePipe,
     LoadingSpinnerComponent
   ],
@@ -114,7 +118,7 @@ export class ContactComponent {
 
     const { name, firstName, email, phonePrefix, phone, subject, message } = this.contactForm.value;
     const fullPhone = phone ? `${phonePrefix} ${phone}` : '';
-    const payload = { name: `${firstName} ${name}`, email, phone: fullPhone, subject, message }
+    const payload = { name: `${firstName} ${name}`, email, phone: fullPhone, subject, message };
 
     this.apiService.sendContactMessage(payload).pipe(delay(2500)).subscribe({
       next: () => {

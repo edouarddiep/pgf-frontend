@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, signal, HostListener } from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, signal, HostListener, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,6 +19,7 @@ import {TranslateService} from '@core/services/translate.service';
 export class HeaderComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly translateService = inject(TranslateService);
+  protected readonly currentLang = computed(() => this.translateService.currentLang());
 
   private lastScrollY = 0;
 
@@ -46,5 +47,9 @@ export class HeaderComponent {
 
   protected toggleLang(): void {
     this.translateService.setLang(this.translateService.currentLang() === 'fr' ? 'en' : 'fr');
+  }
+
+  protected setLang(lang: 'fr' | 'en'): void {
+    this.translateService.setLang(lang);
   }
 }

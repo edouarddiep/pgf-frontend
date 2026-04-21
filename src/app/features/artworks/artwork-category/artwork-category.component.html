@@ -2,7 +2,7 @@
   @if (viewModel$ | async; as vm) {
     <div class="hero-content">
       <h1>{{ 'artworks.hero' | translate }}</h1>
-      <div class="category-title">{{ vm.category.name }}</div>
+      <div class="category-title">{{ localeService.resolve(vm.category, 'name') }}</div>
     </div>
   }
 </section>
@@ -11,7 +11,7 @@
   <section class="artworks-section">
     <div class="container">
       <div class="section-header">
-        <blockquote>{{ vm.category.description }}</blockquote>
+        <blockquote>{{ localeService.resolve(vm.category, 'description') }}</blockquote>
       </div>
 
       @if (vm.artworks.length > 0) {
@@ -37,9 +37,9 @@
                 }
               </div>
               <div class="artwork-info">
-                <h3>{{ artwork.title }}</h3>
+                <h3>{{ localeService.resolve(artwork, 'title') }}</h3>
                 @if (artwork.description) {
-                  <p class="artwork-description">{{ artwork.description | truncate:110 }}</p>
+                  <p class="artwork-description">{{ localeService.resolve(artwork, 'description') | truncate:110 }}</p>
                 }
               </div>
             </div>

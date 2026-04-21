@@ -20,9 +20,9 @@
                      [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'">
               </div>
               <div class="category-info">
-                <h3>{{ category.name }}</h3>
+                <h3>{{ localeService.resolve(category, 'name') }}</h3>
                 @if (category.description) {
-                  <p>{{ category.description | truncate:90 }}</p>
+                  <p>{{ localeService.resolve(category, 'description') | truncate:90 }}</p>
                 }
               </div>
             </div>
@@ -38,9 +38,9 @@
     <div class="container">
       @if (currentCategory$ | async; as category) {
         <div class="section-header">
-          <h2>{{ category.name }}</h2>
+          <h2>{{ localeService.resolve(category, 'name') }}</h2>
           @if (category.description) {
-            <p class="category-description">{{ category.description | truncate:160 }}</p>
+            <p class="category-description">{{ localeService.resolve(category, 'description') | truncate:160 }}</p>
           }
         </div>
       }

@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,7 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
-import {TranslateService} from '@core/services/translate.service';
+import { TranslateService } from '@core/services/translate.service';
+import { LocaleService } from '@core/services/locale.service';
 
 @Component({
   selector: 'app-footer',
@@ -18,6 +19,8 @@ import {TranslateService} from '@core/services/translate.service';
 export class FooterComponent {
   private readonly artworkService = inject(ArtworkService);
   private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   readonly categories$ = this.artworkService.getCategories();
   readonly currentYear = new Date().getFullYear();
@@ -39,8 +42,4 @@ export class FooterComponent {
     { nameKey: 'footer.privacy', route: '/privacy' },
     { nameKey: 'footer.terms', route: '/terms' }
   ];
-
-  protected toggleLang(): void {
-    this.translateService.setLang(this.translateService.currentLang() === 'fr' ? 'en' : 'fr');
-  }
 }

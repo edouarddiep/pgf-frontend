@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="exhibition-content">
-                  <h3>{{ exhibition.title }}</h3>
+                  <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
                   <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
 
                   @if (exhibition.location) {
@@ -110,11 +110,11 @@
                   }
 
                   @if (exhibition.description) {
-                    <p class="description">{{ exhibition.description }}</p>
+                    <p class="description">{{ localeService.resolve(exhibition, 'description') }}</p>
                   }
 
                   @if (exhibition.credits) {
-                    <p class="credits">Crédits: {{ exhibition.credits }}</p>
+                    <p class="credits">{{ 'exhibitions.credits' | translate }}: {{ exhibition.credits }}</p>
                   }
 
                   <div class="action-buttons">
@@ -247,7 +247,7 @@
                 </div>
 
                 <div class="exhibition-content">
-                  <h3>{{ exhibition.title }}</h3>
+                  <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
                   <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
 
                   @if (exhibition.location) {
@@ -261,7 +261,7 @@
                   }
 
                   @if (exhibition.description) {
-                    <p class="description">{{ exhibition.description }}</p>
+                    <p class="description">{{ localeService.resolve(exhibition, 'description') }}</p>
                   }
 
                   @if (exhibition.credits) {

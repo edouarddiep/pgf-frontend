@@ -2,6 +2,11 @@
   <mat-toolbar class="admin-toolbar">
     <span class="toolbar-title">{{ 'admin.layout.title' | translate }}</span>
     <span class="spacer"></span>
+    <span class="lang-switch-group">
+      <a class="lang-item" [class.active]="currentLang() === 'fr'" (click)="setLang('fr')">FR</a>
+      <span class="lang-sep">|</span>
+      <a class="lang-item" [class.active]="currentLang() === 'en'" (click)="setLang('en')">EN</a>
+    </span>
     @if (displayName()) {
       <span class="greeting">{{ 'admin.layout.greeting' | translate }} {{ displayName() }}</span>
     }

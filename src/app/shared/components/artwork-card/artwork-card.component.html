@@ -21,13 +21,13 @@
   </div>
 
   <mat-card-content class="artwork-info">
-    <h3>{{ artwork().title }}</h3>
+    <h3>{{ localeService.resolve(artwork(), 'title') }}</h3>
 
     @for (categorySlug of getCategorySlugsArray(artwork()); track categorySlug) {
       <span class="category-chip">{{ categorySlug }}</span>
     }
     @if (artwork().description) {
-      <p class="description">{{ artwork().description | truncate:110 }}</p>
+      <p class="description">{{ localeService.resolve(artwork(), 'description') | truncate:110 }}</p>
     }
   </mat-card-content>
 </mat-card>

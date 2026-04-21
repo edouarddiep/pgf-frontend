@@ -64,6 +64,48 @@
   }
 }
 
+.lang-switch-group {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: 0.5rem;
+}
+
+.lang-sep {
+  color: #ccc !important;
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lang-item {
+  color: #999 !important;
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  padding: 8px 6px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+
+  &:hover {
+    color: #333 !important;
+    background: transparent !important;
+    transform: none !important;
+  }
+
+  &.active {
+    color: #000 !important;
+    font-weight: 700 !important;
+  }
+}
+
 .mobile-menu-button {
   color: #333 !important;
   border: none !important;
@@ -133,7 +175,8 @@
     border-bottom: 1px solid #f0f0f0;
     transition: all 0.3s ease;
 
-    &:hover, &:active {
+    &:hover,
+    &:active {
       background: #f8f9fa;
       color: #706969;
     }
@@ -144,40 +187,38 @@
   }
 }
 
-.lang-switch-btn {
-  margin-left: 1rem;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-
-  &:hover {
-    border-color: white;
-    background: rgba(255, 255, 255, 0.1);
-  }
+.lang-switch-group-mobile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.lang-switch-btn-mobile {
-  margin-top: 1rem;
-  padding: 0.5rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  align-self: flex-start;
+.lang-item-mobile {
+  color: #999 !important;
+  font-size: 1.2rem !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
 
   &:hover {
-    border-color: white;
+    color: #706969 !important;
+    background: transparent !important;
+    transform: none !important;
+  }
+
+  &.active {
+    color: #333 !important;
+    font-weight: 700 !important;
   }
 }
 

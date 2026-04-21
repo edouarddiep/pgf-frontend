@@ -23,6 +23,8 @@ import {ConfirmDialogService} from '@shared/services/confirm-dialog.service';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
 import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 type SortField = 'id' | 'title' | 'year';
 
@@ -31,7 +33,7 @@ type SortField = 'id' | 'title' | 'year';
   imports: [
     CommonModule, ReactiveFormsModule, MatTableModule, MatButtonModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatCardModule, MatTooltipModule,
-    LoadingDirective, HighlightPipe, ArchiveFileUploadComponent, TranslatePipe
+    LoadingDirective, HighlightPipe, ArchiveFileUploadComponent, TranslatePipe, TruncatePipe
   ],
   templateUrl: './archives-admin-management.component.html',
   styleUrl: './archives-admin-management.component.scss',
@@ -46,6 +48,8 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly exportService = inject(ExportService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly rawArchives = signal<Archive[]>([]);
   protected readonly searchQuery = signal('');
@@ -281,14 +285,16 @@ export class ArchivesAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected exportData(): void {
+    const lang = this.translateService.currentLang();
+    const isEn = lang === 'en';
     const columns: ExportColumn<Archive>[] = [
       { header: 'ID', value: a => a.id },
-      { header: 'Titre', value: a => a.title },
-      { header: 'Année', value: a => a.year },
-      { header: 'Description', value: a => a.description ?? '' },
-      { header: 'Nb fichiers', value: a => a.files?.length ?? 0 }
+      { header: isEn ? 'Title' : 'Titre', value: a => this.localeService.resolve(a, 'title') },
+      { header: isEn ? 'Year' : 'Année', value: a => a.year },
+      { header: isEn ? 'Description' : 'Description', value: a => this.localeService.resolve(a, 'description') },
+      { header: isEn ? 'Files' : 'Nb fichiers', value: a => a.files?.length ?? 0 }
     ];
-    this.exportService.exportToExcel(this.archives(), columns, 'archives');
+    this.exportService.exportToExcel(this.archives(), columns, isEn ? 'archives' : 'archives');
   }
 
   protected showTooltip(event: MouseEvent, text: string): void {

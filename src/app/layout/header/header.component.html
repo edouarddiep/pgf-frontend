@@ -1,7 +1,7 @@
-<mat-toolbar class="header-toolbar">
-  <div class="container">
+<mat-toolbar class="header-toolbar" [class.hidden]="isHidden()">
+<div class="container">
     <a routerLink="/" class="logo">
-      <h1>Pierrette Gonseth-Favre</h1>
+      <img src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/Logo_site_yaya-03.png" alt="Pierrette Gonseth-Favre">
     </a>
 
     @if (isHandset$ | async) {
@@ -21,9 +21,11 @@
         <a mat-button routerLink="/archives" routerLinkActive="active">{{ 'nav.archives' | translate }}</a>
         <a mat-button routerLink="/association" routerLinkActive="active">{{ 'nav.association' | translate }}</a>
         <a mat-button routerLink="/contact" routerLinkActive="active">{{ 'nav.contact' | translate }}</a>
-        <button class="lang-switch-btn" (click)="toggleLang()">
-          {{ 'shared.langSwitch' | translate }}
-        </button>
+        <span class="lang-switch-group">
+          <a class="lang-item" [class.active]="currentLang() === 'fr'" (click)="setLang('fr')">FR</a>
+          <span class="lang-sep">|</span>
+          <a class="lang-item" [class.active]="currentLang() === 'en'" (click)="setLang('en')">EN</a>
+        </span>
       </nav>
     }
   </div>
@@ -38,8 +40,10 @@
     <a routerLink="/archives" (click)="closeMobileMenu()">{{ 'nav.archives' | translate }}</a>
     <a routerLink="/association" (click)="closeMobileMenu()">{{ 'nav.association' | translate }}</a>
     <a routerLink="/contact" (click)="closeMobileMenu()">{{ 'nav.contact' | translate }}</a>
-    <button class="lang-switch-btn-mobile" (click)="toggleLang(); closeMobileMenu()">
-      {{ 'shared.langSwitch' | translate }}
-    </button>
+    <span class="lang-switch-group-mobile">
+      <a class="lang-item-mobile" [class.active]="currentLang() === 'fr'" (click)="setLang('fr'); closeMobileMenu()">FR</a>
+      <span class="lang-sep">|</span>
+      <a class="lang-item-mobile" [class.active]="currentLang() === 'en'" (click)="setLang('en'); closeMobileMenu()">EN</a>
+    </span>
   </nav>
 }

@@ -1,11 +1,12 @@
 export interface Exhibition {
   id: number;
   title: string;
+  titleEn?: string;
   description?: string;
+  descriptionEn?: string;
   credits?: string;
   vernissageUrl?: string;
   websiteUrl?: string;
-  descriptionShort?: string;
   location?: string;
   address?: string;
   startDate?: string;
@@ -14,8 +15,6 @@ export interface Exhibition {
   imageUrl?: string;
   imageUrls?: string[];
   videoUrls?: string[];
-  categoryIds?: number[];
-  categorySlugs?: string[];
 }
 
 export enum ExhibitionStatus {

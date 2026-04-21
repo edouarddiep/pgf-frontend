@@ -254,6 +254,10 @@
     grid-template-columns: 0.5fr 2fr;
   }
 
+  @media (max-width: 720px) {
+    grid-template-columns: 0.6fr 2fr;
+  }
+
   .prefix-field {
     flex-shrink: 0;
 

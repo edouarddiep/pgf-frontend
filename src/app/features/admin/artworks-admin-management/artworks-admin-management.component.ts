@@ -27,6 +27,8 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { FileUploadService } from '@core/services/file-upload.service';
 import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-artworks-admin-management',
@@ -34,7 +36,7 @@ import {TranslateService} from '@core/services/translate.service';
     CommonModule, ReactiveFormsModule, MatTableModule, MatButtonModule, MatIconModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatCardModule, MatChipsModule,
     MatTooltipModule, MatProgressSpinnerModule, MatSnackBarModule,
-    LoadingDirective, HighlightPipe, ImageUploadComponent, TranslatePipe, LoadingSpinnerComponent
+    LoadingDirective, HighlightPipe, ImageUploadComponent, TranslatePipe, LoadingSpinnerComponent, TruncatePipe
   ],
   templateUrl: './artworks-admin-management.component.html',
   styleUrl: './artworks-admin-management.component.scss',
@@ -50,6 +52,8 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly fileUploadService = inject(FileUploadService);
   private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private isDragging = false;
   private dragStartX = 0;
@@ -365,7 +369,10 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     if (!categoryIds || categoryIds.size === 0) return [];
     const categories = this.categories();
     return Array.from(categoryIds)
-      .map(id => categories.find(c => c.id === id)?.name)
+      .map(id => {
+        const category = categories.find(c => c.id === id);
+        return category ? this.localeService.resolve(category, 'name') : null;
+      })
       .filter((name): name is string => !!name);
   }
 
@@ -393,13 +400,15 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected exportData(): void {
+    const lang = this.translateService.currentLang();
+    const isEn = lang === 'en';
     const columns: ExportColumn<Artwork>[] = [
       { header: 'ID', value: a => a.id },
-      { header: 'Titre', value: a => a.title },
-      { header: 'Description', value: a => a.description ?? '' },
-      { header: 'Catégories', value: a => this.getCategoryNames(this.asSet(a.categoryIds)).join(', ') }
+      { header: isEn ? 'Title' : 'Titre', value: a => this.localeService.resolve(a, 'title') },
+      { header: isEn ? 'Description' : 'Description', value: a => this.localeService.resolve(a, 'description') },
+      { header: isEn ? 'Categories' : 'Catégories', value: a => this.getCategoryNames(this.asSet(a.categoryIds)).join(', ') }
     ];
-    this.exportService.exportToExcel(this.filteredArtworks(), columns, 'oeuvres');
+    this.exportService.exportToExcel(this.filteredArtworks(), columns, isEn ? 'artworks' : 'oeuvres');
   }
 
   private normalize(str: string): string {

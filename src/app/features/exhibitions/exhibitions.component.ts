@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,8 @@ import { catchError, EMPTY, combineLatest } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 type TabType = 'current' | 'past';
 
@@ -27,6 +29,9 @@ type TabType = 'current' | 'past';
 export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly apiService = inject(ApiService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   protected readonly activeTab = signal<TabType>('current');
   protected readonly currentExhibitions = signal<Exhibition[]>([]);

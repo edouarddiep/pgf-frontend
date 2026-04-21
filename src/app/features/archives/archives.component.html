@@ -19,14 +19,14 @@
                   <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
                   <div class="archive-overlay">
                     <div class="archive-info">
-                      <h3>{{ archive.title }}</h3>
+                      <h3>{{ localeService.resolve(archive, 'title') }}</h3>
                       <button mat-raised-button>{{ 'archives.learnMore' | translate }}</button>
                     </div>
                   </div>
                 </div>
               } @else {
                 <div class="archive-content">
-                  <h3>{{ archive.title }}</h3>
+                  <h3>{{ localeService.resolve(archive, 'title') }}</h3>
                   <button mat-raised-button>{{ 'archives.learnMore' | translate }}</button>
                 </div>
               }

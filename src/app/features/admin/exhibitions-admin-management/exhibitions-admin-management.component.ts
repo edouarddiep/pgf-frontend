@@ -47,6 +47,8 @@ import {AddressService, SwissAddress} from '@core/services/adresse.service';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {MatAutocomplete, MatAutocompleteTrigger} from '@angular/material/autocomplete';
 import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 interface ExhibitionFormData {
   title: string;
@@ -124,7 +126,8 @@ function endDateValidator(control: AbstractControl) {
     TranslatePipe,
     MatAutocomplete,
     MatOption,
-    MatAutocompleteTrigger
+    MatAutocompleteTrigger,
+    TruncatePipe
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
@@ -145,6 +148,8 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly addressService = inject(AddressService);
   private readonly fileUploadService = inject(FileUploadService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly translateService = inject(TranslateService);
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
@@ -578,16 +583,19 @@ export class ExhibitionsAdminManagementComponent implements OnInit, OnDestroy, H
   }
 
   protected exportData(): void {
+    const lang = this.translateService.currentLang();
+    const isEn = lang === 'en';
     const columns: ExportColumn<Exhibition>[] = [
       { header: 'ID', value: e => e.id },
-      { header: 'Titre', value: e => e.title },
-      { header: 'Lieu', value: e => e.location ?? '' },
-      { header: 'Adresse', value: e => e.address ?? '' },
-      { header: 'Date début', value: e => e.startDate ? this.formatDate(e.startDate) : '' },
-      { header: 'Date fin', value: e => e.endDate ? this.formatDate(e.endDate) : '' },
-      { header: 'Statut', value: e => this.getStatusLabel(e.status) }
+      { header: isEn ? 'Title' : 'Titre', value: e => this.localeService.resolve(e, 'title') },
+      { header: isEn ? 'Description' : 'Description', value: e => this.localeService.resolve(e, 'description') },
+      { header: isEn ? 'Venue' : 'Lieu', value: e => e.location ?? '' },
+      { header: isEn ? 'Address' : 'Adresse', value: e => e.address ?? '' },
+      { header: isEn ? 'Start date' : 'Date début', value: e => e.startDate ? this.formatDate(e.startDate) : '' },
+      { header: isEn ? 'End date' : 'Date fin', value: e => e.endDate ? this.formatDate(e.endDate) : '' },
+      { header: isEn ? 'Status' : 'Statut', value: e => this.getStatusLabel(e.status) }
     ];
-    this.exportService.exportToExcel(this.exhibitions(), columns, 'expositions');
+    this.exportService.exportToExcel(this.exhibitions(), columns, isEn ? 'exhibitions' : 'expositions');
   }
 
   private normalize(str: string): string {

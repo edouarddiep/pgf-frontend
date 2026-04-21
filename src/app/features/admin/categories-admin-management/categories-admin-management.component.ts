@@ -21,6 +21,8 @@ import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard'
 import { ExportColumn, ExportService } from '@shared/services/export.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
 
 type SortField = 'id' | 'name';
 
@@ -30,7 +32,7 @@ type SortField = 'id' | 'name';
     CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatCardModule,
     MatProgressSpinnerModule, LoadingDirective, MatDialogModule,
     ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltip,
-    HighlightPipe, TranslatePipe
+    HighlightPipe, TranslatePipe, TruncatePipe
   ],
   templateUrl: './categories-admin-management.component.html',
   styleUrl: './categories-admin-management.component.scss',
@@ -44,6 +46,8 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   private readonly route = inject(ActivatedRoute);
   private readonly exportService = inject(ExportService);
   private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly rawCategories = signal<ArtworkCategory[]>([]);
   private isDragging = false;
@@ -314,12 +318,14 @@ export class CategoriesAdminManagementComponent implements OnInit, HasUnsavedCha
   }
 
   protected exportData(): void {
+    const lang = this.translateService.currentLang();
+    const isEn = lang === 'en';
     const columns: ExportColumn<ArtworkCategory>[] = [
       { header: 'ID', value: c => c.id },
-      { header: 'Nom', value: c => c.name },
-      { header: 'Description', value: c => c.description ?? '' },
-      { header: 'Nb oeuvres', value: c => c.artworkCount ?? 0 }
+      { header: isEn ? 'Name' : 'Nom', value: c => this.localeService.resolve(c, 'name') },
+      { header: isEn ? 'Description' : 'Description', value: c => this.localeService.resolve(c, 'description') },
+      { header: isEn ? 'Artworks' : 'Nb oeuvres', value: c => c.artworkCount ?? 0 }
     ];
-    this.exportService.exportToExcel(this.categories(), columns, 'categories');
+    this.exportService.exportToExcel(this.categories(), columns, isEn ? 'categories' : 'categories');
   }
 }

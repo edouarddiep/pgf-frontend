@@ -1,4 +1,13 @@
-import {Component, inject, ChangeDetectionStrategy, signal, viewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {
+  Component,
+  inject,
+  ChangeDetectionStrategy,
+  signal,
+  viewChild,
+  ElementRef,
+  AfterViewInit,
+  computed
+} from '@angular/core';
 import {CommonModule, Location} from '@angular/common';
 import {RouterModule, ActivatedRoute, Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
@@ -8,6 +17,8 @@ import {switchMap, combineLatest, map, take} from 'rxjs';
 import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
 import {MatChip} from '@angular/material/chips';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -29,6 +40,9 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'artworks';
 
   readonly mainImageContainer = viewChild<ElementRef<HTMLElement>>('mainImageContainer');

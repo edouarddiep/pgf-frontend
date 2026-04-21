@@ -18,6 +18,8 @@ import {catchError, EMPTY} from 'rxjs';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-archive-detail',
@@ -34,6 +36,9 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly location = inject(Location);
   private readonly router = inject(Router);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'archives';
 
 

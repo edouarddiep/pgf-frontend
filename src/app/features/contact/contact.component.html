@@ -34,16 +34,14 @@
 
           <div class="form-row">
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>{{ 'contact.form.name' | translate }}</mat-label>
-              <input matInput formControlName="name" required>
+              <input matInput formControlName="name" required placeholder="{{ 'contact.form.name' | translate }} *">
               @if (contactForm.get('name')?.invalid && contactForm.get('name')?.touched) {
                 <mat-error>{{ 'contact.form.errors.nameRequired' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>{{ 'contact.form.firstName' | translate }}</mat-label>
-              <input matInput formControlName="firstName" required>
+              <input matInput formControlName="firstName" required placeholder="{{ 'contact.form.firstName' | translate }} *">
               @if (contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched) {
                 <mat-error>{{ 'contact.form.errors.firstNameRequired' | translate }}</mat-error>
               }
@@ -52,8 +50,7 @@
 
           <div class="form-row">
             <mat-form-field appearance="outline" class="half-width">
-              <mat-label>{{ 'contact.form.email' | translate }}</mat-label>
-              <input matInput type="email" formControlName="email" required>
+              <input matInput type="email" formControlName="email" required placeholder="{{ 'contact.form.email' | translate }} *">
               @if (contactForm.get('email')?.invalid && contactForm.get('email')?.touched) {
                 <mat-error>
                   @if (contactForm.get('email')?.errors?.['required']) {
@@ -65,15 +62,23 @@
               }
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="half-width">
-              <mat-label>{{ 'contact.form.phone' | translate }}</mat-label>
-              <input matInput type="tel" formControlName="phone">
-            </mat-form-field>
+            <div class="phone-field half-width">
+              <mat-form-field appearance="outline" class="prefix-field">
+                <mat-select formControlName="phonePrefix" [panelWidth]="220">
+                  <mat-select-trigger>{{ contactForm.get('phonePrefix')?.value }}</mat-select-trigger>
+                  @for (p of phonePrefixes; track p.code) {
+                    <mat-option [value]="p.prefix">{{ p.label }} ({{ p.prefix }})</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="number-field">
+                <input matInput type="tel" formControlName="phone" placeholder="{{ 'contact.form.phone' | translate }}">
+              </mat-form-field>
+            </div>
           </div>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'contact.form.subject' | translate }}</mat-label>
-            <input matInput formControlName="subject" required>
+            <input matInput formControlName="subject" required placeholder="{{ 'contact.form.subject' | translate }} *">
             @if (contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched) {
               <mat-error>{{ 'contact.form.errors.subjectRequired' | translate }}</mat-error>
             }
@@ -81,14 +86,8 @@
 
           <div class="form-group full-width">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>{{ 'contact.form.message' | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="message"
-                rows="6"
-                required
-                maxlength="500">
-              </textarea>
+    <textarea matInput formControlName="message" rows="6" required maxlength="500"
+              placeholder="{{ 'contact.form.message' | translate }} *"></textarea>
               @if (contactForm.get('message')?.invalid && contactForm.get('message')?.touched) {
                 <mat-error>
                   @if (contactForm.get('message')?.errors?.['required']) {
@@ -105,26 +104,22 @@
           </div>
 
           <div class="form-actions">
-            @if (isSubmitting()) {
-              <div class="submit-spinner">
-                <app-loading-spinner />
-                <span>{{ 'contact.form.submitting' | translate }}</span>
-              </div>
-            } @else {
-              <button
-                mat-raised-button
-                color="primary"
-                type="submit"
-                class="submit-button"
-                [disabled]="contactForm.invalid">
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                {{ 'contact.form.submitting' | translate }}
+              } @else {
                 {{ 'contact.form.submit' | translate }}
-              </button>
-            }
+              }
+            </button>
           </div>
         </form>
 
         <div class="social-section">
-          <p class="social-text">{{ 'contact.social' | translate }}</p>
+          <p>{{ 'contact.social' | translate }}</p>
           <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
             <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
             <span>pierrette_gf</span>

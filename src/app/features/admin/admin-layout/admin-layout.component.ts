@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, PLATFORM_ID, signal} from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -39,6 +39,7 @@ export class AdminLayoutComponent {
   private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly displayName = signal<string>('');
+  protected readonly currentLang = computed(() => this.translateService.currentLang());
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -54,6 +55,10 @@ export class AdminLayoutComponent {
         this.displayName.set('Admin');
       }
     }
+  }
+
+  protected setLang(lang: 'fr' | 'en'): void {
+    this.translateService.setLang(lang);
   }
 
   protected logout(): void {

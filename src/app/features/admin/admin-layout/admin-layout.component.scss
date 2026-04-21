@@ -74,3 +74,44 @@
     align-items: center;
   }
 }
+
+.lang-switch-group {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-right: 1rem;
+}
+
+.lang-sep {
+  color: #ccc !important;
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.lang-item {
+  color: #999 !important;
+  font-size: 0.9rem !important;
+  font-weight: normal !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  cursor: pointer !important;
+  padding: 4px 6px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+
+  &:hover {
+    color: #333 !important;
+    background: transparent !important;
+  }
+
+  &.active {
+    color: #333 !important;
+    font-weight: 700 !important;
+  }
+}

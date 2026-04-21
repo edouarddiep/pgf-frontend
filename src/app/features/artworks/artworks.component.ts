@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,8 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { map, combineLatest, take } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TruncatePipe} from '@core/pipes/truncate.pipe';
+import {TranslateService} from '@core/services/translate.service';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-artworks',
@@ -32,6 +34,9 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
+  private readonly translateService = inject(TranslateService);
+  protected readonly localeService = inject(LocaleService);
+  protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY_CATEGORIES = 'artwork-categories';
 
