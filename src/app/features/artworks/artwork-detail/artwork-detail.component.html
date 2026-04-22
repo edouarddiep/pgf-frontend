@@ -75,8 +75,8 @@
                 RETOUR
               </button>
             }
-            <button mat-stroked-button routerLink="/artworks" class="nav-button">
-              {{ 'artworks.backToAll' | translate }}
+            <button mat-stroked-button [routerLink]="navService.langPrefix() + '/artworks'" class="nav-button">
+            {{ 'artworks.backToAll' | translate }}
             </button>
           </div>
         </div>

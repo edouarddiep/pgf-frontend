@@ -11,6 +11,7 @@ import {AdminService} from '@features/admin/services/admin.service';
 import {NotificationService} from '@shared/services/notification.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -36,6 +37,7 @@ export class AdminLayoutComponent {
   private readonly notificationService = inject(NotificationService);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
+  protected readonly navService = inject(NavService);
   private readonly platformId = inject(PLATFORM_ID);
 
   protected readonly displayName = signal<string>('');
@@ -64,6 +66,6 @@ export class AdminLayoutComponent {
   protected logout(): void {
     this.adminService.logout();
     this.notificationService.info(this.translateService.translate('admin.layout.logoutSuccess'));
-    this.router.navigate(['/']);
+    this.navService.navigateHome()
   }
 }

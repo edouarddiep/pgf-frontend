@@ -9,6 +9,7 @@ import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { VideoService } from '@shared/services/video.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly videoService = inject(VideoService);
+  protected readonly navService = inject(NavService);
   private readonly platformId = inject(PLATFORM_ID);
 
   @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;
@@ -58,7 +60,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onCategoryClick(categorySlug: string): void {
-    this.router.navigate(['/artworks', categorySlug]);
+    this.navService.navigate(['artworks', categorySlug]);
   }
 
   getCategoryThumbnail(category: any): string {

@@ -122,7 +122,6 @@ function endDateValidator(control: AbstractControl) {
     MatTableModule,
     ImageUploadComponent,
     LoadingDirective,
-    HighlightPipe,
     TranslatePipe,
     MatAutocomplete,
     MatOption,

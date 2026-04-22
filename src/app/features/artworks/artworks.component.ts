@@ -12,6 +12,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TruncatePipe} from '@core/pipes/truncate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-artworks',
@@ -36,6 +37,7 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  private readonly navService = inject(NavService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY_CATEGORIES = 'artwork-categories';
@@ -78,14 +80,16 @@ export class ArtworksComponent implements OnInit, OnDestroy {
 
   onArtworkClick(artworkId: number): void {
     const categorySlug = this.route.snapshot.params['category'];
-    this.router.navigate(['/artworks', artworkId], {
-      queryParams: categorySlug ? { from: categorySlug } : {}
-    });
+    if (categorySlug) {
+      this.navService.navigate(['artworks', categorySlug, artworkId]);
+    } else {
+      this.navService.navigate(['artworks', artworkId]);
+    }
   }
 
   onCategoryClick(categorySlug: string): void {
     this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY_CATEGORIES);
-    this.router.navigate(['/artworks', categorySlug]);
+    this.navService.navigate(['artworks', categorySlug]);
   }
 
   getCategoryThumbnail(category: any): string {

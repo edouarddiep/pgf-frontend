@@ -11,6 +11,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TruncatePipe} from '@core/pipes/truncate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-artwork-category',
@@ -35,6 +36,7 @@ export class ArtworkCategoryComponent implements OnInit {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  protected readonly navService = inject(NavService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY = 'artworks';
@@ -66,10 +68,7 @@ export class ArtworkCategoryComponent implements OnInit {
   onArtworkClick(artworkId: number): void {
     this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
     this.slug$.pipe(take(1)).subscribe(slug => {
-      this.router.navigate(['/artworks', artworkId],
-        { queryParams:
-            { from: slug }
-        });
+      this.navService.navigate(['artworks', slug, artworkId]);
     });
   }
 
@@ -77,7 +76,7 @@ export class ArtworkCategoryComponent implements OnInit {
     if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY_CATEGORIES)) {
       this.location.back();
     } else {
-      this.router.navigate(['/artworks']);
+      this.navService.navigate(['artworks']);
     }
   }
 }

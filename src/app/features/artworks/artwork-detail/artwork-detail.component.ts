@@ -19,6 +19,7 @@ import {MatChip} from '@angular/material/chips';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-artwork-detail',
@@ -42,6 +43,7 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  protected readonly navService = inject(NavService);
   protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'artworks';
 
@@ -57,8 +59,8 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private modalTouchStartX = 0;
   private modalTouchStartY = 0;
 
-  readonly artwork$ = this.route.url.pipe(
-    switchMap(segments => this.artworkService.getArtworkById(+segments[0].path))
+  readonly artwork$ = this.route.params.pipe(
+    switchMap(params => this.artworkService.getArtworkById(+params['id']))
   );
 
   readonly categories$ = this.artworkService.getCategories();
@@ -72,12 +74,12 @@ export class ArtworkDetailComponent implements AfterViewInit {
 
   readonly primaryCategory$ = combineLatest([
     this.categories$,
-    this.route.queryParams
+    this.route.params
   ]).pipe(
-    map(([allCategories, queryParams]) => {
-      const fromSlug = queryParams['from'];
-      if (!fromSlug) return null;
-      return allCategories.find(c => c.slug === fromSlug) ?? null;
+    map(([allCategories, params]) => {
+      const slug = params['category'];
+      if (!slug) return null;
+      return allCategories.find(c => c.slug === slug) ?? null;
     })
   );
 
@@ -118,12 +120,11 @@ export class ArtworkDetailComponent implements AfterViewInit {
   }
 
   goBack(categorySlug?: string): void {
-    if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY)) {
-      this.location.back();
-    } else if (categorySlug) {
-      this.router.navigate(['/artworks', categorySlug]);
+    if (categorySlug) {
+      this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
+      this.navService.navigate(['artworks', categorySlug]);
     } else {
-      this.router.navigate(['/artworks']);
+      this.navService.navigate(['artworks']);
     }
   }
 

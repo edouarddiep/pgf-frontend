@@ -69,7 +69,7 @@
       }
 
       <div class="section-actions">
-        <button mat-raised-button color="primary" routerLink="/exhibitions">
+        <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/exhibitions'">
           {{ 'about.recentExhibitions.cta' | translate }}
         </button>
       </div>
@@ -83,8 +83,8 @@
         <p>{{ 'about.association.text1' | translate }}</p>
         <p>{{ 'about.association.text2' | translate }}</p>
         <div class="association-actions">
-          <button mat-raised-button color="primary" routerLink="/association">
-            {{ 'about.association.cta' | translate }}
+          <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/association'">
+          {{ 'about.association.cta' | translate }}
           </button>
         </div>
       </div>

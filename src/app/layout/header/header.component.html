@@ -1,6 +1,6 @@
 <mat-toolbar class="header-toolbar" [class.hidden]="isHidden()">
 <div class="container">
-    <a routerLink="/" class="logo">
+    <a [routerLink]="langPrefix()" class="logo">
       <img src="https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/Logo_site_yaya-03.png" alt="Pierrette Gonseth-Favre">
     </a>
 
@@ -14,13 +14,13 @@
       </button>
     } @else {
       <nav class="desktop-nav">
-        <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'nav.home' | translate }}</a>
-        <a mat-button routerLink="/about" routerLinkActive="active">{{ 'nav.about' | translate }}</a>
-        <a mat-button routerLink="/artworks" routerLinkActive="active">{{ 'nav.artworks' | translate }}</a>
-        <a mat-button routerLink="/exhibitions" routerLinkActive="active">{{ 'nav.exhibitions' | translate }}</a>
-        <a mat-button routerLink="/archives" routerLinkActive="active">{{ 'nav.archives' | translate }}</a>
-        <a mat-button routerLink="/association" routerLinkActive="active">{{ 'nav.association' | translate }}</a>
-        <a mat-button routerLink="/contact" routerLinkActive="active">{{ 'nav.contact' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'nav.home' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/about'" routerLinkActive="active">{{ 'nav.about' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/artworks'" routerLinkActive="active">{{ 'nav.artworks' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/exhibitions'" routerLinkActive="active">{{ 'nav.exhibitions' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/archives'" routerLinkActive="active">{{ 'nav.archives' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/association'" routerLinkActive="active">{{ 'nav.association' | translate }}</a>
+        <a mat-button [routerLink]="langPrefix() + '/contact'" routerLinkActive="active">{{ 'nav.contact' | translate }}</a>
         <span class="lang-switch-group">
           <a class="lang-item" [class.active]="currentLang() === 'fr'" (click)="setLang('fr')">FR</a>
           <span class="lang-sep">|</span>
@@ -33,13 +33,13 @@
 
 @if (isMobileMenuOpen()) {
   <nav class="mobile-menu">
-    <a routerLink="/" (click)="closeMobileMenu()">{{ 'nav.home' | translate }}</a>
-    <a routerLink="/about" (click)="closeMobileMenu()">{{ 'nav.about' | translate }}</a>
-    <a routerLink="/artworks" (click)="closeMobileMenu()">{{ 'nav.artworks' | translate }}</a>
-    <a routerLink="/exhibitions" (click)="closeMobileMenu()">{{ 'nav.exhibitions' | translate }}</a>
-    <a routerLink="/archives" (click)="closeMobileMenu()">{{ 'nav.archives' | translate }}</a>
-    <a routerLink="/association" (click)="closeMobileMenu()">{{ 'nav.association' | translate }}</a>
-    <a routerLink="/contact" (click)="closeMobileMenu()">{{ 'nav.contact' | translate }}</a>
+    <a [routerLink]="langPrefix()" (click)="closeMobileMenu()">{{ 'nav.home' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/about'" (click)="closeMobileMenu()">{{ 'nav.about' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/artworks'" (click)="closeMobileMenu()">{{ 'nav.artworks' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/exhibitions'" (click)="closeMobileMenu()">{{ 'nav.exhibitions' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/archives'" (click)="closeMobileMenu()">{{ 'nav.archives' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/association'" (click)="closeMobileMenu()">{{ 'nav.association' | translate }}</a>
+    <a [routerLink]="langPrefix() + '/contact'" (click)="closeMobileMenu()">{{ 'nav.contact' | translate }}</a>
     <span class="lang-switch-group-mobile">
       <a class="lang-item-mobile" [class.active]="currentLang() === 'fr'" (click)="setLang('fr'); closeMobileMenu()">FR</a>
       <span class="lang-sep">|</span>

@@ -1,6 +1,6 @@
 import {Component, inject, ChangeDetectionStrategy, signal, HostListener, computed} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,10 @@ import {TranslateService} from '@core/services/translate.service';
 export class HeaderComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly translateService = inject(TranslateService);
+  private readonly router = inject(Router);
+  protected readonly langPrefix = computed(() => `/${this.translateService.currentLang()}-ch`);
   protected readonly currentLang = computed(() => this.translateService.currentLang());
+
 
   private lastScrollY = 0;
 
@@ -45,11 +48,10 @@ export class HeaderComponent {
     this.isMobileMenuOpen.set(false);
   }
 
-  protected toggleLang(): void {
-    this.translateService.setLang(this.translateService.currentLang() === 'fr' ? 'en' : 'fr');
-  }
-
   protected setLang(lang: 'fr' | 'en'): void {
     this.translateService.setLang(lang);
+    const currentUrl = this.router.url;
+    const newUrl = currentUrl.replace(/^\/(fr|en)-ch/, `/${lang}-ch`);
+    this.router.navigateByUrl(newUrl).then(r => true);
   }
 }

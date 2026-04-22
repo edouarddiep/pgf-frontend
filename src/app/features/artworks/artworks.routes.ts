@@ -18,11 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./artworks.component').then(m => m.ArtworksComponent)
   },
   {
-    matcher: numericMatcher,
-    loadComponent: () => import('./artwork-detail/artwork-detail.component').then(m => m.ArtworkDetailComponent)
+    path: ':category',
+    loadComponent: () => import('./artwork-category/artwork-category.component').then(m => m.ArtworkCategoryComponent)
   },
   {
-    matcher: slugMatcher,
-    loadComponent: () => import('./artwork-category/artwork-category.component').then(m => m.ArtworkCategoryComponent)
+    path: ':category/:id',
+    loadComponent: () => import('./artwork-detail/artwork-detail.component').then(m => m.ArtworkDetailComponent)
   }
 ];

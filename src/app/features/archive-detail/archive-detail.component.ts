@@ -20,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-archive-detail',
@@ -38,6 +39,7 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  private readonly navService = inject(NavService);
   protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'archives';
 
@@ -86,7 +88,7 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
     if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY)) {
       this.location.back();
     } else {
-      this.router.navigate(['/archives']);
+      this.navService.navigate(['archives']);
     }
   }
 

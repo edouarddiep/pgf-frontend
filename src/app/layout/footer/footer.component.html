@@ -7,9 +7,9 @@
           <h4>{{ 'footer.navigation' | translate }}</h4>
           <nav class="footer-nav">
             @for (link of quickLinks; track link.route) {
-              <a [routerLink]="link.route"
+              <a [routerLink]="langPrefix() + link.route"
                  routerLinkActive="active"
-                 [routerLinkActiveOptions]="{ exact: true }">
+                 [routerLinkActiveOptions]="{ exact: link.route === '' }">
                 {{ link.nameKey | translate }}
               </a>
             }
@@ -21,7 +21,7 @@
           @if (categories$ | async; as categories) {
             <nav class="footer-nav">
               @for (category of categories; track category.id) {
-                <a [routerLink]="['/artworks', category.slug]">
+                <a [routerLink]="[langPrefix() + '/artworks', category.slug]">
                   {{ localeService.resolve(category, 'name') }}
                 </a>
               }
@@ -53,7 +53,7 @@
         </div>
         <nav class="legal-nav">
           @for (legal of legalLinks; track legal.route) {
-            <a [routerLink]="legal.route">{{ legal.nameKey | translate }}</a>
+            <a [routerLink]="langPrefix() + legal.route">{{ legal.nameKey | translate }}</a>
           }
         </nav>
       </div>

@@ -58,8 +58,8 @@
           <mat-icon>arrow_back</mat-icon>
           {{ 'artworks.backToCategories' | translate }}
         </button>
-        <button mat-stroked-button routerLink="/contact" class="nav-button">
-          <mat-icon>mail</mat-icon>
+        <button mat-stroked-button [routerLink]="navService.langPrefix() + '/contact'" class="nav-button">
+        <mat-icon>mail</mat-icon>
           {{ 'artworks.contact' | translate }}
         </button>
       </div>

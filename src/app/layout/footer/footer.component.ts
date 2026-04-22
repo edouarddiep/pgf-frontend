@@ -20,7 +20,8 @@ export class FooterComponent {
   private readonly artworkService = inject(ArtworkService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
-  protected readonly lang = computed(() => this.translateService.currentLang());
+
+  protected readonly langPrefix = computed(() => `/${this.translateService.currentLang()}-ch`);
 
   readonly categories$ = this.artworkService.getCategories();
   readonly currentYear = new Date().getFullYear();
@@ -28,7 +29,7 @@ export class FooterComponent {
   readonly instagramLogoUrl = 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/images/insta-logo.jpg';
 
   readonly quickLinks = [
-    { nameKey: 'nav.home', route: '/' },
+    { nameKey: 'nav.home', route: '' },
     { nameKey: 'nav.about', route: '/about' },
     { nameKey: 'nav.artworks', route: '/artworks' },
     { nameKey: 'nav.exhibitions', route: '/exhibitions' },

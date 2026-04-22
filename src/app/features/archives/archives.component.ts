@@ -9,6 +9,7 @@ import { catchError, EMPTY } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-archives',
@@ -23,6 +24,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  private readonly navService = inject(NavService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY = 'archives';
@@ -67,6 +69,6 @@ export class ArchivesComponent implements OnInit, OnDestroy {
 
   onArchiveClick(archiveId: number): void {
     this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
-    this.router.navigate(['/archives', archiveId]);
+    this.navService.navigate(['archives', archiveId]);
   }
 }

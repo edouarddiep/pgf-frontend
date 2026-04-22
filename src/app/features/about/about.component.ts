@@ -7,6 +7,7 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { map } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-about',
@@ -24,6 +25,7 @@ export class AboutComponent implements OnInit, OnDestroy {
   private readonly exhibitionService = inject(ExhibitionService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
+  protected readonly navService = inject(NavService);
 
   readonly recentExhibitions$ = this.exhibitionService.getAllExhibitions().pipe(
     map(exhibitions => exhibitions.slice(0, 3))
