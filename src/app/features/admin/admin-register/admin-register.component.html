@@ -2,23 +2,23 @@
   <mat-card class="login-card">
     <mat-card-content>
       <h1 class="card-title">{{ 'admin.register.title' | translate }}</h1>
-      @if (submitted()) {
+      @if (invalidToken()) {
+        <p class="error-message">{{ 'admin.register.errors.invalidToken' | translate }}</p>
+        <div class="actions">
+          <button mat-stroked-button class="action-btn" routerLink="/">{{ 'admin.register.backToSite' | translate }}</button>
+        </div>
+      } @else if (submitted()) {
         <p class="success-message">{{ 'admin.register.successMessage' | translate }}</p>
         <div class="actions">
           <button mat-stroked-button class="action-btn" routerLink="/">{{ 'admin.register.backToSite' | translate }}</button>
         </div>
       } @else {
         <form [formGroup]="form" (ngSubmit)="submit()">
-          <input type="hidden" formControlName="secret">
+          <input type="hidden" formControlName="token">
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'admin.register.displayName' | translate }}</mat-label>
             <input matInput formControlName="displayName">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'admin.register.email' | translate }}</mat-label>
-            <input matInput formControlName="email" type="email" autocomplete="email">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
@@ -38,9 +38,6 @@
           </mat-form-field>
 
           <div class="validation-errors">
-            @if (form.get('email')?.invalid && form.get('email')?.dirty) {
-              <p>{{ 'admin.register.errors.emailInvalid' | translate }}</p>
-            }
             @if (form.get('password')?.invalid && form.get('password')?.dirty) {
               <p>{{ 'admin.register.errors.passwordTooShort' | translate }}</p>
             }

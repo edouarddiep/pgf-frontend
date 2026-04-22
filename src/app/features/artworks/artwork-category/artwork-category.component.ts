@@ -73,10 +73,6 @@ export class ArtworkCategoryComponent implements OnInit {
   }
 
   onAllCategoriesClick(): void {
-    if (this.scrollAnimationService.hasScrollPosition(this.SCROLL_KEY_CATEGORIES)) {
-      this.location.back();
-    } else {
-      this.navService.navigate(['artworks']);
-    }
+    this.navService.navigate(['artworks']);
   }
 }

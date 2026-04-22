@@ -251,8 +251,8 @@ export const fr = {
       }
     },
     register: {
-      title: "Demande d'accès admin",
-      successMessage: "Votre demande a bien été envoyée à l'administrateur du site. Vous recevrez un e-mail de confirmation une fois approuvée.",
+      title: "Créer un nouveau compte",
+      successMessage: "Votre compte a bien été créé. Vous recevrez un e-mail de confirmation une fois celui-ci approuvé.",
       backToSite: 'Retourner sur le site',
       displayName: 'Votre nom',
       email: 'E-mail',
@@ -263,19 +263,38 @@ export const fr = {
         emailInvalid: 'Veuillez saisir un e-mail valide.',
         passwordTooShort: 'Le mot de passe doit contenir au moins 8 caractères.',
         passwordMismatch: 'Les mots de passe ne correspondent pas.',
-        generic: 'Une erreur est survenue. Veuillez réessayer.'
+        generic: 'Une erreur est survenue. Veuillez réessayer.',
+        invalidToken: "Ce lien d'invitation est invalide ou a déjà été utilisé.",
       },
       submitting: 'Envoi...',
-      submit: 'Envoyer la demande'
+      submit: 'Créer mon compte',
+    },
+    invite: {
+      title: 'Inviter un administrateur',
+      email: 'E-mail du futur administrateur',
+      submit: 'Envoyer l\'invitation',
+      submitting: 'Envoi...',
+      successMessage: 'L\'invitation a bien été envoyée.',
+      backToLogin: 'Connexion admin',
+      error: 'Une erreur est survenue. Cet e-mail est peut-être déjà utilisé.',
     },
     login: {
       title: 'Administration PGF',
       email: 'Adresse e-mail',
-      passwordLabel: 'Veuillez saisir un mot de passe',
+      passwordLabel: 'Mot de passe',
       wrongPassword: 'Mot de passe incorrect',
       cancel: 'Annuler',
       submit: 'Se connecter',
-      submitting: 'Connexion...'
+      submitting: 'Connexion...',
+      forgotPassword: 'Mot de passe oublié ?',
+    },
+    forgotPassword: {
+      title: 'Réinitialiser le mot de passe',
+      successMessage: 'Un e-mail de réinitialisation a été envoyé si cette adresse est reconnue.',
+      backToLogin: 'Retour',
+      submit: 'Envoyer le lien',
+      submitting: 'Envoi...',
+      error: 'Une erreur est survenue. Veuillez réessayer.',
     },
     dashboard: {
       title: 'Tableau de bord',
@@ -294,6 +313,11 @@ export const fr = {
       addArchive: 'Ajouter une archive',
       viewSite: 'Voir le site',
       backToSite: 'Retourner sur le site',
+      inviteAdmin: 'Inviter un administrateur',
+      inviteEmail: 'E-mail du nouvel admin',
+      inviteSend: 'Envoyer l\'invitation',
+      inviteSuccess: 'Invitation envoyée avec succès.',
+      inviteError: 'Erreur lors de l\'envoi. Cet e-mail est peut-être déjà utilisé.',
     },
     common: {
       exportList: 'Exporter la liste',

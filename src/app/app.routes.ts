@@ -53,5 +53,9 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('@features/admin/admin.routes').then(m => m.adminRoutes)
   },
+  {
+    path: 'secret-invite',
+    loadComponent: () => import('@features/admin/admin-invite/admin-invite.component').then(m => m.AdminInviteComponent)
+  },
   { path: '**', redirectTo: 'fr-ch' }
 ];

@@ -51,7 +51,7 @@
             @if (artworkCategories.length > 0) {
               <div class="artwork-categories">
                 @for (category of artworkCategories; track category.id) {
-                  <mat-chip class="category-chip">{{ category.name }}</mat-chip>
+                  <mat-chip class="category-chip">{{ localeService.resolve(category, 'name') }}</mat-chip>
                 }
               </div>
             }
@@ -67,7 +67,7 @@
             @if (primaryCategory$ | async; as category) {
               <button mat-stroked-button (click)="goBack(category.slug)" class="nav-button">
                 <mat-icon>arrow_back</mat-icon>
-                {{ category.name.toUpperCase() }}
+                {{ localeService.resolve(category, 'name').toUpperCase() }}
               </button>
             } @else {
               <button mat-stroked-button (click)="goBack()" class="nav-button">
@@ -76,7 +76,7 @@
               </button>
             }
             <button mat-stroked-button [routerLink]="navService.langPrefix() + '/artworks'" class="nav-button">
-            {{ 'artworks.backToAll' | translate }}
+              {{ 'artworks.backToAll' | translate }}
             </button>
           </div>
         </div>

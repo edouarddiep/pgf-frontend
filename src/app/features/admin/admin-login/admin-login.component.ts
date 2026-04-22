@@ -1,7 +1,7 @@
 import {Component, ChangeDetectionStrategy, inject, signal, PLATFORM_ID} from '@angular/core';
 import {CommonModule, isPlatformBrowser} from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +23,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    TranslatePipe
+    TranslatePipe,
+    RouterLink
   ],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
@@ -42,7 +43,7 @@ export class AdminLoginComponent {
   protected readonly loginMode = signal<'legacy' | 'email'>('email');
 
   protected readonly loginForm = this.fb.group({
-    email: ['', [Validators.email]],
+    email: ['', [Validators.email, Validators.required]],
     password: ['', [Validators.required]]
   });
 

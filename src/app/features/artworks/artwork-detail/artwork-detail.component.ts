@@ -121,7 +121,6 @@ export class ArtworkDetailComponent implements AfterViewInit {
 
   goBack(categorySlug?: string): void {
     if (categorySlug) {
-      this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
       this.navService.navigate(['artworks', categorySlug]);
     } else {
       this.navService.navigate(['artworks']);

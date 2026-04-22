@@ -27,6 +27,9 @@
             {{ isLoading() ? ('admin.login.submitting' | translate) : ('admin.login.submit' | translate) }}
           </button>
         </div>
+        <div class="forgot-link">
+          <a routerLink="/admin/forgot-password">{{ 'admin.login.forgotPassword' | translate }}</a>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>

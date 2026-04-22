@@ -32,13 +32,13 @@ export class AdminRegisterComponent {
   protected readonly showConfirmPassword = signal(false);
   protected readonly error = signal(false);
   protected readonly errorMessage = signal<string>('');
+  protected readonly invalidToken = signal(false);
 
   protected readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    displayName: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
-    displayName: ['', [Validators.required]],
-    secret: ['', [Validators.required]]
+    token: ['', [Validators.required]]
   }, { validators: this.passwordMatchValidator });
 
   private passwordMatchValidator(group: AbstractControl) {
@@ -50,9 +50,11 @@ export class AdminRegisterComponent {
   constructor() {
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       const params = new URLSearchParams(window.location.search);
-      const secret = params.get('secret');
-      if (secret) {
-        this.form.patchValue({ secret });
+      const token = params.get('token');
+      if (token) {
+        this.form.patchValue({ token });
+      } else {
+        this.invalidToken.set(true);
       }
     }
     this.errorMessage.set(this.translateService.translate('admin.register.errors.generic'));
@@ -70,9 +72,9 @@ export class AdminRegisterComponent {
     if (this.form.invalid) return;
     this.isLoading.set(true);
     this.error.set(false);
-    const { secret, confirmPassword, ...body } = this.form.value;
+    const { token, confirmPassword, ...body } = this.form.value;
     this.http.post<void>(
-      `${environment.apiUrl}/admin/auth/register?secret=${secret}`,
+      `${environment.apiUrl}/admin/auth/register?token=${token}`,
       body,
       { responseType: 'text' as 'json' }
     ).pipe(

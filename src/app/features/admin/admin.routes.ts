@@ -82,5 +82,9 @@ export const adminRoutes: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./admin-register/admin-register.component').then(m => m.AdminRegisterComponent)
-  }
+  },
+  {
+    path: 'forgot-password',
+    loadComponent: () => import('./admin-forgot-password/admin-forgot-password.component').then(m => m.AdminForgotPasswordComponent)
+  },
 ];

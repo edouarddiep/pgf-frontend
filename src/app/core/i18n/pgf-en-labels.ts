@@ -251,8 +251,8 @@ export const en = {
       }
     },
     register: {
-      title: 'Admin access request',
-      successMessage: 'Your request has been sent to the site administrator. You will receive a confirmation email once approved.',
+      title: 'Create a new user account',
+      successMessage: 'Your account has been created. You will receive a confirmation email once it has been approved.',
       backToSite: 'Back to site',
       displayName: 'Your name',
       email: 'Email',
@@ -263,19 +263,38 @@ export const en = {
         emailInvalid: 'Please enter a valid email address.',
         passwordTooShort: 'The password must be at least 8 characters long.',
         passwordMismatch: 'Passwords do not match.',
-        generic: 'An error occurred. Please try again.'
+        generic: 'An error occurred. Please try again.',
+        invalidToken: 'This invitation link is invalid or has already been used.',
       },
+      submitting: 'Creating...',
+      submit: 'Create my account',
+    },
+    invite: {
+      title: 'Invite an administrator',
+      email: 'Future administrator email',
+      submit: 'Send invitation',
       submitting: 'Sending...',
-      submit: 'Send request'
+      successMessage: 'The invitation has been sent successfully.',
+      backToLogin: 'Admin login',
+      error: 'An error occurred. This email may already be registered.',
     },
     login: {
       title: 'PGF Administration',
       email: 'Email address',
-      passwordLabel: 'Please enter a password',
+      passwordLabel: 'Password',
       wrongPassword: 'Incorrect password',
       cancel: 'Cancel',
       submit: 'Log in',
-      submitting: 'Logging in...'
+      submitting: 'Logging in...',
+      forgotPassword: 'Forgot password?',
+    },
+    forgotPassword: {
+      title: 'Reset password',
+      successMessage: 'A reset email has been sent if this address is recognised.',
+      backToLogin: 'Back',
+      submit: 'Send link',
+      submitting: 'Sending...',
+      error: 'An error occurred. Please try again.',
     },
     dashboard: {
       title: 'Dashboard',
@@ -294,6 +313,11 @@ export const en = {
       addArchive: 'Add an archive',
       viewSite: 'View site',
       backToSite: 'Back to site',
+      inviteAdmin: 'Invite an administrator',
+      inviteEmail: 'New admin email',
+      inviteSend: 'Send invitation',
+      inviteSuccess: 'Invitation sent successfully.',
+      inviteError: 'An error occurred. This email may already be registered.',
     },
     common: {
       exportList: 'Export list',

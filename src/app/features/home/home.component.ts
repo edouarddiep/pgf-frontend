@@ -10,6 +10,8 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { VideoService } from '@shared/services/video.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {NavService} from '@core/services/nav.service';
+import {TruncatePipe} from '@core/pipes/truncate.pipe';
+import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +21,8 @@ import {NavService} from '@core/services/nav.service';
     MatButtonModule,
     MatIconModule,
     LazyLoadImageModule,
-    TranslatePipe
+    TranslatePipe,
+    TruncatePipe
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -27,10 +30,10 @@ import {NavService} from '@core/services/nav.service';
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly artworkService = inject(ArtworkService);
-  private readonly router = inject(Router);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly videoService = inject(VideoService);
   protected readonly navService = inject(NavService);
+  protected readonly localeService = inject(LocaleService);
   private readonly platformId = inject(PLATFORM_ID);
 
   @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;

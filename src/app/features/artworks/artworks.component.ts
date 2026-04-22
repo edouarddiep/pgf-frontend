@@ -1,13 +1,13 @@
-import {Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy, AfterViewInit, computed} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { ArtworkService } from '@features/artworks/services/artwork.service';
-import { ArtworkCardComponent } from '@shared/components/artwork-card/artwork-card.component';
-import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
-import { map, combineLatest, take } from 'rxjs';
+import {ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ActivatedRoute, RouterModule} from '@angular/router';
+import {MatButtonModule} from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
+import {LazyLoadImageModule} from 'ng-lazyload-image';
+import {ArtworkService} from '@features/artworks/services/artwork.service';
+import {ArtworkCardComponent} from '@shared/components/artwork-card/artwork-card.component';
+import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
+import {combineLatest, map, take} from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TruncatePipe} from '@core/pipes/truncate.pipe';
 import {TranslateService} from '@core/services/translate.service';
@@ -32,7 +32,6 @@ import {NavService} from '@core/services/nav.service';
 })
 export class ArtworksComponent implements OnInit, OnDestroy {
   private readonly artworkService = inject(ArtworkService);
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);

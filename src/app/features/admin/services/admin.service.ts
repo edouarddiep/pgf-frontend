@@ -205,4 +205,16 @@ export class AdminService {
   deleteMessage(id: number): Observable<void> {
     return this.http.delete<void>(`${this.adminApiUrl}/messages/${id}`);
   }
+
+  inviteUser(email: string): Observable<void> {
+    return this.http.post<void>(`${this.adminApiUrl}/auth/invite`, { email });
+  }
+
+  resetPassword(email: string): Observable<void> {
+    return this.http.post<void>(
+      `${environment.supabaseUrl}/auth/v1/recover`,
+      { email },
+      { headers: { apikey: environment.supabasePublishableKey } }
+    );
+  }
 }
