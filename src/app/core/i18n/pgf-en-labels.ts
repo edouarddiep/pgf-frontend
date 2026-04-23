@@ -282,7 +282,7 @@ export const en = {
       title: 'PGF Administration',
       email: 'Email address',
       passwordLabel: 'Password',
-      wrongPassword: 'Incorrect password',
+      wrongPassword: 'User not found or incorrect password.',
       cancel: 'Cancel',
       submit: 'Log in',
       submitting: 'Logging in...',
@@ -290,7 +290,7 @@ export const en = {
     },
     forgotPassword: {
       title: 'Reset password',
-      successMessage: 'A reset email has been sent if this address is recognised.',
+      successMessage: 'A reset email has been sent if this address exists.',
       backToLogin: 'Back',
       submit: 'Send link',
       submitting: 'Sending...',

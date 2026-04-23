@@ -282,7 +282,7 @@ export const fr = {
       title: 'Administration PGF',
       email: 'Adresse e-mail',
       passwordLabel: 'Mot de passe',
-      wrongPassword: 'Mot de passe incorrect',
+      wrongPassword: 'Utilisateur inexistant ou mot de passe incorrect.',
       cancel: 'Annuler',
       submit: 'Se connecter',
       submitting: 'Connexion...',
@@ -290,7 +290,7 @@ export const fr = {
     },
     forgotPassword: {
       title: 'Réinitialiser le mot de passe',
-      successMessage: 'Un e-mail de réinitialisation a été envoyé si cette adresse est reconnue.',
+      successMessage: 'Si cette adresse e-mail existe dans la base de donnée, un e-mail a été envoyé.',
       backToLogin: 'Retour',
       submit: 'Envoyer le lien',
       submitting: 'Envoi...',

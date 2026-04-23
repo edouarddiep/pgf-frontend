@@ -12,6 +12,7 @@ import {HttpClient} from '@angular/common/http';
 import {RouterLink} from '@angular/router';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {NotificationService} from '@shared/services/notification.service';
 
 @Component({
   selector: 'app-admin-register',
@@ -25,6 +26,7 @@ import {TranslateService} from '@core/services/translate.service';
 export class AdminRegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
+  private readonly notificationService = inject(NotificationService);
   private readonly translateService = inject(TranslateService);
   protected readonly isLoading = signal(false);
   protected readonly submitted = signal(false);
@@ -79,8 +81,14 @@ export class AdminRegisterComponent {
       { responseType: 'text' as 'json' }
     ).pipe(
       catchError((err) => {
-        this.errorMessage.set(err.error ?? this.translateService.translate('admin.register.errors.generic'));
-        this.error.set(true);
+        let message = this.translateService.translate('admin.register.errors.generic');
+        try {
+          const parsed = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+          if (parsed?.message) {
+            message = parsed.message;
+          }
+        } catch {}
+        this.notificationService.error(message);
         this.isLoading.set(false);
         return EMPTY;
       })

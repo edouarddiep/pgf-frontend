@@ -4,7 +4,6 @@
       @if (unauthorized()) {
         <p class="error-message">Accès non autorisé.</p>
       } @else if (submitted()) {
-        <h1 class="card-title">{{ 'admin.invite.title' | translate }}</h1>
         <p class="success-message">{{ 'admin.invite.successMessage' | translate }}</p>
       } @else {
         <h1 class="card-title">{{ 'admin.invite.title' | translate }}</h1>
@@ -13,9 +12,6 @@
             <mat-label>{{ 'admin.invite.email' | translate }}</mat-label>
             <input matInput formControlName="email" type="email" autocomplete="email">
           </mat-form-field>
-          @if (error()) {
-            <div class="error-message">{{ errorMessage() }}</div>
-          }
           <div class="actions">
             <a mat-button routerLink="/admin/login">{{ 'admin.invite.backToLogin' | translate }}</a>
             <button mat-raised-button color="primary" type="submit" class="action-btn"

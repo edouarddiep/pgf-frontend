@@ -1,7 +1,9 @@
 <div class="login-container">
   <mat-card class="login-card">
     <mat-card-content>
-      <h1 class="card-title">{{ 'admin.register.title' | translate }}</h1>
+      @if (!submitted() && !invalidToken()) {
+        <h1 class="card-title">{{ 'admin.register.title' | translate }}</h1>
+      }
       @if (invalidToken()) {
         <p class="error-message">{{ 'admin.register.errors.invalidToken' | translate }}</p>
         <div class="actions">

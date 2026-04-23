@@ -11,12 +11,14 @@ import {HttpClient} from '@angular/common/http';
 import {environment} from '@environments/environment';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {NotificationService} from '@shared/services/notification.service';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-invite',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, RouterLink, TranslatePipe],
+    MatInputModule, MatButtonModule, RouterLink, TranslatePipe, MatSnackBarModule],
   templateUrl: './admin-invite.component.html',
   styleUrl: './admin-invite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,10 +27,9 @@ export class AdminInviteComponent {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
   private readonly translateService = inject(TranslateService);
+  private readonly notificationService = inject(NotificationService);
   protected readonly isLoading = signal(false);
   protected readonly submitted = signal(false);
-  protected readonly error = signal(false);
-  protected readonly errorMessage = signal('');
   protected readonly unauthorized = signal(false);
 
   protected readonly form = this.fb.group({
@@ -47,15 +48,20 @@ export class AdminInviteComponent {
   protected submit(): void {
     if (this.form.invalid) return;
     this.isLoading.set(true);
-    this.error.set(false);
     this.http.post<void>(
       `${environment.apiUrl}/admin/auth/invite`,
       { email: this.form.value.email },
       { responseType: 'text' as 'json' }
     ).pipe(
       catchError((err) => {
-        this.errorMessage.set(err.error ?? this.translateService.translate('admin.invite.error'));
-        this.error.set(true);
+        let message = this.translateService.translate('admin.invite.error');
+        try {
+          const parsed = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+          if (parsed?.message) {
+            message = parsed.message;
+          }
+        } catch {}
+        this.notificationService.error(message);
         this.isLoading.set(false);
         return EMPTY;
       })
