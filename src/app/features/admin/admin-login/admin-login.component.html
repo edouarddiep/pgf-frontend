@@ -11,7 +11,8 @@
         }
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>{{ 'admin.login.passwordLabel' | translate }}</mat-label>
-          <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password">
+          <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+                 (keyup.enter)="login()">
           <mat-icon matSuffix class="toggle-password" (click)="togglePassword()">
             {{ showPassword() ? 'visibility_off' : 'visibility' }}
           </mat-icon>

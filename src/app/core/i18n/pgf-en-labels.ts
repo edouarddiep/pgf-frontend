@@ -370,6 +370,10 @@ export const en = {
       loadError: 'Error loading data',
       saveError: 'Error saving artwork',
       deleteError: 'Error deleting artwork',
+      deleteTooltip: 'Delete artwork',
+      downloadMainImage: 'Download main image',
+      downloadAllImages: 'Download all artwork images as ZIP',
+      downloadAll: 'Download all images',
       form: {
         title: 'Title',
         description: 'Description',

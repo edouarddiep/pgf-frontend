@@ -115,6 +115,11 @@
               }
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'admin.exhibitions.form.description' | translate }}</mat-label>
+              <textarea matInput formControlName="description" rows="4"></textarea>
+            </mat-form-field>
+
             <mat-form-field appearance="outline">
               <mat-label>{{ 'admin.exhibitions.form.location' | translate }}</mat-label>
               <input matInput formControlName="location" required placeholder="Exemple: Abbaye de Bonmont">

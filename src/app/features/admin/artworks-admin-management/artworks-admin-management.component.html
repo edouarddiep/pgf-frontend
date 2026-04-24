@@ -156,7 +156,6 @@
               }
             </mat-form-field>
 
-            <!-- Image principale -->
             <div class="full-width">
               <label class="file-upload-label">Image principale *</label>
 
@@ -176,6 +175,11 @@
                       <mat-icon>open_with</mat-icon>
                       <span>Glisser pour recadrer</span>
                     </div>
+                  </div>
+                  <div class="image-actions">
+                    <button mat-icon-button type="button" [matTooltip]="'admin.artworks.downloadMainImage' | translate" (click)="downloadImage(mainImageUrl()!)">
+                      <mat-icon>download</mat-icon>
+                    </button>
                   </div>
                   <div class="zoom-controls">
                     <mat-icon>zoom_out</mat-icon>
@@ -197,7 +201,7 @@
                 <mat-error class="image-required-error">{{ 'admin.common.imageRequired' | translate }}</mat-error>
               }
             </div>
-            <!-- Autres images -->
+
             <div class="full-width">
               <label class="file-upload-label">{{ 'admin.artworks.form.imagesLabel' | translate }}</label>
               <app-image-upload
@@ -214,6 +218,20 @@
           </div>
 
           <div class="form-actions">
+            @if (editingArtwork()) {
+              <button mat-stroked-button color="warn" type="button"
+                      [matTooltip]="'admin.artworks.deleteTooltip' | translate"
+                      (click)="deleteArtwork(editingArtwork()!.id)">
+                <mat-icon>delete</mat-icon>
+                {{ 'admin.artworks.deleteTooltip' | translate }}
+              </button>
+              <button type="button" mat-stroked-button (click)="downloadAllImages()"
+                      [matTooltip]="'admin.artworks.downloadAllImages' | translate">
+                <mat-icon>download</mat-icon>
+                {{ 'admin.artworks.downloadAll' | translate }}
+              </button>
+            }
+            <span class="spacer"></span>
             <button type="button" mat-button (click)="cancelForm()">{{ 'admin.common.cancel' | translate }}</button>
             <button type="submit" mat-raised-button color="primary"
                     [disabled]="!isFormValidForSubmit() || isSubmitting()"

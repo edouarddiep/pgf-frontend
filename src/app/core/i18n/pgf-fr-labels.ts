@@ -370,6 +370,10 @@ export const fr = {
       loadError: 'Erreur lors du chargement des données',
       saveError: "Erreur lors de la sauvegarde de l'œuvre",
       deleteError: "Erreur lors de la suppression de l'œuvre",
+      deleteTooltip: "Supprimer l'œuvre",
+      downloadMainImage: "Télécharger l'image principale",
+      downloadAllImages: "Télécharger toutes les images de l'œuvre",
+      downloadAll: 'Télécharger tout',
       form: {
         title: 'Titre',
         description: 'Description',

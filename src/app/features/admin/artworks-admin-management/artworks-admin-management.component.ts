@@ -116,7 +116,10 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     title: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', [Validators.maxLength(1000)]],
     imageUrls: [[] as string[]],
-    categoryIds: [[] as number[], [Validators.required, Validators.minLength(1)]]
+    categoryIds: [[] as number[], [(control) => {
+      const val = control.value;
+      return val && val.length > 0 ? null : { required: true };
+    }]]
   });
 
   ngOnInit(): void {
@@ -127,20 +130,27 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
     if (isCreate || isEdit) {
       this.isFormMode.set(true);
-      this.artworkForm.valueChanges.subscribe(() => {
-        if (this.isFormMode()) this.hasUnsavedChanges.set(true);
-      });
-      this.loadCategories().subscribe(categories => {
-        this.categories.set(categories);
-        if (isEdit) {
+      if (isCreate) {
+        this.loadCategories().subscribe(categories => {
+          this.categories.set(categories);
+          this.artworkForm.valueChanges.subscribe(() => {
+            if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+          });
+        });
+      } else {
+        this.loadCategories().subscribe(categories => {
+          this.categories.set(categories);
           this.adminService.getArtworks()
             .pipe(catchError(() => EMPTY))
             .subscribe(artworks => {
               const artwork = artworks.find(a => a.id === +id!);
               if (artwork) this.fillForm(artwork);
+              this.artworkForm.valueChanges.subscribe(() => {
+                if (this.isFormMode()) this.hasUnsavedChanges.set(true);
+              });
             });
-        }
-      });
+        });
+      }
     } else {
       this.loadData();
     }
@@ -350,7 +360,14 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
         }))
         .subscribe(() => {
           this.notificationService.success(this.translateService.translate('admin.artworks.deleteSuccess'));
-          this.loadData();
+          window.dispatchEvent(new CustomEvent('artworkChanged'));
+          window.dispatchEvent(new CustomEvent('artworkChanged'));
+          this.hasUnsavedChanges.set(false);
+          if (this.isFormMode()) {
+            this.router.navigate(['/admin/artworks']);
+          } else {
+            this.loadData();
+          }
         });
     });
   }
@@ -377,7 +394,9 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
   }
 
   protected isFormValidForSubmit(): boolean {
-    return this.artworkForm.valid && !!this.mainImageUrl();
+    if (!this.artworkForm.valid || !this.mainImageUrl()) return false;
+    if (this.editingArtwork()) return this.hasUnsavedChanges();
+    return true;
   }
 
   protected openImageModal(url: string): void {
@@ -409,6 +428,51 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
       { header: isEn ? 'Categories' : 'Catégories', value: a => this.getCategoryNames(this.asSet(a.categoryIds)).join(', ') }
     ];
     this.exportService.exportToExcel(this.filteredArtworks(), columns, isEn ? 'artworks' : 'oeuvres');
+  }
+
+  protected async downloadImage(url: string): Promise<void> {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = url.split('/').pop()?.split('?')[0] ?? 'image';
+      a.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      this.notificationService.error('Erreur lors du téléchargement');
+    }
+  }
+
+  protected async downloadAllImages(): Promise<void> {
+    const all = [this.mainImageUrl(), ...this.uploadedImageUrls()].filter((u): u is string => !!u);
+    if (all.length === 0) return;
+
+    const JSZip = (await import('jszip')).default;
+    const zip = new JSZip();
+
+    await Promise.all(
+      all.map(async (url, i) => {
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const ext = url.split('.').pop()?.split('?')[0] ?? 'jpg';
+          zip.file(`image_${i + 1}.${ext}`, blob);
+        } catch {
+          // skip failed
+        }
+      })
+    );
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    const objectUrl = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = objectUrl;
+    const title = this.artworkForm.value.title ?? 'oeuvre';
+    a.download = `${title.replace(/\s+/g, '_')}_images.zip`;
+    a.click();
+    URL.revokeObjectURL(objectUrl);
   }
 
   private normalize(str: string): string {
