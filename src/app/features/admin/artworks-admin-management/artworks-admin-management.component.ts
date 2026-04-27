@@ -26,9 +26,9 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { FileUploadService } from '@core/services/file-upload.service';
-import {TranslateService} from '@core/services/translate.service';
-import {LocaleService} from '@core/services/locale.service';
-import {TruncatePipe} from '@core/pipes/truncate.pipe';
+import { TranslateService } from '@core/services/translate.service';
+import { LocaleService } from '@core/services/locale.service';
+import { TruncatePipe } from '@core/pipes/truncate.pipe';
 
 @Component({
   selector: 'app-artworks-admin-management',
@@ -43,6 +43,8 @@ import {TruncatePipe} from '@core/pipes/truncate.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChanges {
+  private static readonly LIST_STATE_KEY = 'artworks_list_state';
+
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
@@ -82,6 +84,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
 
   private readonly rawArtworks = signal<Artwork[]>([]);
   private readonly rawFilteredArtworks = signal<Artwork[]>([]);
+  private readonly scrollAnchorId = signal<number | null>(null);
   protected readonly sortField = signal<'id' | 'title'>('id');
   protected readonly sortAsc = signal(true);
   protected readonly searchQuery = signal('');
@@ -129,6 +132,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     const isEdit = !!id && url.endsWith('/edit');
 
     if (isCreate || isEdit) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
       this.isFormMode.set(true);
       if (isCreate) {
         this.loadCategories().subscribe(categories => {
@@ -152,6 +156,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
         });
       }
     } else {
+      this.restoreListState();
       this.loadData();
     }
   }
@@ -177,9 +182,28 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
         this.artworks.set(artworks);
         this.rawArtworks.set(artworks);
         this.categories.set(categories);
-        this.rawFilteredArtworks.set(artworks);
-        this.selectedCategoryFilter = '';
+
+        if (this.selectedCategoryFilter) {
+          this.adminService.getArtworksByCategory(+this.selectedCategoryFilter)
+            .pipe(catchError(() => EMPTY))
+            .subscribe(filtered => {
+              this.rawFilteredArtworks.set(filtered);
+              this.scrollToAnchor();
+            });
+        } else {
+          this.rawFilteredArtworks.set(artworks);
+          this.scrollToAnchor();
+        }
       });
+  }
+
+  private scrollToAnchor(): void {
+    const anchorId = this.scrollAnchorId();
+    if (anchorId === null) return;
+    this.scrollAnchorId.set(null);
+    setTimeout(() => {
+      document.getElementById(`artwork-row-${anchorId}`)?.scrollIntoView({ block: 'center', behavior: 'instant' });
+    }, 50);
   }
 
   private fillForm(artwork: Artwork): void {
@@ -201,11 +225,36 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
     this.hasUnsavedChanges.set(false);
   }
 
+  private saveListState(anchorId: number): void {
+    sessionStorage.setItem(ArtworksAdminManagementComponent.LIST_STATE_KEY, JSON.stringify({
+      sortField: this.sortField(),
+      sortAsc: this.sortAsc(),
+      searchQuery: this.searchQuery(),
+      selectedCategoryFilter: this.selectedCategoryFilter,
+      anchorId
+    }));
+  }
+
+  private restoreListState(): void {
+    const raw = sessionStorage.getItem(ArtworksAdminManagementComponent.LIST_STATE_KEY);
+    if (!raw) return;
+    sessionStorage.removeItem(ArtworksAdminManagementComponent.LIST_STATE_KEY);
+    try {
+      const state = JSON.parse(raw);
+      this.sortField.set(state.sortField ?? 'id');
+      this.sortAsc.set(state.sortAsc ?? true);
+      this.searchQuery.set(state.searchQuery ?? '');
+      this.selectedCategoryFilter = state.selectedCategoryFilter ?? '';
+      this.scrollAnchorId.set(state.anchorId ?? null);
+    } catch { /* ignore */ }
+  }
+
   protected openForm(): void {
     this.router.navigate(['/admin/artworks/create']);
   }
 
   protected editArtwork(artwork: Artwork): void {
+    this.saveListState(artwork.id);
     this.router.navigate(['/admin/artworks', artwork.id, 'edit']);
   }
 
@@ -361,7 +410,6 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
         .subscribe(() => {
           this.notificationService.success(this.translateService.translate('admin.artworks.deleteSuccess'));
           window.dispatchEvent(new CustomEvent('artworkChanged'));
-          window.dispatchEvent(new CustomEvent('artworkChanged'));
           this.hasUnsavedChanges.set(false);
           if (this.isFormMode()) {
             this.router.navigate(['/admin/artworks']);
@@ -459,9 +507,7 @@ export class ArtworksAdminManagementComponent implements OnInit, HasUnsavedChang
           const blob = await response.blob();
           const ext = url.split('.').pop()?.split('?')[0] ?? 'jpg';
           zip.file(`image_${i + 1}.${ext}`, blob);
-        } catch {
-          // skip failed
-        }
+        } catch { /* skip */ }
       })
     );
 

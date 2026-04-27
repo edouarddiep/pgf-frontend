@@ -102,7 +102,7 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" [id]="'artwork-row-' + row.id"></tr>
           </table>
         } @else if (isLoading()) {
           <div class="no-data">
