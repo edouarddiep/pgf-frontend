@@ -1,0 +1,122 @@
+<div class="admin-artworks-container">
+  <div class="admin-header">
+    <h2>{{ 'admin.categories.title' | translate }}</h2>
+    <button mat-stroked-button (click)="exportData()" [matTooltip]="'admin.common.exportTooltip' | translate">
+      <mat-icon>download</mat-icon>
+      {{ 'admin.common.exportList' | translate }}
+    </button>
+    <button mat-raised-button color="primary" routerLink="/admin/categories/create">
+      <mat-icon>add</mat-icon>
+      {{ 'admin.categories.new' | translate }}
+    </button>
+  </div>
+
+  <mat-card class="table-card" appLoading>
+    <mat-card-header>
+      <mat-card-title>{{ 'admin.categories.listTitle' | translate }}</mat-card-title>
+      <mat-form-field>
+        <mat-label>{{ 'admin.categories.searchLabel' | translate }}</mat-label>
+        <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)"
+               [placeholder]="'admin.categories.searchPlaceholder' | translate">
+        @if (searchQuery()) {
+          <button matSuffix mat-icon-button (click)="onSearchChange('')"><mat-icon>close</mat-icon></button>
+        }
+      </mat-form-field>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (categories().length > 0) {
+        <table mat-table [dataSource]="categories()" class="categories-table">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef (click)="sort('id')" class="sortable-header">
+              ID <span class="sort-icon">{{ sortField() === 'id' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+            </th>
+            <td mat-cell *matCellDef="let category" [innerHTML]="category.id | highlight: searchQuery()"></td>
+          </ng-container>
+
+          <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>{{ 'admin.categories.colImage' | translate }}</th>
+            <td mat-cell *matCellDef="let category">
+              @if (category.thumbnailUrl) {
+                <div class="thumbnail-wrapper" (click)="openImageModal(category.thumbnailUrl)"
+                     [matTooltip]="'admin.common.zoom' | translate">
+                  <img [src]="category.thumbnailUrl"
+                       [alt]="category.name"
+                       class="category-thumbnail"
+                       [style.object-position]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"
+                       [style.transform]="'scale(' + ((category.thumbnailZoom ?? 100) / 100) + ')'"
+                       [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"/>
+                </div>
+              } @else {
+                <mat-icon class="no-image-icon">image_not_supported</mat-icon>
+              }
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef (click)="sort('name')" class="sortable-header">
+              {{ 'admin.categories.colName' | translate }}
+              <span class="sort-icon">{{ sortField() === 'name' ? (sortAsc() ? '↑' : '↓') : '↕' }}</span>
+            </th>
+            <td mat-cell *matCellDef="let category">
+              <strong [innerHTML]="localeService.resolve(category, 'name') | highlight: searchQuery()"></strong>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>{{ 'admin.categories.colDescription' | translate }}</th>
+            <td mat-cell *matCellDef="let category">
+              <span class="description-cell"
+                    (mouseenter)="showTooltip($event, localeService.resolve(category, 'description'))"
+                    (mouseleave)="hideTooltip()">
+                {{ localeService.resolve(category, 'description') | truncate:80 }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="artworkCount">
+            <th mat-header-cell *matHeaderCellDef>{{ 'admin.categories.colArtworkCount' | translate }}</th>
+            <td mat-cell *matCellDef="let category">
+              <span [matTooltip]="'admin.categories.artworkCountTooltip' | translate: {count: category.artworkCount ?? 0}"
+                    matTooltipShowDelay="400">
+                {{ category.artworkCount ?? 0 }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>{{ 'admin.common.edit' | translate }}</th>
+            <td mat-cell *matCellDef="let category">
+              <div class="actions-cell">
+                <button mat-icon-button color="primary" (click)="editCategory(category)" [matTooltip]="'admin.common.edit' | translate"><mat-icon>edit</mat-icon></button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+              [id]="'category-row-' + row.id"
+              [class.row-highlight]="highlightedId() === row.id"></tr>
+        </table>
+      } @else {
+        <div class="no-data">
+          <mat-icon>category</mat-icon>
+          <p>{{ 'admin.categories.notFound' | translate }}</p>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (showImageModal()) {
+    <div class="image-modal" (click)="closeImageModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
+        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
+      </div>
+    </div>
+  }
+
+  @if (tooltipText()) {
+    <div class="custom-tooltip" [style.top.px]="tooltipY()" [style.left.px]="tooltipX()">{{ tooltipText() }}</div>
+  }
+</div>

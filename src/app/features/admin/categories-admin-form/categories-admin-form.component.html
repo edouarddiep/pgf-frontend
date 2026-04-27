@@ -1,0 +1,85 @@
+<div class="admin-artworks-container">
+  <div class="admin-header">
+    <div style="display:flex; align-items:center; gap:0.5rem">
+      <button mat-icon-button (click)="cancel()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
+      <h2>{{ editingCategory() ? ('admin.categories.editTitle' | translate) : ('admin.categories.new' | translate) }}</h2>
+    </div>
+  </div>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()" class="category-form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'admin.categories.form.name' | translate }}</mat-label>
+          <input matInput formControlName="name">
+          @if (categoryForm.get('name')?.errors?.['required'] && categoryForm.get('name')?.touched) {
+            <mat-error>{{ 'admin.common.nameRequired' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'admin.categories.form.description' | translate }}</mat-label>
+          <textarea matInput formControlName="description" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="image-upload-field full-width">
+          <label>{{ 'admin.categories.form.imageLabel' | translate }}</label>
+
+          @if (previewImageUrl()) {
+            <div class="image-preview-wrapper">
+              <div class="image-preview"
+                   (mousedown)="startDrag($event)"
+                   (mousemove)="onDrag($event)"
+                   (mouseup)="stopDrag()"
+                   (mouseleave)="stopDrag()">
+                <img [src]="previewImageUrl()!"
+                     [alt]="'admin.common.preview' | translate"
+                     [style.object-position]="positionX() + '% ' + positionY() + '%'"
+                     [style.transform]="'scale(' + zoom() / 100 + ')'"
+                     [style.transform-origin]="positionX() + '% ' + positionY() + '%'">
+                <div class="crop-hint">
+                  <mat-icon>open_with</mat-icon>
+                  <span>{{ 'admin.categories.form.cropHint' | translate }}</span>
+                </div>
+              </div>
+              <div class="zoom-controls">
+                <mat-icon>zoom_out</mat-icon>
+                <input type="range" [value]="zoom()"
+                       (input)="onZoomChange($any($event.target).value)"
+                       min="100" max="300" step="5">
+                <mat-icon>zoom_in</mat-icon>
+              </div>
+            </div>
+          }
+
+          <button mat-stroked-button type="button" (click)="fileInput.click()">
+            <mat-icon>upload</mat-icon>
+            {{ previewImageUrl() ? ('admin.common.changeImage' | translate) : ('admin.common.chooseImage' | translate) }}
+          </button>
+          <input #fileInput type="file" accept="image/*" hidden (change)="onImageSelected($event)">
+          @if (imageRequired()) {
+            <mat-error class="image-required-error">{{ 'admin.categories.form.imageRequired' | translate }}</mat-error>
+          }
+        </div>
+
+        <div class="form-actions full-width">
+          <button mat-button type="button" (click)="cancel()">{{ 'admin.common.cancel' | translate }}</button>
+          <button mat-raised-button color="primary" type="submit"
+                  [disabled]="categoryForm.invalid || isSubmitting() || (editingCategory() && !categoryForm.dirty && !hasUnsavedChanges())"
+                  [class.btn-active]="!(categoryForm.invalid || isSubmitting() || (editingCategory() && !categoryForm.dirty && !hasUnsavedChanges()))">
+            {{ isSubmitting() ? ('admin.common.saving' | translate) : (editingCategory() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate)) }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  @if (showImageModal()) {
+    <div class="image-modal" (click)="closeImageModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
+        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
+      </div>
+    </div>
+  }
+</div>

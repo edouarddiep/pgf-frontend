@@ -1,0 +1,124 @@
+.admin-artworks-container {
+  padding: 2rem;
+  padding-bottom: 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h2 { margin: 0; color: #333; }
+}
+
+.form-card {
+  margin-bottom: 2rem;
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .full-width { grid-column: 1 / -1; }
+
+    .file-upload-label {
+      display: block;
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.6);
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+
+    .spacer { flex: 1; }
+
+    button { white-space: nowrap; flex-shrink: 0; }
+  }
+}
+
+.image-legend {
+  font-size: 0.75rem;
+  color: rgba(0,0,0,0.5);
+  margin: 0.25rem 0 0;
+  font-style: italic;
+}
+
+.image-required-error {
+  display: block;
+  color: #f44336;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.image-required-hint {
+  font-size: 0.75rem;
+  color: #f44336;
+  margin: 0 0 0.5rem;
+  font-style: italic;
+}
+
+.btn-active {
+  background-color: #1976d2 !important;
+  color: white !important;
+  &:hover { background-color: #1976d2 !important; }
+}
+
+.image-modal {
+  position: fixed;
+  top: 64px;
+  left: 250px;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+
+  .modal-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .modal-image { max-width: 80vw; max-height: 80vh; width: auto; height: auto; object-fit: contain; display: block; }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.45) !important;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 4px !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer;
+      color: white !important;
+      transform: none !important;
+      margin-left: 0 !important;
+      transition: background 0.2s ease, transform 0.2s ease !important;
+      &:hover { background: rgba(112, 105, 105, 0.75) !important; transform: scale(1.05) !important; }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-artworks-container { padding: 1rem; }
+  .admin-header { flex-direction: column; align-items: stretch; gap: 1rem; }
+  .form-grid { grid-template-columns: 1fr; }
+}

@@ -424,6 +424,7 @@ export const fr = {
       colId: 'ID',
       colImage: 'Image',
       colName: 'Nom',
+      colLocation: 'Lieu',
       colStatus: 'Statut',
       colActions: 'Actions',
       statusTooltip: 'À venir · En cours · Passée',
