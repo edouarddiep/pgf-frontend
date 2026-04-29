@@ -237,12 +237,18 @@
     display: none;
   }
 
-  .artist-content .content-grid {
-    grid-template-columns: 1fr;
-    min-height: auto;
+  .artist-content {
 
-    .artist-text {
-      padding: 2rem;
+    padding: 0;
+
+    .content-grid {
+      grid-template-columns: 1fr;
+      min-height: auto;
+
+      .artist-text {
+        display: block;
+        padding: 2rem;
+      }
     }
   }
 }
@@ -281,7 +287,7 @@
   }
 
   .section-title {
-    font-size: 1.3rem !important;
+    font-size: 2rem !important;
     padding: 0 1rem;
     word-wrap: break-word;
     hyphens: auto;
@@ -294,6 +300,6 @@
 
 @media (max-width: 480px) {
   .section-title {
-    font-size: 1.1rem !important;
+    font-size: 1.5rem !important;
   }
 }

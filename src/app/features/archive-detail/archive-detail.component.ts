@@ -54,7 +54,7 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   );
 
   protected readonly imageFiles = computed(() =>
-    this.archive()?.files?.filter(f => f.fileType === 'IMAGE') || []
+    this.archive()?.files?.filter(f => f.fileType === 'IMAGE' && f.fileUrl !== this.archive()?.thumbnailUrl) || []
   );
 
   protected readonly videoFiles = computed(() =>

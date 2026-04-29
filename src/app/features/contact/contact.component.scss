@@ -296,6 +296,10 @@
       height: auto;
       overflow: visible;
 
+      p {
+        text-align: center !important;
+      }
+
       .form-container {
         max-width: 100%;
         height: auto;

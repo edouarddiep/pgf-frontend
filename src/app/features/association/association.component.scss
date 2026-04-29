@@ -145,7 +145,6 @@
 
     .section-title {
       margin: 0;
-      text-align: left;
     }
 
     .intro-text {
@@ -267,18 +266,21 @@
     display: none;
   }
 
-  .association-content .content-grid {
-    grid-template-columns: 1fr;
+  .association-content {
+    padding: 0;
+      .content-grid {
+      grid-template-columns: 1fr;
 
-    .main-content {
-      padding: 2rem;
+      .main-content {
+        padding: 2rem;
 
-      p {
-        font-size: 1rem;
-      }
+        p {
+          font-size: 1rem;
+        }
 
-      blockquote {
-        font-size: 1rem;
+        blockquote {
+          font-size: 1rem;
+        }
       }
     }
   }
@@ -298,12 +300,11 @@
       }
 
       .payment-info {
-        max-width:100%;
+        max-width: 100%;
       }
 
       .cta-button {
-        align-self: stretch;
-        width: 100%;
+        align-self: center;
       }
     }
   }

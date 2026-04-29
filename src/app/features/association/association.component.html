@@ -63,8 +63,7 @@
             <p>{{ 'association.membership.beneficiaryName' | translate }}</p>
           </div>
         </div>
-
-        <button mat-raised-button routerLink="/contact" class="cta-button">
+        <button mat-raised-button [routerLink]="navService.langPrefix() + '/contact'" class="cta-button">
           {{ 'association.membership.cta' | translate }}
         </button>
       </div>
