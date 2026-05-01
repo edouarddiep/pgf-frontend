@@ -24,6 +24,9 @@
                 [src]="artwork.imageUrls && artwork.imageUrls.length > 0 ? artwork.imageUrls[selectedImageIndex()] : artwork.mainImageUrl"
                 [alt]="artwork.title"
                 class="main-artwork-image"
+                [style.object-position]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
+                [style.transform]="'scale(' + ((artwork.mainImageZoom ?? 100) / 100) + ')'"
+                [style.transform-origin]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
                 (click)="openImageModal(selectedImageIndex())">
             </div>
           </div>

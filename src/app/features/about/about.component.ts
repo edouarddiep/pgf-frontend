@@ -8,6 +8,7 @@ import { map } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {NavService} from '@core/services/nav.service';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-about',

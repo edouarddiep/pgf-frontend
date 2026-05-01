@@ -20,7 +20,7 @@ export const en = {
   home: {
     hero: {
       bio: "An artist of many approaches, Pierrette Gonseth-Favre explores matter in all its forms. Paintings, burlap canvases, wire, sculptures, collages or jewellery and object creations — her work weaves a sensitive dialogue between texture, volume and the poetry of gesture.",
-      cta: 'MY ARTWORKS'
+      cta: 'DISCOVER THE ARTIST'
     },
     artworks: {
       title: 'THE ARTWORKS',
@@ -40,6 +40,24 @@ export const en = {
     vision: {
       title: 'A passionate artist',
       text: "When speaking of Pierrette Gonseth-Favre's work, one evokes an inhabited œuvre. Inhabited by words, memories, humanity. A mouth full of hay, ligaments, living and vegetal matter, a mouth full of words held back, yearning to be released. The totems created by the artist stand like trees — understandably, since a plank forms their armature. These figures, like trees, resist — one even senses they exist for that very purpose: to resist. To stand firm in the face of adversity. It is thus a tribute woven by this people of tall, flat, veiled and turbaned figures, clothed in coarse, unflattering, uninviting fabric — yet how expressive."
+    },
+    bibliography: {
+      title: 'Bibliography',
+      noteText: 'A few copies of the book published by ArtNyon (1994), the "Livre objet" and "Des Bribes et Des Traces" are still available. For enquiries:',
+      entries: {
+        y1985: 'Alberto Sartoris - Pierrette Gonseth-Favre, Galerie Steiner, Schloss Babstadt',
+        y1987: '"Textile-Textilien". Text by Sylvio Acatos, bilingual French/German. Editions Vie Art Cité, Lausanne - 80 pages',
+        y1989: '"Eternal Masks". Text by Sylvio Acatos, translated into English. Editions Vie Art Cité, Lausanne - 44 pages',
+        y1991: 'Text by Sylvio Acatos, translated into Spanish. Der Brücke Ediciones, Buenos Aires - 46 pages',
+        y1994: 'Text by Jacques Dominique Rouiller. Edition ArtNyon - 116 pages',
+        y1995: 'Text by J-M. Marquis, bilingual French and Czech. Editions Vie Art Cité, Lausanne - 24 pages',
+        y2001: '"A la conquête de la liberté". Text by Armande Reymond. Editions Vie Art Cité, Lausanne - 32 pages',
+        y2012: 'Livre Objet. Texts by Alberto Sartoris, Jean-Marie Marquis and Pierrette Gonseth-Favre. Association Rétrospective Pierrette Gonseth-Favre - 7 booklets of 10 pages',
+        y2014a: 'Des Bribes et des Traces. Texts by Pierrette Gonseth-Favre and Eva Klein de Bouzaglo. Association "Bribes et Traces" - 64 pages',
+        y2014b: 'Fragments and Footprints. Texts by Pierrette Gonseth-Favre and Eva Klein de Bouzaglo, translated into English. Association "Bribes et Traces" - 64 pages',
+        y2017: 'Passer les rêves avant la vie. Text and drawings by Pierrette Gonseth-Favre. ISBN: 978-8399-2216-6',
+        y2019: 'PGF Totems. Text by Pierrette Gonseth-Favre - Art espace Junod - 10-page leaflet'
+      }
     },
     recentExhibitions: {
       title: 'Recent exhibitions',
@@ -132,11 +150,18 @@ export const en = {
     },
     info: {
       title: 'General information',
-      committee: 'Committee',
+      committee: 'Main Committee',
       committeeText: 'The association\'s committee is composed of: <strong>Claude Gaignard</strong> (President), Micheline Altwegg, Myriam Yrazabal Glasson, Pierrette Gonseth-Favre and Camille Gonseth.',
       other: 'Other positions',
       treasurer: '<strong>Denis Gonseth</strong> - Treasurer - Secretary (non-committee)',
-      auditor: '<strong>Dr. Philippe Glasson</strong> - Auditor'
+      auditor: '<strong>Dr. Philippe Glasson</strong> - Auditor',
+      roles: {
+        president: 'President',
+        member: 'Member',
+        treasurer: 'Treasurer · Secretary',
+        treasurerNote: '(non-committee)',
+        auditor: 'Auditor'
+      }
     }
   },
   contact: {
@@ -173,16 +198,16 @@ export const en = {
     s3: { title: '3. Intellectual property', p1: 'All works presented on this site (paintings, sculptures, photographs) are the exclusive property of Pierrette Gonseth-Favre.', p2: 'Any reproduction, representation, modification, publication or adaptation of all or part of the elements of the site, by any means or process, is prohibited without the prior written authorisation of the artist.', p3: 'Images of the works may not be used without the express written consent of the artist.' },
     s4: { title: '4. Sale of artworks', p1: 'The works presented on this site are offered for sale. Prices are indicated in euros, inclusive of all taxes.', p2: 'The sale is considered final after written confirmation from the artist and receipt of full payment.', p3: 'Works are sold with a certificate of authenticity signed by the artist.', p4: 'Shipping costs are borne by the buyer, with mandatory insurance.' },
     s5: { title: '5. Right of withdrawal', p1: 'In accordance with Swiss consumer law, the buyer has 14 days from receipt of the work to exercise their right of withdrawal.', p2: 'The work must be returned in its original condition, with its packaging and certificate of authenticity.', p3: 'Return costs are borne by the buyer.' },
-    s6: { title: '6. Personal data protection', p1: 'Information collected via the contact form is intended solely for Pierrette Gonseth-Favre to respond to your enquiries.', p2: 'In accordance with the General Data Protection Regulation (GDPR), you have the right to access, rectify and delete your personal data.', p3: 'No personal data is transmitted to third parties.', p4: 'To exercise your rights, contact: denis.gonseth@dfinet.ch' },
+    s6: { title: '6. Personal data protection', p1: 'Information collected via the contact form is intended solely for Pierrette Gonseth-Favre to respond to your enquiries.', p2: 'In accordance with the General Data Protection Regulation (GDPR), you have the right to access, rectify and delete your personal data.', p3: 'No personal data is transmitted to third parties.', p4: 'To exercise your rights, contact: pierrette@gonsethfavre.ch' },
     s7: { title: '7. Cookies', p1: 'This site uses technical cookies necessary for its proper functioning.', p2: 'No tracking or advertising cookies are used.' },
     s8: { title: '8. Liability', p1: 'The artist endeavours to provide accurate and up-to-date information on this site, but cannot guarantee the accuracy, precision or completeness of the information made available.', p2: 'The artist cannot be held liable for direct or indirect damages resulting from the use of the site.' },
     s9: { title: '9. Applicable law and jurisdiction', p1: 'These legal notices are governed by Swiss law.', p2: 'In the event of a dispute, the courts of the Canton of Vaud shall have exclusive jurisdiction.' },
     s10: { title: '10. Amendment of legal notices', p1: 'The artist reserves the right to modify these legal notices at any time.', p2: 'Amendments shall take effect upon their publication on the site.' },
-    contact: { title: 'Contact for legal enquiries', p1: 'For any questions regarding these legal notices, please contact:', email: 'Email:', emailValue: 'denis.gonseth@dfinet.ch' }
+    contact: { title: 'Contact for legal enquiries', p1: 'For any questions regarding these legal notices, please contact:', email: 'Email:', emailValue: 'pierrette@gonsethfavre.ch' }
   },
   privacy: {
     hero: 'PRIVACY POLICY',
-    s1: { title: '1. Data controller', responsible: 'Controller:', responsibleValue: 'Pierrette Gonseth-Favre', status: 'Status:', statusValue: 'Independent artist', contact: 'Contact:', contactValue: 'denis.gonseth@dfinet.ch' },
+    s1: { title: '1. Data controller', responsible: 'Controller:', responsibleValue: 'Pierrette Gonseth-Favre', status: 'Status:', statusValue: 'Independent artist', contact: 'Contact:', contactValue: 'pierrette@gonsethfavre.ch' },
     s2: {
       title: '2. Data collected',
       t1: '2.1 Data collected via the contact form', li1_1: 'First and last name', li1_2: 'Email address', li1_3: 'Phone number (optional)', li1_4: 'Subject and message',
@@ -203,7 +228,7 @@ export const en = {
       t5: '8.5 Right to data portability', p5: 'You may retrieve your data in a structured format.',
       t6: '8.6 Right to object', p6: 'You may object to the processing of your data for legitimate reasons.',
       t7: '8.7 Right to withdraw consent', p7: 'You may withdraw your consent at any time.',
-      exercise: 'To exercise these rights, contact:', exerciseValue: 'denis.gonseth@dfinet.ch'
+      exercise: 'To exercise these rights, contact:', exerciseValue: 'pierrette@gonsethfavre.ch'
     },
     s9: {
       title: '9. Cookies and similar technologies',
@@ -214,16 +239,16 @@ export const en = {
     s10: { title: '10. Data security', intro: 'We implement appropriate technical and organisational measures to protect your data:', li1: 'Encrypted connections (HTTPS)', li2: 'Restricted data access', li3: 'Secure backups', li4: 'Regular system updates' },
     s11: { title: '11. Minors', p1: 'This site is not specifically intended for minors.', p2: 'We do not knowingly collect personal data from persons under 16 years of age.', p3: 'If you are a minor, please obtain parental consent before contacting us.' },
     s12: { title: '12. Policy amendments', p1: 'This privacy policy may be updated to reflect changes in our practices.', p2: 'The date of last modification is indicated at the bottom of this page.', p3: 'Significant changes will be notified by email if you have provided your address.' },
-    s13: { title: '13. Complaints', intro: 'If you believe that the processing of your data does not comply with regulations, you may:', li1: 'Contact us directly: denis.gonseth@dfinet.ch', li2: 'Lodge a complaint with the competent supervisory authority', authority: 'Swiss authority:', authorityValue: 'Federal Data Protection and Information Commissioner (FDPIC)' },
-    s14: { title: '14. Contact', p1: 'For any questions regarding this privacy policy or your personal data:', email: 'Email:', emailValue: 'denis.gonseth@dfinet.ch', guarantee: 'Response guaranteed within 30 days.' },
-    contact: { title: 'Contact information', name: 'Pierrette Gonseth-Favre', email: 'Email:', emailValue: 'denis.gonseth@dfinet.ch' }
+    s13: { title: '13. Complaints', intro: 'If you believe that the processing of your data does not comply with regulations, you may:', li1: 'Contact us directly: pierrette@gonsethfavre.ch', li2: 'Lodge a complaint with the competent supervisory authority', authority: 'Swiss authority:', authorityValue: 'Federal Data Protection and Information Commissioner (FDPIC)' },
+    s14: { title: '14. Contact', p1: 'For any questions regarding this privacy policy or your personal data:', email: 'Email:', emailValue: 'pierrette@gonsethfavre.ch', guarantee: 'Response guaranteed within 30 days.' },
+    contact: { title: 'Contact information', name: 'Pierrette Gonseth-Favre', email: 'Email:', emailValue: 'pierrette@gonsethfavre.ch' }
   },
   terms: {
     hero: 'TERMS & CONDITIONS',
     s1: { title: '1. Scope and application', p1: 'These terms and conditions apply to all sales of artworks by Pierrette Gonseth-Favre, independent artist.', p2: 'Any order implies full and unconditional acceptance of these terms and conditions.', p3: 'No amendment may be made to these terms and conditions without the prior written consent of the artist.' },
     s2: { title: '2. Artworks offered', p1: 'All works presented are original and unique creations by Pierrette Gonseth-Favre.', p2: 'Each work is accompanied by a certificate of authenticity signed by the artist.', p3: 'Photographs of the works are non-contractual. Colour variations may appear depending on the screen used.', p4: 'Dimensions given are indicative and may have a tolerance of 1 cm.' },
     s3: { title: '3. Prices and payment terms', p1: 'Prices are expressed in euros, inclusive of all taxes.', p2: 'Prices may be modified at any time; only the price in effect at the time of the order is binding.', paymentMethods: 'Accepted payment methods:', li1: 'Bank transfer', li2: 'Cheque (Switzerland and France only)', li3: 'Cash upon personal handover', p3: 'Full payment is required before shipment or handover of the work.' },
-    s4: { title: '4. Order and confirmation', p1: 'All orders must be confirmed in writing (email: denis.gonseth@dfinet.ch).', p2: 'The artist reserves the right to accept or refuse any order.', p3: 'An invoice will be issued for each confirmed sale.', p4: 'The sale is only final after written confirmation from the artist and receipt of full payment.' },
+    s4: { title: '4. Order and confirmation', p1: 'All orders must be confirmed in writing (email: pierrette@gonsethfavre.ch).', p2: 'The artist reserves the right to accept or refuse any order.', p3: 'An invoice will be issued for each confirmed sale.', p4: 'The sale is only final after written confirmation from the artist and receipt of full payment.' },
     s5: { title: '5. Delivery and transport', p1: 'Shipping and insurance costs are borne by the buyer.', p2: 'Works are shipped in appropriate secure packaging.', p3: 'Transport insurance is mandatory for all shipments.', p4: 'Delivery times are given as an indication and are not contractual.', p5: 'The artist cannot be held liable for delivery delays caused by the carrier.', p6: 'Personal handover available by appointment in the Founex area.' },
     s6: { title: '6. Receipt and inspection', p1: 'The buyer must inspect the condition of the work upon receipt.', p2: 'Any deterioration or non-conformity must be reported within 48 hours of receipt.', p3: 'After this period, the work will be considered compliant and in good condition.', p4: 'In the event of damage during transport, the buyer must file a complaint with the carrier.' },
     s7: { title: '7. Right of withdrawal', p1: 'In accordance with applicable legislation, the buyer has 14 calendar days from receipt to exercise their right of withdrawal.', p2: 'The work must be returned in its original condition with:', li1: 'Its original packaging', li2: 'Its certificate of authenticity', li3: 'Its invoice', p3: 'Return costs are borne by the buyer.', p4: 'The refund will be made within 14 days of receipt of the work in good condition.' },
@@ -235,7 +260,7 @@ export const en = {
     s13: { title: '13. Personal data', p1: 'Data collected is used solely for order management and customer relations.', p2: 'It is never transmitted to third parties.', p3: 'The buyer has the right to access, rectify and delete their data.' },
     s14: { title: '14. Applicable law and dispute resolution', p1: 'These terms and conditions are governed by Swiss law.', p2: 'In the event of a dispute, the parties will endeavour to find an amicable solution.', p3: 'Failing that, the courts of the Canton of Vaud shall have exclusive jurisdiction.' },
     s15: { title: '15. Final provisions', p1: 'If any clause of these terms and conditions is declared null and void, the remaining clauses shall remain applicable.', p2: 'The artist reserves the right to modify these terms and conditions at any time.', p3: 'Amendments shall take effect upon their publication on the site.' },
-    contact: { title: 'Contact', intro: 'For any questions regarding these terms and conditions:', name: 'Pierrette Gonseth-Favre', email: 'Email:', emailValue: 'denis.gonseth@dfinet.ch' }
+    contact: { title: 'Contact', intro: 'For any questions regarding these terms and conditions:', name: 'Pierrette Gonseth-Favre', email: 'Email:', emailValue: 'pierrette@gonsethfavre.ch' }
   },
   admin: {
     layout: {

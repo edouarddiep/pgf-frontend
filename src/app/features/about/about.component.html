@@ -43,6 +43,110 @@
 
   <section class="page-section section-white scroll-fade-in">
     <div class="container">
+      <h2 class="section-title">{{ 'about.bibliography.title' | translate }}</h2>
+      <div class="bibliography-timeline">
+        <div class="timeline">
+          <div class="timeline-line"></div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2019</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2019' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2017</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2017' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2014</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2014a' | translate }}</p>
+              <p>{{ 'about.bibliography.entries.y2014b' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2012</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2012' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2001</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2001' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1995</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1995' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1994</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1994' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1991</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1991' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1989</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1989' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1987</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1987' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1985</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1985' | translate }}</p>
+            </div>
+          </div>
+        </div>
+        <p class="bibliography-note">
+          {{ 'about.bibliography.noteText' | translate }}
+          <a href="mailto:pierrette@gonsethfavre.ch" target="_blank">pierrette@gonsethfavre.ch</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page-section section-gray scroll-fade-in">
+    <div class="container">
       <h2 class="section-title">{{ 'about.recentExhibitions.title' | translate }}</h2>
 
       @if (recentExhibitions$ | async; as exhibitions) {
@@ -76,7 +180,7 @@
     </div>
   </section>
 
-  <section class="page-section section-gray scroll-fade-in">
+  <section class="page-section section-white scroll-fade-in">
     <div class="container">
       <h2 class="section-title">{{ 'about.association.title' | translate }}</h2>
       <div class="association-content">

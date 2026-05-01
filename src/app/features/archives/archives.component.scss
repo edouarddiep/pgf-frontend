@@ -88,7 +88,7 @@
 
       &.timeline-left {
         justify-content: flex-end;
-        padding-right: calc(50% + 90px);
+        padding-right: calc(50% + 60px);
 
         @media (max-width: 968px) {
           justify-content: flex-start;
@@ -110,7 +110,7 @@
         }
 
         .timeline-year {
-          left: calc(50% + 80px);
+          left: calc(50% + 60px);
           opacity: 0;
           transform: translateX(100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
@@ -162,7 +162,7 @@
 
       &.timeline-right {
         justify-content: flex-start;
-        padding-left: calc(50% + 90px);
+        padding-left: calc(50% + 60px);
 
         @media (max-width: 968px) {
           padding-left: 60px;
@@ -182,7 +182,7 @@
         }
 
         .timeline-year {
-          right: calc(50% + 80px);
+          right: calc(50% + 60px);
           opacity: 0;
           transform: translateX(-100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
@@ -283,7 +283,7 @@
         .archive-image {
           position: relative;
           width: 100%;
-          height: 500px;
+          height: 350px;
           overflow: hidden;
 
           @media (max-width: 768px) {

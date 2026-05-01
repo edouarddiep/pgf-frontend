@@ -74,11 +74,54 @@
     <div class="container">
       <h2 class="section-title">{{ 'association.info.title' | translate }}</h2>
       <div class="organization-content">
-        <h3>{{ 'association.info.committee' | translate }}</h3>
-        <p [innerHTML]="'association.info.committeeText' | translate"></p>
-        <h3>{{ 'association.info.other' | translate }}</h3>
-        <p [innerHTML]="'association.info.treasurer' | translate"></p>
-        <p [innerHTML]="'association.info.auditor' | translate"></p>
+        <div class="members-group">
+          <h3>{{ 'association.info.committee' | translate }}</h3>
+          <div class="members-list">
+            <div class="member-item president">
+              <mat-icon>military_tech</mat-icon>
+              <strong>Claude Gaignard</strong>
+              <span>{{ 'association.info.roles.president' | translate }}</span>
+            </div>
+          </div>
+          <div class="members-list">
+            <div class="member-item">
+              <mat-icon>person</mat-icon>
+              <strong>Micheline Altwegg</strong>
+              <span>{{ 'association.info.roles.member' | translate }}</span>
+            </div>
+            <div class="member-item">
+              <mat-icon>person</mat-icon>
+              <strong>Myriam Yrazabal Glasson</strong>
+              <span>{{ 'association.info.roles.member' | translate }}</span>
+            </div>
+            <div class="member-item">
+              <mat-icon>person</mat-icon>
+              <strong>Pierrette Gonseth-Favre</strong>
+              <span>{{ 'association.info.roles.member' | translate }}</span>
+            </div>
+            <div class="member-item">
+              <mat-icon>person</mat-icon>
+              <strong>Camille Gonseth</strong>
+              <span>{{ 'association.info.roles.member' | translate }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="members-group">
+          <h3>{{ 'association.info.other' | translate }}</h3>
+          <div class="members-list">
+            <div class="member-item">
+              <mat-icon>manage_accounts</mat-icon>
+              <strong>Denis Gonseth</strong>
+              <span>{{ 'association.info.roles.treasurer' | translate }} <em>{{ 'association.info.roles.treasurerNote' | translate }}</em></span>
+            </div>
+            <div class="member-item">
+              <mat-icon>manage_accounts</mat-icon>
+              <strong>Dr. Philippe Glasson</strong>
+              <span>{{ 'association.info.roles.auditor' | translate }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
