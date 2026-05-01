@@ -94,6 +94,8 @@ export const en = {
     learnMore: 'Learn more',
     empty: 'No archives available',
     emptyDetail: 'Archives will be available soon',
+    seeMore: 'See more',
+    seeLess: 'See less',
     sections: {
       audio: 'Audio Files',
       gallery: 'Gallery',

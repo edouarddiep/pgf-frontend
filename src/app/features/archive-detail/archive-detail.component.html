@@ -13,7 +13,20 @@
 
     @if (arch.description) {
       <section class="description-section scroll-fade-in">
-        <div class="container"><p>{{ localeService.resolve(archive(), 'description') }}</p></div>
+        <div class="container">
+          <div class="description-wrapper" [style.height]="descriptionHeight()">
+            <p #descriptionText>{{ localeService.resolve(archive(), 'description') }}</p>
+            @if (showToggle() && !descriptionExpanded()) {
+              <div class="description-fade"></div>
+            }
+          </div>
+          @if (showToggle()) {
+            <div class="see-more-btn" (click)="toggleDescription()">
+              <span>{{ descriptionExpanded() ? ('archives.seeLess' | translate) : ('archives.seeMore' | translate) }}</span>
+              <mat-icon>{{ descriptionExpanded() ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+            </div>
+          }
+        </div>
       </section>
     }
 

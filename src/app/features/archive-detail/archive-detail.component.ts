@@ -6,7 +6,7 @@ import {
   computed,
   OnInit,
   OnDestroy,
-  ChangeDetectorRef
+  ChangeDetectorRef, ViewChild, ElementRef
 } from '@angular/core';
 import {CommonModule, Location} from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
@@ -30,6 +30,8 @@ import {NavService} from '@core/services/nav.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchiveDetailComponent implements OnInit, OnDestroy {
+  @ViewChild('descriptionText') descriptionTextRef: ElementRef<HTMLParagraphElement>;
+
   private readonly archiveService = inject(ArchiveService);
   private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
@@ -48,6 +50,12 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   protected readonly modalImage = signal<string | null>(null);
   protected readonly modalTitle = signal<string>('');
   protected readonly modalVideo = signal<ArchiveFile | null>(null);
+  protected readonly descriptionExpanded = signal<boolean>(false);
+  protected readonly showToggle = signal<boolean>(false);
+  protected readonly descriptionHeight = signal<string>('0px');
+
+  private readonly LINE_HEIGHT_EM = 1.8;
+  private readonly MAX_LINES = 5;
 
   protected readonly audioFiles = computed(() =>
     this.archive()?.files?.filter(f => f.fileType === 'AUDIO') || []
@@ -80,8 +88,22 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
       .subscribe(archive => {
         this.archive.set(archive);
         this.cdr.detectChanges();
-        setTimeout(() => this.scrollAnimationService.setupScrollAnimations(), 100);
+        setTimeout(() => {
+          this.scrollAnimationService.setupScrollAnimations();
+          this.checkDescriptionOverflow();
+        }, 100);
       });
+  }
+
+  private checkDescriptionOverflow(): void {
+    const el = this.descriptionTextRef?.nativeElement;
+    if (!el) { return; }
+    const lineHeightPx = parseFloat(getComputedStyle(el).lineHeight);
+    const maxHeight = lineHeightPx * this.MAX_LINES;
+    const scrollH = el.scrollHeight;
+    this.showToggle.set(scrollH > maxHeight + 4);
+    this.descriptionHeight.set(`${Math.min(scrollH, maxHeight)}px`);
+    this.cdr.detectChanges();
   }
 
   goBack(): void {
@@ -126,5 +148,14 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
     this.modalImage.set(null);
     this.modalVideo.set(null);
     document.body.style.overflow = 'auto';
+  }
+
+  protected toggleDescription(): void {
+    const el = this.descriptionTextRef?.nativeElement;
+    const newExpanded = !this.descriptionExpanded();
+    this.descriptionExpanded.set(newExpanded);
+    if (el) {
+      this.descriptionHeight.set(newExpanded ? `${el.scrollHeight}px` : `${parseFloat(getComputedStyle(el).lineHeight) * this.MAX_LINES}px`);
+    }
   }
 }
