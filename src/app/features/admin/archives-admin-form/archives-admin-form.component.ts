@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,10 +24,16 @@ import { LocaleService } from '@core/services/locale.service';
 @Component({
   selector: 'app-archives-admin-form',
   imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatCardModule, MatTooltipModule,
-    ArchiveFileUploadComponent, TranslatePipe
-  ],
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTooltipModule,
+    ArchiveFileUploadComponent,
+    TranslatePipe
+],
   templateUrl: './archives-admin-form.component.html',
   styleUrl: './archives-admin-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

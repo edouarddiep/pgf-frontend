@@ -1,5 +1,5 @@
 import {Component, inject, ChangeDetectionStrategy, signal, OnInit, OnDestroy, computed} from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ArchiveService } from '@core/services/archive.service';
@@ -13,7 +13,7 @@ import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-archives',
-  imports: [CommonModule, RouterModule, MatButtonModule, TranslatePipe],
+  imports: [RouterModule, MatButtonModule, TranslatePipe],
   templateUrl: './archives.component.html',
   styleUrl: './archives.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

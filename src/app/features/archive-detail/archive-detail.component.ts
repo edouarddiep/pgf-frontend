@@ -8,7 +8,7 @@ import {
   OnDestroy,
   ChangeDetectorRef, ViewChild, ElementRef
 } from '@angular/core';
-import {CommonModule, Location} from '@angular/common';
+import { Location } from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {ArchiveService} from '@core/services/archive.service';
@@ -24,7 +24,7 @@ import {NavService} from '@core/services/nav.service';
 
 @Component({
   selector: 'app-archive-detail',
-  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, TranslatePipe],
+  imports: [RouterModule, MatButtonModule, MatIconModule, TranslatePipe],
   templateUrl: './archive-detail.component.html',
   styleUrl: './archive-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

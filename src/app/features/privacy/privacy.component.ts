@@ -1,11 +1,11 @@
 import {Component, ChangeDetectionStrategy, OnInit, OnDestroy, inject} from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-privacy',
-  imports: [CommonModule, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './privacy.component.html',
   styleUrl: './privacy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

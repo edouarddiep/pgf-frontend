@@ -8,7 +8,7 @@ import {
   AfterViewInit,
   computed
 } from '@angular/core';
-import {CommonModule, Location} from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import {RouterModule, ActivatedRoute, Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';

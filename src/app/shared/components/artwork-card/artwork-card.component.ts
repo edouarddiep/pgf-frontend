@@ -1,5 +1,5 @@
 import {Component, input, output, ChangeDetectionStrategy, inject, computed} from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
@@ -10,7 +10,7 @@ import {LocaleService} from '@core/services/locale.service';
 
 @Component({
   selector: 'app-artwork-card',
-  imports: [CommonModule, MatCardModule, MatIconModule, LazyLoadImageModule, TruncatePipe],
+  imports: [MatCardModule, MatIconModule, LazyLoadImageModule, TruncatePipe],
   templateUrl: './artwork-card.component.html',
   styleUrl: './artwork-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

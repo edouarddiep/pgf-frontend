@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {Router, RouterLink} from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,10 +26,20 @@ import { ExhibitionsAdminStateService } from '@features/admin/services/exhibitio
 @Component({
   selector: 'app-exhibitions-admin-list',
   imports: [
-    CommonModule, RouterLink, MatTableModule, MatButtonModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatCardModule, MatChipsModule,
-    MatTooltipModule, LoadingDirective, HighlightPipe, TranslatePipe, TruncatePipe
-  ],
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatChipsModule,
+    MatTooltipModule,
+    LoadingDirective,
+    HighlightPipe,
+    TranslatePipe,
+    TruncatePipe
+],
   templateUrl: './exhibitions-admin-list.component.html',
   styleUrl: './exhibitions-admin-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

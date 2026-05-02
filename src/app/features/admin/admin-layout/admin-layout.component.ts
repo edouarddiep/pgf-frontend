@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject, PLATFORM_ID, signal} from '@angular/core';
-import {CommonModule, isPlatformBrowser} from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -16,7 +16,6 @@ import {NavService} from '@core/services/nav.service';
 @Component({
   selector: 'app-admin-layout',
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -27,7 +26,7 @@ import {NavService} from '@core/services/nav.service';
     MatButtonModule,
     TranslatePipe,
     MatLine
-  ],
+],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

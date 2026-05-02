@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy, inject, signal, PLATFORM_ID} from '@angular/core';
-import {CommonModule, isPlatformBrowser} from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -15,7 +15,6 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 @Component({
   selector: 'app-admin-login',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -25,7 +24,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
     MatSnackBarModule,
     TranslatePipe,
     RouterLink
-  ],
+],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

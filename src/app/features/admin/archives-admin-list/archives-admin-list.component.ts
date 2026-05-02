@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,10 +27,19 @@ type SortField = 'id' | 'title' | 'year';
 @Component({
   selector: 'app-archives-admin-list',
   imports: [
-    CommonModule, RouterLink, MatTableModule, MatButtonModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatCardModule, MatTooltipModule,
-    LoadingDirective, HighlightPipe, TranslatePipe, TruncatePipe
-  ],
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTooltipModule,
+    LoadingDirective,
+    HighlightPipe,
+    TranslatePipe,
+    TruncatePipe
+],
   templateUrl: './archives-admin-list.component.html',
   styleUrl: './archives-admin-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

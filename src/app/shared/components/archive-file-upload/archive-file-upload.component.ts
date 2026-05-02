@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -31,7 +31,7 @@ const TYPE_BY_MIME: { pattern: RegExp; fileType: ArchiveFile['fileType'] }[] = [
 
 @Component({
   selector: 'app-archive-file-upload',
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule, TranslatePipe],
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule, TranslatePipe],
   templateUrl: './archive-file-upload.component.html',
   styleUrl: './archive-file-upload.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

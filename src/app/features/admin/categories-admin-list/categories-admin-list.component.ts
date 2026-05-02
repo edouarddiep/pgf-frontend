@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,10 +26,19 @@ type SortField = 'id' | 'name';
 @Component({
   selector: 'app-categories-admin-list',
   imports: [
-    CommonModule, RouterLink, MatTableModule, MatButtonModule, MatIconModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, MatTooltip,
-    LoadingDirective, HighlightPipe, TranslatePipe, TruncatePipe
-  ],
+    RouterLink,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltip,
+    LoadingDirective,
+    HighlightPipe,
+    TranslatePipe,
+    TruncatePipe
+],
   templateUrl: './categories-admin-list.component.html',
   styleUrl: './categories-admin-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

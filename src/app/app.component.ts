@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { VideoService } from '@shared/services/video.service';
 import { LoadingService } from '@shared/services/loading.service';
@@ -12,7 +12,7 @@ import { TranslateService } from '@core/services/translate.service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, LoadingSpinnerComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

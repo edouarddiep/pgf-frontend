@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
@@ -9,7 +9,7 @@ import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-association',
-  imports: [CommonModule, RouterModule, MatButtonModule, TranslatePipe, MatIcon],
+  imports: [RouterModule, MatButtonModule, TranslatePipe, MatIcon],
   templateUrl: './association.component.html',
   styleUrl: './association.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

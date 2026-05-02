@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal} from '@angular/core';
-import {CommonModule, isPlatformBrowser} from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {AbstractControl, FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -17,8 +17,7 @@ import {NotificationService} from '@shared/services/notification.service';
 @Component({
   selector: 'app-admin-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, RouterLink, MatIcon, TranslatePipe],
+  imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink, MatIcon, TranslatePipe],
   templateUrl: './admin-register.component.html',
   styleUrl: './admin-register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, PLATFORM_ID, signal} from '@angular/core';
-import {CommonModule, isPlatformBrowser} from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -17,8 +17,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 @Component({
   selector: 'app-admin-invite',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, RouterLink, TranslatePipe, MatSnackBarModule],
+  imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink, TranslatePipe, MatSnackBarModule],
   templateUrl: './admin-invite.component.html',
   styleUrl: './admin-invite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

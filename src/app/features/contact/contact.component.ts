@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
+
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
@@ -18,7 +18,6 @@ import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loadin
 @Component({
   selector: 'app-contact',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatIconModule,
     MatButtonModule,
@@ -29,7 +28,7 @@ import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loadin
     MatSelectTrigger,
     TranslatePipe,
     LoadingSpinnerComponent
-  ],
+],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

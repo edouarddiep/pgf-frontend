@@ -1,7 +1,7 @@
 import {
   Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -89,12 +89,24 @@ function endDateValidator(control: AbstractControl) {
 @Component({
   selector: 'app-exhibitions-admin-form',
   imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule,
-    MatFormFieldModule, MatInputModule, MatCardModule, MatDatepickerModule,
-    MatNativeDateModule, MatChipsModule, MatTooltipModule, MatProgressSpinnerModule,
-    MatProgressBarModule, ImageUploadComponent, TranslatePipe,
-    MatAutocomplete, MatOption, MatAutocompleteTrigger
-  ],
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    ImageUploadComponent,
+    TranslatePipe,
+    MatAutocomplete,
+    MatOption,
+    MatAutocompleteTrigger
+],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'fr-CH' },
     { provide: MAT_DATE_FORMATS, useValue: SWISS_DATE_FORMATS },

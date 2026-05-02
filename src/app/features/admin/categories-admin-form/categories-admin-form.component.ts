@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +20,15 @@ import {MatTooltip} from '@angular/material/tooltip';
 @Component({
   selector: 'app-categories-admin-form',
   imports: [
-    CommonModule, ReactiveFormsModule, MatButtonModule, MatIconModule,
-    MatCardModule, MatFormFieldModule, MatInputModule, TranslatePipe, MatTooltip
-  ],
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TranslatePipe,
+    MatTooltip
+],
   templateUrl: './categories-admin-form.component.html',
   styleUrl: './categories-admin-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
