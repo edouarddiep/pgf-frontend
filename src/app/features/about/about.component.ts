@@ -2,13 +2,9 @@ import { Component, inject, ChangeDetectionStrategy, OnInit, OnDestroy } from '@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { ExhibitionService } from '@features/exhibitions/services/exhibition.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
-import { map } from 'rxjs';
-import {TranslatePipe} from '@core/pipes/translate.pipe';
-import {TranslateService} from '@core/services/translate.service';
-import {NavService} from '@core/services/nav.service';
-import {DomSanitizer} from '@angular/platform-browser';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { NavService } from '@core/services/nav.service';
 
 @Component({
   selector: 'app-about',
@@ -23,14 +19,8 @@ import {DomSanitizer} from '@angular/platform-browser';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent implements OnInit, OnDestroy {
-  private readonly exhibitionService = inject(ExhibitionService);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
-  private readonly translateService = inject(TranslateService);
   protected readonly navService = inject(NavService);
-
-  readonly recentExhibitions$ = this.exhibitionService.getAllExhibitions().pipe(
-    map(exhibitions => exhibitions.slice(0, 3))
-  );
 
   ngOnInit(): void {
     this.scrollAnimationService.setupScrollAnimations();
@@ -38,33 +28,5 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
-  }
-
-  formatDateBlock(startDate?: string, endDate?: string): string {
-    if (!startDate) return this.translateService.translate('exhibitions.dateConfirm');
-
-    const start = new Date(startDate);
-    const startDay = start.getDate().toString().padStart(2, '0');
-    const startMonth = start.toLocaleDateString('fr-FR', { month: 'long' }).toUpperCase();
-    const startYear = start.getFullYear();
-
-    if (!endDate) {
-      return `${startDay} ${startMonth} ${startYear}`;
-    }
-
-    const end = new Date(endDate);
-    const endDay = end.getDate().toString().padStart(2, '0');
-    const endMonth = end.toLocaleDateString('fr-FR', { month: 'long' }).toUpperCase();
-    const endYear = end.getFullYear();
-
-    if (startYear === endYear && startMonth === endMonth) {
-      return `${startDay} - ${endDay} ${startMonth} ${startYear}`;
-    }
-
-    if (startYear === endYear) {
-      return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${startYear}`;
-    }
-
-    return `${startDay} ${startMonth} ${startYear} - ${endDay} ${endMonth} ${endYear}`;
   }
 }

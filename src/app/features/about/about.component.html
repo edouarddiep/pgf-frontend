@@ -139,58 +139,8 @@
         </div>
         <p class="bibliography-note">
           {{ 'about.bibliography.noteText' | translate }}
-          <a href="mailto:pierrette@gonsethfavre.ch" target="_blank">pierrette@gonsethfavre.ch</a>
+          <a href="mailto:pierrette@gonsethfavre.ch" target="_blank">pierrette&#64;gonsethfavre.ch</a>
         </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section section-gray scroll-fade-in">
-    <div class="container">
-      <h2 class="section-title">{{ 'about.recentExhibitions.title' | translate }}</h2>
-
-      @if (recentExhibitions$ | async; as exhibitions) {
-        <div class="exhibitions-grid">
-          @for (exhibition of exhibitions; track exhibition.id) {
-            <div class="exhibition-card">
-              @if (exhibition.imageUrl) {
-                <div class="exhibition-image">
-                  <img [src]="exhibition.imageUrl" [alt]="exhibition.title" loading="lazy">
-                </div>
-              }
-              <div class="exhibition-content">
-                <h3>{{ exhibition.title }}</h3>
-                @if (exhibition.location) {
-                  <p class="location">{{ exhibition.location }}</p>
-                }
-                @if (exhibition.startDate) {
-                  <p class="date">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      }
-
-      <div class="section-actions">
-        <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/exhibitions'">
-          {{ 'about.recentExhibitions.cta' | translate }}
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <section class="page-section section-white scroll-fade-in">
-    <div class="container">
-      <h2 class="section-title">{{ 'about.association.title' | translate }}</h2>
-      <div class="association-content">
-        <p>{{ 'about.association.text1' | translate }}</p>
-        <p>{{ 'about.association.text2' | translate }}</p>
-        <div class="association-actions">
-          <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/association'">
-          {{ 'about.association.cta' | translate }}
-          </button>
-        </div>
       </div>
     </div>
   </section>
