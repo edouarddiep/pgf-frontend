@@ -329,6 +329,7 @@ export const en = {
         categories: 'Categories',
         artworks: 'Artworks',
         exhibitions: 'Exhibitions',
+        archives: 'Archives',
         messages: 'Messages'
       },
       manage: 'Manage',

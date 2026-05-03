@@ -329,6 +329,7 @@ export const fr = {
         categories: 'Catégories',
         artworks: 'Œuvres',
         exhibitions: 'Expositions',
+        archives: 'Archives',
         messages: 'Messages'
       },
       manage: 'Gérer',

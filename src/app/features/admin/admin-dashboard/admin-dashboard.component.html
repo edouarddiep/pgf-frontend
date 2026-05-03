@@ -44,6 +44,19 @@
     <mat-card class="stat-card">
       <mat-card-content>
         <div class="stat-content">
+          <div class="stat-icon"><mat-icon>archive</mat-icon></div>
+          <div class="stat-info">
+            <h2>{{ stats().archives }}</h2>
+            <p>{{ 'admin.dashboard.stats.archives' | translate }}</p>
+          </div>
+        </div>
+        <button mat-button routerLink="/admin/archives" color="primary">{{ 'admin.dashboard.manage' | translate }}</button>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
           <div class="stat-icon"><mat-icon>mail</mat-icon></div>
           <div class="stat-info">
             <h2>{{ stats().messages }}</h2>

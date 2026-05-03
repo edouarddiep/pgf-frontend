@@ -30,6 +30,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     categories: 0,
     artworks: 0,
     exhibitions: 0,
+    archives: 0,
     messages: 0
   });
 
@@ -54,16 +55,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       categories: this.adminService.getCategories(),
       artworks: this.adminService.getArtworks(),
       exhibitions: this.adminService.getExhibitions(),
+      archives: this.adminService.getArchives(),
       messages: this.adminService.getMessages()
     })
-      .pipe(
-        catchError(() => EMPTY)
-      )
+      .pipe(catchError(() => EMPTY))
       .subscribe(data => {
         this.stats.set({
           categories: data.categories.length,
           artworks: data.artworks.length,
           exhibitions: data.exhibitions.length,
+          archives: data.archives.length,
           messages: data.messages.length
         });
       });
