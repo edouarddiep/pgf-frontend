@@ -1,5 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-
+import {
+  Component, ChangeDetectionStrategy, inject, signal, OnInit, computed,
+  ViewChild, ElementRef, ChangeDetectorRef
+} from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,12 +35,14 @@ import { LocaleService } from '@core/services/locale.service';
     MatTooltipModule,
     ArchiveFileUploadComponent,
     TranslatePipe
-],
+  ],
   templateUrl: './archives-admin-form.component.html',
   styleUrl: './archives-admin-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
+  @ViewChild('descriptionEditor') descriptionEditorRef: ElementRef<HTMLDivElement>;
+
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
@@ -46,6 +50,7 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
   private readonly route = inject(ActivatedRoute);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly cdr = inject(ChangeDetectorRef);
   protected readonly localeService = inject(LocaleService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
@@ -55,6 +60,11 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal('');
   protected readonly submitAttempted = signal(false);
+
+  protected readonly isAlignLeft = signal(false);
+  protected readonly isAlignCenter = signal(false);
+  protected readonly isAlignRight = signal(false);
+  protected readonly isJustify = signal(false);
 
   readonly hasUnsavedChanges = signal(false);
   readonly isFormMode = () => true;
@@ -88,7 +98,7 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
         .pipe(catchError(() => EMPTY))
         .subscribe(archives => {
           const archive = archives.find(a => a.id === +id);
-          if (archive) this.fillForm(archive);
+          if (archive) { this.fillForm(archive); }
           this.archiveForm.markAsPristine();
           this.trackChanges();
         });
@@ -107,6 +117,12 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
       title: archive.title,
       year: archive.year,
       description: archive.description ?? ''
+    });
+
+    setTimeout(() => {
+      if (this.descriptionEditorRef) {
+        this.descriptionEditorRef.nativeElement.innerHTML = archive.description ?? '';
+      }
     });
 
     const files = archive.files?.map(f => ({
@@ -133,6 +149,35 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
     this.hasUnsavedChanges.set(false);
   }
 
+  onToolbarAction(event: MouseEvent, command: string): void {
+    event.preventDefault();
+    this.descriptionEditorRef.nativeElement.focus();
+    document.execCommand(command, false);
+    this.updateToolbarState();
+    this.syncDescriptionToForm();
+    this.cdr.markForCheck();
+  }
+
+  updateToolbarState(): void {
+    this.isAlignLeft.set(document.queryCommandState('justifyLeft'));
+    this.isAlignCenter.set(document.queryCommandState('justifyCenter'));
+    this.isAlignRight.set(document.queryCommandState('justifyRight'));
+    this.isJustify.set(document.queryCommandState('justifyFull'));
+  }
+
+  onDescriptionInput(): void {
+    this.syncDescriptionToForm();
+    this.updateToolbarState();
+  }
+
+  private syncDescriptionToForm(): void {
+    const raw = this.descriptionEditorRef?.nativeElement.innerHTML ?? '';
+    const cleaned = raw.replace(/(<[^>]+)\s+style="font-family:[^"]*"/g, '$1')
+      .replace(/(<[^>]+)\s+face="[^"]*"/g, '$1');
+    this.archiveForm.get('description')?.setValue(cleaned, { emitEvent: false });
+    this.hasUnsavedChanges.set(true);
+  }
+
   protected cancel(): void {
     this.router.navigate(['/admin/archives']);
   }
@@ -153,7 +198,7 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
 
   protected saveArchive(): void {
     this.submitAttempted.set(true);
-    if (this.archiveForm.invalid) return;
+    if (this.archiveForm.invalid) { return; }
     if (!this.thumbnailUrl()) {
       this.notificationService.error(this.translateService.translate('admin.archives.mainImageRequired'));
       return;
@@ -197,7 +242,7 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
       confirmLabel: this.translateService.translate('admin.common.delete'),
       cancelLabel: this.translateService.translate('admin.common.cancel')
     }).subscribe(confirmed => {
-      if (!confirmed) return;
+      if (!confirmed) { return; }
       this.adminService.deleteArchive(id)
         .pipe(catchError(() => {
           this.notificationService.error(this.translateService.translate('admin.archives.deleteError'));

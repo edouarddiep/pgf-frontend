@@ -15,7 +15,7 @@
       <section class="description-section scroll-fade-in">
         <div class="container">
           <div class="description-wrapper" [style.height]="descriptionHeight()">
-            <p #descriptionText>{{ localeService.resolve(archive(), 'description') }}</p>
+            <div #descriptionText [innerHTML]="descriptionHtml()"></div>
             @if (showToggle() && !descriptionExpanded()) {
               <div class="description-fade"></div>
             }

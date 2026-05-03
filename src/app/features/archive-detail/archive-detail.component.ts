@@ -53,6 +53,10 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   protected readonly descriptionExpanded = signal<boolean>(false);
   protected readonly showToggle = signal<boolean>(false);
   protected readonly descriptionHeight = signal<string>('0px');
+  protected readonly descriptionHtml = computed(() => {
+    const html = this.localeService.resolve(this.archive(), 'description');
+    return html ? this.sanitizer.bypassSecurityTrustHtml(html) : null;
+  });
 
   private readonly LINE_HEIGHT_EM = 1.8;
   private readonly MAX_LINES = 5;

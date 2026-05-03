@@ -29,10 +29,35 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'admin.archives.form.description' | translate }}</mat-label>
-            <textarea matInput formControlName="description" rows="4"></textarea>
-          </mat-form-field>
+          <div class="description-editor">
+            <label class="editor-label">{{ 'admin.archives.form.description' | translate }}</label>
+            <div class="editor-toolbar">
+              <button type="button" mat-icon-button [class.active]="isAlignLeft()"
+                      (mousedown)="onToolbarAction($event, 'justifyLeft')" matTooltip="Aligner à gauche">
+                <mat-icon>format_align_left</mat-icon>
+              </button>
+              <button type="button" mat-icon-button [class.active]="isAlignCenter()"
+                      (mousedown)="onToolbarAction($event, 'justifyCenter')" matTooltip="Centrer">
+                <mat-icon>format_align_center</mat-icon>
+              </button>
+              <button type="button" mat-icon-button [class.active]="isAlignRight()"
+                      (mousedown)="onToolbarAction($event, 'justifyRight')" matTooltip="Aligner à droite">
+                <mat-icon>format_align_right</mat-icon>
+              </button>
+              <button type="button" mat-icon-button [class.active]="isJustify()"
+                      (mousedown)="onToolbarAction($event, 'justifyFull')" matTooltip="Justifier">
+                <mat-icon>format_align_justify</mat-icon>
+              </button>
+            </div>
+            <div #descriptionEditor
+                 class="editor-content"
+                 contenteditable="true"
+                 (input)="onDescriptionInput()"
+                 (mouseup)="updateToolbarState()"
+                 (keyup)="updateToolbarState()"
+                 (selectionchange)="updateToolbarState()">
+            </div>
+          </div>
 
           <div class="full-width">
             <label class="file-upload-label">{{ 'admin.archives.form.filesLabel' | translate }}</label>

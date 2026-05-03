@@ -176,9 +176,13 @@ export class ArchivesAdminListComponent implements OnInit {
 
   protected showTooltip(event: MouseEvent, text: string): void {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
-    this.tooltipText.set(text);
+    this.tooltipText.set(this.stripHtml(text));
     this.tooltipX.set(rect.left + rect.width / 2 - 210);
     this.tooltipY.set(rect.top - 8);
+  }
+
+  private stripHtml(html: string): string {
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
   }
 
   protected hideTooltip(): void {
