@@ -13,5 +13,8 @@ export interface Archive {
   description?: string;
   descriptionEn?: string;
   thumbnailUrl?: string;
+  mainImagePositionX?: number;
+  mainImagePositionY?: number;
+  mainImageZoom?: number;
   files: ArchiveFile[];
 }

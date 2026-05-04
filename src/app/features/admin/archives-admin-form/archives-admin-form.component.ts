@@ -60,6 +60,14 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageUrl = signal('');
   protected readonly submitAttempted = signal(false);
+  protected readonly mainImagePositionX = signal(50);
+  protected readonly mainImagePositionY = signal(50);
+  protected readonly mainImageZoom = signal(100);
+  private isDragging = false;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private dragStartPosX = 0;
+  private dragStartPosY = 0;
 
   protected readonly isAlignLeft = signal(false);
   protected readonly isAlignCenter = signal(false);
@@ -145,6 +153,9 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
     }
 
     this.pendingFiles.set([...images, ...others]);
+    this.mainImagePositionX.set(archive.mainImagePositionX ?? 50);
+    this.mainImagePositionY.set(archive.mainImagePositionY ?? 50);
+    this.mainImageZoom.set(archive.mainImageZoom ?? 100);
     this.archiveForm.markAsPristine();
     this.hasUnsavedChanges.set(false);
   }
@@ -196,6 +207,35 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
     this.showImageModal.set(false);
   }
 
+  protected startDrag(event: MouseEvent): void {
+    this.isDragging = true;
+    this.dragStartX = event.clientX;
+    this.dragStartY = event.clientY;
+    this.dragStartPosX = this.mainImagePositionX();
+    this.dragStartPosY = this.mainImagePositionY();
+    event.preventDefault();
+  }
+
+  protected onDrag(event: MouseEvent): void {
+    if (!this.isDragging) return;
+    const previewEl = event.currentTarget as HTMLElement;
+    const sensitivity = 100 / this.mainImageZoom();
+    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
+    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
+    this.mainImagePositionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
+    this.mainImagePositionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected stopDrag(): void {
+    this.isDragging = false;
+  }
+
+  protected onZoomChange(value: string): void {
+    this.mainImageZoom.set(+value);
+    this.hasUnsavedChanges.set(true);
+  }
+
   protected saveArchive(): void {
     this.submitAttempted.set(true);
     if (this.archiveForm.invalid) { return; }
@@ -212,6 +252,9 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
       year: year!,
       description: description ?? undefined,
       thumbnailUrl: this.thumbnailUrl()!,
+      mainImagePositionX: Math.round(this.mainImagePositionX()),
+      mainImagePositionY: Math.round(this.mainImagePositionY()),
+      mainImageZoom: this.mainImageZoom(),
       files: this.pendingFiles().map(f => ({ ...f } as ArchiveFile))
     };
 

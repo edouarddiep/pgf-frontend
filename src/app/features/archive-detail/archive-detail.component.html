@@ -2,7 +2,10 @@
   @if (archive(); as arch) {
     <section class="hero-banner scroll-fade-in">
       @if (arch.thumbnailUrl) {
-        <img [src]="arch.thumbnailUrl" [alt]="arch.title" class="hero-image">
+        <img [src]="arch.thumbnailUrl"
+             [alt]="arch.title"
+             class="hero-image"
+             [style.object-position]="(arch.mainImagePositionX ?? 50) + '% ' + (arch.mainImagePositionY ?? 50) + '%'">
         <div class="hero-overlay"></div>
       }
       <div class="hero-content">

@@ -148,6 +148,21 @@ tr.mat-mdc-row.row-highlight td {
   animation: rowFlash 2s ease-out forwards;
 }
 
+.thumbnail-wrapper {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 4px;
+
+  img.artwork-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container { padding: 1rem; }
   .admin-header { flex-direction: column; align-items: stretch; gap: 1rem; }

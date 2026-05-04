@@ -38,9 +38,16 @@
             <th mat-header-cell *matHeaderCellDef>{{ 'admin.archives.colImage' | translate }}</th>
             <td mat-cell *matCellDef="let archive">
               @if (archive.thumbnailUrl) {
-                <img [src]="archive.thumbnailUrl" [alt]="archive.title" class="artwork-thumb"
+                <div class="thumbnail-wrapper"
                      (click)="openImageModal(archive.thumbnailUrl)"
-                     [matTooltip]="'admin.common.zoom' | translate"/>
+                     [matTooltip]="'admin.common.zoom' | translate">
+                  <img [src]="archive.thumbnailUrl"
+                       [alt]="archive.title"
+                       class="artwork-thumb"
+                       [style.object-position]="(archive.mainImagePositionX ?? 50) + '% ' + (archive.mainImagePositionY ?? 50) + '%'"
+                       [style.transform]="'scale(' + ((archive.mainImageZoom ?? 100) / 100) + ')'"
+                       [style.transform-origin]="(archive.mainImagePositionX ?? 50) + '% ' + (archive.mainImagePositionY ?? 50) + '%'"/>
+                </div>
               } @else {
                 <div class="no-image"><mat-icon>image</mat-icon></div>
               }

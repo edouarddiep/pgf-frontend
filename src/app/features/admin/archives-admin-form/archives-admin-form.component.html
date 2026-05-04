@@ -61,8 +61,31 @@
 
           <div class="full-width">
             <label class="file-upload-label">{{ 'admin.archives.form.filesLabel' | translate }}</label>
-            @if (!thumbnailUrl()) {
-              <p class="image-required-hint">{{ 'admin.archives.form.imageRequired' | translate }}</p>
+            @if (thumbnailUrl()) {
+              <div class="image-preview-wrapper">
+                <div class="image-preview"
+                     (mousedown)="startDrag($event)"
+                     (mousemove)="onDrag($event)"
+                     (mouseup)="stopDrag()"
+                     (mouseleave)="stopDrag()">
+                  <img [src]="thumbnailUrl()!"
+                       [alt]="'admin.common.preview' | translate"
+                       [style.object-position]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'"
+                       [style.transform]="'scale(' + mainImageZoom() / 100 + ')'"
+                       [style.transform-origin]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'">
+                  <div class="crop-hint">
+                    <mat-icon>open_with</mat-icon>
+                    <span>{{ 'admin.categories.form.cropHint' | translate }}</span>
+                  </div>
+                </div>
+                <div class="zoom-controls">
+                  <mat-icon>zoom_out</mat-icon>
+                  <input type="range" [value]="mainImageZoom()"
+                         (input)="onZoomChange($any($event.target).value)"
+                         min="100" max="300" step="5">
+                  <mat-icon>zoom_in</mat-icon>
+                </div>
+              </div>
             }
             <app-archive-file-upload
               [files]="pendingFiles()"

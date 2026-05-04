@@ -16,7 +16,12 @@
             <div class="archive-card" (click)="onArchiveClick(archive.id)">
               @if (archive.thumbnailUrl) {
                 <div class="archive-image">
-                  <img [src]="archive.thumbnailUrl" [alt]="archive.title" loading="lazy">
+                  <img [src]="archive.thumbnailUrl"
+                       [alt]="archive.title"
+                       loading="lazy"
+                       [style.object-position]="(archive.mainImagePositionX ?? 50) + '% ' + (archive.mainImagePositionY ?? 50) + '%'"
+                       [style.transform]="'scale(' + ((archive.mainImageZoom ?? 100) / 100) + ')'"
+                       [style.transform-origin]="(archive.mainImagePositionX ?? 50) + '% ' + (archive.mainImagePositionY ?? 50) + '%'">
                   <div class="archive-overlay">
                     <div class="archive-info">
                       <h3>{{ localeService.resolve(archive, 'title') }}</h3>
