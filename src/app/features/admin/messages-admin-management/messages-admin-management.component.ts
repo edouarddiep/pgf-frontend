@@ -51,6 +51,7 @@ export class MessagesAdminManagementComponent implements OnInit {
   protected viewMessage(message: ContactMessage): void {
     this.dialog.open(MessageDetailDialogComponent, {
       data: message,
+      panelClass: 'message-detail-dialog-panel',
       width: '600px'
     }).afterClosed().subscribe(() => this.loadMessages());
   }

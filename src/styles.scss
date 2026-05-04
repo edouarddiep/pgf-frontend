@@ -483,3 +483,9 @@ mark {
   border-radius: 2px;
   padding: 0;
 }
+
+.message-detail-dialog-panel {
+  .mdc-dialog__surface {
+    border-radius: 4px !important;
+  }
+}
