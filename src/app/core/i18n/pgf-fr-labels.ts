@@ -43,7 +43,6 @@ export const fr = {
     },
     bibliography: {
       title: 'Bibliographie',
-      noteText: 'Quelques exemplaires du livre édité par ArtNyon (1994), du « Livre objet » et de « Des Bribes et Des Traces » sont encore disponibles. Pour tout renseignement\u00a0:',
       entries: {
         y1985: 'Alberto Sartoris - Pierrette Gonseth-Favre, Galerie Steiner, Schloss Babstadt',
         y1987: '« Textile-Textilien ». Texte de Sylvio Acatos, bilingue français/allemand. Editions Vie Art Cité, Lausanne - 80 pages',
@@ -127,12 +126,10 @@ export const fr = {
     hero2: '"AMIS DE PIERRETTE GONSETH-FAVRE"',
     presentation: {
       title: 'Présentation',
-      p1: "Fondée en novembre 2022, l'association « Amis de Pierrette Gonseth-Favre » a vu le jour dans le cadre de l'organisation de l'exposition « Totems » à l'Abbaye de Bonmont. Le succès rencontré par cette première manifestation, conjugué aux nombreux témoignages et encouragements reçus, a naturellement conduit le comité à inscrire son action dans la durée.",
+      p1: "Fondée en novembre 2022 à l'occasion de l'exposition Totems à l'Abbaye de Bonmont, l'association Amis de Pierrette Gonseth-Favre est née de la volonté d'accompagner et de prolonger cette première présentation publique. Le succès rencontré par l'exposition, ainsi que les nombreux témoignages et encouragements reçus, ont incité le comité à inscrire cette initiative dans la durée.",
+      p2: "L'association a pour mission de faire connaître, présenter et valoriser l'œuvre de Pierrette Gonseth-Favre, avec une attention particulière portée à ses créations emblématiques en toile de jute, conformément à l'objet défini dans ses statuts.",
       imgAlt: 'Association Amis de Pierrette Gonseth-Favre',
-      p2: "Cette pérennisation répond pleinement à la vocation inscrite dans les statuts de l'association, qui se consacre à la présentation et à la valorisation des œuvres de Pierrette Gonseth-Favre, particulièrement ses créations emblématiques en toile de jute.",
       quote: "« L'Association a pour vocation de présenter les œuvres, notamment en toile de jute, de Pierrette Gonseth-Favre et en organisant des expositions de ses créations. »",
-      p3: "L'année 2025 témoigne de cette dynamique : une vingtaine d'œuvres en fil de fer et toile de jute ont été exposées dans le cadre d'une exposition collective à l'Espace Culturel d'Assens. En octobre, l'artiste présentera ses nouvelles créations « Collages » dans les locaux de la clinique de Genolier, une collaboration qui revêt une dimension particulièrement signifiante.",
-      p4: "En effet, la majeure partie de la recette des ventes sera reversée à la Genolier Foundation, dont la mission est de financer des soins de haute technologie, non encore couverts par les assurances, pour des personnes n'ayant pas les moyens de les prendre à leur charge. L'art se fait ainsi vecteur de solidarité et d'engagement social."
     },
     membership: {
       imgAlt: 'Devenir membre',

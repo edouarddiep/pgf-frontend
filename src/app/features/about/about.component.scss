@@ -129,7 +129,7 @@
     .timeline-line {
       position: absolute;
       left: 50%;
-      top: 3px;
+      top: 8px;
       bottom: 0;
       width: 2px;
       background: #706969;
@@ -143,6 +143,14 @@
       align-items: flex-start;
       margin-bottom: 3rem;
       min-height: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+
+      &.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
       &.timeline-left {
         flex-direction: row;

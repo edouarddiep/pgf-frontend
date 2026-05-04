@@ -43,7 +43,6 @@ export const en = {
     },
     bibliography: {
       title: 'Bibliography',
-      noteText: 'A few copies of the book published by ArtNyon (1994), the "Livre objet" and "Des Bribes et Des Traces" are still available. For enquiries:',
       entries: {
         y1985: 'Alberto Sartoris - Pierrette Gonseth-Favre, Galerie Steiner, Schloss Babstadt',
         y1987: '"Textile-Textilien". Text by Sylvio Acatos, bilingual French/German. Editions Vie Art Cité, Lausanne - 80 pages',
@@ -127,12 +126,9 @@ export const en = {
     hero2: '"FRIENDS OF PIERRETTE GONSETH-FAVRE"',
     presentation: {
       title: 'Presentation',
-      p1: 'Founded in November 2022, the association "Friends of Pierrette Gonseth-Favre" was established in the context of the "Totems" exhibition at the Abbaye de Bonmont. The success of this first event, combined with the many testimonials and words of encouragement received, naturally led the committee to commit to long-term action.',
-      imgAlt: 'Association Friends of Pierrette Gonseth-Favre',
-      p2: "This continuity fully reflects the mission set out in the association's statutes, which is dedicated to presenting and promoting the works of Pierrette Gonseth-Favre, particularly her iconic burlap creations.",
+      p1: 'Founded in November 2022 on the occasion of the Totems exhibition at the Abbaye de Bonmont, the association Friends of Pierrette Gonseth-Favre was born out of a desire to support and extend this first public presentation. The success of the exhibition, along with the many testimonials and words of encouragement received, led the committee to make this initiative a lasting one.',
+      p2: "The association's mission is to make known, present and promote the work of Pierrette Gonseth-Favre, with particular attention given to her iconic burlap creations, in accordance with the purpose defined in its statutes.",      imgAlt: 'Association Friends of Pierrette Gonseth-Favre',
       quote: '"The Association\'s mission is to present the works of Pierrette Gonseth-Favre, notably in burlap, by organising exhibitions of her creations."',
-      p3: "2025 reflects this dynamic: some twenty works in wire and burlap were exhibited as part of a group show at the Espace Culturel d'Assens. In October, the artist will present her new 'Collages' creations at the Genolier clinic, a collaboration of particular significance.",
-      p4: "Indeed, the majority of sales proceeds will be donated to the Genolier Foundation, whose mission is to fund high-technology care, not yet covered by insurance, for people who cannot afford it. Art thus becomes a vehicle for solidarity and social commitment."
     },
     membership: {
       imgAlt: 'Become a member',

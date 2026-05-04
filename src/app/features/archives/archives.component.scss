@@ -286,6 +286,10 @@
           height: 500px;
           overflow: hidden;
 
+          @media (max-width: 1440px) {
+            height: 350px;
+          }
+
           @media (max-width: 768px) {
             height: 250px;
             max-width: 90%;

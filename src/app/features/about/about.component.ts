@@ -24,9 +24,25 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.scrollAnimationService.setupScrollAnimations();
+    this.setupBibliographyAnimations();
   }
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
+  }
+
+  private setupBibliographyAnimations(): void {
+    setTimeout(() => {
+      const timelineItems = document.querySelectorAll('.bibliography-timeline .timeline-item');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.2, rootMargin: '0px 0px -100px 0px' });
+
+      timelineItems.forEach(item => observer.observe(item));
+    }, 100);
   }
 }

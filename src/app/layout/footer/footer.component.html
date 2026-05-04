@@ -1,44 +1,38 @@
 <footer class="site-footer">
   <div class="footer-content">
-    <div class="container">
-      <div class="footer-sections">
-
-        <div class="footer-section navigation-section">
-          <h4>{{ 'footer.navigation' | translate }}</h4>
+    <div class="footer-sections">
+      <div class="footer-section navigation-section">
+        <h4>{{ 'footer.navigation' | translate }}</h4>
+        <nav class="footer-nav">
+          @for (link of quickLinks; track link.route) {
+            <a [routerLink]="langPrefix() + link.route"
+               routerLinkActive="active"
+               [routerLinkActiveOptions]="{ exact: link.route === '' }">
+              {{ link.nameKey | translate }}
+            </a>
+          }
+        </nav>
+      </div>
+      <div class="footer-section categories-section">
+        <h4>{{ 'footer.categories' | translate }}</h4>
+        @if (categories$ | async; as categories) {
           <nav class="footer-nav">
-            @for (link of quickLinks; track link.route) {
-              <a [routerLink]="langPrefix() + link.route"
-                 routerLinkActive="active"
-                 [routerLinkActiveOptions]="{ exact: link.route === '' }">
-                {{ link.nameKey | translate }}
+            @for (category of categories; track category.id) {
+              <a [routerLink]="[langPrefix() + '/artworks', category.slug]">
+                {{ localeService.resolve(category, 'name') }}
               </a>
             }
           </nav>
+        }
+      </div>
+      <div class="footer-section contact-section">
+        <h4>{{ 'footer.follow' | translate }}</h4>
+        <div class="contact-info">
+          <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
+            <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
+            <span>pierrette_gf</span>
+          </a>
         </div>
-
-        <div class="footer-section categories-section">
-          <h4>{{ 'footer.categories' | translate }}</h4>
-          @if (categories$ | async; as categories) {
-            <nav class="footer-nav">
-              @for (category of categories; track category.id) {
-                <a [routerLink]="[langPrefix() + '/artworks', category.slug]">
-                  {{ localeService.resolve(category, 'name') }}
-                </a>
-              }
-            </nav>
-          }
-        </div>
-
-        <div class="footer-section contact-section">
-          <h4>{{ 'footer.follow' | translate }}</h4>
-          <div class="contact-info">
-            <a [href]="instagramUrl" target="_blank" rel="noopener noreferrer" class="instagram-link">
-              <img [src]="instagramLogoUrl" alt="Instagram" class="instagram-logo">
-              <span>pierrette_gf</span>
-            </a>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
