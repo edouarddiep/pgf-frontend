@@ -51,6 +51,22 @@
               <mat-icon>delete</mat-icon>
             </button>
           </div>
+          @if (!image.isMain) {
+            @if (i > (hasExternalMain() ? 0 : 1)) {
+              <button type="button" mat-icon-button class="move-btn move-prev"
+                      (click)="moveImage(i, -1); $event.stopPropagation()"
+                      [matTooltip]="'shared.imageUpload.moveLeft' | translate">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+            }
+            @if (i < images().length - 1) {
+              <button type="button" mat-icon-button class="move-btn move-next"
+                      (click)="moveImage(i, 1); $event.stopPropagation()"
+                      [matTooltip]="'shared.imageUpload.moveRight' | translate">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            }
+          }
         </div>
       }
     </div>

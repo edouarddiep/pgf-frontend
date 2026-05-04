@@ -145,6 +145,7 @@
               [category]="'exhibitions'"
               [exhibitionSlug]="getExhibitionSlug()"
               [multiple]="true"
+              [hasExternalMain]="true"
               (imagesChanged)="onOtherImagesChanged($event)"
               (hasChanges)="hasUnsavedChanges.set(true)"
               (zoomImage)="openImageModal($event)">

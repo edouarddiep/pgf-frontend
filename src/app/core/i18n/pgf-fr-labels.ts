@@ -458,6 +458,7 @@ export const fr = {
       deleteSuccess: 'Exposition supprimée avec succès',
       deleteConfirmTitle: "Supprimer l'exposition",
       deleteConfirmMessage: "Êtes-vous sûr de vouloir supprimer cette exposition ? Cette action est irréversible.",
+      deleteTooltip: "Supprimer l'exposition",
       loadError: 'Erreur lors du chargement des expositions',
       saveError: "Erreur lors de la sauvegarde de l'exposition",
       uploadError: "Erreur lors de l'upload",
@@ -586,7 +587,9 @@ export const fr = {
       formatNotSupported: 'Format non supporté',
       removeImage: "Supprimer l'image",
       uploading: 'Upload en cours...',
-      zoom: 'Agrandir'
+      zoom: 'Agrandir',
+      moveLeft: 'Déplacer à gauche',
+      moveRight: 'Déplacer à droite'
     },
     archiveFileUpload: {
       attach: 'Joindre un fichier',

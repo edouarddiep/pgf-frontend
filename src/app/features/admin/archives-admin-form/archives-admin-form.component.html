@@ -103,9 +103,9 @@
           @if (editingArchive()) {
             <button mat-stroked-button color="warn" type="button"
                     (click)="deleteArchive(editingArchive()!.id)"
-                    [matTooltip]="'admin.common.delete' | translate">
+                    [matTooltip]="'admin.archives.deleteConfirmTitle' | translate">
               <mat-icon>delete</mat-icon>
-              {{ 'admin.common.delete' | translate }}
+              {{ 'admin.archives.deleteConfirmTitle' | translate }}
             </button>
           }
           <span class="spacer"></span>

@@ -115,6 +115,24 @@
     .set-main-btn { color: #ffd740; &:hover { color: #ffab00; } }
     .remove-btn { color: #ff5252; &:hover { color: #ff1744; } }
   }
+
+  .move-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) !important;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    background: rgba(0, 0, 0, 0.45) !important;
+    color: white !important;
+    transition: background 0.2s;
+
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+    &:hover { background: rgba(0, 0, 0, 0.75) !important; }
+    &.move-prev { left: 2px; }
+    &.move-next { right: 2px; }
+  }
 }
 
 .upload-progress {

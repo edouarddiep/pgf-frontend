@@ -86,6 +86,7 @@
               [mainImageUrl]="undefined"
               [category]="getCategorySlugForUpload()"
               [multiple]="true"
+              [hasExternalMain]="true"
               (imagesChanged)="onOtherImagesChanged($event)"
               (hasChanges)="hasUnsavedChanges.set(true)"
               (zoomImage)="openImageModal($event)">

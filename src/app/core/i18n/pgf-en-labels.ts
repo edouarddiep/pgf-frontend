@@ -457,6 +457,7 @@ export const en = {
       deleteSuccess: 'Exhibition deleted successfully',
       deleteConfirmTitle: 'Delete exhibition',
       deleteConfirmMessage: 'Are you sure you want to delete this exhibition? This action cannot be undone.',
+      deleteTooltip: "Delete exhibition",
       loadError: 'Error loading exhibitions',
       saveError: 'Error saving exhibition',
       uploadError: 'Upload error',
@@ -585,7 +586,9 @@ export const en = {
       formatNotSupported: 'Format not supported',
       removeImage: 'Remove image',
       uploading: 'Uploading...',
-      zoom: 'Enlarge'
+      zoom: 'Enlarge',
+      moveLeft: 'Move left',
+      moveRight: 'Move right'
     },
     archiveFileUpload: {
       attach: 'Attach a file',

@@ -39,6 +39,7 @@ export class ImageUploadComponent {
   readonly isDragging = signal(false);
   readonly images = signal<ImageItem[]>([]);
   readonly errorMessage = signal<string | null>(null);
+  readonly hasExternalMain = input(false);
 
   protected readonly mainImage = computed(() => this.images().find(i => i.isMain));
 
@@ -152,6 +153,18 @@ export class ImageUploadComponent {
       return;
     }
     this.images.update(imgs => imgs.filter((_, i) => i !== index));
+    this.emit();
+    this.hasChanges.emit();
+  }
+
+  moveImage(index: number, direction: -1 | 1): void {
+    const imgs = this.images();
+    const minIndex = this.hasExternalMain() ? 0 : 1;
+    const targetIndex = index + direction;
+    if (targetIndex < minIndex || targetIndex >= imgs.length) return;
+    const updated = [...imgs];
+    [updated[index], updated[targetIndex]] = [updated[targetIndex], updated[index]];
+    this.images.set(updated);
     this.emit();
     this.hasChanges.emit();
   }
