@@ -141,7 +141,7 @@ export const fr = {
       bankName: 'Banque Cantonale Vaudoise',
       iban: 'IBAN :',
       ibanValue: 'CH56 0076 7000 C557 1812 5',
-      beneficiary: 'Bénéficiaire :',
+      beneficiary: 'Bénéficiaire : Pierrette Gonseth-Favre',
       beneficiaryName: 'Association "Amis de Pierrette Gonseth-Favre"',
       cta: 'Prendre contact'
     },

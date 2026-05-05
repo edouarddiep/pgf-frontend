@@ -207,6 +207,34 @@
   pointer-events: none;
 }
 
+.description-editor {
+  grid-column: 1 / -1;
+
+  .editor-label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .editor-content {
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.38);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.6;
+    outline: none;
+    cursor: text;
+
+    &:focus {
+      border-color: #1976d2;
+      border-width: 2px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .admin-artworks-container { padding: 1rem; }
   .admin-header { flex-direction: column; align-items: stretch; gap: 1rem; }
