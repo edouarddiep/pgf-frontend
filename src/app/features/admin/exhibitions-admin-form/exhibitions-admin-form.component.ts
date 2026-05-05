@@ -1,5 +1,5 @@
 import {
-  Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed
+  Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed, ElementRef, ViewChild
 } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
@@ -117,6 +117,9 @@ function endDateValidator(control: AbstractControl) {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsavedChanges {
+
+  @ViewChild('descriptionEditor') descriptionEditorRef: ElementRef<HTMLDivElement>;
+
   private readonly adminService = inject(AdminService);
   private readonly fb = inject(FormBuilder);
   private readonly notificationService = inject(NotificationService);
@@ -227,6 +230,9 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
     this.hasUnsavedChanges.set(false);
 
     setTimeout(() => {
+      if (this.descriptionEditorRef) {
+        this.descriptionEditorRef.nativeElement.innerHTML = exhibition.description ?? '';
+      }
       this.exhibitionForm.markAsPristine();
       this.exhibitionForm.markAsUntouched();
       this.hasUnsavedChanges.set(false);
@@ -333,6 +339,12 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
         });
     };
     processNext();
+  }
+
+  onDescriptionInput(): void {
+    const raw = this.descriptionEditorRef?.nativeElement.innerHTML ?? '';
+    this.exhibitionForm.patchValue({ description: raw });
+    this.hasUnsavedChanges.set(true);
   }
 
   protected removeVideo(index: number): void {

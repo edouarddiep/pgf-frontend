@@ -18,10 +18,14 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'admin.exhibitions.form.description' | translate }}</mat-label>
-            <textarea matInput formControlName="description" rows="4"></textarea>
-          </mat-form-field>
+          <div class="description-editor full-width">
+            <label class="editor-label">{{ 'admin.exhibitions.form.description' | translate }}</label>
+            <div #descriptionEditor
+                 class="editor-content"
+                 contenteditable="true"
+                 (input)="onDescriptionInput()">
+            </div>
+          </div>
 
           <mat-form-field appearance="outline">
             <mat-label>{{ 'admin.exhibitions.form.location' | translate }}</mat-label>

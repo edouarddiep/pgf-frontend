@@ -110,7 +110,7 @@
                   }
 
                   @if (exhibition.description) {
-                    <p class="description">{{ localeService.resolve(exhibition, 'description') }}</p>
+                    <div class="description" [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
                   }
 
                   @if (exhibition.credits) {
@@ -261,7 +261,7 @@
                   }
 
                   @if (exhibition.description) {
-                    <p class="description">{{ localeService.resolve(exhibition, 'description') }}</p>
+                    <div class="description" [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
                   }
 
                   @if (exhibition.credits) {
