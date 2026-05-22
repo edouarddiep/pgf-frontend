@@ -15,6 +15,7 @@ import { TruncatePipe } from '@core/pipes/truncate.pipe';
 import { LocaleService } from '@core/services/locale.service';
 import { TranslateService } from '@core/services/translate.service';
 import { map } from 'rxjs';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-home',
@@ -39,6 +40,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   protected readonly navService = inject(NavService);
   protected readonly localeService = inject(LocaleService);
+  private readonly seoService = inject(SeoService);
   private readonly platformId = inject(PLATFORM_ID);
 
   @ViewChild('heroVideo', { static: false }) heroVideo!: ElementRef<HTMLVideoElement>;
@@ -50,6 +52,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.home.title', 'seo.home.description');
     if (isPlatformBrowser(this.platformId)) {
       this.scrollAnimationService.setupScrollAnimations();
     }

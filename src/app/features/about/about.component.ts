@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { NavService } from '@core/services/nav.service';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-about',
@@ -21,8 +22,10 @@ import { NavService } from '@core/services/nav.service';
 export class AboutComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   protected readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.about.title', 'seo.about.description');
     this.scrollAnimationService.setupScrollAnimations();
     this.setupBibliographyAnimations();
   }

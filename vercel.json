@@ -4,7 +4,7 @@
   "buildCommand": "sed -i 's/INVITE_KEY_PLACEHOLDER/'\"$INVITE_KEY\"'/g' src/environments/environment.prod.ts && npm run build",
   "outputDirectory": "dist/pgf-frontend/browser",
   "framework": null,
-  "alias": ["gonsethfavre.vercel.app"],
+  "alias": ["gonsethfavre.vercel.app", "pierrette-gonsethfavre.ch", "www.pierrette-gonsethfavre.ch"],
   "rewrites": [
     {
       "source": "/(.*)",

@@ -13,6 +13,7 @@ import {TruncatePipe} from '@core/pipes/truncate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
 import {NavService} from '@core/services/nav.service';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-artworks',
@@ -37,6 +38,7 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
   private readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY_CATEGORIES = 'artwork-categories';
@@ -67,6 +69,7 @@ export class ArtworksComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.artworks.title', 'seo.artworks.description');
     this.scrollAnimationService.setupScrollAnimations();
     this.categories$.pipe(take(1)).subscribe(() => {
       this.scrollAnimationService.restoreScrollPosition(this.SCROLL_KEY_CATEGORIES);

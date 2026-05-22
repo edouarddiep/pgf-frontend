@@ -6,6 +6,7 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { NavService } from '@core/services/nav.service';
 import {MatIcon} from '@angular/material/icon';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-association',
@@ -17,8 +18,10 @@ import {MatIcon} from '@angular/material/icon';
 export class AssociationComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   protected readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.contact.title', 'seo.contact.description');
     this.scrollAnimationService.setupScrollAnimations();
   }
 

@@ -10,6 +10,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
 import {NavService} from '@core/services/nav.service';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-archives',
@@ -25,6 +26,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
   private readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   private readonly SCROLL_KEY = 'archives';
@@ -32,6 +34,7 @@ export class ArchivesComponent implements OnInit, OnDestroy {
   protected readonly archives = signal<Archive[]>([]);
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.archives.title', 'seo.archives.description');
     this.loadArchives();
     this.scrollAnimationService.restoreScrollPosition(this.SCROLL_KEY);
     this.scrollAnimationService.setupScrollAnimations();

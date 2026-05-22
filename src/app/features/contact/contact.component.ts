@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
 
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
@@ -14,6 +14,7 @@ import {CountryCode, getCountries, getCountryCallingCode} from 'libphonenumber-j
 import {toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
 import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
+import {SeoService} from '@core/services/seo.service';
 
 @Component({
   selector: 'app-contact',
@@ -33,10 +34,11 @@ import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loadin
   styleUrl: './contact.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly apiService = inject(ApiService);
   private readonly notificationService = inject(NotificationService);
+  private readonly seoService = inject(SeoService);
 
   readonly isSubmitting = signal(false);
   readonly submitSuccess = signal(false);
@@ -99,6 +101,10 @@ export class ContactComponent {
 
   protected getPrefixDisplay(): string {
     return this.selectedPrefix;
+  }
+
+  ngOnInit(): void {
+    this.seoService.setPage('seo.contact.title', 'seo.contact.description');
   }
 
   getMessageLength(): number {

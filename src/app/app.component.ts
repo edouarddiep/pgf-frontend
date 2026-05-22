@@ -9,6 +9,7 @@ import { HeaderComponent } from '@layout/header/header.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, take } from 'rxjs';
 import { TranslateService } from '@core/services/translate.service';
+import {AnalyticsService} from '@core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ export class AppComponent implements OnInit {
   private readonly videoService = inject(VideoService);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
+  private readonly analyticsService = inject(AnalyticsService);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly isLoading = this.loadingService.isLoading;
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.analyticsService.init();
     this.videoService.preloadVideo('home');
 
     if (isPlatformBrowser(this.platformId)) {

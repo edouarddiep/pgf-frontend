@@ -1,4 +1,34 @@
 export const en = {
+  seo: {
+    home: {
+      title: "Home: Swiss Painter - Pierrette Gonseth-Favre",
+      description: "Pierrette Gonseth-Favre, Swiss painter specialised in burlap artworks, wire art, paper collages and other mixed media techniques."
+    },
+    about: {
+      title: "About the Swiss painter Pierrette Gonseth-Favre",
+      description: "Learn more about the Swiss painter Pierrette Gonseth-Favre, her background and artistic approach."
+    },
+    artworks: {
+      title: "Artworks by the Swiss painter Pierrette Gonseth-Favre",
+      description: "Explore the artworks of Pierrette Gonseth-Favre: burlap paintings, wire art, paper collages, mixed media and other original creations."
+    },
+    exhibitions: {
+      title: "Past and upcoming exhibitions: Pierrette Gonseth-Favre, Swiss painter.",
+      description: "Find the past and upcoming exhibitions of the Swiss painter Pierrette Gonseth-Favre."
+    },
+    archives: {
+      title: "Archives of the life of Swiss painter Pierrette Gonseth-Favre",
+      description: "Archives and history of art exhibitions and events by the Swiss painter Pierrette Gonseth-Favre."
+    },
+    contact: {
+      title: "Contact",
+      description: "Contact Pierrette Gonseth-Favre for any enquiry about her artworks or exhibitions."
+    },
+    association: {
+      title: "Association",
+      description: "The Friends of Pierrette Gonseth-Favre Association, supporting and promoting the artist's work."
+    }
+  },
   nav: {
     home: 'Home',
     about: 'About',

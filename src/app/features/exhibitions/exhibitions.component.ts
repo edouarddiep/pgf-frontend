@@ -10,6 +10,7 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
+import {SeoService} from '@core/services/seo.service';
 
 type TabType = 'current' | 'past';
 
@@ -30,6 +31,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
+  private readonly seoService = inject(SeoService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   protected readonly activeTab = signal<TabType>('current');
@@ -43,6 +45,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly window = window;
 
   ngOnInit(): void {
+    this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description');
     this.loadExhibitions();
     this.scrollAnimationService.setupScrollAnimations();
   }
