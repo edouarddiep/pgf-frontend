@@ -6,10 +6,8 @@ export class LoadingService {
   private loadingCount = 0;
   private showTimeout: ReturnType<typeof setTimeout> | null = null;
   private hideTimeout: ReturnType<typeof setTimeout> | null = null;
-  private showStartedAt: number | null = null;
-
-  private readonly SHOW_DELAY = 500;
-  private readonly MIN_DISPLAY = 1700;
+  private readonly showDelay = 150;
+  private readonly minDisplayTime = 300;
 
   readonly isLoading = this.loadingSignal.asReadonly();
 
@@ -21,36 +19,34 @@ export class LoadingService {
       this.hideTimeout = null;
     }
 
-    if (!this.loadingSignal() && !this.showTimeout) {
+    if (!this.showTimeout && !this.loadingSignal()) {
       this.showTimeout = setTimeout(() => {
-        this.loadingSignal.set(true);
-        this.showStartedAt = Date.now();
+        if (this.loadingCount > 0) {
+          this.loadingSignal.set(true);
+        }
         this.showTimeout = null;
-      }, this.SHOW_DELAY);
+      }, this.showDelay);
     }
   }
 
   hide(): void {
     this.loadingCount--;
 
-    if (this.loadingCount > 0) return;
-    this.loadingCount = 0;
+    if (this.loadingCount <= 0) {
+      this.loadingCount = 0;
 
-    if (this.showTimeout) {
-      clearTimeout(this.showTimeout);
-      this.showTimeout = null;
-      return;
+      if (this.showTimeout) {
+        clearTimeout(this.showTimeout);
+        this.showTimeout = null;
+        return;
+      }
+
+      if (this.loadingSignal()) {
+        this.hideTimeout = setTimeout(() => {
+          this.loadingSignal.set(false);
+          this.hideTimeout = null;
+        }, this.minDisplayTime);
+      }
     }
-
-    if (!this.loadingSignal()) return;
-
-    const elapsed = this.showStartedAt ? Date.now() - this.showStartedAt : 0;
-    const remaining = Math.max(0, this.MIN_DISPLAY - elapsed);
-
-    this.hideTimeout = setTimeout(() => {
-      this.loadingSignal.set(false);
-      this.hideTimeout = null;
-      this.showStartedAt = null;
-    }, remaining);
   }
 }

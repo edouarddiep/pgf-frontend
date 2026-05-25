@@ -74,4 +74,8 @@ export class ArchivesComponent implements OnInit, OnDestroy {
     this.scrollAnimationService.saveScrollPosition(this.SCROLL_KEY);
     this.navService.navigate(['archives', archiveId]);
   }
+
+  protected onImageLoaded(event: Event): void {
+    (event.target as HTMLImageElement).classList.add('loaded');
+  }
 }

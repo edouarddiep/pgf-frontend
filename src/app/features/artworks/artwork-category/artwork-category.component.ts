@@ -75,4 +75,8 @@ export class ArtworkCategoryComponent implements OnInit {
   onAllCategoriesClick(): void {
     this.navService.navigate(['artworks']);
   }
+
+  protected onImageLoaded(event: Event): void {
+    (event.target as HTMLImageElement).classList.add('loaded');
+  }
 }

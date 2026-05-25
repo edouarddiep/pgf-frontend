@@ -23,6 +23,8 @@
                   <img
                     [lazyLoad]="artwork.mainImageUrl"
                     [alt]="artwork.title"
+                    (load)="onImageLoaded($event)"
+                    class="artwork-image"
                     [style.object-position]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
                     [style.transform]="'scale(' + ((artwork.mainImageZoom ?? 100) / 100) + ')'"
                     [style.transform-origin]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'">

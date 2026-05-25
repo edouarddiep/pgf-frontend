@@ -18,6 +18,8 @@
                 <div class="archive-image">
                   <img [src]="archive.thumbnailUrl"
                        [alt]="archive.title"
+                       (load)="onImageLoaded($event)"
+                       class="archive-img"
                        loading="lazy"
                        [style.object-position]="(archive.mainImagePositionX ?? 50) + '% ' + (archive.mainImagePositionY ?? 50) + '%'"
                        [style.transform]="'scale(' + ((archive.mainImageZoom ?? 100) / 100) + ')'"

@@ -6,8 +6,9 @@ import { LoadingService } from '@shared/services/loading.service';
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
 
-  loadingService.show();
+  if (!req.url.includes('/api/')) return next(req);
 
+  loadingService.show();
   return next(req).pipe(
     finalize(() => loadingService.hide())
   );
