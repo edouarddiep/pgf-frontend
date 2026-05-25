@@ -21,7 +21,7 @@ export class AssociationComponent implements OnInit, OnDestroy {
   private readonly seoService = inject(SeoService);
 
   ngOnInit(): void {
-    this.seoService.setPage('seo.contact.title', 'seo.contact.description');
+    this.seoService.setPage('seo.association.title', 'seo.association.description');
     this.scrollAnimationService.setupScrollAnimations();
   }
 

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, PLATFORM_ID, effect } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
@@ -9,7 +9,7 @@ import { HeaderComponent } from '@layout/header/header.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, take } from 'rxjs';
 import { TranslateService } from '@core/services/translate.service';
-import {AnalyticsService} from '@core/services/analytics.service';
+import { AnalyticsService } from '@core/services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -35,6 +35,12 @@ export class AppComponent implements OnInit {
       startWith(this.router.url.startsWith('/admin'))
     )
   );
+
+  constructor() {
+    effect(() => {
+      document.documentElement.lang = this.translateService.currentLang();
+    });
+  }
 
   ngOnInit(): void {
     this.analyticsService.init();

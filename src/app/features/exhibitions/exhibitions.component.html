@@ -270,7 +270,7 @@
 
                   @if (exhibition.websiteUrl) {
                     <div class="website-button">
-                      <button mat-stroked-button (click)="window.open(exhibition.websiteUrl, '_blank')">
+                      <button mat-stroked-button (click)="onExhibitionWebsiteClicked(exhibition)">
                         {{ 'exhibitions.vernissage.website' | translate }}
                       </button>
                     </div>

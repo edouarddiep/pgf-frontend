@@ -15,6 +15,7 @@ import {toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
 import {LoadingSpinnerComponent} from '@shared/components/loading-spinner/loading-spinner.component';
 import {SeoService} from '@core/services/seo.service';
+import {AnalyticsService} from '@core/services/analytics.service';
 
 @Component({
   selector: 'app-contact',
@@ -39,6 +40,7 @@ export class ContactComponent implements OnInit {
   private readonly apiService = inject(ApiService);
   private readonly notificationService = inject(NotificationService);
   private readonly seoService = inject(SeoService);
+  private readonly analyticsService = inject(AnalyticsService);
 
   readonly isSubmitting = signal(false);
   readonly submitSuccess = signal(false);
@@ -128,6 +130,7 @@ export class ContactComponent implements OnInit {
     this.apiService.sendContactMessage(payload).pipe(delay(2500)).subscribe({
       next: () => {
         this.isSubmitting.set(false);
+        this.analyticsService.trackEvent('contact_form_submitted');
         this.submitSuccess.set(true);
         this.resetForm();
         setTimeout(() => this.submitSuccess.set(false), 5000);

@@ -1,23 +1,23 @@
 export const fr = {
   seo: {
     home: {
-      title: "Accueil: Artiste Peintre suisse - Pierrette Gonseth-Favre",
+      title: "Accueil",
       description: "Pierrette Gonseth-Favre, artiste peintre suisse spécialisée dans la création d'oeuvres d'art en toile de jute, fils de fer, collages papier et autres techniques mixtes."
     },
     about: {
-      title: "À propos de l'artiste peintre suisse Pierrette Gonseth-Favre",
+      title: "À propos",
       description: "En savoir plus sur l'artiste peintre suisse Pierrette Gonseth-Favre, son parcours et sa démarche artistique."
     },
     artworks: {
-      title: "Les Œuvres d'art de l'artiste peintre suisse Pierrette Gonseth-Favre",
+      title: "Œuvres",
       description: "Explorez les œuvres d'art de Pierrette Gonseth-Favre : peintures sur toile de jute, oeuvres d'art en fil de fer, collages papier, techniques mixtes et autres créations originales."
     },
     exhibitions: {
-      title: "Expositions passées et à venir: Pierrette Gonseth Favre, artiste peintre suisse.",
+      title: "Expositions",
       description: "Retrouvez les expositions passées et à venir de l'artiste peintre suisse Pierrette Gonseth-Favre."
     },
     archives: {
-      title: "Archives de la vie de l'artiste peintre suisse Pierrette Gonseth-Favres",
+      title: "Archives",
       description: "Archives et historique des expositions et événements d'art de l'artiste peintre suisse Pierrette Gonseth-Favre."
     },
     contact: {

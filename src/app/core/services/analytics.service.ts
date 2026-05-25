@@ -41,7 +41,7 @@ export class AnalyticsService {
 
   /** Tracks a custom GA4 event. Available for future use across components. */
   trackEvent(eventName: string, params?: Record<string, unknown>): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!isPlatformBrowser(this.platformId) || !environment.gaId) return;
     gtag('event', eventName, params);
   }
 }

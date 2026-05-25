@@ -11,6 +11,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
 import {SeoService} from '@core/services/seo.service';
+import {AnalyticsService} from '@core/services/analytics.service';
 
 type TabType = 'current' | 'past';
 
@@ -32,6 +33,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
   private readonly seoService = inject(SeoService);
+  private readonly analyticsService = inject(AnalyticsService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   protected readonly activeTab = signal<TabType>('current');
@@ -158,7 +160,19 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
 
   protected onVernissageRegistration(exhibition: Exhibition): void {
     if (!exhibition.vernissageUrl) return;
+    this.analyticsService.trackEvent('vernissage_registration_clicked', {
+      exhibition_title: exhibition.title,
+      exhibition_id: exhibition.id
+    });
     window.open(exhibition.vernissageUrl, '_blank');
+  }
+
+  protected onExhibitionWebsiteClicked(exhibition: Exhibition): void {
+    this.analyticsService.trackEvent('exhibition_link_clicked', {
+      exhibition_title: exhibition.title,
+      url: exhibition.websiteUrl
+    });
+    window.open(exhibition.websiteUrl, '_blank');
   }
 
   protected onShowOnMap(exhibition: Exhibition): void {
