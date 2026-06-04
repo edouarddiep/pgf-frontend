@@ -49,6 +49,9 @@
           @for (legal of legalLinks; track legal.route) {
             <a [routerLink]="langPrefix() + legal.route">{{ legal.nameKey | translate }}</a>
           }
+          <a (click)="openCookiePreferences()" style="cursor: pointer;">
+            {{ 'footer.cookiePreferences' | translate }}
+          </a>
         </nav>
       </div>
     </div>

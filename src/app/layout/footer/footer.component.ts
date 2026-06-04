@@ -8,6 +8,7 @@ import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { TranslateService } from '@core/services/translate.service';
 import { LocaleService } from '@core/services/locale.service';
+import {ConsentService} from '@core/services/consent.service';
 
 @Component({
   selector: 'app-footer',
@@ -19,6 +20,7 @@ import { LocaleService } from '@core/services/locale.service';
 export class FooterComponent {
   private readonly artworkService = inject(ArtworkService);
   private readonly translateService = inject(TranslateService);
+  private readonly consentService = inject(ConsentService);
   protected readonly localeService = inject(LocaleService);
 
   protected readonly langPrefix = computed(() => `/${this.translateService.currentLang()}-ch`);
@@ -43,4 +45,8 @@ export class FooterComponent {
     { nameKey: 'footer.privacy', route: '/privacy' },
     { nameKey: 'footer.terms', route: '/terms' }
   ];
+
+  openCookiePreferences(): void {
+    this.consentService.reset();
+  }
 }

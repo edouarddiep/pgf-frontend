@@ -45,7 +45,21 @@ export const fr = {
     allRights: 'Tous droits réservés.',
     legal: 'Mentions légales',
     privacy: 'Politique de confidentialité',
-    terms: 'Conditions générales'
+    terms: 'Conditions générales',
+    cookiePreferences: 'Préférences de cookies'
+  },
+  cookie: {
+    title: 'Gérer les cookies sur PGF',
+    description: 'En cliquant sur « Accepter tous les cookies », vous acceptez le stockage de cookies sur votre appareil pour améliorer la navigation sur le site et analyser son utilisation. Nous avons mis à jour notre ',
+    learnMore: 'politique de confidentialité',
+    deny: 'Tout refuser',
+    settings: 'Paramètres des cookies',
+    accept: 'Accepter tous les cookies',
+    settingsTitle: 'Préférences de consentement',
+    manageTitle: 'Gérer les préférences de consentement',
+    statistics: 'Cookies de statistiques',
+    statisticsDesc: 'Ces cookies nous permettent de mesurer la fréquentation du site via Google Analytics afin d\'améliorer votre expérience.',
+    confirmSelection: 'Confirmer la sélection',
   },
   home: {
     hero: {

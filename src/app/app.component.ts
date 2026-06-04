@@ -10,10 +10,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, take } from 'rxjs';
 import { TranslateService } from '@core/services/translate.service';
 import { AnalyticsService } from '@core/services/analytics.service';
+import {ConsentService} from '@core/services/consent.service';
+import {CookieBannerComponent} from '@features/cookie-banner/cookie-banner.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingSpinnerComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingSpinnerComponent, CookieBannerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,6 +26,7 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly consentService = inject(ConsentService);
   private readonly platformId = inject(PLATFORM_ID);
 
   readonly isLoading = this.loadingService.isLoading;
@@ -45,6 +48,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.analyticsService.init();
     this.videoService.preloadVideo('home');
+    this.consentService.init();
 
     if (isPlatformBrowser(this.platformId)) {
       this.router.events.pipe(

@@ -45,7 +45,21 @@ export const en = {
     allRights: 'All rights reserved.',
     legal: 'Legal notice',
     privacy: 'Privacy policy',
-    terms: 'Terms & conditions'
+    terms: 'Terms & conditions',
+    cookiePreferences: 'Cookie preferences'
+  },
+  cookie: {
+    title: 'Manage cookies on PGF',
+    description: 'By clicking "Accept all cookies", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage. We have updated our ',
+    learnMore: 'privacy policy',
+    deny: 'Reject all',
+    settings: 'Cookie settings',
+    accept: 'Accept all cookies',
+    settingsTitle: 'Consent preferences',
+    manageTitle: 'Manage consent preferences',
+    statistics: 'Statistics cookies',
+    statisticsDesc: 'These cookies allow us to measure website traffic via Google Analytics to improve your experience.',
+    confirmSelection: 'Confirm selection',
   },
   home: {
     hero: {

@@ -1,0 +1,65 @@
+@if (showBanner()) {
+  <div class="cookie-banner">
+    <div class="cookie-banner__content">
+      <div class="cookie-banner__text">
+        <p class="cookie-banner__title">{{ 'cookie.title' | translate }}</p>
+        <p class="cookie-banner__description">
+          {{ 'cookie.description' | translate }}
+          <a [routerLink]="privacyUrl()">{{ 'cookie.learnMore' | translate }}</a>
+        </p>
+      </div>
+      <div class="cookie-banner__actions">
+        <button class="btn btn--ghost" (click)="consentService.deny()">
+          {{ 'cookie.deny' | translate }}
+        </button>
+        <button class="btn btn--ghost" (click)="openSettings()">
+          {{ 'cookie.settings' | translate }}
+        </button>
+        <button class="btn btn--primary" (click)="consentService.accept()">
+          {{ 'cookie.accept' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showSettings()) {
+  <div class="cookie-overlay" (click)="consentService.closeSettings()"></div>
+  <div class="cookie-modal">
+    <div class="cookie-modal__header">
+      <h2 class="cookie-modal__title">{{ 'cookie.settingsTitle' | translate }}</h2>
+      <button class="cookie-modal__close" (click)="consentService.closeSettings()">✕</button>
+    </div>
+
+    <div class="cookie-modal__body">
+      <button class="btn btn--primary cookie-modal__accept-all" (click)="consentService.accept()">
+        {{ 'cookie.accept' | translate }}
+      </button>
+
+      <h3 class="cookie-modal__subtitle">{{ 'cookie.manageTitle' | translate }}</h3>
+
+      <div class="cookie-category">
+        <div class="cookie-category__header">
+          <span class="cookie-category__name">{{ 'cookie.statistics' | translate }}</span>
+          <button
+            class="toggle"
+            [class.toggle--on]="analyticsToggle()"
+            (click)="toggleAnalytics()"
+            [attr.aria-label]="'cookie.statistics' | translate">
+            <span class="toggle__thumb"></span>
+          </button>
+        </div>
+        <p class="cookie-category__description">{{ 'cookie.statisticsDesc' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="cookie-modal__footer">
+      <button class="btn btn--ghost" (click)="consentService.deny()">
+        {{ 'cookie.deny' | translate }}
+      </button>
+      <button class="btn btn--primary" (click)="saveSettings()">
+        {{ 'cookie.confirmSelection' | translate }}
+      </button>
+    </div>
+  </div>
+}
