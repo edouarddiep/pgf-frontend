@@ -6,6 +6,7 @@ export interface ArtworkCategory {
   descriptionEn?: string;
   slug: string;
   thumbnailUrl?: string;
+  thumbnailSrcset?: string;
   thumbnailZoom?: number;
   thumbnailPositionX?: number;
   thumbnailPositionY?: number;
@@ -21,7 +22,9 @@ export interface Artwork {
   description?: string;
   descriptionEn?: string;
   imageUrls: string[];
+  imageSrcsets?: string[];
   mainImageUrl?: string;
+  mainImageSrcset?: string;
   mainImagePositionX?: number;
   mainImagePositionY?: number;
   mainImageZoom?: number;

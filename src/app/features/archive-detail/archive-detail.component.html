@@ -3,7 +3,10 @@
     <section class="hero-banner scroll-fade-in">
       @if (arch.thumbnailUrl) {
         <img [src]="arch.thumbnailUrl"
+             [attr.srcset]="arch.thumbnailSrcset"
+             sizes="100vw"
              [alt]="arch.title"
+             fetchpriority="high"
              class="hero-image"
              [style.object-position]="(arch.mainImagePositionX ?? 50) + '% ' + (arch.mainImagePositionY ?? 50) + '%'">
         <div class="hero-overlay"></div>
@@ -57,7 +60,13 @@
             <div class="images-grid">
               @for (file of imageFiles(); track file.id) {
                 <div class="image-card" (click)="openImageModal(file.fileUrl, arch.title)">
-                  <img [src]="file.fileUrl" [alt]="arch.title" loading="lazy">
+                  <img
+                    [src]="file.fileUrl"
+                    [attr.srcset]="file.fileSrcset"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    [alt]="arch.title"
+                    loading="lazy"
+                    decoding="async">
                 </div>
               }
             </div>

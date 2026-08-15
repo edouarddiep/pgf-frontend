@@ -9,24 +9,25 @@ import {ApiService} from '@core/services/api.service';
 export class ExhibitionService {
   private readonly apiService = inject(ApiService);
 
-  private readonly exhibitions$ = this.apiService.getExhibitions().pipe(
-    shareReplay(1)
-  );
+  private readonly exhibitions$ = this.apiService.getExhibitions().pipe(shareReplay(1));
+  private readonly upcoming$ = this.apiService.getUpcomingExhibitions().pipe(shareReplay(1));
+  private readonly past$ = this.apiService.getPastExhibitions().pipe(shareReplay(1));
+  private readonly ongoing$ = this.apiService.getOngoingExhibitions().pipe(shareReplay(1));
 
   getAllExhibitions(): Observable<Exhibition[]> {
     return this.exhibitions$;
   }
 
   getUpcomingExhibitions(): Observable<Exhibition[]> {
-    return this.apiService.getUpcomingExhibitions();
+    return this.upcoming$;
   }
 
   getPastExhibitions(): Observable<Exhibition[]> {
-    return this.apiService.getPastExhibitions();
+    return this.past$;
   }
 
   getOngoingExhibitions(): Observable<Exhibition[]> {
-    return this.apiService.getOngoingExhibitions();
+    return this.ongoing$;
   }
 
   getNextFeaturedExhibition(): Observable<Exhibition> {

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 interface VideoConfig {
   url: string;
+  posterUrl: string;
   startTime: number;
   endTime: number;
 }
@@ -17,9 +18,10 @@ export class VideoService {
 
   readonly videos: Record<string, VideoConfig> = {
     home: {
-      url: 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/videos/video1.mp4',
-      startTime: 4,
-      endTime: 17
+      url: 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/videos/hero-home.mp4',
+      posterUrl: 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/object/public/oeuvres/yaya/videos/hero-home-poster.webp',
+      startTime: 0,
+      endTime: 13
     }
   };
 

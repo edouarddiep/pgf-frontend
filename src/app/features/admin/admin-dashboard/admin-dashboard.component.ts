@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '@features/admin/services/admin.service';
 import { ApiService } from '@core/services/api.service';
-import { forkJoin, catchError, EMPTY, fromEvent } from 'rxjs';
+import { forkJoin, catchError, EMPTY, fromEvent, merge } from 'rxjs';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 
 @Component({
@@ -22,7 +23,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
   styleUrl: './admin-dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminDashboardComponent implements OnInit, OnDestroy {
+export class AdminDashboardComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly adminService = inject(AdminService);
   private readonly apiService = inject(ApiService);
 
@@ -37,17 +39,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadStats();
 
-    fromEvent(window, 'artworkChanged').subscribe(() => {
-      this.loadStats();
-    });
-
-    fromEvent(window, 'exhibitionChanged').subscribe(() => {
-      this.loadStats();
-    });
-  }
-
-  ngOnDestroy(): void {
-    // Les événements se nettoient automatiquement
+    merge(fromEvent(window, 'artworkChanged'), fromEvent(window, 'exhibitionChanged'))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.loadStats());
   }
 
   private loadStats(): void {

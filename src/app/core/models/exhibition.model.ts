@@ -13,7 +13,9 @@ export interface Exhibition {
   endDate?: string;
   status?: ExhibitionStatus;
   imageUrl?: string;
+  imageSrcset?: string;
   imageUrls?: string[];
+  imageSrcsets?: string[];
   videoUrls?: string[];
 }
 

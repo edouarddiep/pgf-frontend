@@ -3,7 +3,6 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import {switchMap, map, combineLatest, take} from 'rxjs';
 import { ApiService } from '@core/services/api.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
@@ -20,7 +19,6 @@ import {NavService} from '@core/services/nav.service';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    LazyLoadImageModule,
     TranslatePipe,
     TruncatePipe
   ],

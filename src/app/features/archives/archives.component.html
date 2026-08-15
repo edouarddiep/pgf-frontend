@@ -17,6 +17,8 @@
               @if (archive.thumbnailUrl) {
                 <div class="archive-image">
                   <img [src]="archive.thumbnailUrl"
+                       [attr.srcset]="archive.thumbnailSrcset"
+                       [attr.sizes]="'(max-width: 768px) 100vw, ' + 4 * (archive.mainImageZoom ?? 100) + 'px'"
                        [alt]="archive.title"
                        (load)="onImageLoaded($event)"
                        class="archive-img"

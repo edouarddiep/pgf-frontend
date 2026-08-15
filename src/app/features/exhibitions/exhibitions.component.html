@@ -61,7 +61,10 @@
                         } @else {
                           <img
                             [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            [attr.srcset]="getImageSrcset(exhibition, getSelectedImageIndex(exhibition.id))"
+                            sizes="(max-width: 960px) 100vw, 46vw"
                             [alt]="exhibition.title"
+                            decoding="async"
                             (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
                         }
                       } @else {
@@ -85,7 +88,13 @@
                                 <mat-icon>play_circle_filled</mat-icon>
                               </div>
                             } @else {
-                              <img [src]="mediaUrl" [alt]="exhibition.title">
+                              <img
+                                [src]="mediaUrl"
+                                [attr.srcset]="getImageSrcset(exhibition, $index)"
+                                sizes="100px"
+                                [alt]="exhibition.title"
+                                loading="lazy"
+                                decoding="async">
                             }
                           </div>
                         }
@@ -203,7 +212,10 @@
                         } @else {
                           <img
                             [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
+                            [attr.srcset]="getImageSrcset(exhibition, getSelectedImageIndex(exhibition.id))"
+                            sizes="(max-width: 960px) 100vw, 46vw"
                             [alt]="exhibition.title"
+                            decoding="async"
                             (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
                         }
                       } @else {
@@ -227,7 +239,13 @@
                                 <mat-icon>play_circle_filled</mat-icon>
                               </div>
                             } @else {
-                              <img [src]="mediaUrl" [alt]="exhibition.title">
+                              <img
+                                [src]="mediaUrl"
+                                [attr.srcset]="getImageSrcset(exhibition, $index)"
+                                sizes="100px"
+                                [alt]="exhibition.title"
+                                loading="lazy"
+                                decoding="async">
                             }
                           </div>
                         }
@@ -677,8 +695,11 @@
              (touchend)="onModalTouchEnd($event)">
           <img
             [src]="exhibition.imageUrls![modalImageIndex()]"
+            [attr.srcset]="getImageSrcset(exhibition, modalImageIndex())"
+            sizes="100vw"
             [alt]="exhibition.title"
             class="modal-image"
+            decoding="async"
             (click)="$event.stopPropagation()">
 
           <button type="button" class="modal-close" (click)="closeImageModal()">

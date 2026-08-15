@@ -1,5 +1,13 @@
 <section class="hero-home-banner">
-  <video #heroVideo class="hero-video" autoplay muted playsinline [attr.preload]="'auto'">
+  <video
+    #heroVideo
+    class="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    [poster]="videoConfig.posterUrl"
+    [attr.preload]="'auto'">
     <source [src]="videoConfig.url" type="video/mp4">
   </video>
   <div class="hero-content">
@@ -23,8 +31,12 @@
           @for (category of categories; track category.id) {
             <div class="category-card" (click)="onCategoryClick(category.slug)">
               <div class="category-image">
-                <img [lazyLoad]="getCategoryThumbnail(category)"
+                <img [src]="getCategoryThumbnail(category)"
+                     [attr.srcset]="category.thumbnailSrcset"
+                     [attr.sizes]="'(max-width: 768px) 100vw, ' + 4 * (category.thumbnailZoom ?? 100) + 'px'"
                      [alt]="category.name"
+                     loading="lazy"
+                     decoding="async"
                      [style.object-position]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'"
                      [style.transform]="'scale(' + ((category.thumbnailZoom ?? 100) / 100) + ')'"
                      [style.transform-origin]="(category.thumbnailPositionX ?? 50) + '% ' + (category.thumbnailPositionY ?? 50) + '%'">
@@ -68,7 +80,13 @@
             [attr.aria-label]="localeService.resolve(exhibition, 'title')">
             @if (exhibition.imageUrl) {
               <div class="exhibition-image">
-                <img [src]="exhibition.imageUrl" [alt]="exhibition.title" loading="lazy">
+                <img
+                  [src]="exhibition.imageUrl"
+                  [attr.srcset]="exhibition.imageSrcset"
+                  sizes="(max-width: 768px) 100vw, 400px"
+                  [alt]="exhibition.title"
+                  loading="lazy"
+                  decoding="async">
               </div>
             }
             <div class="exhibition-content">

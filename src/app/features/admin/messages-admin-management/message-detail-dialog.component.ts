@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,7 +11,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
   selector: 'app-message-detail-dialog',
   imports: [CommonModule, MatDialogModule, MatButtonModule, TranslatePipe],
   templateUrl: './message-detail-dialog.component.html',
-  styleUrl: './message-detail-dialog.component.scss'
+  styleUrl: './message-detail-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessageDetailDialogComponent {
   private readonly adminService = inject(AdminService);

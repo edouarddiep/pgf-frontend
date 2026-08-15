@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,7 +23,8 @@ import {TranslateService} from '@core/services/translate.service';
     MatCardModule, MatChipsModule, MatDialogModule, LoadingDirective, TranslatePipe, MatTooltip
   ],
   templateUrl: './messages-admin-management.component.html',
-  styleUrl: './messages-admin-management.component.scss'
+  styleUrl: './messages-admin-management.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagesAdminManagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);

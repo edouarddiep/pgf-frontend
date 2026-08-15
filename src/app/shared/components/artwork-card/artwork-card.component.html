@@ -2,17 +2,23 @@
   <div class="artwork-image">
     @if (artwork().mainImageUrl) {
       <img
-        [lazyLoad]="artwork().mainImageUrl"
+        [src]="artwork().mainImageUrl"
+        [attr.srcset]="artwork().mainImageSrcset"
+        [attr.sizes]="'(max-width: 768px) 100vw, ' + 4 * (artwork().mainImageZoom ?? 100) + 'px'"
         [alt]="artwork().title"
-        [defaultImage]="'/assets/images/placeholder.jpg'"
+        loading="lazy"
+        decoding="async"
         [style.object-position]="(artwork().mainImagePositionX ?? 50) + '% ' + (artwork().mainImagePositionY ?? 50) + '%'"
         [style.transform]="'scale(' + ((artwork().mainImageZoom ?? 100) / 100) + ')'"
         [style.transform-origin]="(artwork().mainImagePositionX ?? 50) + '% ' + (artwork().mainImagePositionY ?? 50) + '%'">
     } @else if (artwork().imageUrls && artwork().imageUrls.length > 0) {
       <img
-        [lazyLoad]="artwork().imageUrls[0]"
+        [src]="artwork().imageUrls[0]"
+        [attr.srcset]="artwork().imageSrcsets?.[0]"
+        sizes="(max-width: 768px) 100vw, 400px"
         [alt]="artwork().title"
-        [defaultImage]="'/assets/images/placeholder.jpg'">
+        loading="lazy"
+        decoding="async">
     } @else {
       <div class="placeholder-image">
         <mat-icon>image</mat-icon>

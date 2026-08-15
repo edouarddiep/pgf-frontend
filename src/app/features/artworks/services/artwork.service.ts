@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { environment } from '@environments/environment';
 import { ArtworkCategory, Artwork } from '@core/models/artwork.model';
 
@@ -11,8 +11,12 @@ export class ArtworkService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
 
+  private readonly categories$ = this.http
+    .get<ArtworkCategory[]>(`${this.apiUrl}/categories`)
+    .pipe(shareReplay(1));
+
   getCategories(): Observable<ArtworkCategory[]> {
-    return this.http.get<ArtworkCategory[]>(`${this.apiUrl}/categories`);
+    return this.categories$;
   }
 
   getAvailableArtworks(): Observable<Artwork[]> {

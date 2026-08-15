@@ -3,7 +3,7 @@ import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, c
 import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ApiService } from '@core/services/api.service';
+import { ExhibitionService } from '@features/exhibitions/services/exhibition.service';
 import {
   Exhibition,
   ExhibitionStatus,
@@ -36,7 +36,7 @@ const ANCHOR_SETTLE_TIMEOUT_MS = 2500;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExhibitionsComponent implements OnInit, OnDestroy {
-  private readonly apiService = inject(ApiService);
+  private readonly exhibitionService = inject(ExhibitionService);
   private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
@@ -54,6 +54,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageIndex = signal(0);
   protected readonly modalExhibition = signal<Exhibition | null>(null);
+  private timelineObserver?: IntersectionObserver;
 
   ngOnInit(): void {
     this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description');
@@ -63,13 +64,14 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
+    this.timelineObserver?.disconnect();
   }
 
   private loadExhibitions(): void {
     combineLatest([
-      this.apiService.getUpcomingExhibitions(),
-      this.apiService.getOngoingExhibitions(),
-      this.apiService.getPastExhibitions()
+      this.exhibitionService.getUpcomingExhibitions(),
+      this.exhibitionService.getOngoingExhibitions(),
+      this.exhibitionService.getPastExhibitions()
     ])
       .pipe(catchError(() => EMPTY))
       .subscribe(([upcoming, ongoing, past]) => {
@@ -258,6 +260,10 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
     return allMedia[index] || '';
   }
 
+  protected getImageSrcset(exhibition: Exhibition, index: number): string | null {
+    return exhibition.imageSrcsets?.[index] ?? null;
+  }
+
   protected isVideoAtCurrentIndex(exhibition: Exhibition, index: number): boolean {
     const imageCount = exhibition.imageUrls?.length || 0;
     return index >= imageCount;
@@ -382,9 +388,9 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   private setupPersonalExhibitionsAnimations(): void {
-    const timelineItems = document.querySelectorAll('.personal-exhibitions-section .timeline-item');
+    this.timelineObserver?.disconnect();
 
-    const observer = new IntersectionObserver((entries) => {
+    this.timelineObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
@@ -395,6 +401,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
       rootMargin: '0px 0px -100px 0px'
     });
 
-    timelineItems.forEach(item => observer.observe(item));
+    document.querySelectorAll('.personal-exhibitions-section .timeline-item')
+      .forEach(item => this.timelineObserver!.observe(item));
   }
 }

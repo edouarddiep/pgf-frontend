@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ExhibitionService } from '@features/exhibitions/services/exhibition.service';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
@@ -24,7 +23,6 @@ import {SeoService} from '@core/services/seo.service';
     RouterModule,
     MatButtonModule,
     MatIconModule,
-    LazyLoadImageModule,
     TranslatePipe,
     TruncatePipe
   ],
