@@ -1,0 +1,28 @@
+// Jetons de design partagés : à utiliser partout plutôt que des valeurs en dur.
+
+$color-text: #706969; // brun-gris de la charte
+$color-heading: #333;
+$color-body: #666;
+$color-muted: #999;
+$color-border: #e0e0e0;
+$color-surface: #f5f5f5;
+$color-surface-alt: #f8f9fa;
+$color-primary: #1976d2;
+$color-error: #f44336;
+$color-error-dark: #d32f2f;
+$color-success: #2e7d32;
+
+$bp-mobile: 768px;
+$bp-phone: 480px;
+
+@mixin mobile {
+  @media (max-width: $bp-mobile) {
+    @content;
+  }
+}
+
+@mixin phone {
+  @media (max-width: $bp-phone) {
+    @content;
+  }
+}

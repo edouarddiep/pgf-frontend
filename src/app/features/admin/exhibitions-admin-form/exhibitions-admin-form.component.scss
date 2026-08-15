@@ -1,242 +1,98 @@
-.admin-artworks-container {
-  padding: 2rem;
-  padding-bottom: 6rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
+@use 'tokens' as *;
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+// Spécificités du formulaire d'exposition, le reste vient de styles/_admin.scss.
 
-  h2 { margin: 0; color: #333; }
-}
-
-.form-card {
-  margin-bottom: 2rem;
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-
-    .full-width { grid-column: 1 / -1; }
-
-    .file-upload-label {
-      display: block;
-      font-size: 0.75rem;
-      color: rgba(0, 0, 0, 0.6);
-      margin-bottom: 0.5rem;
-    }
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 1rem;
+.admin-page {
+  .form-card .form-actions {
     justify-content: flex-end;
-    padding-top: 1rem;
-    border-top: 1px solid #e0e0e0;
+    gap: 1rem;
   }
-}
 
-.video-upload-zone {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  border: 2px dashed #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #666;
-
-  &:hover { border-color: #1976d2; color: #1976d2; }
-}
-
-.uploaded-videos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-
-  .video-item {
-    position: relative;
-    cursor: pointer;
-    border-radius: 4px;
+  // Aperçu simple (pas de recadrage) de l'image principale.
+  .thumb-preview {
+    width: 160px;
+    height: 120px;
     overflow: hidden;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background: $color-surface;
 
-    &:hover .video-overlay { opacity: 1; }
-
-    .video-thumbnail { width: 160px; height: 90px; object-fit: cover; border-radius: 4px; display: block; }
-
-    .video-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-      border-radius: 4px;
-
-      mat-icon { font-size: 2.5rem; width: 2.5rem; height: 2.5rem; color: white; }
-    }
-
-    .remove-video-btn {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      background: rgba(255,255,255,0.9);
-      width: 28px;
-      height: 28px;
-      min-width: 28px;
-
-      mat-icon { font-size: 16px; width: 16px; height: 16px; }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
-}
 
-.no-border-toggle {
-  ::ng-deep .mat-mdc-icon-button {
+  .video-upload-zone {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    color: $color-body;
+
+    &:hover {
+      border-color: $color-primary;
+      color: $color-primary;
+    }
+  }
+
+  .uploaded-videos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .video-item {
+      position: relative;
+      cursor: pointer;
+      border-radius: 4px;
+      overflow: hidden;
+
+      &:hover .video-overlay { opacity: 1; }
+
+      .video-thumbnail {
+        width: 160px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 4px;
+        display: block;
+      }
+
+      .video-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s;
+        border-radius: 4px;
+
+        mat-icon { font-size: 2.5rem; width: 2.5rem; height: 2.5rem; color: white; }
+      }
+
+      .remove-video-btn {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        background: rgba(255, 255, 255, 0.9);
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+
+        mat-icon { font-size: 16px; width: 16px; height: 16px; }
+      }
+    }
+  }
+
+  .no-border-toggle ::ng-deep .mat-mdc-icon-button {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
   }
-}
-
-.image-legend {
-  font-size: 0.75rem;
-  color: rgba(0,0,0,0.5);
-  margin: 0.25rem 0 0;
-  font-style: italic;
-}
-
-.btn-active {
-  background-color: #1976d2 !important;
-  color: white !important;
-  &:hover { background-color: #1976d2 !important; }
-}
-
-.image-modal {
-  position: fixed;
-  top: 64px;
-  left: 250px;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-
-  .modal-content {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .modal-image { max-width: 80vw; max-height: 80vh; width: auto; height: auto; object-fit: contain; display: block; }
-
-    .modal-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(0, 0, 0, 0.45) !important;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      border-radius: 4px !important;
-      width: 40px !important;
-      height: 40px !important;
-      min-width: 40px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      cursor: pointer;
-      color: white !important;
-      transform: none !important;
-      margin-left: 0 !important;
-      transition: background 0.2s ease, transform 0.2s ease !important;
-      &:hover { background: rgba(112, 105, 105, 0.75) !important; transform: scale(1.05) !important; }
-    }
-  }
-}
-
-.image-required-error {
-  display: block;
-  color: #f44336;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.image-preview-wrapper { margin-bottom: 0.75rem; }
-
-.image-preview {
-  width: 160px;
-  height: 120px;
-  overflow: hidden;
-  border-radius: 8px;
-  border: 2px solid var(--border-color, #ddd);
-  background: #f5f5f5;
-
-  img { width: 100%; height: 100%; object-fit: cover; }
-}
-
-.description-cell {
-  color: #999;
-  font-size: 0.85rem;
-  cursor: default;
-}
-
-.custom-tooltip {
-  position: fixed;
-  z-index: 99999;
-  transform: translateY(-100%);
-  background: rgba(255, 255, 255, 0.97);
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 10px 14px;
-  font-size: 0.82rem;
-  line-height: 1.6;
-  color: #444;
-  width: 420px;
-  white-space: normal;
-  pointer-events: none;
-}
-
-.description-editor {
-  grid-column: 1 / -1;
-
-  .editor-label {
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
-    margin-bottom: 4px;
-    display: block;
-  }
-
-  .editor-content {
-    min-height: 120px;
-    padding: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.38);
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 1rem;
-    line-height: 1.6;
-    outline: none;
-    cursor: text;
-
-    &:focus {
-      border-color: #1976d2;
-      border-width: 2px;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-artworks-container { padding: 1rem; }
-  .admin-header { flex-direction: column; align-items: stretch; gap: 1rem; }
-  .form-grid { grid-template-columns: 1fr; }
 }

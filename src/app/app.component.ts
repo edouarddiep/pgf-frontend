@@ -17,7 +17,6 @@ import {CookieBannerComponent} from '@features/cookie-banner/cookie-banner.compo
   selector: 'app-root',
   imports: [RouterOutlet, HeaderComponent, FooterComponent, LoadingSpinnerComponent, CookieBannerComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {

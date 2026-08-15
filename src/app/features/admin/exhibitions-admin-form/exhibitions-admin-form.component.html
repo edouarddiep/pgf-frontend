@@ -1,4 +1,4 @@
-<div class="admin-artworks-container">
+<div class="admin-page">
   <div class="admin-header">
     <div style="display:flex; align-items:center; gap:0.5rem">
       <button mat-icon-button (click)="cancel()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
@@ -126,7 +126,7 @@
             <label class="file-upload-label">{{ 'admin.exhibitions.form.mainImageLabel' | translate }}</label>
             @if (mainImageUrl()) {
               <div class="image-preview-wrapper">
-                <div class="image-preview">
+                <div class="thumb-preview">
                   <img [src]="mainImageUrl()!" [alt]="'admin.common.preview' | translate">
                 </div>
               </div>

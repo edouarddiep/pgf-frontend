@@ -1,0 +1,139 @@
+@use 'tokens' as *;
+
+// Briques d'interface globales : surcharges Angular Material, notifications,
+// overlays de chargement.
+
+.mat-mdc-icon-button {
+  border-radius: 5px !important;
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  .mat-icon {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+  }
+
+  .mat-mdc-button-persistent-ripple,
+  .mat-mdc-button-ripple,
+  .mat-ripple {
+    border-radius: 5px !important;
+  }
+
+  &::before {
+    border-radius: 5px !important;
+  }
+
+  & + .mat-mdc-icon-button {
+    margin-left: 0.5rem !important;
+  }
+}
+
+@include mobile {
+  .mobile-menu-button.mat-mdc-icon-button,
+  .mat-mdc-button-base {
+    background-color: transparent !important;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: transparent !important;
+    }
+
+    .mat-mdc-button-persistent-ripple,
+    .mat-mdc-button-ripple {
+      display: none !important;
+    }
+  }
+}
+
+.cdk-overlay-container {
+  z-index: 99999 !important;
+}
+
+.confirm-dialog-panel,
+.message-detail-dialog-panel {
+  .mdc-dialog__surface {
+    border-radius: 4px !important;
+  }
+}
+
+.success-snackbar,
+.error-snackbar,
+.info-snackbar {
+  .mdc-snackbar__surface {
+    border-radius: 10px !important;
+    min-width: unset !important;
+    width: auto !important;
+    max-width: min(500px, 90vw) !important;
+    padding: clamp(6px, 0.6vw, 14px) clamp(12px, 1.2vw, 28px) !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .mdc-snackbar__label {
+    color: white !important;
+    font-weight: 400 !important;
+    font-size: clamp(0.8rem, 1vw, 1.1rem) !important;
+    line-height: 1.4 !important;
+    padding: clamp(4px, 0.5vw, 10px) 0 !important;
+  }
+
+  .mat-mdc-snack-bar-action {
+    color: white !important;
+    font-weight: 500 !important;
+    font-size: clamp(0.75rem, 0.9vw, 1rem) !important;
+  }
+}
+
+.success-snackbar .mdc-snackbar__surface {
+  background-color: #4caf50 !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+}
+
+.error-snackbar .mdc-snackbar__surface {
+  background-color: $color-error !important;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
+}
+
+.info-snackbar .mdc-snackbar__surface {
+  background-color: #1a3a5c !important;
+  box-shadow: 0 4px 12px rgba(26, 58, 92, 0.3) !important;
+}
+
+// Overlay local (directive appLoading) et overlay plein écran (AppComponent).
+.loading-overlay,
+.global-loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+  border-radius: inherit;
+}
+
+.global-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.95);
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,147 @@
+@use 'tokens' as *;
+
+// Pages légales (mentions légales, confidentialité, CGU) : même gabarit pour les trois.
+
+.legal-page {
+  min-height: 100vh;
+
+  .hero-banner {
+    position: relative;
+    background: $color-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .hero-content {
+      text-align: center;
+      color: white;
+
+      h1 {
+        position: relative;
+        padding-bottom: 1.5rem;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 200px;
+          height: 2px;
+          background: white;
+
+          @include mobile {
+            width: 150px;
+          }
+        }
+      }
+    }
+  }
+
+  .page-section {
+    background: white;
+
+    .container {
+      max-width: 900px;
+      padding: 0 1rem;
+    }
+  }
+
+  .legal-intro {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    p {
+      font-size: 1.1rem;
+      color: $color-body;
+
+      strong {
+        color: $color-heading;
+      }
+    }
+  }
+
+  .legal-section {
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: $color-text;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 0.5rem;
+
+      @include mobile {
+        font-size: 1.3rem;
+      }
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #555;
+      margin: 1.5rem 0 0.5rem;
+      text-align: left;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: $color-heading;
+      margin-bottom: 1rem;
+
+      strong {
+        color: $color-text;
+      }
+    }
+
+    ul {
+      margin: 1rem 0;
+      padding-left: 2rem;
+
+      li {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: $color-heading;
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: $color-border;
+      margin: 1.5rem 0;
+    }
+  }
+
+  .legal-contact-section {
+    background: $color-surface-alt;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    border-left: 4px solid $color-text;
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 0 0 1rem;
+      text-align: left;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: $color-heading;
+      margin-bottom: 0.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    @include mobile {
+      padding: 1.5rem;
+    }
+  }
+}

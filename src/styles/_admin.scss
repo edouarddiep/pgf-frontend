@@ -1,0 +1,472 @@
+@use 'tokens' as *;
+
+// Gabarit commun des pages d'administration (listes + formulaires).
+// Tout est porté par `.admin-page` pour ne pas déborder sur le site public.
+
+.admin-page {
+  padding: 2rem 2rem 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @include mobile {
+    padding: 1rem 1rem 3rem;
+  }
+
+  // ---------------------------------------------------------------- en-tête
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin: 0;
+      color: $color-heading;
+    }
+
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+  }
+
+  // ---------------------------------------------------------------- tableaux
+
+  .table-card {
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      mat-card-title {
+        flex: 0 0 auto;
+        margin: 0;
+      }
+
+      mat-form-field {
+        flex: 1 1 220px;
+        max-width: 320px;
+      }
+
+      @include mobile {
+        flex-direction: column;
+        align-items: stretch;
+
+        mat-form-field {
+          width: 100%;
+          max-width: none;
+        }
+      }
+    }
+
+    table {
+      width: 100%;
+    }
+  }
+
+  tr.mat-mdc-row td.mat-mdc-cell {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  tr.mat-mdc-row.row-highlight td {
+    animation: rowFlash 2s ease-out forwards;
+  }
+
+  .sortable-header {
+    cursor: pointer;
+    user-select: none;
+
+    &:hover { color: $color-primary; }
+  }
+
+  .sort-icon {
+    font-size: 0.8rem;
+    color: $color-muted;
+    margin-left: 4px;
+  }
+
+  .actions-cell {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .mat-column-actions {
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .description-cell,
+  .description-short {
+    color: $color-muted;
+    font-size: 0.85rem;
+  }
+
+  .description-cell {
+    cursor: default;
+  }
+
+  .thumbnail-wrapper {
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 4px;
+    cursor: zoom-in;
+    display: block;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .artwork-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: zoom-in;
+    display: block;
+  }
+
+  .no-image {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-surface;
+    border-radius: 4px;
+    color: $color-muted;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 3rem;
+    color: $color-muted;
+
+    mat-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+  }
+
+  .custom-tooltip {
+    position: fixed;
+    z-index: 99999;
+    transform: translateY(-100%);
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: #444;
+    width: 420px;
+    white-space: normal;
+    pointer-events: none;
+  }
+
+  // ------------------------------------------------------------ formulaires
+
+  .form-card {
+    margin-bottom: 2rem;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .mat-mdc-form-field-hint-wrapper {
+      padding: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      @include mobile {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid $color-border;
+
+      .spacer { flex: 1; }
+
+      button {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .file-upload-label {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-active {
+    background-color: $color-primary !important;
+    color: white !important;
+
+    &:hover { background-color: $color-primary !important; }
+  }
+
+  // Champs de recherche filled : on neutralise le fond gris de Material.
+  .mdc-text-field--filled:not(.mdc-text-field--disabled),
+  .mdc-text-field--filled:not(.mdc-text-field--disabled):hover {
+    background-color: transparent !important;
+  }
+
+  .mat-mdc-text-field-wrapper.mdc-text-field--filled .mat-mdc-form-field-focus-overlay {
+    background-color: transparent !important;
+    opacity: 0 !important;
+  }
+
+  .mdc-text-field--filled .mat-mdc-text-field-wrapper,
+  .mdc-text-field--filled.mat-mdc-text-field-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .mdc-text-field--filled .mdc-text-field__input {
+    padding-left: 0 !important;
+  }
+
+  .mdc-text-field--filled button[matsuffix] {
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    padding: 0 !important;
+    min-width: unset !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  // ------------------------------------------------- éditeur de description
+
+  .description-editor {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1 / -1;
+
+    .editor-label {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.6);
+      margin-bottom: 4px;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      gap: 2px;
+      padding: 4px 8px;
+      border: 1px solid rgba(0, 0, 0, 0.38);
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      background: #fafafa;
+
+      button.active {
+        background: rgba(0, 0, 0, 0.08);
+        border-radius: 4px;
+      }
+    }
+
+    .editor-content {
+      min-height: 120px;
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.38);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.6;
+      outline: none;
+      cursor: text;
+
+      &:focus {
+        border-color: $color-primary;
+        border-width: 2px;
+        padding: 11px;
+      }
+
+      p, div { margin: 0; }
+    }
+
+    .editor-toolbar + .editor-content {
+      border-radius: 0 0 4px 4px;
+    }
+  }
+
+  // ---------------------------------------------------- recadrage d'image
+
+  .image-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 400px;
+    margin-bottom: 0.75rem;
+  }
+
+  .image-preview {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    cursor: grab;
+    user-select: none;
+
+    &:active { cursor: grabbing; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      transform-origin: center;
+      transition: none;
+    }
+
+    .crop-hint {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+      z-index: 1;
+
+      mat-icon { font-size: 14px; width: 14px; height: 14px; }
+    }
+  }
+
+  .zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $color-body;
+
+    input[type='range'] {
+      flex: 1;
+      accent-color: $color-primary;
+      cursor: pointer;
+    }
+
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+  }
+
+  .image-legend {
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.5);
+    margin: 0.25rem 0 0;
+    font-style: italic;
+  }
+
+  .image-required-error {
+    display: block;
+    color: $color-error;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  // ------------------------------------------------------ aperçu plein écran
+
+  .image-modal {
+    position: fixed;
+    top: 64px;
+    left: 250px;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+
+    .modal-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-image {
+      max-width: 80vw;
+      max-height: 80vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.45) !important;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 4px !important;
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      cursor: pointer;
+      color: white !important;
+      transform: none !important;
+      margin-left: 0 !important;
+      transition: background 0.2s ease, transform 0.2s ease !important;
+
+      &:hover {
+        background: rgba(112, 105, 105, 0.75) !important;
+        transform: scale(1.05) !important;
+      }
+    }
+  }
+}
+
+@keyframes rowFlash {
+  0%   { background-color: #e3f2fd; }
+  70%  { background-color: #e3f2fd; }
+  100% { background-color: transparent; }
+}

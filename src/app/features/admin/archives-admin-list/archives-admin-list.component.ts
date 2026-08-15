@@ -41,7 +41,6 @@ type SortField = 'id' | 'title' | 'year';
     TruncatePipe
 ],
   templateUrl: './archives-admin-list.component.html',
-  styleUrl: './archives-admin-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchivesAdminListComponent implements OnInit {

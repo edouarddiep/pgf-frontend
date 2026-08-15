@@ -19,7 +19,6 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
   standalone: true,
   imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink, TranslatePipe, MatSnackBarModule],
   templateUrl: './admin-invite.component.html',
-  styleUrl: './admin-invite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminInviteComponent {

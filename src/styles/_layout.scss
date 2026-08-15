@@ -1,0 +1,112 @@
+@use 'tokens' as *;
+
+// Structure des pages publiques : conteneurs, sections, bannières.
+
+.main-content {
+  padding-top: 64px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.page-section {
+  padding: 4rem 0;
+
+  @include mobile {
+    padding: 2rem 0;
+  }
+}
+
+.section-white {
+  background: white;
+}
+
+.section-gray {
+  background: $color-surface-alt;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 1.9rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  color: $color-text;
+
+  @include mobile {
+    font-size: 1.5rem;
+  }
+}
+
+.section-content {
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.8;
+  color: $color-text;
+
+  p {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.text-line {
+  display: block;
+  text-align: center;
+  color: $color-text;
+  font-size: 1.2rem;
+
+  @include mobile {
+    font-size: 1rem;
+  }
+}
+
+.full-viewport-page {
+  height: calc(100dvh - 64px);
+  overflow: hidden;
+
+  @include mobile {
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.hero-banner,
+.hero-content,
+.exhibitions-hero,
+.artworks-hero,
+.category-hero,
+.about-hero,
+.hero-section,
+.archives-section {
+  height: 40vh !important;
+  align-content: center !important;
+
+  @include mobile {
+    height: 30vh !important;
+  }
+
+  h1 {
+    color: white !important;
+    font-size: 2.5rem !important;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin: 0;
+
+    @include mobile {
+      font-size: 2rem !important;
+    }
+  }
+}
+
+.scroll-fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

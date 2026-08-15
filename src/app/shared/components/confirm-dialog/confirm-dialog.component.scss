@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .confirm-dialog {
   padding-bottom: 1.5rem;
   padding-right: 1.5rem;
@@ -8,7 +10,7 @@
     margin: 0 0 0.5rem;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
+    color: $color-heading;
   }
 }
 
@@ -24,39 +26,15 @@ mat-dialog-actions {
   gap: 0.5rem;
   padding: 1rem 0 0;
   margin: 1rem 0 0;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid $color-border;
 }
 
 .btn-cancel {
-  color: #999;
+  color: $color-muted;
   border-color: #ddd;
 }
 
 .btn-confirm {
-  background-color: #1976d2 !important;
+  background-color: $color-primary !important;
   color: white !important;
-}
-
-mat-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem 1rem;
-  margin: 1rem -1.5rem -1rem;
-  border-top: 1px solid #e0e0e0;
-}
-
-mat-dialog-content p {
-  color: #555;
-  line-height: 1.5;
-  margin: 0;
-}
-
-mat-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 1rem 0 0;
-  margin: 1rem 0 0;
-  border-top: 1px solid #e0e0e0;
 }

@@ -1,0 +1,231 @@
+@use 'tokens' as *;
+
+// Blocs réutilisables par des composants encapsulés (là où une règle globale
+// risquerait de déborder sur d'autres pages).
+
+// Visionneuse plein écran des pages publiques (galeries oeuvres / expositions).
+@mixin lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-image-wrapper {
+    position: relative;
+  }
+
+  .modal-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.45) !important;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 4px !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer;
+    color: white !important;
+    z-index: 10;
+    padding: 0;
+    transform: none !important;
+    transition: background 0.2s ease, transform 0.2s ease !important;
+
+    mat-icon { font-size: 22px; width: 22px; height: 22px; }
+
+    &:hover {
+      background: rgba(112, 105, 105, 0.75) !important;
+      transform: scale(1.05) !important;
+    }
+  }
+
+  .modal-prev,
+  .modal-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) !important;
+    border: none !important;
+    width: 55px;
+    height: 55px;
+    min-width: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0;
+    color: $color-text !important;
+
+    mat-icon { font-size: 32px; width: 32px; height: 32px; }
+
+    &:hover:not(:disabled) {
+      color: white !important;
+      background: none !important;
+      transform: translateY(-50%) !important;
+    }
+
+    &:disabled {
+      opacity: 0.3 !important;
+      cursor: not-allowed !important;
+    }
+  }
+
+  .modal-prev { left: -80px; }
+  .modal-next { right: -80px; }
+}
+
+// Overlay sombre sur image de fond (hero de page). Ne couvre volontairement pas
+// la hauteur ni la typo du h1, déjà gérées globalement par .hero-banner etc.
+// dans _layout.scss.
+@mixin hero-overlay {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+  }
+}
+
+// Groupe de bascule de langue (FR/EN) de la nav publique et de la sidenav admin.
+@mixin lang-switch($group-margin: 0 0 0 0.5rem, $item-padding: 4px 6px, $item-transition: color 0.2s ease, $hover-transform: null) {
+  .lang-switch-group {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin: $group-margin;
+  }
+
+  .lang-sep {
+    color: #ccc !important;
+    font-size: 0.9rem !important;
+    font-weight: normal !important;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .lang-item {
+    color: #999 !important;
+    font-size: 0.9rem !important;
+    font-weight: normal !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    padding: $item-padding !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    transition: $item-transition !important;
+
+    &:hover {
+      color: #333 !important;
+      background: transparent !important;
+      @if $hover-transform {
+        transform: $hover-transform !important;
+      }
+    }
+
+    &.active {
+      color: #333 !important;
+      font-weight: 700 !important;
+    }
+  }
+}
+
+// Grille de vignettes des composants d'upload (images / fichiers d'archive).
+@mixin media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+
+// Carte de vignette + barre d'actions au survol.
+@mixin media-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
+  &.is-main { border-color: $color-primary; }
+
+  .main-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(25, 118, 210, 0.88);
+    color: white;
+    font-size: 0.7rem;
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    pointer-events: none;
+
+    mat-icon { font-size: 14px; width: 14px; height: 14px; }
+  }
+}
+
+@mixin media-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 2px 0;
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+
+  .set-main-btn { color: #ffd740; &:hover { color: #ffab00; } }
+  .remove-btn { color: #ff5252; &:hover { color: #ff1744; } }
+}

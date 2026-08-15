@@ -7,7 +7,6 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
   selector: 'app-terms',
   imports: [TranslatePipe],
   templateUrl: './terms.component.html',
-  styleUrl: './terms.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TermsComponent implements OnInit, OnDestroy {

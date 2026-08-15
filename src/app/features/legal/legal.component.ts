@@ -7,7 +7,6 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
   selector: 'app-legal',
   imports: [TranslatePipe],
   templateUrl: './legal.component.html',
-  styleUrl: './legal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LegalComponent implements OnInit, OnDestroy {

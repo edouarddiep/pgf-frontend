@@ -38,7 +38,6 @@ import { LocaleService } from '@core/services/locale.service';
     TranslatePipe
 ],
   templateUrl: './artworks-admin-form.component.html',
-  styleUrl: './artworks-admin-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {

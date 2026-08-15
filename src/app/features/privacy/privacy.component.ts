@@ -7,7 +7,6 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
   selector: 'app-privacy',
   imports: [TranslatePipe],
   templateUrl: './privacy.component.html',
-  styleUrl: './privacy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrivacyComponent implements OnInit, OnDestroy {

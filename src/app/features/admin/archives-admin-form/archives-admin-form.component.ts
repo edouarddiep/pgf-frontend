@@ -37,7 +37,6 @@ import { LocaleService } from '@core/services/locale.service';
     TranslatePipe
   ],
   templateUrl: './archives-admin-form.component.html',
-  styleUrl: './archives-admin-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
