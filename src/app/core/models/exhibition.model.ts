@@ -17,6 +17,12 @@ export interface Exhibition {
   videoUrls?: string[];
 }
 
+export const EXHIBITION_ANCHOR_PREFIX = 'exhibition-';
+
+export function exhibitionAnchorId(id: number): string {
+  return `${EXHIBITION_ANCHOR_PREFIX}${id}`;
+}
+
 export enum ExhibitionStatus {
   UPCOMING = 'UPCOMING',
   ONGOING = 'ONGOING',

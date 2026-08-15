@@ -61,14 +61,18 @@
     @if (recentExhibitions$ | async; as exhibitions) {
       <div class="exhibitions-grid">
         @for (exhibition of exhibitions; track exhibition.id) {
-          <div class="exhibition-card">
+          <a
+            class="exhibition-card"
+            [routerLink]="navService.langPrefix() + '/exhibitions'"
+            [fragment]="'exhibition-' + exhibition.id"
+            [attr.aria-label]="localeService.resolve(exhibition, 'title')">
             @if (exhibition.imageUrl) {
               <div class="exhibition-image">
                 <img [src]="exhibition.imageUrl" [alt]="exhibition.title" loading="lazy">
               </div>
             }
             <div class="exhibition-content">
-              <h3>{{ exhibition.title }}</h3>
+              <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
               @if (exhibition.location) {
                 <p class="location">{{ exhibition.location }}</p>
               }
@@ -76,7 +80,7 @@
                 <p class="date">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
               }
             </div>
-          </div>
+          </a>
         }
       </div>
     }

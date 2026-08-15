@@ -29,7 +29,7 @@
         @if (currentExhibitions().length > 0) {
           <div class="exhibitions-list">
             @for (exhibition of currentExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
-              <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
+              <article class="exhibition-item" [id]="anchorId(exhibition.id)" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
                     @if (getTotalMediaCount(exhibition) > 1) {
@@ -60,7 +60,6 @@
                           </video>
                         } @else {
                           <img
-                            class="img-current"
                             [src]="getCurrentMediaUrl(exhibition, getSelectedImageIndex(exhibition.id))"
                             [alt]="exhibition.title"
                             (click)="openImageModal(exhibition.id, getSelectedImageIndex(exhibition.id))">
@@ -104,9 +103,16 @@
                   }
 
                   @if (exhibition.address) {
-                    <p class="address clickable" (click)="onShowOnMap(exhibition)">
-                      {{ exhibition.address }}
-                    </p>
+                    <a
+                      class="address-link"
+                      [href]="getMapsUrl(exhibition)"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      [attr.aria-label]="('exhibitions.vernissage.map' | translate) + ' : ' + exhibition.address">
+                      <mat-icon class="address-link-pin">place</mat-icon>
+                      <span class="address-link-text">{{ exhibition.address }}</span>
+                      <mat-icon class="address-link-arrow">open_in_new</mat-icon>
+                    </a>
                   }
 
                   @if (exhibition.description) {
@@ -118,28 +124,30 @@
                   }
 
                   <div class="action-buttons">
-                    <div class="vernissage-button-container">
-                      <button
-                        mat-raised-button
-                        color="primary"
-                        [disabled]="isVernissageRegistrationDisabled(exhibition)"
-                        [matTooltip]="isVernissageRegistrationDisabled(exhibition) ? ('exhibitions.vernissage.disabled' | translate) : ''"
-                        matTooltipPosition="below"
-                        (click)="onVernissageRegistration(exhibition)">
-                        {{ 'exhibitions.vernissage.register' | translate }}
-                      </button>
-                      @if (isVernissageRegistrationDisabled(exhibition)) {
-                        <small class="disabled-info">
-                          {{ 'exhibitions.vernissage.disabled' | translate }}
-                        </small>
-                      }
-                    </div>
+                    @if (exhibition.vernissageUrl) {
+                      <div class="vernissage-button-container">
+                        <button
+                          mat-raised-button
+                          color="primary"
+                          [disabled]="isVernissageRegistrationDisabled(exhibition)"
+                          [matTooltip]="isVernissageRegistrationDisabled(exhibition) ? ('exhibitions.vernissage.disabled' | translate) : ''"
+                          matTooltipPosition="below"
+                          (click)="onVernissageRegistration(exhibition)">
+                          {{ 'exhibitions.vernissage.register' | translate }}
+                        </button>
+                        @if (isVernissageRegistrationDisabled(exhibition)) {
+                          <small class="disabled-info">
+                            {{ 'exhibitions.vernissage.disabled' | translate }}
+                          </small>
+                        }
+                      </div>
+                    }
                     <button mat-stroked-button (click)="onShowOnMap(exhibition)">
                       {{ 'exhibitions.vernissage.map' | translate }}
                     </button>
 
                     @if (exhibition.websiteUrl) {
-                      <button mat-stroked-button (click)="window.open(exhibition.websiteUrl, '_blank')">
+                      <button mat-stroked-button (click)="onExhibitionWebsiteClicked(exhibition)">
                         {{ 'exhibitions.vernissage.website' | translate }}
                       </button>
                     }
@@ -163,7 +171,7 @@
         @if (pastExhibitions().length > 0) {
           <div class="exhibitions-list">
             @for (exhibition of pastExhibitions(); track exhibition.id; let index = $index; let isLast = $last) {
-              <article class="exhibition-item" [class.reverse]="index % 2 !== 0">
+              <article class="exhibition-item" [id]="anchorId(exhibition.id)" [class.reverse]="index % 2 !== 0">
                 <div class="exhibition-gallery" [attr.data-exhibition-id]="exhibition.id">
                   <div class="main-image-container">
                     @if (getTotalMediaCount(exhibition) > 1) {
@@ -191,24 +199,6 @@
                             autoplay
                             muted
                             loop>
-                            <div class="vernissage-button-container">
-                              @if (exhibition.vernissageUrl) {
-                                <button
-                                  mat-raised-button
-                                  color="primary"
-                                  [disabled]="isVernissageRegistrationDisabled(exhibition)"
-                                  [matTooltip]="isVernissageRegistrationDisabled(exhibition) ? ('exhibitions.vernissage.disabled' | translate) : ''"
-                                  matTooltipPosition="below"
-                                  (click)="onVernissageRegistration(exhibition)">
-                                  {{ 'exhibitions.vernissage.register' | translate }}
-                                </button>
-                                @if (isVernissageRegistrationDisabled(exhibition)) {
-                                  <small class="disabled-info">
-                                    {{ 'exhibitions.vernissage.disabled' | translate }}
-                                  </small>
-                                }
-                              }
-                            </div>
                           </video>
                         } @else {
                           <img
@@ -255,9 +245,16 @@
                   }
 
                   @if (exhibition.address) {
-                    <p class="address clickable" (click)="onShowOnMap(exhibition)">
-                      {{ exhibition.address }}
-                    </p>
+                    <a
+                      class="address-link"
+                      [href]="getMapsUrl(exhibition)"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      [attr.aria-label]="('exhibitions.vernissage.map' | translate) + ' : ' + exhibition.address">
+                      <mat-icon class="address-link-pin">place</mat-icon>
+                      <span class="address-link-text">{{ exhibition.address }}</span>
+                      <mat-icon class="address-link-arrow">open_in_new</mat-icon>
+                    </a>
                   }
 
                   @if (exhibition.description) {

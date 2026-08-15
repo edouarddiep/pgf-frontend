@@ -48,7 +48,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly categories$ = this.artworkService.getCategories();
   readonly videoConfig = this.videoService.videos['home'];
   readonly recentExhibitions$ = this.exhibitionService.getAllExhibitions().pipe(
-    map(exhibitions => exhibitions.slice(0, 3))
+    map(exhibitions => [...exhibitions]
+      .sort((a, b) => new Date(b.startDate ?? 0).getTime() - new Date(a.startDate ?? 0).getTime())
+      .slice(0, 3))
   );
 
   ngOnInit(): void {

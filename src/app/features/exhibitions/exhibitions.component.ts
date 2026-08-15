@@ -1,9 +1,15 @@
 import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed} from '@angular/core';
 
+import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ApiService } from '@core/services/api.service';
-import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
+import {
+  Exhibition,
+  ExhibitionStatus,
+  EXHIBITION_ANCHOR_PREFIX,
+  exhibitionAnchorId
+} from '@core/models/exhibition.model';
 import { catchError, EMPTY, combineLatest } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
@@ -14,6 +20,8 @@ import {SeoService} from '@core/services/seo.service';
 import {AnalyticsService} from '@core/services/analytics.service';
 
 type TabType = 'current' | 'past';
+
+const ANCHOR_SETTLE_TIMEOUT_MS = 2500;
 
 @Component({
   selector: 'app-exhibitions',
@@ -29,6 +37,7 @@ type TabType = 'current' | 'past';
 })
 export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly apiService = inject(ApiService);
+  private readonly route = inject(ActivatedRoute);
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
@@ -40,11 +49,11 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly currentExhibitions = signal<Exhibition[]>([]);
   protected readonly pastExhibitions = signal<Exhibition[]>([]);
   protected readonly ExhibitionStatus = ExhibitionStatus;
+  protected readonly anchorId = exhibitionAnchorId;
   protected readonly selectedImageIndices = signal<Map<number, number>>(new Map());
   protected readonly showImageModal = signal(false);
   protected readonly modalImageIndex = signal(0);
   protected readonly modalExhibition = signal<Exhibition | null>(null);
-  protected readonly window = window;
 
   ngOnInit(): void {
     this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description');
@@ -59,24 +68,53 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   private loadExhibitions(): void {
     combineLatest([
       this.apiService.getUpcomingExhibitions(),
-      this.apiService.getOngoingExhibitions()
+      this.apiService.getOngoingExhibitions(),
+      this.apiService.getPastExhibitions()
     ])
       .pipe(catchError(() => EMPTY))
-      .subscribe(([upcoming, ongoing]) => {
+      .subscribe(([upcoming, ongoing, past]) => {
         this.currentExhibitions.set([...ongoing, ...upcoming]);
+        this.pastExhibitions.set(past);
         setTimeout(() => {
-          [...ongoing, ...upcoming].forEach(ex => this.setupTouchListeners(ex.id));
+          [...ongoing, ...upcoming, ...past].forEach(ex => this.setupTouchListeners(ex.id));
+          this.scrollToRequestedExhibition();
         });
       });
+  }
 
-    this.apiService.getPastExhibitions()
-      .pipe(catchError(() => EMPTY))
-      .subscribe(exhibitions => {
-        this.pastExhibitions.set(exhibitions);
-        setTimeout(() => {
-          exhibitions.forEach(ex => this.setupTouchListeners(ex.id));
-        });
-      });
+  private scrollToRequestedExhibition(): void {
+    const fragment = this.route.snapshot.fragment;
+    if (!fragment) return;
+
+    const exhibitionId = Number(fragment.replace(EXHIBITION_ANCHOR_PREFIX, ''));
+    const isPast = this.pastExhibitions().some(exhibition => exhibition.id === exhibitionId);
+
+    if (isPast) {
+      this.setActiveTab('past');
+    }
+
+    setTimeout(() => this.scrollToAnchor(fragment), isPast ? 150 : 0);
+  }
+
+  private scrollToAnchor(fragment: string): void {
+    const target = document.getElementById(fragment);
+    if (!target) return;
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    const pendingImages = Array.from(document.querySelectorAll<HTMLImageElement>('.exhibitions-list img'))
+      .filter(image => !image.complete)
+      .map(image => new Promise<void>(resolve => {
+        image.addEventListener('load', () => resolve(), { once: true });
+        image.addEventListener('error', () => resolve(), { once: true });
+      }));
+
+    if (pendingImages.length === 0) return;
+
+    Promise.race([
+      Promise.all(pendingImages),
+      new Promise(resolve => setTimeout(resolve, ANCHOR_SETTLE_TIMEOUT_MS))
+    ]).then(() => target.scrollIntoView({ behavior: 'auto', block: 'start' }));
   }
 
   protected setActiveTab(tab: TabType): void {
@@ -145,7 +183,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   protected isVernissageRegistrationDisabled(exhibition: Exhibition): boolean {
-    return !exhibition.vernissageUrl || exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
+    return exhibition.status === ExhibitionStatus.ONGOING || exhibition.status === ExhibitionStatus.PAST;
   }
 
   protected formatDateBlock(startDate?: string, endDate?: string): string {
@@ -175,11 +213,13 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
     window.open(exhibition.websiteUrl, '_blank');
   }
 
+  protected getMapsUrl(exhibition: Exhibition): string {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(exhibition.address ?? '')}`;
+  }
+
   protected onShowOnMap(exhibition: Exhibition): void {
     if (exhibition.address) {
-      const encodedAddress = encodeURIComponent(exhibition.address);
-      const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-      window.open(googleMapsUrl, '_blank');
+      window.open(this.getMapsUrl(exhibition), '_blank');
     }
   }
 
