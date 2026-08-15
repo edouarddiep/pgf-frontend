@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "public": false,
   "buildCommand": "sed -i 's/INVITE_KEY_PLACEHOLDER/'\"$INVITE_KEY\"'/g' src/environments/environment.prod.ts && npm run build",
   "outputDirectory": "dist/pgf-frontend/browser",
   "framework": null,
