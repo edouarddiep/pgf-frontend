@@ -37,6 +37,15 @@ body {
   font-variation-settings: 'wght' 400, 'wdth' 100, 'opsz' 14;
 }
 
+body.scroll-locked {
+  position: fixed;
+  top: var(--scroll-lock-offset, 0);
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 48;
   color: $color-text;

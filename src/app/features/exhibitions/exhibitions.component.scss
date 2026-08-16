@@ -106,16 +106,21 @@
   .exhibition-item {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
+    // stretch : la colonne de droite descend jusqu'au bas du carrousel,
+    // ce qui permet d'y aligner les CTA.
+    align-items: stretch;
     gap: clamp(1.5rem, 3vw, 3rem);
     margin: 0;
     padding: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 3rem);
     width: 100%;
     box-sizing: border-box;
     scroll-margin-top: 84px;
+    // Consommée par le dégradé de repli de la description.
+    --description-bg: #ffffff;
 
     &.reverse {
       background: #f5f5f5;
+      --description-bg: #f5f5f5;
 
       .exhibition-gallery { order: 2; }
       .exhibition-content { order: 1; }
@@ -220,6 +225,21 @@
         font-size: 1rem;
         line-height: 1.65;
         margin: 0 0 1.5rem 0;
+        position: relative;
+        overflow: hidden;
+        transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+
+        // Dégradé de fin de texte quand la description est repliée.
+        &.collapsed::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 3.5em;
+          background: linear-gradient(to bottom, transparent, var(--description-bg));
+          pointer-events: none;
+        }
 
         ::ng-deep p {
           color: inherit;
@@ -231,6 +251,35 @@
         }
       }
 
+      // Repris à l'identique du détail d'archive.
+      .see-more-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        margin: 0 0 1.5rem 0;
+        cursor: pointer;
+        color: #706969;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-variation-settings: 'wght' 300, 'wdth' 100, 'opsz' 14;
+        transition: color 0.2s;
+        user-select: none;
+
+        &:hover {
+          color: #333;
+        }
+
+        mat-icon {
+          font-size: 1.4rem;
+          width: 1.4rem;
+          height: 1.4rem;
+          line-height: 1.4rem;
+        }
+      }
+
       .credits {
         font-size: 0.875rem;
         line-height: 1.6;
@@ -238,10 +287,20 @@
         margin: 0 0 1.5rem 0;
       }
 
+      // Les CTA forment le pied de la colonne : poussés en bas pour s'aligner
+      // sur le carrousel, et détachés du texte par un filet discret.
+      .action-buttons,
+      .website-button {
+        margin-top: auto;
+        padding-top: 1.75rem;
+        border-top: 1px solid #ececec;
+      }
+
       .action-buttons {
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+        justify-content: center;
 
         button {
           padding: 12px 24px;
@@ -249,6 +308,11 @@
           text-transform: none;
           border-radius: 4px;
         }
+      }
+
+      // Bouton unique des expositions passées : centré comme le groupe de CTA.
+      .website-button {
+        text-align: center;
       }
     }
   }
@@ -278,6 +342,7 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
 
   .vernissage-button-container {
     display: flex;

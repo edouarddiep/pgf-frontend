@@ -254,10 +254,6 @@ export class ArtworkDetailComponent implements OnInit, AfterViewInit {
     this.modalImageIndex.set(newIndex);
   }
 
-  protected onImageLoaded(event: Event): void {
-    (event.target as HTMLImageElement).classList.add('loaded');
-  }
-
   private centerThumbnail(index: number): void {
     requestAnimationFrame(() => {
       const container = this.thumbnailsContainer()?.nativeElement;

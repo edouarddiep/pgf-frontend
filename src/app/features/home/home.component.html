@@ -72,34 +72,57 @@
 
     @if (ongoingExhibitions$ | async; as exhibitions) {
       @if (exhibitions.length) {
-        <div class="exhibitions-grid">
+        <div class="exhibitions-list">
           @for (exhibition of exhibitions; track exhibition.id) {
-            <a
-              class="exhibition-card"
-              [routerLink]="navService.langPrefix() + '/exhibitions'"
-              [fragment]="'exhibition-' + exhibition.id"
-              [attr.aria-label]="localeService.resolve(exhibition, 'title')">
+            <article class="exhibition-item">
               @if (exhibition.imageUrl) {
-                <div class="exhibition-image">
+                <div class="exhibition-visual">
                   <img
                     [src]="exhibition.imageUrl"
                     [attr.srcset]="exhibition.imageSrcset"
-                    sizes="(max-width: 768px) 100vw, 400px"
+                    sizes="(max-width: 960px) 100vw, 55vw"
                     [alt]="exhibition.title"
                     loading="lazy"
                     decoding="async">
                 </div>
               }
-              <div class="exhibition-content">
+
+              <div class="exhibition-body">
                 <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
+
+                @if (exhibition.startDate) {
+                  <p class="exhibition-dates">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
+                }
+
                 @if (exhibition.location) {
                   <p class="location">{{ exhibition.location }}</p>
                 }
-                @if (exhibition.startDate) {
-                  <p class="date">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
+
+                @if (exhibition.address) {
+                  <a
+                    class="address-link"
+                    [href]="getMapsUrl(exhibition)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    [attr.aria-label]="('exhibitions.vernissage.map' | translate) + ' : ' + exhibition.address">
+                    <mat-icon class="address-link-pin">place</mat-icon>
+                    <span class="address-link-text">{{ exhibition.address }}</span>
+                    <mat-icon class="address-link-arrow">open_in_new</mat-icon>
+                  </a>
                 }
+
+                <div class="exhibition-cta">
+                  <button
+                    mat-stroked-button
+                    class="nav-button"
+                    [routerLink]="navService.langPrefix() + '/exhibitions'"
+                    [fragment]="'exhibition-' + exhibition.id"
+                    [attr.aria-label]="localeService.resolve(exhibition, 'title')">
+                    {{ 'about.ongoingExhibitions.detail' | translate }}
+                  </button>
+                </div>
               </div>
-            </a>
+            </article>
           }
         </div>
       } @else {
@@ -107,11 +130,6 @@
       }
     }
 
-    <div class="section-actions">
-      <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/exhibitions'">
-        {{ 'about.ongoingExhibitions.cta' | translate }}
-      </button>
-    </div>
   </div>
 </section>
 

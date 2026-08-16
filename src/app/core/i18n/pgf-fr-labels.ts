@@ -136,7 +136,7 @@ export const fr = {
     ongoingExhibitions: {
       title: 'Expositions en cours',
       empty: 'Aucune exposition en cours actuellement.',
-      cta: 'Voir toutes les expositions'
+      detail: 'Découvrir l\'exposition'
     },
     association: {
       title: 'Association "Amis de Pierrette Gonseth-Favre"',

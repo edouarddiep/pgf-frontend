@@ -125,7 +125,20 @@
                   }
 
                   @if (exhibition.description) {
-                    <div class="description" [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
+                    <div
+                      #descriptionText
+                      class="description"
+                      [attr.data-exhibition-id]="exhibition.id"
+                      [class.collapsed]="isDescriptionCollapsible(exhibition.id) && !isDescriptionExpanded(exhibition.id)"
+                      [style.height]="descriptionHeight(exhibition.id)"
+                      [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
+
+                    @if (isDescriptionCollapsible(exhibition.id)) {
+                      <div class="see-more-btn" (click)="toggleDescription(exhibition.id)">
+                        <span>{{ (isDescriptionExpanded(exhibition.id) ? 'archives.seeLess' : 'archives.seeMore') | translate }}</span>
+                        <mat-icon>{{ isDescriptionExpanded(exhibition.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+                      </div>
+                    }
                   }
 
                   @if (exhibition.credits) {
@@ -276,7 +289,20 @@
                   }
 
                   @if (exhibition.description) {
-                    <div class="description" [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
+                    <div
+                      #descriptionText
+                      class="description"
+                      [attr.data-exhibition-id]="exhibition.id"
+                      [class.collapsed]="isDescriptionCollapsible(exhibition.id) && !isDescriptionExpanded(exhibition.id)"
+                      [style.height]="descriptionHeight(exhibition.id)"
+                      [innerHTML]="localeService.resolve(exhibition, 'description')"></div>
+
+                    @if (isDescriptionCollapsible(exhibition.id)) {
+                      <div class="see-more-btn" (click)="toggleDescription(exhibition.id)">
+                        <span>{{ (isDescriptionExpanded(exhibition.id) ? 'archives.seeLess' : 'archives.seeMore') | translate }}</span>
+                        <mat-icon>{{ isDescriptionExpanded(exhibition.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+                      </div>
+                    }
                   }
 
                   @if (exhibition.credits) {

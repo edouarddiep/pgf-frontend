@@ -27,10 +27,6 @@
                 [alt]="artwork.title"
                 fetchpriority="high"
                 class="main-artwork-image"
-                (load)="onImageLoaded($event)"
-                [style.object-position]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
-                [style.transform]="'scale(' + ((artwork.mainImageZoom ?? 100) / 100) + ')'"
-                [style.transform-origin]="(artwork.mainImagePositionX ?? 50) + '% ' + (artwork.mainImagePositionY ?? 50) + '%'"
                 (click)="openImageModal(selectedImageIndex())">
             </div>
           </div>

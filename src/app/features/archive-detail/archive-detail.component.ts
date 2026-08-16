@@ -6,6 +6,8 @@ import {
   computed,
   OnInit,
   OnDestroy,
+  effect,
+  untracked,
   ChangeDetectorRef, ViewChild, ElementRef, PLATFORM_ID
 } from '@angular/core';
 import { isPlatformBrowser, Location } from '@angular/common';
@@ -23,6 +25,7 @@ import {LocaleService} from '@core/services/locale.service';
 import {NavService} from '@core/services/nav.service';
 import {SeoService} from '@core/services/seo.service';
 import {archiveSchema, artistRefSchema, breadcrumbSchema, SITE_ORIGIN, websiteSchema} from '@core/seo/structured-data';
+import {ViewportService} from '@shared/services/viewport.service';
 
 @Component({
   selector: 'app-archive-detail',
@@ -45,6 +48,7 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   protected readonly localeService = inject(LocaleService);
   private readonly navService = inject(NavService);
   private readonly seoService = inject(SeoService);
+  private readonly viewport = inject(ViewportService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'archives';
@@ -56,7 +60,7 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   protected readonly modalVideo = signal<ArchiveFile | null>(null);
   protected readonly descriptionExpanded = signal<boolean>(false);
   protected readonly showToggle = signal<boolean>(false);
-  protected readonly descriptionHeight = signal<string>('0px');
+  protected readonly descriptionHeight = signal<string | null>(null);
   protected readonly descriptionHtml = computed(() => {
     const html = this.localeService.resolve(this.archive(), 'description');
     return html ? this.sanitizer.bypassSecurityTrustHtml(html) : null;
@@ -64,6 +68,17 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
 
   private readonly LINE_HEIGHT_EM = 1.8;
   private readonly MAX_LINES = 5;
+
+  constructor() {
+    // Le repli ne sert que sur les écrans courts : on réévalue à chaque changement.
+    effect(() => {
+      this.viewport.isCompactHeight();
+
+      if (this.isBrowser) {
+        this.checkDescriptionOverflow();
+      }
+    });
+  }
 
   protected readonly audioFiles = computed(() =>
     this.archive()?.files?.filter(f => f.fileType === 'AUDIO') || []
@@ -141,12 +156,21 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private checkDescriptionOverflow(): void {
     const el = this.descriptionTextRef?.nativeElement;
     if (!el) { return; }
+
+    if (!this.viewport.isCompactHeight()) {
+      this.showToggle.set(false);
+      this.descriptionExpanded.set(false);
+      this.descriptionHeight.set(null);
+      return;
+    }
+
     const lineHeightPx = parseFloat(getComputedStyle(el).lineHeight);
     const maxHeight = lineHeightPx * this.MAX_LINES;
     const scrollH = el.scrollHeight;
     this.showToggle.set(scrollH > maxHeight + 4);
-    this.descriptionHeight.set(`${Math.min(scrollH, maxHeight)}px`);
-    this.cdr.detectChanges();
+    // untracked : sans quoi replier/déplier relancerait l'effet en boucle.
+    const isExpanded = untracked(() => this.descriptionExpanded());
+    this.descriptionHeight.set(isExpanded ? `${scrollH}px` : `${Math.min(scrollH, maxHeight)}px`);
   }
 
   goBack(): void {

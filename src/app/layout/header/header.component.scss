@@ -165,6 +165,9 @@
   padding: 2rem 0;
   z-index: 999;
   animation: slideDown 0.3s ease;
+  // Le menu défile de lui-même si les entrées dépassent, sans propager au body.
+  overflow-y: auto;
+  overscroll-behavior: contain;
 
   a {
     padding: 1.5rem 2rem;

@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ArtworkService } from '@features/artworks/services/artwork.service';
 import { ExhibitionService } from '@features/exhibitions/services/exhibition.service';
+import { Exhibition } from '@core/models/exhibition.model';
 import { ScrollAnimationService } from '@shared/services/scroll-animation.service';
 import { VideoService } from '@shared/services/video.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
@@ -86,6 +87,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getCategoryThumbnail(category: any): string {
     return category.thumbnailUrl || category.mainImageUrl;
+  }
+
+  protected getMapsUrl(exhibition: Exhibition): string {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(exhibition.address ?? '')}`;
   }
 
   formatDateBlock(startDate?: string, endDate?: string): string {

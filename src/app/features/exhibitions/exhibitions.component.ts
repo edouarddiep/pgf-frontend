@@ -6,6 +6,10 @@ import {
   OnInit,
   OnDestroy,
   computed,
+  effect,
+  untracked,
+  viewChildren,
+  ElementRef,
   PLATFORM_ID
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -32,6 +36,18 @@ import {AnalyticsService} from '@core/services/analytics.service';
 type TabType = 'current' | 'past';
 
 const ANCHOR_SETTLE_TIMEOUT_MS = 2500;
+// Place à réserver pour le bouton « Voir plus » : sa hauteur plus sa marge basse.
+const TOGGLE_HEIGHT_PX = 44;
+const TOGGLE_MARGIN_PX = 24;
+const TOGGLE_RESERVED_PX = TOGGLE_HEIGHT_PX + TOGGLE_MARGIN_PX;
+// Marges verticales fixées en SCSS, reprises ici pour le calcul du seuil.
+const THUMBNAILS_GAP_PX = 24;
+const DESCRIPTION_MARGIN_PX = 24;
+const CREDITS_MARGIN_PX = 24;
+// Planchers de lisibilité : en colonne unique (mobile) l'image ne sert plus de
+// référence, et on ne réduit jamais la description sous MIN_LINES.
+const MOBILE_MAX_LINES = 9;
+const MIN_LINES = 6;
 
 @Component({
   selector: 'app-exhibitions',
@@ -56,6 +72,11 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly lang = computed(() => this.translateService.currentLang());
 
+  private readonly descriptionRefs = viewChildren<ElementRef<HTMLElement>>('descriptionText');
+
+  private galleryObserver: ResizeObserver | null = null;
+  private measureQueued = false;
+
   protected readonly activeTab = signal<TabType>('current');
   protected readonly currentExhibitions = signal<Exhibition[]>([]);
   protected readonly pastExhibitions = signal<Exhibition[]>([]);
@@ -65,6 +86,20 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageIndex = signal(0);
   protected readonly modalExhibition = signal<Exhibition | null>(null);
+  protected readonly collapsibleDescriptions = signal<ReadonlySet<number>>(new Set());
+  protected readonly expandedDescriptions = signal<ReadonlySet<number>>(new Set());
+  protected readonly descriptionHeights = signal<ReadonlyMap<number, string>>(new Map());
+
+  constructor() {
+    effect(() => {
+      this.descriptionRefs();
+
+      if (this.isBrowser) {
+        this.observeGalleries();
+        this.measureDescriptions();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description', () => [
@@ -81,6 +116,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
+    this.galleryObserver?.disconnect();
   }
 
   private loadExhibitions(): void {
@@ -148,6 +184,135 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
         this.pastExhibitions().forEach(ex => this.setupTouchListeners(ex.id));
       }, 100);
     }
+  }
+
+  protected isDescriptionCollapsible(exhibitionId: number): boolean {
+    return this.collapsibleDescriptions().has(exhibitionId);
+  }
+
+  protected isDescriptionExpanded(exhibitionId: number): boolean {
+    return this.expandedDescriptions().has(exhibitionId);
+  }
+
+  protected descriptionHeight(exhibitionId: number): string | null {
+    return this.descriptionHeights().get(exhibitionId) ?? null;
+  }
+
+  protected toggleDescription(exhibitionId: number): void {
+    const isExpanding = !this.isDescriptionExpanded(exhibitionId);
+
+    this.expandedDescriptions.update(ids => {
+      const next = new Set(ids);
+      if (isExpanding) {
+        next.add(exhibitionId);
+      } else {
+        next.delete(exhibitionId);
+      }
+      return next;
+    });
+
+    const element = this.descriptionElement(exhibitionId);
+    if (!element) {
+      return;
+    }
+
+    const height = isExpanding ? element.scrollHeight : this.collapsedHeight(element);
+    this.descriptionHeights.update(heights => new Map(heights).set(exhibitionId, `${height}px`));
+  }
+
+  private measureDescriptions(): void {
+    const collapsible = new Set<number>();
+    const heights = new Map<number, string>();
+
+    this.descriptionRefs().forEach(ref => {
+      const element = ref.nativeElement;
+      const exhibitionId = Number(element.dataset['exhibitionId']);
+      const maxHeight = this.collapsedHeight(element);
+
+      if (element.scrollHeight <= maxHeight + 4) {
+        return;
+      }
+
+      collapsible.add(exhibitionId);
+      // untracked : sans quoi replier/déplier relancerait cet effet en boucle.
+      const isExpanded = untracked(() => this.expandedDescriptions().has(exhibitionId));
+      heights.set(exhibitionId, `${isExpanded ? element.scrollHeight : maxHeight}px`);
+    });
+
+    this.collapsibleDescriptions.set(collapsible);
+    this.descriptionHeights.set(heights);
+  }
+
+  // Hauteur maximale laissée à la description : celle du carrousel, moins tout
+  // ce que la colonne de droite contient déjà. Le texte ne dépasse donc jamais
+  // l'image, et sans dépassement il n'y a pas de bouton du tout.
+  private collapsedHeight(element: HTMLElement): number {
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+    const item = element.closest('.exhibition-item');
+    const gallery = item?.querySelector('.exhibition-gallery');
+    const content = item?.querySelector('.exhibition-content');
+    const image = item?.querySelector('.main-image-container');
+
+    if (!item || !gallery || !content || !image) {
+      return lineHeight * MOBILE_MAX_LINES;
+    }
+
+    const contentRect = content.getBoundingClientRect();
+
+    // En colonne unique l'image est au-dessus du texte : plus de repère commun.
+    if (Math.abs(gallery.getBoundingClientRect().top - contentRect.top) > 4) {
+      return lineHeight * MOBILE_MAX_LINES;
+    }
+
+    // Hauteur propre du carrousel : la boîte de la galerie est étirée par la
+    // grille, ses enfants non — ce sont eux la référence stable.
+    const thumbnails = item.querySelector('.thumbnail-carousel');
+    const carouselHeight = image.getBoundingClientRect().height
+      + (thumbnails ? thumbnails.getBoundingClientRect().height + THUMBNAILS_GAP_PX : 0);
+
+    const above = element.getBoundingClientRect().top - contentRect.top;
+    const below = this.contentBelowDescription(item);
+
+    return Math.max(carouselHeight - above - below - TOGGLE_RESERVED_PX, lineHeight * MIN_LINES);
+  }
+
+  // Tout ce qui suit la description dans la colonne, hors bouton « Voir plus »
+  // dont la place est réservée à part pour que le seuil reste stable.
+  private contentBelowDescription(item: Element): number {
+    const credits = item.querySelector('.credits');
+    const actions = item.querySelector('.action-buttons') ?? item.querySelector('.website-button');
+
+    return DESCRIPTION_MARGIN_PX
+      + (credits ? credits.getBoundingClientRect().height + CREDITS_MARGIN_PX : 0)
+      + (actions ? actions.getBoundingClientRect().height : 0);
+  }
+
+  private observeGalleries(): void {
+    if (typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    this.galleryObserver?.disconnect();
+    // L'image dicte le seuil : il faut re-mesurer quand elle se charge ou que la fenêtre change.
+    this.galleryObserver = new ResizeObserver(() => {
+      if (this.measureQueued) {
+        return;
+      }
+      this.measureQueued = true;
+      requestAnimationFrame(() => {
+        this.measureQueued = false;
+        this.measureDescriptions();
+      });
+    });
+
+    document.querySelectorAll('.exhibition-gallery')
+      .forEach(gallery => this.galleryObserver?.observe(gallery));
+  }
+
+  private descriptionElement(exhibitionId: number): HTMLElement | null {
+    return this.descriptionRefs()
+      .find(ref => Number(ref.nativeElement.dataset['exhibitionId']) === exhibitionId)
+      ?.nativeElement ?? null;
   }
 
   protected getSelectedImageIndex(exhibitionId: number): number {

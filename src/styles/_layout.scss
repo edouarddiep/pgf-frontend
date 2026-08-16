@@ -80,7 +80,9 @@
 .about-hero,
 .hero-section,
 .archives-section {
-  height: 40vh !important;
+  // Plafonné : à 40vh le hero occupait 400px sur un portable et plus de 600px
+  // sur un 27/32 pouces, repoussant d'autant le premier contenu de la page.
+  height: clamp(220px, 30vh, 360px) !important;
   align-content: center !important;
 
   @include mobile {
