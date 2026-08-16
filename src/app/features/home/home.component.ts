@@ -14,7 +14,7 @@ import { NavService } from '@core/services/nav.service';
 import { TruncatePipe } from '@core/pipes/truncate.pipe';
 import { LocaleService } from '@core/services/locale.service';
 import { TranslateService } from '@core/services/translate.service';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import {SeoService} from '@core/services/seo.service';
 import {artistSchema, websiteSchema} from '@core/seo/structured-data';
 
@@ -49,7 +49,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly videoConfig = this.videoService.videos['home'];
   readonly ongoingExhibitions$ = this.exhibitionService.getOngoingExhibitions().pipe(
     map(exhibitions => [...exhibitions]
-      .sort((a, b) => new Date(a.endDate ?? a.startDate ?? 0).getTime() - new Date(b.endDate ?? b.startDate ?? 0).getTime()))
+      .sort((a, b) => new Date(a.endDate ?? a.startDate ?? 0).getTime() - new Date(b.endDate ?? b.startDate ?? 0).getTime())),
+    // La section n'entre dans le DOM qu'ici : l'observateur posé au démarrage
+    // ne l'aurait jamais vue, et elle serait restée à opacity 0.
+    tap(() => this.scrollAnimationService.setupScrollAnimations())
   );
 
   ngOnInit(): void {

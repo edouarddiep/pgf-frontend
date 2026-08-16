@@ -135,13 +135,11 @@ export const fr = {
     },
     ongoingExhibitions: {
       title: 'Expositions en cours',
-      empty: 'Aucune exposition en cours actuellement.',
       detail: 'Découvrir l\'exposition'
     },
     association: {
       title: 'Association "Amis de Pierrette Gonseth-Favre"',
       text1: "L'Association « Amis de Pierrette Gonseth-Favre » a été fondée en novembre 2022 pour assurer l'organisation et la promotion des expositions de l'artiste.",
-      text2: "Elle organise régulièrement des expositions et reverse une partie des recettes à des œuvres caritatives, notamment la Genolier Foundation.",
       cta: 'En savoir plus'
     }
   },

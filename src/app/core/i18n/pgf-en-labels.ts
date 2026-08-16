@@ -135,13 +135,11 @@ export const en = {
     },
     ongoingExhibitions: {
       title: 'Current exhibitions',
-      empty: 'No exhibition running at the moment.',
       detail: 'Discover the exhibition'
     },
     association: {
       title: 'Association "Friends of Pierrette Gonseth-Favre"',
       text1: 'The Association "Friends of Pierrette Gonseth-Favre" was founded in November 2022 to organise and promote the artist\'s exhibitions.',
-      text2: 'It regularly organises exhibitions and donates part of the proceeds to charitable causes, including the Genolier Foundation.',
       cta: 'Learn more'
     }
   },

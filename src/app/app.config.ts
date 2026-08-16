@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration, withEventReplay, withHttpTransferCacheOptions } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
@@ -18,7 +18,15 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(
+      withEventReplay(),
+      // Les expositions en cours conditionnent l'affichage d'une section entière :
+      // cet appel doit refléter la base à chaque visite, et non l'état figé au
+      // dernier build. Tous les autres appels restent servis par le transfer state.
+      withHttpTransferCacheOptions({
+        filter: request => !request.url.includes('/exhibitions/ongoing')
+      })
+    ),
     provideHttpClient(
       withFetch(),
       withInterceptors([loadingInterceptor, adminHeaderInterceptor])
