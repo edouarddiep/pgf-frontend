@@ -15,6 +15,7 @@ import { LocaleService } from '@core/services/locale.service';
 import { TranslateService } from '@core/services/translate.service';
 import { map } from 'rxjs';
 import {SeoService} from '@core/services/seo.service';
+import {artistSchema, websiteSchema} from '@core/seo/structured-data';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +52,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this.seoService.setPage('seo.home.title', 'seo.home.description');
+    this.seoService.setPage('seo.home.title', 'seo.home.description', () => {
+      const lang = this.translateService.currentLang();
+      return [
+        artistSchema(lang, this.translateService.translate('home.hero.bio')),
+        websiteSchema(lang)
+      ];
+    });
     if (isPlatformBrowser(this.platformId)) {
       this.scrollAnimationService.setupScrollAnimations();
     }

@@ -1,5 +1,14 @@
-import {Component, ChangeDetectionStrategy, inject, signal, OnInit, OnDestroy, computed} from '@angular/core';
-
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  signal,
+  OnInit,
+  OnDestroy,
+  computed,
+  PLATFORM_ID
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +26,7 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
 import {SeoService} from '@core/services/seo.service';
+import {artistRefSchema, exhibitionSchema} from '@core/seo/structured-data';
 import {AnalyticsService} from '@core/services/analytics.service';
 
 type TabType = 'current' | 'past';
@@ -43,6 +53,7 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly localeService = inject(LocaleService);
   private readonly seoService = inject(SeoService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   protected readonly activeTab = signal<TabType>('current');
@@ -54,17 +65,22 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   protected readonly showImageModal = signal(false);
   protected readonly modalImageIndex = signal(0);
   protected readonly modalExhibition = signal<Exhibition | null>(null);
-  private timelineObserver?: IntersectionObserver;
 
   ngOnInit(): void {
-    this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description');
+    this.seoService.setPage('seo.exhibitions.title', 'seo.exhibitions.description', () => [
+      artistRefSchema(this.translateService.currentLang()),
+      ...this.currentExhibitions().map(exhibition => exhibitionSchema(
+        exhibition,
+        this.localeService.resolve(exhibition, 'title'),
+        this.localeService.resolve(exhibition, 'description')
+      ))
+    ]);
     this.loadExhibitions();
     this.scrollAnimationService.setupScrollAnimations();
   }
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
-    this.timelineObserver?.disconnect();
   }
 
   private loadExhibitions(): void {
@@ -77,6 +93,11 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
       .subscribe(([upcoming, ongoing, past]) => {
         this.currentExhibitions.set([...ongoing, ...upcoming]);
         this.pastExhibitions.set(past);
+
+        if (!this.isBrowser) {
+          return;
+        }
+
         setTimeout(() => {
           [...ongoing, ...upcoming, ...past].forEach(ex => this.setupTouchListeners(ex.id));
           this.scrollToRequestedExhibition();
@@ -388,20 +409,9 @@ export class ExhibitionsComponent implements OnInit, OnDestroy {
   }
 
   private setupPersonalExhibitionsAnimations(): void {
-    this.timelineObserver?.disconnect();
-
-    this.timelineObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, {
-      threshold: 0.2,
-      rootMargin: '0px 0px -100px 0px'
-    });
-
-    document.querySelectorAll('.personal-exhibitions-section .timeline-item')
-      .forEach(item => this.timelineObserver!.observe(item));
+    this.scrollAnimationService.observeElements(
+      '.personal-exhibitions-section .timeline-item',
+      { threshold: 0.2, rootMargin: '0px 0px -100px 0px' }
+    );
   }
 }

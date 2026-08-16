@@ -27,7 +27,38 @@ export const fr = {
     association: {
       title: "Association",
       description: "L'Association des Amis de Pierrette Gonseth-Favre, soutien et promotion de l'œuvre de l'artiste."
+    },
+    legal: {
+      title: "Mentions légales",
+      description: "Mentions légales du site officiel de l'artiste peintre suisse Pierrette Gonseth-Favre."
+    },
+    terms: {
+      title: "Conditions d'utilisation",
+      description: "Conditions d'utilisation du site officiel de l'artiste peintre suisse Pierrette Gonseth-Favre."
+    },
+    privacy: {
+      title: "Politique de confidentialité",
+      description: "Politique de confidentialité et gestion des données du site de Pierrette Gonseth-Favre."
+    },
+    artworkCategory: {
+      title: "{{category}} — Œuvres d'art",
+      description: "Œuvres d'art en {{category}} de l'artiste peintre suisse Pierrette Gonseth-Favre."
+    },
+    artworkDetail: {
+      title: "{{title}} — {{category}}",
+      description: "{{title}}, œuvre d'art en {{category}} de l'artiste peintre suisse Pierrette Gonseth-Favre."
+    },
+    archiveDetail: {
+      title: "{{title}} — Archives",
+      description: "{{title}} : archive de l'artiste peintre suisse Pierrette Gonseth-Favre."
     }
+  },
+  notFound: {
+    title: "Page introuvable",
+    description: "Cette page n'existe pas ou a été déplacée.",
+    hero: "Cette page n'existe pas",
+    message: "La page que vous cherchez a peut-être été déplacée ou n'existe plus. Vous pouvez revenir à l'accueil ou explorer les œuvres.",
+    backHome: "Retour à l'accueil"
   },
   nav: {
     home: 'Accueil',

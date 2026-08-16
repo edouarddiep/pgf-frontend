@@ -1,13 +1,13 @@
-<section class="category-hero" [style.background-image]="'url(' + (viewModel$ | async)?.category.thumbnailUrl + ')'">
-  @if (viewModel$ | async; as vm) {
+<section class="category-hero" [style.background-image]="'url(' + viewModel()?.category?.thumbnailUrl + ')'">
+  @if (viewModel(); as vm) {
     <div class="hero-content">
-      <h1>{{ 'artworks.hero' | translate }}</h1>
-      <div class="category-title">{{ localeService.resolve(vm.category, 'name') }}</div>
+      <p class="hero-label">{{ 'artworks.hero' | translate }}</p>
+      <h1 class="category-title">{{ localeService.resolve(vm.category, 'name') }}</h1>
     </div>
   }
 </section>
 
-@if (viewModel$ | async; as vm) {
+@if (viewModel(); as vm) {
   <section class="artworks-section">
     <div class="container">
       <div class="section-header">

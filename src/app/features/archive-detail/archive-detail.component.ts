@@ -6,9 +6,9 @@ import {
   computed,
   OnInit,
   OnDestroy,
-  ChangeDetectorRef, ViewChild, ElementRef
+  ChangeDetectorRef, ViewChild, ElementRef, PLATFORM_ID
 } from '@angular/core';
-import { Location } from '@angular/common';
+import { isPlatformBrowser, Location } from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {ArchiveService} from '@core/services/archive.service';
@@ -21,6 +21,8 @@ import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
 import {LocaleService} from '@core/services/locale.service';
 import {NavService} from '@core/services/nav.service';
+import {SeoService} from '@core/services/seo.service';
+import {archiveSchema, artistRefSchema, breadcrumbSchema, SITE_ORIGIN, websiteSchema} from '@core/seo/structured-data';
 
 @Component({
   selector: 'app-archive-detail',
@@ -42,6 +44,8 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
   private readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'archives';
 
@@ -80,6 +84,36 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadArchive(id);
+    this.seoService.setPageResolver(() => {
+      const archive = this.archive();
+
+      if (!archive) {
+        return null;
+      }
+
+      const title = this.localeService.resolve(archive, 'title');
+      const description = this.localeService.resolve(archive, 'description');
+      const langPrefix = this.navService.langPrefix();
+      const path = `${langPrefix}/archives/${archive.id}`;
+      const seoDescription = description
+        || this.translateService.translate('seo.archiveDetail.description', { title });
+
+      return {
+        title: this.translateService.translate('seo.archiveDetail.title', { title }),
+        description: seoDescription,
+        image: archive.thumbnailUrl,
+        jsonLd: [
+          artistRefSchema(this.translateService.currentLang()),
+          websiteSchema(this.translateService.currentLang()),
+          archiveSchema(archive, this.translateService.currentLang(), title, seoDescription, `${SITE_ORIGIN}${path}`),
+          breadcrumbSchema([
+            { name: this.translateService.translate('nav.home'), path: langPrefix },
+            { name: this.translateService.translate('nav.archives'), path: `${langPrefix}/archives` },
+            { name: title, path }
+          ])
+        ]
+      };
+    });
   }
 
   ngOnDestroy(): void {
@@ -92,6 +126,11 @@ export class ArchiveDetailComponent implements OnInit, OnDestroy {
       .subscribe(archive => {
         this.archive.set(archive);
         this.cdr.detectChanges();
+
+        if (!this.isBrowser) {
+          return;
+        }
+
         setTimeout(() => {
           this.scrollAnimationService.setupScrollAnimations();
           this.checkDescriptionOverflow();

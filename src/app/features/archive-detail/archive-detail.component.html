@@ -13,7 +13,7 @@
       }
       <div class="hero-content">
         <p class="year">{{ arch.year }}</p>
-        <h1>{{ arch.title }}</h1>
+        <h1>{{ localeService.resolve(arch, 'title') }}</h1>
       </div>
     </section>
 

@@ -49,25 +49,11 @@ export class ArchivesComponent implements OnInit, OnDestroy {
       .pipe(catchError(() => EMPTY))
       .subscribe(archives => {
         this.archives.set(archives);
-        setTimeout(() => this.setupTimelineAnimations(), 0);
+        this.scrollAnimationService.observeElements(
+          '.timeline-item',
+          { threshold: 0.2, rootMargin: '0px 0px -100px 0px' }
+        );
       });
-  }
-
-  private setupTimelineAnimations(): void {
-    const timelineItems = document.querySelectorAll('.timeline-item');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, {
-      threshold: 0.2,
-      rootMargin: '0px 0px -100px 0px'
-    });
-
-    timelineItems.forEach(item => observer.observe(item));
   }
 
   onArchiveClick(archiveId: number): void {

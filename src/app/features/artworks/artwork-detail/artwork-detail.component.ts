@@ -6,14 +6,18 @@ import {
   viewChild,
   ElementRef,
   AfterViewInit,
+  OnInit,
   computed
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule, Location } from '@angular/common';
 import {RouterModule, ActivatedRoute, Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {ArtworkService} from '@features/artworks/services/artwork.service';
-import {switchMap, combineLatest, map, take} from 'rxjs';
+import {switchMap, combineLatest, map, take, shareReplay} from 'rxjs';
+import {SeoService} from '@core/services/seo.service';
+import {artistRefSchema, artworkSchema, breadcrumbSchema, SITE_ORIGIN} from '@core/seo/structured-data';
 import {ScrollAnimationService} from '@shared/services/scroll-animation.service';
 import {MatChip} from '@angular/material/chips';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
@@ -35,7 +39,7 @@ import {NavService} from '@core/services/nav.service';
   styleUrl: './artwork-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ArtworkDetailComponent implements AfterViewInit {
+export class ArtworkDetailComponent implements OnInit, AfterViewInit {
   private readonly artworkService = inject(ArtworkService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -44,6 +48,7 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private readonly translateService = inject(TranslateService);
   protected readonly localeService = inject(LocaleService);
   protected readonly navService = inject(NavService);
+  private readonly seoService = inject(SeoService);
   protected readonly lang = computed(() => this.translateService.currentLang());
   private readonly SCROLL_KEY = 'artworks';
 
@@ -60,7 +65,8 @@ export class ArtworkDetailComponent implements AfterViewInit {
   private modalTouchStartY = 0;
 
   readonly artwork$ = this.route.params.pipe(
-    switchMap(params => this.artworkService.getArtworkById(+params['id']))
+    switchMap(params => this.artworkService.getArtworkById(+params['id'])),
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   readonly categories$ = this.artworkService.getCategories();
@@ -82,6 +88,61 @@ export class ArtworkDetailComponent implements AfterViewInit {
       return allCategories.find(c => c.slug === slug) ?? null;
     })
   );
+
+  private readonly artwork = toSignal(this.artwork$);
+  private readonly primaryCategory = toSignal(this.primaryCategory$);
+  private readonly artworkCategories = toSignal(this.artworkCategories$);
+
+  ngOnInit(): void {
+    this.seoService.setPageResolver(() => {
+      const artwork = this.artwork();
+
+      if (!artwork) {
+        return null;
+      }
+
+      const title = this.localeService.resolve(artwork, 'title');
+      const category = this.primaryCategory();
+      const categoryName = category ? this.localeService.resolve(category, 'name') : '';
+      const description = this.localeService.resolve(artwork, 'description');
+      // Une œuvre peut appartenir à plusieurs catégories : on fixe un canonical unique et déterministe
+      const canonicalSlug = [...(artwork.categorySlugs ?? [])].sort()[0];
+      const langPrefix = this.navService.langPrefix();
+      const canonicalPath = canonicalSlug
+        ? `${langPrefix}/artworks/${canonicalSlug}/${artwork.id}`
+        : undefined;
+      const seoDescription = description || this.translateService.translate('seo.artworkDetail.description', {
+        title,
+        category: categoryName
+      });
+
+      return {
+        title: categoryName
+          ? this.translateService.translate('seo.artworkDetail.title', { title, category: categoryName })
+          : title,
+        description: seoDescription,
+        canonicalPath,
+        image: artwork.mainImageUrl || artwork.imageUrls?.[0],
+        jsonLd: [
+          artistRefSchema(this.translateService.currentLang()),
+          artworkSchema(
+            artwork,
+            this.translateService.currentLang(),
+            title,
+            seoDescription,
+            `${SITE_ORIGIN}${canonicalPath ?? `${langPrefix}/artworks/${artwork.id}`}`,
+            (this.artworkCategories() ?? []).map(c => this.localeService.resolve(c, 'name')).join(', ')
+          ),
+          breadcrumbSchema([
+            { name: this.translateService.translate('nav.home'), path: langPrefix },
+            { name: this.translateService.translate('nav.artworks'), path: `${langPrefix}/artworks` },
+            ...(category ? [{ name: categoryName, path: `${langPrefix}/artworks/${category.slug}` }] : []),
+            { name: title, path: canonicalPath ?? `${langPrefix}/artworks/${artwork.id}` }
+          ])
+        ]
+      };
+    });
+  }
 
   ngAfterViewInit(): void {
     this.artwork$.pipe(take(1)).subscribe(artwork => {

@@ -6,6 +6,8 @@ import { ScrollAnimationService } from '@shared/services/scroll-animation.servic
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { NavService } from '@core/services/nav.service';
 import {SeoService} from '@core/services/seo.service';
+import {TranslateService} from '@core/services/translate.service';
+import {artistSchema, PERSON_ID, SITE_ORIGIN} from '@core/seo/structured-data';
 
 @Component({
   selector: 'app-about',
@@ -23,29 +25,29 @@ export class AboutComponent implements OnInit, OnDestroy {
   private readonly scrollAnimationService = inject(ScrollAnimationService);
   protected readonly navService = inject(NavService);
   private readonly seoService = inject(SeoService);
+  private readonly translateService = inject(TranslateService);
 
   ngOnInit(): void {
-    this.seoService.setPage('seo.about.title', 'seo.about.description');
+    this.seoService.setPage('seo.about.title', 'seo.about.description', () => {
+      const lang = this.translateService.currentLang();
+      return [
+        artistSchema(lang, this.translateService.translate('about.journey.bio1')),
+        {
+          '@type': 'ProfilePage',
+          mainEntity: { '@id': PERSON_ID },
+          url: `${SITE_ORIGIN}/${lang}-ch/about`
+        }
+      ];
+    });
     this.scrollAnimationService.setupScrollAnimations();
-    this.setupBibliographyAnimations();
+    this.scrollAnimationService.observeElements(
+      '.bibliography-timeline .timeline-item',
+      { threshold: 0.2, rootMargin: '0px 0px -100px 0px' },
+      100
+    );
   }
 
   ngOnDestroy(): void {
     this.scrollAnimationService.disconnect();
-  }
-
-  private setupBibliographyAnimations(): void {
-    setTimeout(() => {
-      const timelineItems = document.querySelectorAll('.bibliography-timeline .timeline-item');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.2, rootMargin: '0px 0px -100px 0px' });
-
-      timelineItems.forEach(item => observer.observe(item));
-    }, 100);
   }
 }

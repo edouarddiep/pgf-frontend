@@ -41,6 +41,7 @@
               "src/styles.scss"
             ],
             "outputMode": "static",
+            "server": "src/main.server.ts",
             "baseHref": "/",
             "index": "src/index.html"
           },

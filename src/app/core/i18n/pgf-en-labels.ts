@@ -27,7 +27,38 @@ export const en = {
     association: {
       title: "Association",
       description: "The Friends of Pierrette Gonseth-Favre Association, supporting and promoting the artist's work."
+    },
+    legal: {
+      title: "Legal notice",
+      description: "Legal notice for the official website of the Swiss painter Pierrette Gonseth-Favre."
+    },
+    terms: {
+      title: "Terms of use",
+      description: "Terms of use for the official website of the Swiss painter Pierrette Gonseth-Favre."
+    },
+    privacy: {
+      title: "Privacy policy",
+      description: "Privacy policy and data handling for the website of Pierrette Gonseth-Favre."
+    },
+    artworkCategory: {
+      title: "{{category}} — Artworks",
+      description: "{{category}} artworks by the Swiss painter Pierrette Gonseth-Favre."
+    },
+    artworkDetail: {
+      title: "{{title}} — {{category}}",
+      description: "{{title}}, a {{category}} artwork by the Swiss painter Pierrette Gonseth-Favre."
+    },
+    archiveDetail: {
+      title: "{{title}} — Archives",
+      description: "{{title}}: archive of the Swiss painter Pierrette Gonseth-Favre."
     }
+  },
+  notFound: {
+    title: "Page not found",
+    description: "This page does not exist or has been moved.",
+    hero: "This page does not exist",
+    message: "The page you are looking for may have been moved or no longer exists. You can return to the homepage or explore the artworks.",
+    backHome: "Back to homepage"
   },
   nav: {
     home: 'Home',

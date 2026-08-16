@@ -1,15 +1,24 @@
-import { Injectable, OnDestroy, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { LoadingService } from '@shared/services/loading.service';
+
+const VISIBLE_CLASS = 'visible';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScrollAnimationService implements OnDestroy {
-  private intersectionObserver?: IntersectionObserver;
-  private scrollPositions = new Map<string, number>();
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly loadingService = inject(LoadingService);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+
+  private readonly observers = new Map<string, IntersectionObserver>();
+  private scrollPositions = new Map<string, number>();
 
   saveScrollPosition(key: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
     this.scrollPositions.set(key, window.scrollY);
   }
 
@@ -18,6 +27,10 @@ export class ScrollAnimationService implements OnDestroy {
   }
 
   restoreScrollPosition(key: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const position = this.scrollPositions.get(key);
 
     if (position == null) {
@@ -40,28 +53,37 @@ export class ScrollAnimationService implements OnDestroy {
   }
 
   setupScrollAnimations(): void {
-    this.intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
+    this.observeElements('.scroll-fade-in', { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }, 100);
+  }
+
+  observeElements(selector: string, options: IntersectionObserverInit, delayMs = 0): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.observers.get(selector)?.disconnect();
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add(VISIBLE_CLASS);
+        }
+      });
+    }, options);
+
+    this.observers.set(selector, observer);
 
     setTimeout(() => {
-      const elements = document.querySelectorAll('.scroll-fade-in');
-      elements.forEach(el => this.intersectionObserver?.observe(el));
-    }, 100);
+      document.querySelectorAll(selector).forEach(element => observer.observe(element));
+    }, delayMs);
   }
 
   ngOnDestroy(): void {
-    this.intersectionObserver?.disconnect();
+    this.disconnect();
   }
 
   disconnect(): void {
-    this.intersectionObserver?.disconnect();
+    this.observers.forEach(observer => observer.disconnect());
+    this.observers.clear();
   }
 }

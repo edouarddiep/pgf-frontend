@@ -1,0 +1,23 @@
+<div class="not-found-page">
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1>{{ 'notFound.hero' | translate }}</h1>
+    </div>
+  </section>
+
+  <section class="page-section section-white">
+    <div class="container">
+      <p class="error-code">404</p>
+      <p class="error-message">{{ 'notFound.message' | translate }}</p>
+
+      <div class="actions">
+        <a mat-stroked-button [routerLink]="navService.langPrefix()">
+          {{ 'notFound.backHome' | translate }}
+        </a>
+        <a mat-stroked-button [routerLink]="navService.langPrefix() + '/artworks'">
+          {{ 'nav.artworks' | translate }}
+        </a>
+      </div>
+    </div>
+  </section>
+</div>

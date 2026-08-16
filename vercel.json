@@ -4,10 +4,22 @@
   "outputDirectory": "dist/pgf-frontend/browser",
   "framework": null,
   "alias": ["gonsethfavre.vercel.app", "pierrette-gonsethfavre.ch", "www.pierrette-gonsethfavre.ch"],
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/fr-ch",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/admin/:path*",
+      "destination": "/index.csr.html"
+    },
+    {
+      "source": "/secret-invite",
+      "destination": "/index.csr.html"
     }
   ],
   "headers": [
@@ -39,7 +51,7 @@
       ]
     },
     {
-      "source": "/index.html",
+      "source": "/(.*).html",
       "headers": [
         {
           "key": "Cache-Control",

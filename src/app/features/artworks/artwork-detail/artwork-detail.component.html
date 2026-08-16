@@ -58,7 +58,7 @@
         </div>
 
         <div class="artwork-info">
-          <h3 class="artwork-title">{{ localeService.resolve(artwork, 'title') }}</h3>
+          <h1 class="artwork-title">{{ localeService.resolve(artwork, 'title') }}</h1>
 
           @if (artworkCategories$ | async; as artworkCategories) {
             @if (artworkCategories.length > 0) {

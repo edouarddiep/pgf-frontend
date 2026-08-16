@@ -1,0 +1,70 @@
+@use 'tokens' as *;
+
+// Page 404 : reprend le gabarit des pages légales (bannière unie + section blanche).
+
+.not-found-page {
+  min-height: 100vh;
+
+  .hero-banner {
+    position: relative;
+    background: $color-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .hero-content {
+      text-align: center;
+      color: white;
+
+      h1 {
+        position: relative;
+        padding-bottom: 1.5rem;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 200px;
+          height: 2px;
+          background: white;
+
+          @include mobile {
+            width: 150px;
+          }
+        }
+      }
+    }
+  }
+
+  .container {
+    max-width: 700px;
+    text-align: center;
+  }
+
+  .error-code {
+    font-size: 4rem;
+    font-variation-settings: 'wght' 200;
+    letter-spacing: 0.1em;
+    color: $color-muted;
+    line-height: 1;
+    margin: 0 0 1.5rem;
+
+    @include mobile {
+      font-size: 3rem;
+    }
+  }
+
+  .error-message {
+    color: $color-body;
+    margin: 0 0 2.5rem;
+  }
+
+  .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
