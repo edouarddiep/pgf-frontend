@@ -66,15 +66,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId) && this.heroVideo) {
-      const video = this.heroVideo.nativeElement;
-      this.videoService.setupVideo(video, 'home');
-      video.playbackRate = 0.75;
-
-      video.addEventListener('canplay', () => {
-        video.classList.add('video-loaded');
-      }, { once: true });
+    if (!isPlatformBrowser(this.platformId) || !this.heroVideo) {
+      return;
     }
+
+    const video = this.heroVideo.nativeElement;
+    this.videoService.setupVideo(video, 'home');
+    video.playbackRate = 0.75;
   }
 
   ngOnDestroy(): void {

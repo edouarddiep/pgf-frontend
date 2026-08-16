@@ -2,7 +2,6 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, effect } from '@ang
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
-import { VideoService } from '@shared/services/video.service';
 import { LoadingService } from '@shared/services/loading.service';
 import { FooterComponent } from '@layout/footer/footer.component';
 import { HeaderComponent } from '@layout/header/header.component';
@@ -22,7 +21,6 @@ import {CookieBannerComponent} from '@features/cookie-banner/cookie-banner.compo
 })
 export class AppComponent implements OnInit {
   private readonly loadingService = inject(LoadingService);
-  private readonly videoService = inject(VideoService);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   private readonly analyticsService = inject(AnalyticsService);
@@ -48,7 +46,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.videoService.preloadVideo('home');
     // AnalyticsService observe le consentement et charge GA lui-même : l'ordre est donc sans importance.
     this.consentService.init();
 

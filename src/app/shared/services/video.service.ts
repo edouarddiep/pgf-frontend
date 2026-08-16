@@ -13,8 +13,6 @@ interface VideoConfig {
 })
 export class VideoService {
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly videoCache = new Map<string, HTMLVideoElement>();
-  private preloadPromises = new Map<string, Promise<void>>();
 
   readonly videos: Record<string, VideoConfig> = {
     home: {
@@ -24,48 +22,6 @@ export class VideoService {
       endTime: 13
     }
   };
-
-  preloadVideo(key: string): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) {
-      return Promise.resolve();
-    }
-
-    if (this.preloadPromises.has(key)) {
-      return this.preloadPromises.get(key)!;
-    }
-
-    const config = this.videos[key];
-    if (!config) return Promise.resolve();
-
-    const promise = new Promise<void>((resolve) => {
-      const video = document.createElement('video');
-      video.preload = 'auto';
-      video.muted = true;
-      video.playsInline = true;
-      video.crossOrigin = 'anonymous';
-      video.src = config.url;
-
-      const onCanPlay = () => {
-        video.currentTime = config.startTime;
-        this.videoCache.set(key, video);
-        video.removeEventListener('canplaythrough', onCanPlay);
-        resolve();
-      };
-
-      video.addEventListener('canplaythrough', onCanPlay);
-      video.load();
-
-      setTimeout(() => {
-        if (!this.videoCache.has(key)) {
-          this.videoCache.set(key, video);
-          resolve();
-        }
-      }, 3000);
-    });
-
-    this.preloadPromises.set(key, promise);
-    return promise;
-  }
 
   setupVideo(element: HTMLVideoElement, key: string): void {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -77,15 +33,17 @@ export class VideoService {
     element.volume = 0;
     element.playsInline = true;
 
-    const cachedVideo = this.videoCache.get(key);
-    if (cachedVideo && cachedVideo.readyState >= 3) {
+    const start = () => {
       element.currentTime = config.startTime;
       element.play().catch(() => {});
+    };
+
+    // La balise est dans le HTML prérendu et charge avant l'hydratation :
+    // sans ce contrôle, canplay est déjà passé et l'écouteur ne sert à rien.
+    if (element.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      start();
     } else {
-      element.addEventListener('canplay', () => {
-        element.currentTime = config.startTime;
-        element.play().catch(() => {});
-      }, { once: true });
+      element.addEventListener('canplay', start, { once: true });
     }
 
     element.addEventListener('timeupdate', () => {
@@ -100,14 +58,5 @@ export class VideoService {
         element.volume = 0;
       }
     });
-  }
-
-  clearCache(): void {
-    this.videoCache.forEach(video => {
-      video.pause();
-      video.src = '';
-    });
-    this.videoCache.clear();
-    this.preloadPromises.clear();
   }
 }
