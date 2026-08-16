@@ -126,9 +126,75 @@
   display: block;
 }
 
-.bibliography-timeline {
+.bibliography-timeline,
+.biography-timeline {
   @include content-timeline;
+}
 
+// Hauteur de ligne des années sur mobile : sert aussi à caler le point de la
+// frise sur la première ligne (repère simple) ou sur le tiret (période).
+$biography-year-line: 1.5rem;
+
+.biography-timeline {
+  // Les repères couvrent des périodes ("1968–1970") : on réduit un peu le
+  // corps pour qu'ils tiennent sans déborder sur la colonne opposée.
+  .timeline-year {
+    font-size: 1.6rem;
+  }
+
+  .timeline-content .entry-title {
+    font-weight: 500;
+    color: #4a4444;
+    margin-bottom: 0.25rem;
+  }
+
+  @include mobile {
+    .timeline {
+      padding: 0 1rem;
+
+      .timeline-line {
+        left: 22px;
+      }
+
+      .timeline-item {
+        .timeline-dot {
+          left: 7px;
+          top: calc(#{$biography-year-line} * 0.5 - 7.5px);
+        }
+
+        // Période : les deux années sont empilées, le point s'aligne alors sur
+        // la ligne médiane occupée par le tiret.
+        &:has(.timeline-year--range) .timeline-dot {
+          top: calc(#{$biography-year-line} * 1.5 - 7.5px);
+        }
+
+        // Colonne d'années de largeur fixe : le texte de toutes les entrées
+        // reste aligné, quelle que soit la longueur du repère.
+        .timeline-year {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 5.5rem;
+          min-width: 0;
+          margin-left: 1.25rem;
+          font-size: 1.35rem;
+          line-height: $biography-year-line;
+        }
+
+        .timeline-content {
+          top: 0;
+        }
+      }
+    }
+  }
+}
+
+.biography-intro {
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  text-align: center;
+  line-height: 1.8;
+  color: #666;
 }
 
 @include laptop {

@@ -12,6 +12,7 @@
         <div class="artist-bio">
           <p>{{ 'about.journey.bio1' | translate }}</p>
           <p>{{ 'about.journey.bio2' | translate }}</p>
+          <p>{{ 'about.journey.bio3' | translate }}</p>
 
           <div class="artist-image mobile-only">
             <img
@@ -42,66 +43,60 @@
 
   <section class="page-section section-white scroll-fade-in">
     <div class="container">
-      <h2 class="section-title">{{ 'about.bibliography.title' | translate }}</h2>
+      <h2 class="section-title">{{ 'about.biography.title' | translate }}</h2>
+      <p class="biography-intro">{{ 'about.biography.intro' | translate }}</p>
     </div>
-    <div class="bibliography-timeline">
+
+    <div class="biography-timeline">
       <div class="timeline">
         <div class="timeline-line"></div>
 
         <div class="timeline-item timeline-right">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">2019</div>
+          <div class="timeline-year">1943</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y2019' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1943.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1943.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-left">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">2017</div>
+          <div class="timeline-year timeline-year--range">
+            <span>1968</span><span>–</span><span>1970</span>
+          </div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y2017' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1968.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1968.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-right">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">2014</div>
+          <div class="timeline-year">1971</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y2014a' | translate }}</p>
-            <p>{{ 'about.bibliography.entries.y2014b' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1971.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1971.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-left">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">2012</div>
+          <div class="timeline-year">1974</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y2012' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1974.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1974.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-right">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">2001</div>
-          <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y2001' | translate }}</p>
+          <div class="timeline-year timeline-year--range">
+            <span>1970</span><span>–</span><span>1990</span>
           </div>
-        </div>
-
-        <div class="timeline-item timeline-left">
-          <div class="timeline-dot"></div>
-          <div class="timeline-year">1995</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1995' | translate }}</p>
-          </div>
-        </div>
-
-        <div class="timeline-item timeline-right">
-          <div class="timeline-dot"></div>
-          <div class="timeline-year">1994</div>
-          <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1994' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1970s.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1970s.text' | translate }}</p>
           </div>
         </div>
 
@@ -109,34 +104,167 @@
           <div class="timeline-dot"></div>
           <div class="timeline-year">1991</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1991' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1991.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1991.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-right">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">1989</div>
+          <div class="timeline-year">1999</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1989' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y1999.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y1999.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-left">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">1987</div>
+          <div class="timeline-year">2012</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1987' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y2012.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y2012.text' | translate }}</p>
           </div>
         </div>
 
         <div class="timeline-item timeline-right">
           <div class="timeline-dot"></div>
-          <div class="timeline-year">1985</div>
+          <div class="timeline-year">2020</div>
           <div class="timeline-content">
-            <p>{{ 'about.bibliography.entries.y1985' | translate }}</p>
+            <p class="entry-title">{{ 'about.biography.entries.y2020.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y2020.text' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="timeline-item timeline-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2023</div>
+          <div class="timeline-content">
+            <p class="entry-title">{{ 'about.biography.entries.y2023.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y2023.text' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="timeline-item timeline-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2025</div>
+          <div class="timeline-content">
+            <p class="entry-title">{{ 'about.biography.entries.y2025.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y2025.text' | translate }}</p>
+          </div>
+        </div>
+
+        <div class="timeline-item timeline-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2026</div>
+          <div class="timeline-content">
+            <p class="entry-title">{{ 'about.biography.entries.y2026.title' | translate }}</p>
+            <p>{{ 'about.biography.entries.y2026.text' | translate }}</p>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  @if (showBibliography) {
+    <section class="page-section section-white scroll-fade-in">
+      <div class="container">
+        <h2 class="section-title">{{ 'about.bibliography.title' | translate }}</h2>
+      </div>
+      <div class="bibliography-timeline">
+        <div class="timeline">
+          <div class="timeline-line"></div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2019</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2019' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2017</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2017' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2014</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2014a' | translate }}</p>
+              <p>{{ 'about.bibliography.entries.y2014b' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2012</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2012' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2001</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y2001' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1995</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1995' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1994</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1994' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1991</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1991' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1989</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1989' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1987</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1987' | translate }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-item timeline-right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">1985</div>
+            <div class="timeline-content">
+              <p>{{ 'about.bibliography.entries.y1985' | translate }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
 </div>

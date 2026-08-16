@@ -108,13 +108,69 @@ export const fr = {
     hero: 'À PROPOS',
     journey: {
       title: 'Mon parcours',
-      bio1: "Pierrette Gonseth-Favre est née en 1943 à Genève. Elle passe son enfance dans la ferme familiale à Founex (canton de Vaud). De 1968 à 1970, elle étudie la haute lice avec Claire Jobin et le dessin avec Arthur Jobin à Ecublens. Elle épouse en 1974 Denis Gonseth. Elle est mère de trois enfants. Elle vit et travaille à Founex.",
-      bio2: "Elle expose pour la première fois au Musée de l'Ancien-Evêché à Lausanne en 1971 et a par la suite exposé en Suisse, en France, en Allemagne, au Canada. Dans le cadre des célébrations liées aux 700 ans de la Confédération Helvétique, elle a représenté la Suisse en Argentine, au Chili, au Paraguay et en Uruguay.",
+      bio1: "Depuis la fin des années 1960, je construis une œuvre profondément liée à la matière et à l'humain. La toile de jute en est devenue l'un de mes matériaux emblématiques. Matière humble, brute et vivante, je la façonne autour d'armatures de bois pour donner naissance à des figures qui se dressent comme des arbres : fragiles en apparence, mais faites pour résister.",
+      bio2: "Mon travail est habité par la parole, les souvenirs et la mémoire. À travers mes totems et mes figures, j'interroge la condition humaine, sa vulnérabilité, mais aussi sa force et sa capacité à rester debout face aux vicissitudes de la vie.",
+      bio3: "Sculpture, bronze, peinture, dessin, collage ou textile : au fil de mon parcours, je cherche avant tout à faire parler la matière et à donner une présence à ce qui nous habite.",
       imgAlt: 'Portrait de Pierrette Gonseth-Favre'
     },
     vision: {
       title: 'Une artiste passionnée',
       text: "On évoquera, à propos du travail de Pierrette Gonseth-Favre, une œuvre habitée. Habitée de parole, de souvenirs, d'humanité. Une bouche pleine de foin, de liéaments, de matière vivante et végétale, une bouche pleine de parole rentrée, et qui ne demande qu'à sortir. Les totems créés par l'artiste se dressent à la façon des arbres : normal, puisqu'une planche en constitue l'armature. Ces figures, comme les arbres, résistent - on a même l'impression qu'elles sont là pour ça, résister. Rester debout face aux vicissitudes. C'est donc un hommage que tisse ce peuple de figures hautes, plates, voilées et enturbannées, revêtues d'une étoffe grossière, peu flatteuse, peu engageante, mais combien expressive."
+    },
+    biography: {
+      title: 'Biographie',
+      intro: "Ces repères retracent les grandes étapes du parcours de Pierrette Gonseth-Favre.",
+      schemaDescription: "Depuis la fin des années 1960, Pierrette Gonseth-Favre construit une œuvre profondément liée à la matière. La toile de jute en est devenue le matériau emblématique : elle la transforme en figures et en sculptures monumentales, sans cesser de travailler le bronze, la peinture, le dessin, le collage et le textile. Son univers mêle figures humaines, étrangeté et fragilité, dans une interrogation constante sur la condition humaine.",
+      entries: {
+        y1943: {
+          title: 'Naissance à Genève',
+          text: "Née le 17 mai 1943 à Genève, elle passe son enfance dans la ferme familiale de Founex, dans le canton de Vaud."
+        },
+        y1968: {
+          title: 'Formation artistique',
+          text: "Elle étudie la haute lice auprès de Claire Jobin et le dessin auprès d'Arthur Jobin, à Ecublens. Le textile occupera dès lors une place centrale dans son travail."
+        },
+        y1971: {
+          title: 'Première exposition',
+          text: "Elle expose pour la première fois au Musée de l'Ancien-Évêché, à Lausanne. Suivront de nombreuses expositions personnelles et collectives, en Suisse comme à l'étranger."
+        },
+        y1974: {
+          title: 'Vie familiale',
+          text: "Elle épouse Denis Gonseth, avec qui elle aura trois enfants. Elle reste profondément attachée à Founex, où elle vit et travaille."
+        },
+        y1970s: {
+          title: 'Une œuvre pluridisciplinaire',
+          text: "Son travail dépasse le seul art textile : peintures, collages, masques, dessins à l'encre de Chine, bijoux, reliefs et sculptures, de la toile de jute au bronze. Ses œuvres rejoignent des collections publiques et privées, dont la collection moderne de la Fondation Toms Pauli, consacrée à l'art textile."
+        },
+        y1991: {
+          title: 'Rayonnement international',
+          text: "Pour le 700e anniversaire de la Confédération suisse, elle représente la Suisse lors d'une exposition itinérante en Argentine, au Paraguay, en Uruguay et au Chili. Son œuvre est également montrée en France, en Allemagne et au Canada."
+        },
+        y1999: {
+          title: "Espace d'une Sculpture, Lausanne",
+          text: "Une exposition personnelle lui est consacrée à l'Espace d'une Sculpture, à Lausanne, en février et mars."
+        },
+        y2012: {
+          title: "Rétrospective à l'Espace Arlaud",
+          text: "Une grande rétrospective à Lausanne parcourt plusieurs décennies de création et la diversité de ses techniques."
+        },
+        y2020: {
+          title: 'Mérite artistique de la Ville de Nyon',
+          text: "Son parcours est distingué par cette récompense, qui honore les artistes ayant contribué au rayonnement de Nyon et de sa région."
+        },
+        y2023: {
+          title: "« Totems » à l'Abbaye de Bonmont",
+          text: "Du 6 mai au 29 octobre, une quarantaine d'œuvres en toile de jute retracent plus de cinquante ans de dialogue avec ce matériau. L'exposition accueille plus de 3 500 visiteurs et trente visites guidées en présence de l'artiste."
+        },
+        y2025: {
+          title: 'Octobre Rose, Clinique de Genolier',
+          text: "Du 1er octobre au 28 novembre, elle présente « Un rêve d'enfant plus grand que la vie » à la Clinique de Genolier. Soignée elle-même dans cet établissement pour un cancer plus de dix ans auparavant, elle reverse la quasi-totalité du prix de vente de ses œuvres à la Genolier Foundation, en faveur des femmes touchées par le cancer du sein."
+        },
+        y2026: {
+          title: "« In Memoriam », Abbaye de Bonmont",
+          text: "Profondément marquée par le drame de Crans-Montana et la disparition de deux proches, elle crée « In Memoriam », un triptyque de 41 masques de plâtre en hommage aux victimes. L'œuvre est présentée à l'Abbaye de Bonmont jusqu'au 6 septembre 2026 et fait l'objet d'un article dans La Côte le 30 juillet."
+        }
+      }
     },
     bibliography: {
       title: 'Bibliographie',

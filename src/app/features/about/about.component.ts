@@ -27,11 +27,15 @@ export class AboutComponent implements OnInit, OnDestroy {
   private readonly seoService = inject(SeoService);
   private readonly translateService = inject(TranslateService);
 
+  // Bibliographie masquée : le balisage et les libellés sont conservés,
+  // il suffit de repasser ce drapeau à true pour la réafficher.
+  protected readonly showBibliography = false;
+
   ngOnInit(): void {
     this.seoService.setPage('seo.about.title', 'seo.about.description', () => {
       const lang = this.translateService.currentLang();
       return [
-        artistSchema(lang, this.translateService.translate('about.journey.bio1')),
+        artistSchema(lang, this.translateService.translate('about.biography.schemaDescription')),
         {
           '@type': 'ProfilePage',
           mainEntity: { '@id': PERSON_ID },
@@ -41,7 +45,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     });
     this.scrollAnimationService.setupScrollAnimations();
     this.scrollAnimationService.observeElements(
-      '.bibliography-timeline .timeline-item',
+      '.biography-timeline .timeline-item, .bibliography-timeline .timeline-item',
       { threshold: 0.2, rootMargin: '0px 0px -100px 0px' },
       100
     );

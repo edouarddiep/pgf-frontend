@@ -108,13 +108,69 @@ export const en = {
     hero: 'ABOUT',
     journey: {
       title: 'My journey',
-      bio1: "Pierrette Gonseth-Favre was born in 1943 in Geneva. She spent her childhood on the family farm in Founex (canton of Vaud). From 1968 to 1970, she studied haute lice weaving with Claire Jobin and drawing with Arthur Jobin in Ecublens. She married Denis Gonseth in 1974. She is the mother of three children. She lives and works in Founex.",
-      bio2: "She exhibited for the first time at the Musée de l'Ancien-Evêché in Lausanne in 1971 and has since exhibited in Switzerland, France, Germany and Canada. As part of the celebrations marking the 700th anniversary of the Swiss Confederation, she represented Switzerland in Argentina, Chile, Paraguay and Uruguay.",
+      bio1: "Since the late 1960s, I have been building a body of work deeply bound to material and to the human. Burlap has become one of my emblematic materials. A humble, raw and living matter, I shape it around wooden armatures to give birth to figures that stand like trees: fragile in appearance, yet made to resist.",
+      bio2: "My work is inhabited by words, by memories and by remembrance. Through my totems and my figures, I question the human condition, its vulnerability, but also its strength and its capacity to remain standing in the face of life's vicissitudes.",
+      bio3: "Sculpture, bronze, painting, drawing, collage or textile: throughout my journey, I seek above all to make matter speak and to give a presence to what inhabits us.",
       imgAlt: 'Portrait of Pierrette Gonseth-Favre'
     },
     vision: {
       title: 'A passionate artist',
       text: "When speaking of Pierrette Gonseth-Favre's work, one evokes an inhabited œuvre. Inhabited by words, memories, humanity. A mouth full of hay, ligaments, living and vegetal matter, a mouth full of words held back, yearning to be released. The totems created by the artist stand like trees — understandably, since a plank forms their armature. These figures, like trees, resist — one even senses they exist for that very purpose: to resist. To stand firm in the face of adversity. It is thus a tribute woven by this people of tall, flat, veiled and turbaned figures, clothed in coarse, unflattering, uninviting fabric — yet how expressive."
+    },
+    biography: {
+      title: 'Biography',
+      intro: "These milestones trace the main stages of Pierrette Gonseth-Favre's career.",
+      schemaDescription: "Since the late 1960s, Pierrette Gonseth-Favre has built a body of work deeply bound to material. Burlap has become its emblematic medium: she turns it into monumental figures and sculptures, while continuing to work with bronze, painting, drawing, collage and textile. Her world blends human figures, strangeness and fragility, in a constant questioning of the human condition.",
+      entries: {
+        y1943: {
+          title: 'Born in Geneva',
+          text: "Born on 17 May 1943 in Geneva, she spent her childhood on the family farm in Founex, in the canton of Vaud."
+        },
+        y1968: {
+          title: 'Artistic training',
+          text: "She studied high-warp tapestry with Claire Jobin and drawing with Arthur Jobin, in Ecublens. From then on, textile would hold a central place in her work."
+        },
+        y1971: {
+          title: 'First exhibition',
+          text: "She exhibited for the first time at the Musée de l'Ancien-Évêché in Lausanne. Many solo and group exhibitions followed, in Switzerland and abroad."
+        },
+        y1974: {
+          title: 'Family life',
+          text: "She married Denis Gonseth, with whom she had three children. She remains deeply attached to Founex, where she lives and works."
+        },
+        y1970s: {
+          title: 'A multidisciplinary body of work',
+          text: "Her practice moved beyond textile art alone: paintings, collages, masks, Indian ink drawings, jewellery, reliefs and sculptures, from burlap to bronze. Her works entered public and private collections, including the modern collection of the Toms Pauli Foundation, dedicated to textile art."
+        },
+        y1991: {
+          title: 'International recognition',
+          text: "For the 700th anniversary of the Swiss Confederation, she represented Switzerland in a touring exhibition through Argentina, Paraguay, Uruguay and Chile. Her work was also shown in France, Germany and Canada."
+        },
+        y1999: {
+          title: "Espace d'une Sculpture, Lausanne",
+          text: "A solo exhibition was devoted to her at the Espace d'une Sculpture in Lausanne, in February and March."
+        },
+        y2012: {
+          title: 'Retrospective at Espace Arlaud',
+          text: "A major retrospective in Lausanne spanned several decades of creation and the full range of her techniques."
+        },
+        y2020: {
+          title: 'Artistic Merit of the City of Nyon',
+          text: "Her career was honoured with this award, which recognises artists whose work has contributed to the standing of Nyon and its region."
+        },
+        y2023: {
+          title: '"Totems" at Bonmont Abbey',
+          text: "From 6 May to 29 October, some forty burlap works traced more than fifty years of dialogue with this material. The exhibition welcomed over 3,500 visitors and thirty guided tours in the artist's presence."
+        },
+        y2025: {
+          title: 'Pink October, Genolier Clinic',
+          text: "From 1 October to 28 November, she presented \"Un rêve d'enfant plus grand que la vie\" at the Genolier Clinic. Having herself been treated there for cancer more than ten years earlier, she donated almost the entire sale price of her works to the Genolier Foundation, in support of women affected by breast cancer."
+        },
+        y2026: {
+          title: '"In Memoriam", Bonmont Abbey',
+          text: "Deeply affected by the Crans-Montana tragedy and the loss of two people close to her, she created \"In Memoriam\", a triptych of 41 plaster masks in tribute to the victims. The work is on view at Bonmont Abbey until 6 September 2026, and was the subject of an article in La Côte on 30 July."
+        }
+      }
     },
     bibliography: {
       title: 'Bibliography',
