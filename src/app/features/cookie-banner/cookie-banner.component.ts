@@ -23,7 +23,7 @@ export class CookieBannerComponent {
   );
 
   protected readonly showBanner = computed(() =>
-    this.consentService.consentGiven() === null
+    this.consentService.resolved() && this.consentService.consentGiven() === null
   );
 
   protected readonly showSettings = this.consentService.showSettings;
