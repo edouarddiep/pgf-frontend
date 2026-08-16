@@ -1,6 +1,9 @@
+@use 'tokens' as *;
+
 .hero-home-banner {
   position: relative;
   height: 100vh;
+  height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +117,7 @@
 
   .categories-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
     gap: 2rem;
 
     .category-card {
@@ -194,13 +197,22 @@
 
 .exhibitions-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
+.exhibitions-empty {
+  text-align: center;
+  color: #666;
+  margin: 0 0 3rem 0;
+}
+
 .exhibition-card {
   display: block;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -310,9 +322,10 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .hero-home-banner {
     height: 80vh;
+    height: 80svh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -350,13 +363,8 @@
     }
 
     .categories-grid {
-      grid-template-columns: 1fr;
       gap: 1.5rem;
     }
-  }
-
-  .exhibitions-grid {
-    grid-template-columns: 1fr;
   }
 
   .association-content {
@@ -364,8 +372,8 @@
   }
 }
 
-@media (min-width: 1400px) {
-  .hero-banner .hero-content h1 {
+@include wide {
+  .hero-home-banner .hero-content h1 {
     font-size: 4.5rem;
     letter-spacing: 0.15em;
   }

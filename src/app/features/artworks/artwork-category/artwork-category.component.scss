@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .category-hero {
   position: relative;
   height: 40vh;
@@ -100,7 +102,7 @@
 
   .artworks-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
     gap: 2rem;
     margin-bottom: 3rem;
 
@@ -170,34 +172,6 @@
           font-size: 0.95rem;
         }
 
-        .artwork-meta {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 1rem;
-          margin-bottom: 1rem;
-          font-size: 0.9rem;
-          color: #706969;
-
-          .dimensions {
-            font-weight: 500;
-          }
-
-          .materials {
-            font-style: italic;
-          }
-        }
-
-        .artwork-status {
-          .available {
-            color: #2e7d32;
-            font-weight: 500;
-          }
-
-          .sold {
-            color: #c62828;
-            font-weight: 500;
-          }
-        }
       }
     }
   }
@@ -249,7 +223,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .category-hero {
     height: 30vh;
 
@@ -278,14 +252,9 @@
         font-size: 2rem;
       }
 
-      .category-subtitle {
-        font-size: 1.1rem;
-        padding: 1rem;
-      }
     }
 
     .artworks-grid {
-      grid-template-columns: 1fr;
       gap: 1.5rem;
     }
 

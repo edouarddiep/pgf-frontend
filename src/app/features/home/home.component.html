@@ -68,44 +68,48 @@
 
 <section class="page-section section-white scroll-fade-in">
   <div class="container">
-    <h2 class="section-title">{{ 'about.recentExhibitions.title' | translate }}</h2>
+    <h2 class="section-title">{{ 'about.ongoingExhibitions.title' | translate }}</h2>
 
-    @if (recentExhibitions$ | async; as exhibitions) {
-      <div class="exhibitions-grid">
-        @for (exhibition of exhibitions; track exhibition.id) {
-          <a
-            class="exhibition-card"
-            [routerLink]="navService.langPrefix() + '/exhibitions'"
-            [fragment]="'exhibition-' + exhibition.id"
-            [attr.aria-label]="localeService.resolve(exhibition, 'title')">
-            @if (exhibition.imageUrl) {
-              <div class="exhibition-image">
-                <img
-                  [src]="exhibition.imageUrl"
-                  [attr.srcset]="exhibition.imageSrcset"
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  [alt]="exhibition.title"
-                  loading="lazy"
-                  decoding="async">
+    @if (ongoingExhibitions$ | async; as exhibitions) {
+      @if (exhibitions.length) {
+        <div class="exhibitions-grid">
+          @for (exhibition of exhibitions; track exhibition.id) {
+            <a
+              class="exhibition-card"
+              [routerLink]="navService.langPrefix() + '/exhibitions'"
+              [fragment]="'exhibition-' + exhibition.id"
+              [attr.aria-label]="localeService.resolve(exhibition, 'title')">
+              @if (exhibition.imageUrl) {
+                <div class="exhibition-image">
+                  <img
+                    [src]="exhibition.imageUrl"
+                    [attr.srcset]="exhibition.imageSrcset"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    [alt]="exhibition.title"
+                    loading="lazy"
+                    decoding="async">
+                </div>
+              }
+              <div class="exhibition-content">
+                <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
+                @if (exhibition.location) {
+                  <p class="location">{{ exhibition.location }}</p>
+                }
+                @if (exhibition.startDate) {
+                  <p class="date">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
+                }
               </div>
-            }
-            <div class="exhibition-content">
-              <h3>{{ localeService.resolve(exhibition, 'title') }}</h3>
-              @if (exhibition.location) {
-                <p class="location">{{ exhibition.location }}</p>
-              }
-              @if (exhibition.startDate) {
-                <p class="date">{{ formatDateBlock(exhibition.startDate, exhibition.endDate) }}</p>
-              }
-            </div>
-          </a>
-        }
-      </div>
+            </a>
+          }
+        </div>
+      } @else {
+        <p class="exhibitions-empty">{{ 'about.ongoingExhibitions.empty' | translate }}</p>
+      }
     }
 
     <div class="section-actions">
       <button mat-raised-button color="primary" [routerLink]="navService.langPrefix() + '/exhibitions'">
-        {{ 'about.recentExhibitions.cta' | translate }}
+        {{ 'about.ongoingExhibitions.cta' | translate }}
       </button>
     </div>
   </div>

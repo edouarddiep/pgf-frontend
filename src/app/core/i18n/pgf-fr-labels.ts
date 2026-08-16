@@ -102,8 +102,9 @@ export const fr = {
         y2019: 'PGF Totems. Texte de Pierrette Gonseth-Favre - Art espace Junod - Dépliant 10 pages'
       }
     },
-    recentExhibitions: {
-      title: 'Expositions récentes',
+    ongoingExhibitions: {
+      title: 'Expositions en cours',
+      empty: 'Aucune exposition en cours actuellement.',
       cta: 'Voir toutes les expositions'
     },
     association: {

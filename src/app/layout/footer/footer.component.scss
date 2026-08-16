@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .site-footer {
   background: #5E5D5D;
   color: #ecf0f1;
@@ -86,9 +88,11 @@
       align-items: center;
       font-size: 0.85rem;
 
-      .copyright p {
+      .copyright-lang p {
         margin: 0;
         color: #95a5a6;
+        font-size: inherit !important;
+        text-align: inherit !important;
       }
 
       .legal-nav {
@@ -109,7 +113,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .site-footer {
     .footer-content .footer-sections {
       grid-template-columns: 1fr 1fr;
@@ -140,7 +144,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@include phone-lg {
   .site-footer {
     .footer-content {
       padding: 2rem 0 1.5rem;

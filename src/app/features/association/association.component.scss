@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .association-page {
   min-height: 100vh;
 }
@@ -39,7 +41,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include mobile {
     height: 30vh;
 
     .hero-content h1 {
@@ -52,7 +54,7 @@
     }
   }
 
-  @media (max-width: 480px) {
+  @include phone {
     .hero-content h1 {
       font-size: 1.2rem;
 
@@ -69,7 +71,7 @@
 
   .content-grid {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
   }
 
@@ -121,7 +123,7 @@
 
 .membership-grid {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
   gap: 0;
 
@@ -305,7 +307,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .organization-content {
     .members-list {
       flex-direction: column;
@@ -335,7 +337,7 @@
   display: block;
 }
 
-@media (max-width: 1200px) {
+@include desktop {
   .mobile-only {
     display: block;
     margin: 1.5rem 0;

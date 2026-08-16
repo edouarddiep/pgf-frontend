@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .archives-page {
   min-height: 100vh;
   padding-bottom: 4rem;
@@ -11,7 +13,7 @@
     justify-content: center;
     overflow: hidden;
     background: linear-gradient(135deg, rgba(44, 44, 44, 0.7) 0%, rgba(26, 26, 26, 0.7) 100%),
-    url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/render/image/public/oeuvres/archives/cover.jpg?width=1600&quality=75');
+    url('https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/render/image/public/oeuvres/archives/cover.jpg?width=1600&resize=contain&quality=75');
     background-size: cover;
     background-position: center;
 
@@ -36,7 +38,7 @@
         letter-spacing: 0.1em;
         margin: 0;
 
-        @media (max-width: 768px) {
+        @include mobile {
           font-size: 2.5rem;
           letter-spacing: 4px;
         }
@@ -48,7 +50,7 @@
     margin: 0 auto;
     padding: 4rem 2rem;
 
-    @media (max-width: 768px) {
+    @include mobile {
       padding: 0.5rem 0.3rem;
     }
   }
@@ -67,7 +69,7 @@
       transform: translateX(-50%);
       z-index: 1;
 
-      @media (max-width: 968px) {
+      @include tablet {
         left: 30px;
       }
     }
@@ -79,7 +81,7 @@
       align-items: center;
       z-index: 2;
 
-      @media (max-width: 968px) {
+      @include tablet {
         padding-left: 0;
         margin-bottom: 4rem;
         flex-direction: column;
@@ -90,7 +92,7 @@
         justify-content: flex-end;
         padding-right: calc(50% + 60px);
 
-        @media (max-width: 968px) {
+        @include tablet {
           justify-content: flex-start;
           padding-right: 0;
           padding-left: 60px;
@@ -102,7 +104,7 @@
           opacity: 0;
           transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
-          @media (max-width: 968px) {
+          @include tablet {
             left: 23px;
             top: 2px;
             transform: translateX(0);
@@ -115,7 +117,7 @@
           transform: translateX(100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
 
-          @media (max-width: 968px) {
+          @include tablet {
             position: static;
             right: auto;
             left: auto;
@@ -129,7 +131,7 @@
           transform: translateX(-100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
 
-          @media (max-width: 968px) {
+          @include tablet {
             transform: none;
           }
         }
@@ -143,7 +145,7 @@
             opacity: 1;
             transform: translateX(0);
 
-            @media (max-width: 968px) {
+            @include tablet {
               transform: none;
               font-size: 1.5rem;
             }
@@ -153,7 +155,7 @@
             opacity: 1;
             transform: translateX(0);
 
-            @media (max-width: 968px) {
+            @include tablet {
               transform: none;
             }
           }
@@ -164,7 +166,7 @@
         justify-content: flex-start;
         padding-left: calc(50% + 60px);
 
-        @media (max-width: 968px) {
+        @include tablet {
           padding-left: 60px;
         }
 
@@ -174,7 +176,7 @@
           opacity: 0;
           transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
-          @media (max-width: 968px) {
+          @include tablet {
             left: 23px;
             top: 2px;
             transform: translateX(0);
@@ -187,7 +189,7 @@
           transform: translateX(-100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
 
-          @media (max-width: 968px) {
+          @include tablet {
             position: static;
             right: auto;
             left: auto;
@@ -202,7 +204,7 @@
           transform: translateX(100px);
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
 
-          @media (max-width: 968px) {
+          @include tablet {
             transform: none;
           }
         }
@@ -216,7 +218,7 @@
             opacity: 1;
             transform: translateX(0);
 
-            @media (max-width: 968px) {
+            @include tablet {
               transform: none;
             }
           }
@@ -225,7 +227,7 @@
             opacity: 1;
             transform: translateX(0);
 
-            @media (max-width: 968px) {
+            @include tablet {
               transform: none;
             }
           }
@@ -265,7 +267,7 @@
         letter-spacing: 2px;
         font-variation-settings: 'wght' 200, 'wdth' 100, 'opsz' 48;
 
-        @media (max-width: 968px) {
+        @include tablet {
           font-size: 1.8rem;
         }
       }
@@ -292,11 +294,11 @@
             &.loaded { opacity: 1; }
           }
 
-          @media (max-width: 1440px) {
+          @include desktop-xl {
             height: 350px;
           }
 
-          @media (max-width: 768px) {
+          @include mobile {
             height: 250px;
             max-width: 90%;
           }
@@ -332,7 +334,7 @@
                 text-transform: uppercase;
                 margin: 0 0 1.5rem 0;
 
-                @media (max-width: 768px) {
+                @include mobile {
                   font-size: 1.2rem;
                 }
               }
@@ -341,7 +343,7 @@
                 border-color: white !important;
                 color: white !important;
 
-                @media (max-width: 768px) {
+                @include mobile {
                   font-size: 0.8rem;
                 }
 

@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .archive-detail-page {
   min-height: 100vh;
   overflow-x: hidden;
@@ -11,7 +13,7 @@
     justify-content: center;
     background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
 
-    @media (max-width: 768px) {
+    @include mobile {
       height: 30vh;
       min-height: 250px;
     }
@@ -43,7 +45,7 @@
       padding: 0 2rem;
       max-width: 1200px;
 
-      @media (max-width: 768px) {
+      @include mobile {
         padding: 0 1rem;
       }
 
@@ -55,7 +57,7 @@
         font-weight: 300;
         text-align: center !important;
 
-        @media (max-width: 768px) {
+        @include mobile {
           font-size: 1.5rem;
           margin-bottom: 1rem;
         }
@@ -68,7 +70,7 @@
         text-transform: uppercase;
         color: white;
 
-        @media (max-width: 768px) {
+        @include mobile {
           font-size: 1.5rem !important;
         }
       }
@@ -79,7 +81,7 @@
     padding: 4rem 2rem;
     background: white;
 
-    @media (max-width: 768px) {
+    @include mobile {
       padding: 2rem 1rem;
     }
 
@@ -98,7 +100,7 @@
           color: #666;
           margin: 0;
 
-          @media (max-width: 768px) {
+          @include mobile {
             font-size: 1rem;
           }
         }
@@ -147,7 +149,7 @@
   section {
     padding: 4rem 2rem;
 
-    @media (max-width: 768px) {
+    @include mobile {
       padding: 2rem 1rem;
     }
 
@@ -159,7 +161,7 @@
       text-transform: uppercase;
       letter-spacing: 3px;
 
-      @media (max-width: 768px) {
+      @include mobile {
         font-size: 1.5rem;
         margin-bottom: 2rem;
       }
@@ -176,7 +178,7 @@
       max-width: 1000px;
       margin: 0 auto;
 
-      @media (max-width: 768px) {
+      @include mobile {
         gap: 1.5rem;
       }
 
@@ -186,7 +188,7 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease;
 
-        @media (max-width: 768px) {
+        @include mobile {
           padding: 1.5rem;
         }
 
@@ -214,13 +216,12 @@
 
     .images-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(500px, 100%), 1fr));
       gap: 2rem;
       max-width: 1400px;
       margin: 0 auto;
 
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+      @include mobile {
         gap: 1.5rem;
       }
 
@@ -255,13 +256,12 @@
 
     .videos-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
       gap: 2rem;
       max-width: 1200px;
       margin: 0 auto;
 
-      @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+      @include mobile {
         gap: 1.5rem;
       }
 
@@ -347,7 +347,7 @@
       margin: 0 auto;
       justify-content: center;
 
-      @media (max-width: 768px) {
+      @include mobile {
         gap: 1.5rem;
       }
 
@@ -364,7 +364,7 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         transition: transform 0.3s ease;
 
-        @media (max-width: 768px) {
+        @include mobile {
           width: 180px;
         }
 
@@ -399,7 +399,7 @@
     padding: 4rem 2rem;
     background: white;
 
-    @media (max-width: 768px) {
+    @include mobile {
       padding: 3rem 1rem;
     }
 

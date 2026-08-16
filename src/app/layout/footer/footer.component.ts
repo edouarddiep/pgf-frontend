@@ -28,7 +28,7 @@ export class FooterComponent {
   readonly categories$ = this.artworkService.getCategories();
   readonly currentYear = new Date().getFullYear();
   readonly instagramUrl = 'https://www.instagram.com/pierrette_gf?igsh=azh0bGV6ZzltMzdj&utm_source=qr';
-  readonly instagramLogoUrl = 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/render/image/public/oeuvres/yaya/images/insta-logo.jpg?width=64&quality=80';
+  readonly instagramLogoUrl = 'https://bhjpavcxhymxcadesnqy.supabase.co/storage/v1/render/image/public/oeuvres/yaya/images/insta-logo.jpg?width=64&resize=contain&quality=80';
 
   readonly quickLinks = [
     { nameKey: 'nav.home', route: '' },

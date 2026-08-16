@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .header-toolbar {
   position: fixed;
   top: 0;
@@ -233,7 +235,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .container {
     padding: 0 0.5rem 0 0;
   }

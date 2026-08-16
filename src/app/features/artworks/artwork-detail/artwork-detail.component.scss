@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 @use 'mixins' as *;
 
 .artwork-detail-section {
@@ -12,7 +14,7 @@
 
   .artwork-content {
     display: grid;
-    grid-template-columns: 65% 35%;
+    grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
     gap: 2rem;
     align-items: start;
   }
@@ -158,16 +160,6 @@
       margin-bottom: 1rem;
     }
 
-    .artwork-meta {
-      margin-bottom: 2rem;
-
-      p {
-        color: #666;
-        font-size: 1rem;
-        margin: 0;
-      }
-    }
-
     .artwork-description {
       line-height: 1.8;
       color: #555;
@@ -176,7 +168,6 @@
 
       p {
         margin-bottom: 1.5rem;
-        text-align: justify;
         font-size: 1rem;
       }
     }
@@ -207,7 +198,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@include mobile {
   .artwork-detail-section {
     padding: 2rem 0;
 

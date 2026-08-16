@@ -1,3 +1,6 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
 .about-page {
   min-height: 100vh;
 }
@@ -34,7 +37,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include mobile {
     height: 30vh;
 
     .hero-content h1 {
@@ -42,7 +45,7 @@
     }
   }
 
-  @media (max-width: 480px) {
+  @include phone {
     .hero-content h1 {
       font-size: 1.5rem;
     }
@@ -55,10 +58,10 @@
 
   .content-grid {
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
 
-    @media (max-width: 1024px) {
+    @include laptop {
       grid-template-columns: 1fr;
     }
   }
@@ -70,8 +73,7 @@
     justify-content: flex-start;
     background: white;
 
-
-    @media (max-width: 1024px) {
+    @include laptop {
       padding: 0 2rem;
     }
 
@@ -116,12 +118,6 @@
   }
 }
 
-.section-subtitle {
-  text-align: center;
-  margin-bottom: 3rem;
-  color: #666;
-}
-
 .mobile-only {
   display: none;
 }
@@ -131,173 +127,11 @@
 }
 
 .bibliography-timeline {
-  .timeline {
-    position: relative;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
+  @include content-timeline;
 
-    .timeline-line {
-      position: absolute;
-      left: 50%;
-      top: -2rem;
-      bottom: -2rem;
-      width: 2px;
-      background: linear-gradient(180deg, transparent 0%, #706969 8%, #706969 92%, transparent 100%);
-      transform: translateX(-50%);
-      z-index: 0;
-    }
-
-    .timeline-item {
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 3rem;
-      min-height: 40px;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.6s ease;
-
-      &.visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      &.timeline-left {
-        flex-direction: row;
-
-        .timeline-year {
-          position: absolute;
-          left: calc(50% + 50px);
-          top: 3px;
-          text-align: left;
-        }
-
-        .timeline-content {
-          flex: 1;
-          text-align: right;
-          max-width: calc(50% - 50px);
-          margin-left: auto;
-          margin-right: calc(50% + 50px);
-        }
-      }
-
-      &.timeline-right {
-        flex-direction: row-reverse;
-
-        .timeline-year {
-          position: absolute;
-          right: calc(50% + 40px);
-          top: 2px;
-          text-align: right;
-        }
-
-        .timeline-content {
-          flex: 1;
-          text-align: left;
-          padding-left: 12px;
-          max-width: calc(50% - 40px);
-          margin-right: auto;
-          margin-left: calc(50% + 40px);
-        }
-      }
-
-      .timeline-dot {
-        position: absolute;
-        left: 50%;
-        top: 5px;
-        width: 15px;
-        height: 15px;
-        background: #706969;
-        border-radius: 50%;
-        transform: translateX(-50%);
-        z-index: 2;
-      }
-
-      .timeline-year {
-        font-size: 2rem;
-        font-weight: 300;
-        color: #706969;
-        letter-spacing: 0.05em;
-        white-space: nowrap;
-      }
-
-      .timeline-content {
-        p {
-          margin: 0.5rem 0;
-          font-size: 1rem;
-          line-height: 1.8;
-          color: #706969;
-
-          &:first-child { margin-top: 0; }
-          &:last-child { margin-bottom: 0; }
-        }
-      }
-    }
-  }
-
-  .bibliography-note {
-    margin-top: 3rem;
-    text-align: center;
-    font-size: 1rem;
-    line-height: 1.8;
-    color: #555;
-
-    a {
-      color: #706969;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .timeline {
-      padding: 0;
-
-      .timeline-line {
-        left: 7px;
-        transform: none;
-      }
-
-      .timeline-item {
-        flex-direction: row !important;
-        align-items: flex-start;
-        margin-bottom: 2.5rem;
-        padding-left: 0;
-
-        .timeline-dot {
-          left: 7px;
-          top: 2px;
-          transform: translateX(-50%);
-          position: absolute;
-        }
-
-        .timeline-year {
-          position: static !important;
-          left: auto !important;
-          right: auto !important;
-          margin-left: 20px;
-          text-align: left !important;
-          font-size: 1.5rem;
-          min-width: 80px;
-          flex-shrink: 0;
-        }
-
-        .timeline-content {
-          flex: 1;
-          text-align: left !important;
-          padding-left: 1rem !important;
-          padding-right: 0 !important;
-          margin-left: 0 !important;
-          margin-right: 0 !important;
-          max-width: none !important;
-          position: relative;
-          top: -6px;
-        }
-      }
-    }
-  }
 }
 
-@media (max-width: 1024px) {
+@include laptop {
   .mobile-only {
     display: block;
     margin: 1.5rem 0;
@@ -350,7 +184,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@include phone {
   .section-title {
     font-size: 1.5rem !important;
   }

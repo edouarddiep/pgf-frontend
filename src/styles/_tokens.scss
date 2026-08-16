@@ -12,8 +12,28 @@ $color-error: #f44336;
 $color-error-dark: #d32f2f;
 $color-success: #2e7d32;
 
-$bp-mobile: 768px;
+// Points de rupture : n'écrire aucune media query en dur dans les composants,
+// passer par les mixins ci-dessous pour garder une échelle unique.
 $bp-phone: 480px;
+$bp-phone-lg: 640px;
+$bp-mobile: 768px;
+$bp-tablet: 968px;
+$bp-laptop: 1024px;
+$bp-desktop: 1200px;
+$bp-wide: 1400px;
+$bp-ultrawide: 2160px;
+
+@mixin phone {
+  @media (max-width: $bp-phone) {
+    @content;
+  }
+}
+
+@mixin phone-lg {
+  @media (max-width: $bp-phone-lg) {
+    @content;
+  }
+}
 
 @mixin mobile {
   @media (max-width: $bp-mobile) {
@@ -21,8 +41,38 @@ $bp-phone: 480px;
   }
 }
 
-@mixin phone {
-  @media (max-width: $bp-phone) {
+@mixin tablet {
+  @media (max-width: $bp-tablet) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (max-width: $bp-laptop) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (max-width: $bp-desktop) {
+    @content;
+  }
+}
+
+@mixin desktop-xl {
+  @media (max-width: $bp-wide) {
+    @content;
+  }
+}
+
+@mixin wide {
+  @media (min-width: $bp-wide) {
+    @content;
+  }
+}
+
+@mixin ultrawide {
+  @media (min-width: $bp-ultrawide) {
     @content;
   }
 }
