@@ -175,6 +175,10 @@
                     }
                   </div>
                 </div>
+
+                @if (exhibition.status === ExhibitionStatus.ONGOING) {
+                  <app-exhibition-media [exhibition]="exhibition" />
+                }
               </article>
 
             }

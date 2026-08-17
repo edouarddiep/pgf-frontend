@@ -32,6 +32,7 @@ import {LocaleService} from '@core/services/locale.service';
 import {SeoService} from '@core/services/seo.service';
 import {artistRefSchema, exhibitionSchema} from '@core/seo/structured-data';
 import {AnalyticsService} from '@core/services/analytics.service';
+import {ExhibitionMediaComponent} from '@shared/components/exhibition-media/exhibition-media.component';
 
 type TabType = 'current' | 'past';
 
@@ -55,7 +56,8 @@ const MIN_LINES = 6;
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    TranslatePipe
+    TranslatePipe,
+    ExhibitionMediaComponent
 ],
   templateUrl: './exhibitions.component.html',
   styleUrl: './exhibitions.component.scss',

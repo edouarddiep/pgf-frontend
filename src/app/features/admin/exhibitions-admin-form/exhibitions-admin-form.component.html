@@ -183,6 +183,17 @@
               <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             }
           </div>
+
+          <div class="full-width">
+            <label class="file-upload-label">{{ 'admin.exhibitions.form.mediasLabel' | translate }}</label>
+            <app-exhibition-file-upload
+              [files]="exhibitionFiles()"
+              [exhibitionSlug]="getExhibitionSlug()"
+              (filesChange)="onExhibitionFilesChanged($event)"
+              (fileRemoved)="onExhibitionFileRemoved($event)">
+            </app-exhibition-file-upload>
+            <p class="image-legend">{{ 'admin.exhibitions.form.mediasLegend' | translate }}</p>
+          </div>
         </div>
 
         <div class="form-actions">

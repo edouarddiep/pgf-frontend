@@ -1,0 +1,318 @@
+@use 'sass:list';
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+:host { display: block; }
+
+// L'espace au-dessus du filet vient de la gouttière de la grille parente : y
+// ajouter une marge ici décalerait le trait vers le bas du bloc.
+.exhibition-media {
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid rgba(112, 105, 105, 0.18);
+}
+
+// En-tête centré comme le reste des sections du site, et comme la grille :
+// avec un seul média, titre et carte restent sur le même axe.
+.media-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.media-heading {
+  .media-overline {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: $color-muted;
+    margin-bottom: 0.35rem;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: clamp(1.05rem, 0.5vw + 0.9rem, 1.3rem);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $color-text;
+  }
+}
+
+.media-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(112, 105, 105, 0.25);
+  border-radius: 999px;
+  background: transparent;
+  color: $color-body;
+  font-family: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+
+  .chip-count {
+    font-size: 0.7rem;
+    color: $color-muted;
+    transition: color 0.25s ease;
+  }
+
+  &:hover { border-color: $color-text; color: $color-text; }
+
+  &.active {
+    background: $color-text;
+    border-color: $color-text;
+    color: white;
+
+    .chip-count { color: rgba(255, 255, 255, 0.7); }
+  }
+}
+
+// `auto-fit` + colonne plafonnée : les pistes vides se replient et la ligne
+// se centre, donc un média seul reste au milieu du bandeau au lieu de s'étirer
+// ou de se coller à gauche. Le plancher `min(...)` évite tout débordement sur
+// les très petits écrans.
+.media-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 340px));
+  justify-content: center;
+  gap: clamp(1rem, 2vw, 1.75rem);
+
+  @include phone-lg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.media-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid rgba(112, 105, 105, 0.14);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.09);
+    border-color: rgba(112, 105, 105, 0.28);
+
+    .media-hover { opacity: 1; }
+  }
+}
+
+.media-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  padding: 0;
+  border: none;
+  background: $color-surface;
+  overflow: hidden;
+  cursor: pointer;
+
+  &.is-static { cursor: default; }
+
+  img, video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .visual-icon {
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+    color: rgba(112, 105, 105, 0.55);
+  }
+}
+
+.media-card:hover .media-visual img,
+.media-card:hover .media-visual video { transform: scale(1.04); }
+
+// Onde sonore : silhouette fixe à l'arrêt, barres animées pendant la lecture.
+// Les hauteurs sont symétriques, les cadences volontairement désaccordées pour
+// que le mouvement ne se répète pas à l'identique.
+$wave-heights: 26%, 46%, 72%, 100%, 72%, 46%, 26%;
+$wave-durations: 0.9s, 1.15s, 0.75s, 1s, 0.85s, 1.2s, 0.95s;
+
+.audio-wave {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 44%;
+
+  .wave-bar {
+    width: 5px;
+    border-radius: 3px;
+    background: rgba(112, 105, 105, 0.45);
+    transform-origin: center;
+
+    @for $i from 1 through 7 {
+      &:nth-child(#{$i}) { height: list.nth($wave-heights, $i); }
+    }
+  }
+}
+
+.media-visual.is-playing .wave-bar {
+  animation: exhibition-media-wave 1s ease-in-out infinite alternate;
+
+  @for $i from 1 through 7 {
+    &:nth-child(#{$i}) {
+      animation-duration: list.nth($wave-durations, $i);
+      animation-delay: -0.15s * $i;
+    }
+  }
+}
+
+@keyframes exhibition-media-wave {
+  from { transform: scaleY(0.3); }
+  to { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-visual.is-playing .wave-bar { animation: none; }
+}
+
+// Presse et documents n'ont pas d'aperçu : une « page » sobre porte l'icône et
+// le nom de la source, ce qui reste lisible dans la grille.
+.media-doc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(150deg, #fbfbfa 0%, #f1efec 100%);
+
+  .doc-source {
+    max-width: 80%;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $color-muted;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.media-play {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  pointer-events: none;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    color: $color-text;
+  }
+}
+
+.media-hover {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $color-text;
+  }
+}
+
+.media-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.4rem;
+  padding: 1rem 1.1rem 1.15rem;
+
+  .media-kind {
+    margin: 0;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: $color-muted;
+  }
+
+  .media-name {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 400;
+    line-height: 1.35;
+    color: $color-heading;
+  }
+
+  .media-description {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: $color-body;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // Source et date empilées : un séparateur en ligne se retrouverait orphelin
+  // en tête de ligne dès que la source est trop longue pour tenir.
+  .media-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: auto 0 0;
+    padding-top: 0.6rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: $color-muted;
+  }
+
+  .media-audio {
+    width: 100%;
+    margin-top: 0.5rem;
+    height: 36px;
+  }
+}

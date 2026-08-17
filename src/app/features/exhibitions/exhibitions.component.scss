@@ -126,6 +126,13 @@
       .exhibition-content { order: 1; }
     }
 
+    // Médias de l'exposition en cours : une troisième rangée pleine largeur,
+    // toujours sous les deux colonnes même lorsqu'elles sont inversées.
+    app-exhibition-media {
+      grid-column: 1 / -1;
+      order: 3;
+    }
+
     .exhibition-content {
       width: 100%;
       padding: 0;

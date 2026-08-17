@@ -1,0 +1,217 @@
+@use 'tokens' as *;
+@use 'mixins' as *;
+
+.exhibition-file-upload { width: 100%; }
+
+.upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 1.5rem 1rem;
+  border: 1px dashed rgba(0, 0, 0, 0.23);
+  border-radius: 8px;
+  background: transparent;
+  color: $color-body;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+
+  mat-icon { font-size: 28px; width: 28px; height: 28px; color: $color-muted; transition: color 0.2s; }
+
+  .upload-title { font-size: 0.9rem; }
+
+  small { font-size: 0.75rem; color: $color-muted; }
+
+  &:hover {
+    border-color: $admin-accent;
+    background: $admin-accent-softer;
+    color: $admin-accent;
+
+    mat-icon { color: $admin-accent; }
+  }
+}
+
+.upload-progress { margin-top: 0.75rem; border-radius: 4px; }
+
+.type-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0.75rem;
+
+  .type-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: $admin-accent-soft;
+    color: $admin-accent;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    b { font-weight: 600; }
+  }
+}
+
+.file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-row {
+  border: 1px solid $admin-border;
+  border-radius: 8px;
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
+  &.expanded { border-color: $admin-accent; }
+}
+
+.file-main {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 200px auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+
+  @include tablet {
+    grid-template-columns: 56px minmax(0, 1fr);
+    grid-template-areas:
+      'thumb identity'
+      'type type'
+      'actions actions';
+
+    .file-thumb { grid-area: thumb; }
+    .file-identity { grid-area: identity; }
+    .type-field { grid-area: type; }
+    .row-actions { grid-area: actions; justify-content: flex-end; }
+  }
+}
+
+.file-thumb {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  background: $color-surface;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img, video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .thumb-icon { color: $color-muted; }
+
+  .thumb-badge {
+    position: absolute;
+    color: white;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+    pointer-events: none;
+  }
+}
+
+// Toute la zone du nom déplie les informations du média : une cible large
+// évite un bouton d'édition de plus dans la ligne.
+.file-identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.25rem 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  .file-name {
+    grid-column: 1;
+    font-size: 0.875rem;
+    color: $color-heading;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-meta {
+    grid-column: 1;
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: $color-muted;
+
+    .file-source::before { content: '· '; }
+  }
+
+  .file-chevron {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $color-muted;
+    transition: color 0.2s;
+  }
+
+  &:hover {
+    .file-name { color: $admin-accent; }
+    .file-chevron { color: $admin-accent; }
+  }
+}
+
+// Le champ vit dans une ligne dense : on neutralise la gouttière que Material
+// réserve sous chaque champ pour les messages d'erreur.
+.type-field {
+  width: 100%;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+
+  .mat-mdc-icon-button {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    color: $color-muted;
+
+    &:hover:not(:disabled) { color: $admin-accent; }
+  }
+
+  .remove-btn:hover:not(:disabled) { color: $color-error-dark; }
+}
+
+.file-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+  padding: 0.25rem 0.75rem 0.5rem;
+  border-top: 1px solid $color-border;
+  margin-top: 0.25rem;
+
+  .full-width { grid-column: 1 / -1; }
+
+  @include mobile { grid-template-columns: 1fr; }
+}
+
+.empty-hint {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  color: $color-muted;
+}

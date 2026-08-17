@@ -1,0 +1,103 @@
+@if (mediaFiles().length > 0) {
+  <section class="exhibition-media">
+    <header class="media-header">
+      <div class="media-heading">
+        <span class="media-overline">{{ 'exhibitions.media.overline' | translate }}</span>
+        <h4>{{ 'exhibitions.media.title' | translate }}</h4>
+      </div>
+
+      @if (availableTypes().length > 1) {
+        <div class="media-filters" role="group" [attr.aria-label]="'exhibitions.media.filterLabel' | translate">
+          <button type="button" class="filter-chip" [class.active]="!activeType()"
+                  [attr.aria-pressed]="!activeType()" (click)="selectType(null)">
+            {{ 'exhibitions.media.all' | translate }}<span class="chip-count">{{ mediaFiles().length }}</span>
+          </button>
+          @for (type of availableTypes(); track type) {
+            <button type="button" class="filter-chip" [class.active]="activeType() === type"
+                    [attr.aria-pressed]="activeType() === type" (click)="selectType(type)">
+              {{ 'exhibitions.media.types.' + type | translate }}<span class="chip-count">{{ countOf(type) }}</span>
+            </button>
+          }
+        </div>
+      }
+    </header>
+
+    <ul class="media-grid">
+      @for (file of visibleFiles(); track file.fileUrl) {
+        <li class="media-card">
+          @if (isAudio(file)) {
+            <div class="media-visual is-static" [class.is-playing]="isPlaying(file)">
+              <span class="audio-wave" aria-hidden="true">
+                @for (bar of waveBars; track bar) {
+                  <span class="wave-bar"></span>
+                }
+              </span>
+            </div>
+          } @else {
+            <button type="button" class="media-visual"
+                    [attr.aria-label]="('exhibitions.media.open' | translate) + ' : ' + (titleOf(file) || ('exhibitions.media.types.' + file.mediaType | translate))"
+                    (click)="open(file)">
+              @if (isImage(file)) {
+                <img [src]="file.thumbnailUrl || file.fileUrl"
+                     [attr.srcset]="file.thumbnailSrcset || file.fileSrcset"
+                     sizes="(max-width: 768px) 90vw, 320px"
+                     [alt]="titleOf(file)" loading="lazy" decoding="async">
+              } @else if (isVideo(file)) {
+                @if (file.thumbnailUrl) {
+                  <img [src]="file.thumbnailUrl" [attr.srcset]="file.thumbnailSrcset"
+                       sizes="(max-width: 768px) 90vw, 320px"
+                       [alt]="titleOf(file)" loading="lazy" decoding="async">
+                } @else {
+                  <video [src]="file.fileUrl" preload="metadata" muted playsinline></video>
+                }
+                <span class="media-play"><mat-icon>play_arrow</mat-icon></span>
+              } @else {
+                <span class="media-doc">
+                  <mat-icon class="visual-icon">{{ icon(file) }}</mat-icon>
+                  @if (file.source) {
+                    <span class="doc-source">{{ file.source }}</span>
+                  }
+                </span>
+              }
+
+              <span class="media-hover">
+                <mat-icon>{{ isDocument(file) ? 'open_in_new' : 'zoom_in' }}</mat-icon>
+              </span>
+            </button>
+          }
+
+          <div class="media-body">
+            <p class="media-kind">{{ 'exhibitions.media.types.' + file.mediaType | translate }}</p>
+
+            <h5 class="media-name">
+              {{ titleOf(file) || ('exhibitions.media.types.' + file.mediaType | translate) }}
+            </h5>
+
+            @if (localeService.resolve(file, 'description'); as description) {
+              <p class="media-description">{{ description }}</p>
+            }
+
+            @if (file.source || file.publishedOn) {
+              <p class="media-meta">
+                @if (file.source) { <span>{{ file.source }}</span> }
+                @if (file.publishedOn) { <span>{{ file.publishedOn | dateFormat }}</span> }
+              </p>
+            }
+
+            @if (isAudio(file)) {
+              <audio class="media-audio" controls preload="none" [src]="file.fileUrl"
+                     (play)="setPlaying(file, true)"
+                     (pause)="setPlaying(file, false)"
+                     (ended)="setPlaying(file, false)"></audio>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+@if (lightboxFile(); as file) {
+  <app-media-lightbox [url]="file.fileUrl" [kind]="lightboxKind(file)"
+                      [caption]="caption(file)" (closed)="closeLightbox()" />
+}

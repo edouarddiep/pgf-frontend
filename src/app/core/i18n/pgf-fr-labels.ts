@@ -228,6 +228,22 @@ export const fr = {
     emptyPastDetail: "L'historique des expositions sera bientôt disponible",
     dateConfirm: 'Date à confirmer',
     status: { upcoming: 'À venir', ongoing: 'En cours', past: 'Terminé' },
+    media: {
+      overline: 'Médiathèque',
+      title: "Autour de l'exposition",
+      all: 'Tout',
+      open: 'Ouvrir le média',
+      filterLabel: 'Filtrer les médias par type',
+      types: {
+        PRESS_ARTICLE: 'Presse',
+        INTERVIEW: 'Interview',
+        VIDEO: 'Vidéo',
+        AUDIO: 'Audio',
+        PHOTO: 'Photo',
+        DOCUMENT: 'Document',
+        OTHER: 'Autre'
+      }
+    },
     history: {
       title: 'Historique des expositions',
       personal: 'P : Exposition personnelle',
@@ -648,7 +664,9 @@ export const fr = {
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'exposition",
         imageRequired: 'Veuillez ajouter au moins une image principale pour créer une exposition',
         videosLabel: 'Vidéos rétrospective',
-        videosHint: 'Ajouter des vidéos (formats acceptés: mp4, mov, avi)'
+        videosHint: 'Ajouter des vidéos (formats acceptés: mp4, mov, avi)',
+        mediasLabel: "Médias autour de l'exposition",
+        mediasLegend: "*Presse, interviews et documents affichés sous l'exposition tant qu'elle est en cours. Les images et vidéos du carrousel se gèrent dans les blocs ci-dessus."
       }
     },
     archives: {
@@ -754,6 +772,24 @@ export const fr = {
       remove: 'Supprimer',
       mainBadge: 'Principale*',
       empty: 'Aucun fichier — commencez par ajouter une image principale'
+    },
+    exhibitionFileUpload: {
+      drop: 'Ajouter des médias',
+      hint: 'Images, vidéos, audio, PDF et documents — max. 500 Mo par fichier',
+      mediaType: 'Type de média',
+      fileTitle: 'Titre affiché',
+      source: 'Source',
+      sourcePlaceholder: 'Ex: 24 heures',
+      publishedOn: 'Date de parution',
+      description: 'Description',
+      details: 'Afficher les informations du média',
+      preview: 'Prévisualiser',
+      moveUp: 'Monter',
+      moveDown: 'Descendre',
+      remove: 'Supprimer le média',
+      tooLarge: 'Fichier trop volumineux (max 500 Mo)',
+      uploadError: "Erreur lors de l'envoi du fichier",
+      empty: 'Aucun média pour le moment'
     },
     exhibitionCard: {
       moreInfo: "Plus d'infos"

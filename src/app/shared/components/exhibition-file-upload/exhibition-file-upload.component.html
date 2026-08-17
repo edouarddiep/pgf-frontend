@@ -1,0 +1,120 @@
+<div class="exhibition-file-upload">
+  <input #fileInput type="file" multiple hidden
+         accept="image/*,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav,application/pdf,.doc,.docx"
+         (change)="onFilesSelected($event)">
+
+  <button type="button" class="upload-zone" (click)="fileInput.click()">
+    <mat-icon>cloud_upload</mat-icon>
+    <span class="upload-title">{{ 'shared.exhibitionFileUpload.drop' | translate }}</span>
+    <small>{{ 'shared.exhibitionFileUpload.hint' | translate }}</small>
+  </button>
+
+  @if (uploading()) {
+    <mat-progress-bar mode="indeterminate" class="upload-progress"></mat-progress-bar>
+  }
+
+  @if (files().length > 0) {
+    <div class="type-summary">
+      @for (entry of typeSummary(); track entry.type) {
+        <span class="type-chip">
+          {{ 'exhibitions.media.types.' + entry.type | translate }}
+          <b>{{ entry.count }}</b>
+        </span>
+      }
+    </div>
+
+    <ul class="file-list">
+      @for (file of files(); track file.fileUrl; let i = $index, isFirst = $first, isLast = $last) {
+        <li class="file-row" [class.expanded]="isExpanded(file)">
+          <div class="file-main">
+            <button type="button" class="file-thumb" (click)="openPreview(file)"
+                    [matTooltip]="'shared.exhibitionFileUpload.preview' | translate">
+              @if (isImage(file)) {
+                <img [src]="file.thumbnailUrl || file.fileUrl" [alt]="file.fileName || ''" loading="lazy">
+              } @else if (isVideo(file)) {
+                <video [src]="file.fileUrl" preload="metadata"></video>
+                <mat-icon class="thumb-badge">play_circle</mat-icon>
+              } @else {
+                <mat-icon class="thumb-icon">{{ icon(file) }}</mat-icon>
+              }
+            </button>
+
+            <button type="button" class="file-identity" (click)="toggleDetails(file)"
+                    [attr.aria-expanded]="isExpanded(file)"
+                    [matTooltip]="'shared.exhibitionFileUpload.details' | translate">
+              <span class="file-name">{{ displayName(file) }}</span>
+              <span class="file-meta">
+                {{ sizeLabel(file) }}
+                @if (file.source) { <span class="file-source">{{ file.source }}</span> }
+              </span>
+              <mat-icon class="file-chevron">{{ isExpanded(file) ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
+
+            <mat-form-field appearance="outline" class="type-field">
+              <mat-label>{{ 'shared.exhibitionFileUpload.mediaType' | translate }}</mat-label>
+              <mat-select [value]="file.mediaType" panelClass="admin-select-panel"
+                          (valueChange)="patch(i, { mediaType: $event })">
+                @for (type of mediaTypes; track type) {
+                  <mat-option [value]="type">{{ 'exhibitions.media.types.' + type | translate }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <div class="row-actions">
+              @if (files().length > 1) {
+                <button type="button" mat-icon-button [disabled]="isFirst" (click)="move(i, -1)"
+                        [matTooltip]="'shared.exhibitionFileUpload.moveUp' | translate">
+                  <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button type="button" mat-icon-button [disabled]="isLast" (click)="move(i, 1)"
+                        [matTooltip]="'shared.exhibitionFileUpload.moveDown' | translate">
+                  <mat-icon>arrow_downward</mat-icon>
+                </button>
+              }
+              <button type="button" mat-icon-button class="remove-btn" (click)="remove(i)"
+                      [matTooltip]="'shared.exhibitionFileUpload.remove' | translate">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          @if (isExpanded(file)) {
+            <div class="file-details">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'shared.exhibitionFileUpload.fileTitle' | translate }}</mat-label>
+                <input matInput [value]="file.title || ''"
+                       (input)="patch(i, { title: $any($event.target).value })">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'shared.exhibitionFileUpload.source' | translate }}</mat-label>
+                <input matInput [value]="file.source || ''"
+                       [placeholder]="'shared.exhibitionFileUpload.sourcePlaceholder' | translate"
+                       (input)="patch(i, { source: $any($event.target).value })">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'shared.exhibitionFileUpload.publishedOn' | translate }}</mat-label>
+                <input matInput type="date" [value]="file.publishedOn || ''"
+                       (input)="patch(i, { publishedOn: $any($event.target).value || undefined })">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ 'shared.exhibitionFileUpload.description' | translate }}</mat-label>
+                <textarea matInput rows="3" [value]="file.description || ''"
+                          (input)="patch(i, { description: $any($event.target).value })"></textarea>
+              </mat-form-field>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="empty-hint">{{ 'shared.exhibitionFileUpload.empty' | translate }}</p>
+  }
+</div>
+
+@if (previewedFile(); as file) {
+  <app-media-lightbox [url]="file.fileUrl" [kind]="previewKind(file)"
+                      [caption]="file.title || file.fileName" (closed)="closePreview()" />
+}

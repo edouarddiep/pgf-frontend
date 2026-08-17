@@ -2,10 +2,19 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '@environments/environment';
+import { ExhibitionFileType } from '@core/models/exhibition.model';
 
 export interface ImageUploadResponse {
   imageUrl: string;
   thumbnailUrl?: string;
+}
+
+export interface ExhibitionFileUploadResponse {
+  fileUrl: string;
+  fileName?: string;
+  mimeType?: string;
+  fileSize?: number;
+  fileType?: ExhibitionFileType;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -55,6 +64,13 @@ export class FileUploadService {
     formData.append('file', file);
     formData.append('folder', folder);
     return this.http.post<{ fileUrl: string }>(`${this.baseUrl}/admin/upload/file`, formData);
+  }
+
+  uploadExhibitionFile(file: File, exhibitionSlug: string): Observable<ExhibitionFileUploadResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('exhibitionSlug', exhibitionSlug);
+    return this.http.post<ExhibitionFileUploadResponse>(`${this.baseUrl}/admin/upload/exhibition-file`, formData);
   }
 
   deleteImage(imageUrl: string): Observable<void> {

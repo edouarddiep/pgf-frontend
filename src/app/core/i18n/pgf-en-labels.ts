@@ -228,6 +228,22 @@ export const en = {
     emptyPastDetail: 'The exhibition history will be available soon',
     dateConfirm: 'Date to be confirmed',
     status: { upcoming: 'Upcoming', ongoing: 'Ongoing', past: 'Past' },
+    media: {
+      overline: 'Media library',
+      title: 'Around the exhibition',
+      all: 'All',
+      open: 'Open media',
+      filterLabel: 'Filter media by type',
+      types: {
+        PRESS_ARTICLE: 'Press',
+        INTERVIEW: 'Interview',
+        VIDEO: 'Video',
+        AUDIO: 'Audio',
+        PHOTO: 'Photo',
+        DOCUMENT: 'Document',
+        OTHER: 'Other'
+      }
+    },
     history: {
       title: 'Exhibition history',
       personal: 'P: Solo exhibition',
@@ -647,7 +663,9 @@ export const en = {
         imageLegend: '*The main image is displayed first on the exhibition page',
         imageRequired: 'Please add at least one main image to create an exhibition',
         videosLabel: 'Retrospective videos',
-        videosHint: 'Add videos (accepted formats: mp4, mov, avi)'
+        videosHint: 'Add videos (accepted formats: mp4, mov, avi)',
+        mediasLabel: 'Media around the exhibition',
+        mediasLegend: '*Press, interviews and documents shown under the exhibition while it is ongoing. Carousel images and videos are managed in the blocks above.'
       }
     },
     archives: {
@@ -753,6 +771,24 @@ export const en = {
       remove: 'Remove',
       mainBadge: 'Main*',
       empty: 'No files — start by adding a main image'
+    },
+    exhibitionFileUpload: {
+      drop: 'Add media',
+      hint: 'Images, videos, audio, PDF and documents — max. 500 MB per file',
+      mediaType: 'Media type',
+      fileTitle: 'Displayed title',
+      source: 'Source',
+      sourcePlaceholder: 'e.g. 24 heures',
+      publishedOn: 'Publication date',
+      description: 'Description',
+      details: 'Show media details',
+      preview: 'Preview',
+      moveUp: 'Move up',
+      moveDown: 'Move down',
+      remove: 'Remove media',
+      tooLarge: 'File too large (max 500 MB)',
+      uploadError: 'Error while uploading the file',
+      empty: 'No media yet'
     },
     exhibitionCard: {
       moreInfo: 'More info'

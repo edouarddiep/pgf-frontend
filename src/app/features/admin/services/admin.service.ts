@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {ArtworkCategory, Artwork} from '@core/models/artwork.model';
-import {Exhibition} from '@core/models/exhibition.model';
+import {Exhibition, ExhibitionFile} from '@core/models/exhibition.model';
 import {ContactMessage} from '@core/models/contact.model';
 import {environment} from '@environments/environment';
 import {Archive} from '@core/models/archive.model';
@@ -150,6 +150,22 @@ export class AdminService {
     return this.http.delete<void>(`${this.adminApiUrl}/images`, {
       params: {imageUrl}
     });
+  }
+
+  getExhibitionFiles(exhibitionId: number): Observable<ExhibitionFile[]> {
+    return this.http.get<ExhibitionFile[]>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files`);
+  }
+
+  createExhibitionFiles(exhibitionId: number, files: ExhibitionFile[]): Observable<ExhibitionFile[]> {
+    return this.http.post<ExhibitionFile[]>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/batch`, files);
+  }
+
+  updateExhibitionFile(exhibitionId: number, fileId: number, file: ExhibitionFile): Observable<ExhibitionFile> {
+    return this.http.put<ExhibitionFile>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`, file);
+  }
+
+  deleteExhibitionFile(exhibitionId: number, fileId: number): Observable<void> {
+    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`);
   }
 
   createCategory(dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {

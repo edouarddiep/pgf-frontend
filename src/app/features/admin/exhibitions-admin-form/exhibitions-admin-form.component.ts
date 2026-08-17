@@ -19,11 +19,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdminService } from '@features/admin/services/admin.service';
-import { Exhibition } from '@core/models/exhibition.model';
+import { Exhibition, ExhibitionFile } from '@core/models/exhibition.model';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
 import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
+import { ExhibitionFileUploadComponent } from '@shared/components/exhibition-file-upload/exhibition-file-upload.component';
 import { NotificationService } from '@shared/services/notification.service';
-import { catchError, EMPTY, filter, finalize, Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, forkJoin, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
@@ -104,6 +105,7 @@ function endDateValidator(control: AbstractControl) {
     MatProgressBarModule,
     ImageUploadComponent,
     MediaLightboxComponent,
+    ExhibitionFileUploadComponent,
     TranslatePipe,
     MatAutocomplete,
     MatOption,
@@ -147,6 +149,12 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
   protected readonly modalVideoUrl = signal<string | null>(null);
   protected readonly imageRequired = signal(false);
   protected readonly addressSuggestions = signal<SwissAddress[]>([]);
+  protected readonly exhibitionFiles = signal<ExhibitionFile[]>([]);
+
+  // Les médias ne suivent pas le DTO de l'exposition : ils ont leurs propres
+  // routes. On note ici ce qu'il faudra rejouer sur le serveur à la sauvegarde.
+  private readonly removedFileIds = signal<number[]>([]);
+  private readonly initialFileSignatures = new Map<number, string>();
 
   readonly hasUnsavedChanges = signal(false);
   readonly isFormMode = () => true;
@@ -184,6 +192,7 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
           const exhibition = exhibitions.find(e => e.id === +id);
           if (exhibition) {
             this.fillForm(exhibition);
+            this.loadExhibitionFiles(exhibition.id);
             this.exhibitionForm.markAsPristine();
           }
           this.trackChanges();
@@ -237,6 +246,65 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
       this.exhibitionForm.markAsUntouched();
       this.hasUnsavedChanges.set(false);
     });
+  }
+
+  private loadExhibitionFiles(exhibitionId: number): void {
+    this.adminService.getExhibitionFiles(exhibitionId)
+      .pipe(catchError(() => EMPTY))
+      .subscribe(files => {
+        // Les images et vidéos du carrousel existent aussi comme médias en base
+        // (reprise de l'existant côté serveur) : elles se gèrent dans les blocs
+        // ci-dessus, les lister ici ferait doublon.
+        const carouselUrls = new Set([
+          this.mainImageUrl(), ...this.uploadedImageUrls(), ...this.uploadedVideoUrls()
+        ]);
+        const additionalFiles = files.filter(file => !carouselUrls.has(file.fileUrl));
+
+        this.exhibitionFiles.set(additionalFiles);
+        this.initialFileSignatures.clear();
+        additionalFiles.forEach(file => this.initialFileSignatures.set(file.id!, this.fileSignature(file)));
+      });
+  }
+
+  protected onExhibitionFilesChanged(files: ExhibitionFile[]): void {
+    this.exhibitionFiles.set(files);
+    this.hasUnsavedChanges.set(true);
+  }
+
+  protected onExhibitionFileRemoved(file: ExhibitionFile): void {
+    if (file.id) {
+      this.removedFileIds.update(ids => [...ids, file.id!]);
+    }
+    this.hasUnsavedChanges.set(true);
+  }
+
+  // Seul ce qui a bougé part sur le réseau : suppressions, médias modifiés
+  // (métadonnées ou position), puis les nouveaux en un seul appel.
+  private syncExhibitionFiles(exhibitionId: number): Observable<unknown> {
+    const files = this.exhibitionFiles();
+
+    const removals = this.removedFileIds()
+      .map(fileId => this.adminService.deleteExhibitionFile(exhibitionId, fileId));
+
+    const updates = files
+      .filter(file => !!file.id && this.initialFileSignatures.get(file.id) !== this.fileSignature(file))
+      .map(file => this.adminService.updateExhibitionFile(exhibitionId, file.id!, file));
+
+    const creations = files.filter(file => !file.id);
+    const requests: Observable<unknown>[] = [...removals, ...updates];
+
+    if (creations.length > 0) {
+      requests.push(this.adminService.createExhibitionFiles(exhibitionId, creations));
+    }
+
+    return requests.length > 0 ? forkJoin(requests) : of(null);
+  }
+
+  private fileSignature(file: ExhibitionFile): string {
+    return JSON.stringify([
+      file.mediaType, file.title ?? '', file.description ?? '',
+      file.source ?? '', file.publishedOn ?? '', file.displayOrder ?? 0
+    ]);
   }
 
   protected cancel(): void {
@@ -383,6 +451,7 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
       : this.adminService.createExhibition(exhibitionData);
 
     operation.pipe(
+      switchMap(saved => this.syncExhibitionFiles(saved.id).pipe(map(() => saved))),
       catchError(() => {
         this.notificationService.error(this.translateService.translate('admin.exhibitions.saveError'));
         return EMPTY;
