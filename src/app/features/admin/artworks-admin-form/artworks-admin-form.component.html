@@ -1,7 +1,9 @@
 <div class="admin-page">
   <div class="admin-header">
-    <div style="display:flex; align-items:center; gap:0.5rem">
-      <button mat-icon-button (click)="cancel()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
+    <div class="header-back">
+      <button mat-icon-button type="button" (click)="cancel()"
+              [matTooltip]="'admin.common.backToList' | translate"
+              [attr.aria-label]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
       <h2>{{ editingArtwork() ? ('admin.artworks.editTitle' | translate) : ('admin.artworks.new' | translate) }}</h2>
     </div>
   </div>
@@ -26,7 +28,7 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'admin.artworks.form.categories' | translate }}</mat-label>
-            <mat-select formControlName="categoryIds" multiple>
+            <mat-select formControlName="categoryIds" panelClass="admin-select-panel" multiple>
               @for (category of categories(); track category.id) {
                 <mat-option [value]="category.id">{{ localeService.resolve(category, 'name') }}</mat-option>
               }
@@ -37,42 +39,29 @@
           </mat-form-field>
 
           <div class="full-width">
-            <label class="file-upload-label">Image principale *</label>
-            @if (mainImageUrl()) {
+            <label class="file-upload-label">{{ 'admin.artworks.form.mainImageLabel' | translate }}</label>
+            @if (mainImageUrl(); as url) {
               <div class="image-preview-wrapper">
-                <div class="image-preview"
-                     (mousedown)="startDrag($event)"
-                     (mousemove)="onDrag($event)"
-                     (mouseup)="stopDrag()"
-                     (mouseleave)="stopDrag()">
-                  <img [src]="mainImageUrl()!"
-                       [alt]="'admin.common.preview' | translate"
-                       [style.object-position]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'"
-                       [style.transform]="'scale(' + mainImageZoom() / 100 + ')'"
-                       [style.transform-origin]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'">
-                  <div class="crop-hint">
-                    <mat-icon>open_with</mat-icon>
-                    <span>Glisser pour recadrer</span>
-                  </div>
-                </div>
-                <div class="image-actions">
-                  <button mat-icon-button type="button" [matTooltip]="'admin.artworks.downloadMainImage' | translate" (click)="downloadImage(mainImageUrl()!)">
-                    <mat-icon>download</mat-icon>
-                  </button>
-                </div>
-                <div class="zoom-controls">
-                  <mat-icon>zoom_out</mat-icon>
-                  <input type="range" [value]="mainImageZoom()"
-                         (input)="onZoomChange($any($event.target).value)"
-                         min="100" max="300" step="5">
-                  <mat-icon>zoom_in</mat-icon>
-                </div>
+                <app-image-cropper
+                  [imageUrl]="url"
+                  [(positionX)]="mainImagePositionX"
+                  [(positionY)]="mainImagePositionY"
+                  [(zoom)]="mainImageZoom"
+                  (changed)="hasUnsavedChanges.set(true)" />
               </div>
             }
-            <button mat-stroked-button type="button" (click)="mainFileInput.click()">
-              <mat-icon>upload</mat-icon>
-              {{ mainImageUrl() ? 'Changer l\'image principale' : 'Choisir l\'image principale' }}
-            </button>
+            <div class="preview-actions">
+              <button mat-stroked-button type="button" (click)="mainFileInput.click()">
+                <mat-icon>upload</mat-icon>
+                {{ (mainImageUrl() ? 'admin.artworks.form.changeMainImage' : 'admin.artworks.form.chooseMainImage') | translate }}
+              </button>
+              @if (mainImageUrl(); as url) {
+                <button mat-stroked-button type="button" (click)="downloadImage(url)">
+                  <mat-icon>download</mat-icon>
+                  {{ 'admin.artworks.downloadMainImage' | translate }}
+                </button>
+              }
+            </div>
             <input #mainFileInput type="file" accept="image/*" style="display:none" (change)="onMainImageSelected($event)">
             @if (imageRequired()) {
               <mat-error class="image-required-error">{{ 'admin.common.imageRequired' | translate }}</mat-error>
@@ -112,8 +101,7 @@
           <span class="spacer"></span>
           <button type="button" mat-button (click)="cancel()">{{ 'admin.common.cancel' | translate }}</button>
           <button type="submit" mat-raised-button color="primary"
-                  [disabled]="!isFormValidForSubmit() || isSubmitting()"
-                  [class.btn-active]="isFormValidForSubmit() && !isSubmitting()">
+                  [disabled]="!isFormValidForSubmit() || isSubmitting()">
             {{ editingArtwork() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
           </button>
         </div>
@@ -121,12 +109,7 @@
     </mat-card-content>
   </mat-card>
 
-  @if (showImageModal()) {
-    <div class="image-modal" (click)="closeImageModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
-        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
-      </div>
-    </div>
+  @if (modalImageUrl(); as url) {
+    <app-media-lightbox [url]="url" (closed)="closeImageModal()" />
   }
 </div>

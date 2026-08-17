@@ -5,8 +5,8 @@
     <div class="message-info">
       <p><strong>{{ 'admin.messages.dialog.sender' | translate }}</strong> {{ data.name }}</p>
       <p><strong>{{ 'admin.messages.dialog.email' | translate }}</strong> {{ data.email }}</p>
-      @if (data.phone) {
-        <p><strong>{{ 'admin.messages.dialog.phone' | translate }}</strong> {{ data.phone }}</p>
+      @if (phone) {
+        <p><strong>{{ 'admin.messages.dialog.phone' | translate }}</strong> {{ phone }}</p>
       }
       <p><strong>{{ 'admin.messages.dialog.date' | translate }}</strong> {{ data.createdAt | date:"dd.MM.yyyy HH:mm" }}</p>
       <p><strong>{{ 'admin.messages.dialog.subject' | translate }}</strong> {{ data.subject }}</p>

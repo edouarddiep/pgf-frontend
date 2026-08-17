@@ -3,34 +3,19 @@
 // Spécificités du formulaire de catégorie, le reste vient de styles/_admin.scss.
 
 .admin-page {
-  .category-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-
-    mat-form-field {
-      flex: 1 1 calc(50% - 0.5rem);
-      min-width: 220px;
-    }
-
-    .full-width {
-      flex: 1 1 100%;
-    }
-
-    .form-actions {
-      flex: 1 1 100%;
-      justify-content: flex-end;
-    }
+  .form-card .form-actions {
+    justify-content: flex-end;
   }
 
   .image-upload-field {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
 
     label {
-      font-size: 0.85rem;
-      color: $color-body;
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.6);
     }
   }
 }

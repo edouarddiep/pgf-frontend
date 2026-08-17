@@ -1,15 +1,43 @@
 @use 'tokens' as *;
 
-// Gabarit commun des pages d'administration (listes + formulaires).
-// Tout est porté par `.admin-page` pour ne pas déborder sur le site public.
+// Gabarit commun des pages d'administration (tableau de bord, listes,
+// formulaires). Tout est porté par `.admin-page` pour ne pas déborder sur le
+// site public. Les textes gardent le brun-gris de la charte, tout ce qui est
+// interactif porte l'accent bleu du back-office ($admin-accent).
 
 .admin-page {
-  padding: 2rem 2rem 6rem;
+  // Les états de focus suivent l'accent de l'administration plutôt que la
+  // couleur primaire du thème Material.
+  --mdc-outlined-text-field-focus-outline-color: #{$admin-accent};
+  --mdc-outlined-text-field-focus-label-text-color: #{$admin-accent};
+  --mdc-outlined-text-field-caret-color: #{$admin-accent};
+  --mdc-filled-text-field-focus-active-indicator-color: #{$admin-accent};
+  --mdc-filled-text-field-focus-label-text-color: #{$admin-accent};
+  --mdc-filled-text-field-caret-color: #{$admin-accent};
+  --mat-form-field-focus-select-arrow-color: #{$admin-accent};
+  --mat-option-selected-state-label-text-color: #{$admin-accent};
+  --mdc-circular-progress-active-indicator-color: #{$admin-accent};
+  --mdc-linear-progress-active-indicator-color: #{$admin-accent};
+  --mat-datepicker-calendar-date-selected-state-background-color: #{$admin-accent};
+
+  // L'échelle Material par défaut (champ de 56px, texte de 16px) est calibrée
+  // pour le site public : elle écrase le reste de l'administration. On la
+  // resserre ici plutôt que par la densité globale, qui toucherait aussi les
+  // boutons et les listes.
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+  --mat-form-field-container-text-size: 0.9rem;
+  --mat-form-field-container-text-line-height: 1.4;
+  --mat-form-field-outlined-label-text-size: 0.9rem;
+  --mat-form-field-subscript-text-size: 0.7rem;
+  --mat-select-trigger-text-size: 0.9rem;
+
+  padding: 4rem 2rem 6rem;
   max-width: 1400px;
   margin: 0 auto;
 
   @include mobile {
-    padding: 1rem 1rem 3rem;
+    padding: 2rem 1rem 3rem;
   }
 
   // ---------------------------------------------------------------- en-tête
@@ -18,18 +46,46 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
 
     h2 {
       margin: 0;
+      font-size: 1.5rem;
       color: $color-heading;
+    }
+
+    // Titre à gauche, actions groupées à droite : même lecture sur toutes les
+    // ressources.
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-left: auto;
+    }
+
+    .header-back {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     @include mobile {
       flex-direction: column;
       align-items: stretch;
       gap: 1rem;
+
+      .header-actions { margin-left: 0; }
     }
+  }
+
+  // ------------------------------------------------------------------ cartes
+
+  .mat-mdc-card {
+    background: white;
+    border: 1px solid $admin-border;
+    border-radius: 10px;
+    box-shadow: none !important;
   }
 
   // ---------------------------------------------------------------- tableaux
@@ -38,19 +94,30 @@
     mat-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
       margin-bottom: 1rem;
 
       mat-card-title {
         flex: 0 0 auto;
         margin: 0;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: $color-muted;
       }
 
       mat-form-field {
         flex: 1 1 220px;
         max-width: 320px;
+      }
+
+      // Compteur de résultats : retour immédiat sur l'effet d'une recherche.
+      .result-count {
+        margin-left: auto;
+        font-size: 0.8rem;
+        color: $color-muted;
+        white-space: nowrap;
       }
 
       @include mobile {
@@ -61,34 +128,78 @@
           width: 100%;
           max-width: none;
         }
+
+        .result-count { margin-left: 0; }
       }
     }
 
     table {
       width: 100%;
+      background: transparent;
+    }
+
+    // En-tête collant : les colonnes restent lisibles sur les longues listes.
+    // Le fond opaque et le z-index font passer les lignes *sous* l'en-tête, la
+    // séparation marque la limite pendant le défilement.
+    th.mat-mdc-header-cell {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: white;
+      box-shadow: 0 4px 8px -6px rgba(0, 0, 0, 0.35);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: $color-muted;
     }
   }
 
-  tr.mat-mdc-row td.mat-mdc-cell {
-    padding-top: 10px;
-    padding-bottom: 10px;
+  tr.mat-mdc-row {
+    transition: background-color 0.15s ease;
+
+    &:hover { background-color: $admin-accent-softer; }
+
+    td.mat-mdc-cell {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
   }
 
   tr.mat-mdc-row.row-highlight td {
     animation: rowFlash 2s ease-out forwards;
   }
 
+  // Indicateur de tri porté par le CSS (voir SortableDirective) : pas de
+  // marquage supplémentaire dans les gabarits.
   .sortable-header {
     cursor: pointer;
     user-select: none;
+    white-space: nowrap;
 
-    &:hover { color: $color-primary; }
-  }
+    &::after {
+      content: '↕';
+      margin-left: 4px;
+      font-size: 0.8rem;
+      opacity: 0.35;
+    }
 
-  .sort-icon {
-    font-size: 0.8rem;
-    color: $color-muted;
-    margin-left: 4px;
+    &:hover { color: $admin-accent; }
+
+    &:focus-visible {
+      outline: 2px solid $admin-accent;
+      outline-offset: -2px;
+    }
+
+    &.sort-active {
+      color: $admin-accent;
+
+      &::after {
+        content: '↑';
+        opacity: 1;
+      }
+
+      &.sort-desc::after { content: '↓'; }
+    }
   }
 
   .actions-cell {
@@ -119,6 +230,16 @@
     border-radius: 4px;
     cursor: zoom-in;
     display: block;
+    padding: 0;
+    border: 1px solid $admin-border !important;
+    background: none !important;
+
+    &:hover { transform: none !important; }
+
+    &:focus-visible {
+      outline: 2px solid $admin-accent;
+      outline-offset: 2px;
+    }
 
     img {
       width: 100%;
@@ -149,6 +270,10 @@
   }
 
   .no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     padding: 3rem;
     color: $color-muted;
@@ -165,23 +290,6 @@
       margin: 0;
       font-size: 0.9rem;
     }
-  }
-
-  .custom-tooltip {
-    position: fixed;
-    z-index: 99999;
-    transform: translateY(-100%);
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid #e8e8e8;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 10px 14px;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: #444;
-    width: 420px;
-    white-space: normal;
-    pointer-events: none;
   }
 
   // ------------------------------------------------------------ formulaires
@@ -228,21 +336,87 @@
     }
   }
 
-  .file-upload-label {
+  .file-upload-label,
+  .field-label {
     display: block;
     font-size: 0.75rem;
     color: rgba(0, 0, 0, 0.6);
     margin-bottom: 0.5rem;
   }
 
-  .btn-active {
-    background-color: $color-primary !important;
-    color: white !important;
+  // ------------------------------------------------------------------ boutons
+  // Le site public neutralise globalement l'apparence des boutons ; on rétablit
+  // ici une hiérarchie lisible dans l'administration.
 
-    &:hover { background-color: $color-primary !important; }
+  // Les <a mat-button> échappent à la règle globale `button` de _base.scss :
+  // on les aligne sur le rendu des boutons pour éviter deux styles côte à côte.
+  a.mat-mdc-button-base {
+    color: $color-text !important;
+    font-weight: 300 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease !important;
   }
 
-  // Champs de recherche filled : on neutralise le fond gris de Material.
+  a.mat-mdc-outlined-button {
+    border: 2px solid $color-text !important;
+    border-radius: 5px !important;
+    background: transparent !important;
+
+    &:hover {
+      background: $color-surface-alt !important;
+      border-color: $color-surface-alt !important;
+      color: black !important;
+      transform: translateY(-2px) !important;
+    }
+  }
+
+  // Puces (compteurs, catégories) : accent de la charte plutôt que bleu Material.
+  .mat-mdc-standard-chip.mat-mdc-chip-highlighted,
+  .mat-mdc-standard-chip.mat-mdc-chip-selected {
+    --mdc-chip-elevated-container-color: #{$admin-accent};
+    --mdc-chip-label-text-color: #fff;
+  }
+
+  .mat-mdc-outlined-button.mat-warn:not(:disabled) {
+    color: $color-error-dark !important;
+    border-color: rgba(211, 47, 47, 0.4) !important;
+
+    &:hover {
+      background-color: rgba(211, 47, 47, 0.06) !important;
+      color: $color-error-dark !important;
+      border-color: $color-error-dark !important;
+    }
+  }
+
+  // Champs "filled" (recherche) : Material centre le libellé au repos à
+  // `container-height / 2` et le fait flotter de -106% de sa propre hauteur,
+  // deux valeurs calibrées pour un champ de 56px au texte de 16px. À l'échelle
+  // compacte de l'administration, le libellé au repos se retrouvait loin
+  // au-dessus du trait et, une fois flottant, collé au texte saisi. On repose
+  // donc la géométrie sur la ligne de saisie : 20 + 20 (texte) + 6 = 46.
+  .mat-form-field-appearance-fill {
+    --mat-form-field-container-height: 46px;
+    --mat-form-field-filled-with-label-container-padding-top: 20px;
+    --mat-form-field-filled-with-label-container-padding-bottom: 6px;
+    --mat-form-field-filled-label-text-size: 0.9rem;
+
+    // Au repos, le libellé se pose exactement sur la ligne de saisie :
+    // rembourrage haut (20) + moitié de la hauteur de ligne (20 / 2).
+    .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+      top: 30px;
+    }
+
+    // Flottant, il remonte assez haut pour dégager le texte saisi (le -106%
+    // de Material ne le décalait que de 19px depuis cette nouvelle origine).
+    .mdc-text-field--filled .mdc-floating-label--float-above {
+      transform: translateY(-24px) scale(0.75);
+    }
+  }
+
+  // Champs de recherche filled : on neutralise le fond gris de Material pour
+  // ne garder que le trait sous le champ.
   .mdc-text-field--filled:not(.mdc-text-field--disabled),
   .mdc-text-field--filled:not(.mdc-text-field--disabled):hover {
     background-color: transparent !important;
@@ -263,10 +437,13 @@
     padding-left: 0 !important;
   }
 
-  .mdc-text-field--filled button[matsuffix] {
+  // Bouton d'effacement de la recherche : le style de bouton global ne doit pas
+  // s'appliquer à l'intérieur d'un champ.
+  .mat-mdc-form-field button[matsuffix] {
     border: none !important;
     box-shadow: none !important;
     transform: none !important;
+    background: transparent !important;
     padding: 0 !important;
     min-width: unset !important;
     width: 24px !important;
@@ -296,7 +473,7 @@
       background: #fafafa;
 
       button.active {
-        background: rgba(0, 0, 0, 0.08);
+        background: $admin-accent-soft;
         border-radius: 4px;
       }
     }
@@ -313,7 +490,7 @@
       cursor: text;
 
       &:focus {
-        border-color: $color-primary;
+        border-color: $admin-accent;
         border-width: 2px;
         padding: 11px;
       }
@@ -326,71 +503,20 @@
     }
   }
 
-  // ---------------------------------------------------- recadrage d'image
+  // ------------------------------------------------------------- médias
 
   .image-preview-wrapper {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    max-width: 400px;
+    width: 400px;
+    max-width: 100%;
     margin-bottom: 0.75rem;
   }
 
-  .image-preview {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    overflow: hidden;
-    cursor: grab;
-    user-select: none;
-
-    &:active { cursor: grabbing; }
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      pointer-events: none;
-      transform-origin: center;
-      transition: none;
-    }
-
-    .crop-hint {
-      position: absolute;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-      color: white;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      pointer-events: none;
-      z-index: 1;
-
-      mat-icon { font-size: 14px; width: 14px; height: 14px; }
-    }
-  }
-
-  .zoom-controls {
+  .preview-actions {
     display: flex;
-    align-items: center;
     gap: 0.5rem;
-    color: $color-body;
-
-    input[type='range'] {
-      flex: 1;
-      accent-color: $color-primary;
-      cursor: pointer;
-    }
-
-    mat-icon { font-size: 20px; width: 20px; height: 20px; }
   }
 
   .image-legend {
@@ -406,67 +532,42 @@
     font-size: 0.75rem;
     margin-top: 0.25rem;
   }
+}
 
-  // ------------------------------------------------------ aperçu plein écran
+// Panneau des listes déroulantes de l'administration : rendu dans l'overlay CDK,
+// il n'hérite pas des variables de `.admin-page` et doit donc reprendre lui-même
+// l'échelle des champs.
+.admin-select-panel {
+  --mat-option-label-text-size: 0.9rem;
+  --mat-option-selected-state-label-text-color: #{$admin-accent};
 
-  .image-modal {
-    position: fixed;
-    top: 64px;
-    left: 250px;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.92);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-
-    .modal-content {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-image {
-      max-width: 80vw;
-      max-height: 80vh;
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      display: block;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: rgba(0, 0, 0, 0.45) !important;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
-      border-radius: 4px !important;
-      width: 40px !important;
-      height: 40px !important;
-      min-width: 40px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      cursor: pointer;
-      color: white !important;
-      transform: none !important;
-      margin-left: 0 !important;
-      transition: background 0.2s ease, transform 0.2s ease !important;
-
-      &:hover {
-        background: rgba(112, 105, 105, 0.75) !important;
-        transform: scale(1.05) !important;
-      }
-    }
+  .mat-mdc-option {
+    min-height: 40px;
   }
 }
 
+// Infobulle des descriptions (TextTooltipDirective) : placée dans <body>, donc
+// hors de la portée de `.admin-page`.
+.app-text-tooltip {
+  position: fixed;
+  z-index: 1100;
+  max-width: 420px;
+  max-height: 70vh;
+  overflow: hidden;
+  padding: 10px 14px;
+  border: 1px solid $admin-border;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  color: #444;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
 @keyframes rowFlash {
-  0%   { background-color: #e3f2fd; }
-  70%  { background-color: #e3f2fd; }
+  0%   { background-color: $admin-accent-soft; }
+  70%  { background-color: $admin-accent-soft; }
   100% { background-color: transparent; }
 }

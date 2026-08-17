@@ -1,0 +1,36 @@
+<div class="lightbox-backdrop"
+     role="dialog"
+     aria-modal="true"
+     [attr.aria-label]="'shared.lightbox.title' | translate"
+     cdkTrapFocus
+     [cdkTrapFocusAutoCapture]="true"
+     (click)="close()">
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <button type="button" class="lightbox-close" (click)="close()"
+            [attr.aria-label]="'shared.lightbox.close' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    @switch (kind()) {
+      @case ('video') {
+        <video [src]="url()" class="lightbox-media" controls autoplay></video>
+      }
+      @case ('audio') {
+        <div class="lightbox-audio">
+          <mat-icon>audiotrack</mat-icon>
+          <audio [src]="url()" controls autoplay></audio>
+        </div>
+      }
+      @case ('pdf') {
+        <iframe [src]="safeUrl" class="lightbox-pdf" [title]="caption() ?? ('shared.lightbox.title' | translate)"></iframe>
+      }
+      @default {
+        <img [src]="url()" [alt]="caption() ?? ('admin.common.preview' | translate)" class="lightbox-media">
+      }
+    }
+
+    @if (caption()) {
+      <p class="lightbox-caption">{{ caption() }}</p>
+    }
+  </div>
+</div>

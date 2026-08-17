@@ -4,13 +4,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { catchError, EMPTY, Observable, map } from 'rxjs';
 import { ArchiveFile } from '@core/models/archive.model';
 import { FileUploadService } from '@core/services/file-upload.service';
 import { NotificationService } from '@shared/services/notification.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {MediaKind, MediaLightboxComponent} from '@shared/components/media-lightbox/media-lightbox.component';
 
 export interface PendingFile {
   fileType: ArchiveFile['fileType'];
@@ -22,6 +22,10 @@ const ICONS: Record<ArchiveFile['fileType'], string> = {
   IMAGE: 'image', VIDEO: 'videocam', AUDIO: 'audiotrack', PDF: 'picture_as_pdf'
 };
 
+const KINDS: Record<ArchiveFile['fileType'], MediaKind> = {
+  IMAGE: 'image', VIDEO: 'video', AUDIO: 'audio', PDF: 'pdf'
+};
+
 const TYPE_BY_MIME: { pattern: RegExp; fileType: ArchiveFile['fileType'] }[] = [
   { pattern: /^image\//, fileType: 'IMAGE' },
   { pattern: /^video\//, fileType: 'VIDEO' },
@@ -31,7 +35,7 @@ const TYPE_BY_MIME: { pattern: RegExp; fileType: ArchiveFile['fileType'] }[] = [
 
 @Component({
   selector: 'app-archive-file-upload',
-  imports: [MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule, TranslatePipe],
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule, MatProgressBarModule, TranslatePipe, MediaLightboxComponent],
   templateUrl: './archive-file-upload.component.html',
   styleUrl: './archive-file-upload.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -39,7 +43,6 @@ const TYPE_BY_MIME: { pattern: RegExp; fileType: ArchiveFile['fileType'] }[] = [
 export class ArchiveFileUploadComponent {
   private readonly fileUploadService = inject(FileUploadService);
   private readonly notificationService = inject(NotificationService);
-  private readonly sanitizer = inject(DomSanitizer);
   private readonly translateService = inject(TranslateService);
 
   readonly files = input<PendingFile[]>([]);
@@ -116,8 +119,8 @@ export class ArchiveFileUploadComponent {
     this.modalFile.set(null);
   }
 
-  protected getSafeUrl(url: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  protected modalKind(file: PendingFile): MediaKind {
+    return KINDS[file.fileType];
   }
 
   protected setMain(index: number): void {

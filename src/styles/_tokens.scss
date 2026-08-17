@@ -12,6 +12,20 @@ $color-error: #f44336;
 $color-error-dark: #d32f2f;
 $color-success: #2e7d32;
 
+// Palette de l'administration : chrome neutre (le brun-gris de la charte reste
+// réservé aux textes) et accents bleus sur tout ce qui est interactif — menu,
+// sélection, focus, actions principales.
+$admin-accent: #3f51b5;              // indigo : état actif, focus, action principale
+$admin-accent-dark: #303f9f;
+$admin-accent-soft: rgba(63, 81, 181, 0.1);
+$admin-accent-softer: rgba(63, 81, 181, 0.05);
+$admin-icon: #64b5f6;                // icônes du menu latéral
+$admin-icon-dark: #42a5f5;           // survol des aplats bleu clair
+$admin-icon-soft: rgba(100, 181, 246, 0.16);
+$admin-bg: #f5f5f5;                  // fond de zone de contenu
+$admin-sidebar-bg: #fafafa;
+$admin-border: #e0e0e0;
+
 // Points de rupture : n'écrire aucune media query en dur dans les composants,
 // passer par les mixins ci-dessous pour garder une échelle unique.
 $bp-phone: 480px;

@@ -11,8 +11,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { ArtworkCategory } from '@core/models/artwork.model';
-import { catchError, EMPTY, forkJoin } from 'rxjs';
+import { catchError, EMPTY, finalize, forkJoin } from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
+import { SortableDirective } from '@/app/directives/sortable.directive';
+import { TextTooltipDirective } from '@/app/directives/text-tooltip.directive';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import { ExportColumn, ExportService } from '@shared/services/export.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
@@ -35,6 +39,10 @@ type SortField = 'id' | 'name';
     MatInputModule,
     MatTooltip,
     LoadingDirective,
+    SortableDirective,
+    TextTooltipDirective,
+    MediaLightboxComponent,
+    LoadingSpinnerComponent,
     HighlightPipe,
     TranslatePipe,
     TruncatePipe
@@ -57,11 +65,8 @@ export class CategoriesAdminListComponent implements OnInit {
   protected readonly sortField = signal<SortField>('id');
   protected readonly sortAsc = signal(true);
   protected readonly searchQuery = signal('');
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
-  protected readonly tooltipText = signal<string>('');
-  protected readonly tooltipX = signal(0);
-  protected readonly tooltipY = signal(0);
+  protected readonly modalImageUrl = signal<string | null>(null);
+  protected readonly isLoading = signal(true);
   protected readonly highlightedId = signal<number | null>(null);
   protected readonly displayedColumns = ['id', 'image', 'name', 'description', 'artworkCount', 'actions'];
 
@@ -98,11 +103,15 @@ export class CategoriesAdminListComponent implements OnInit {
   }
 
   private loadCategories(anchorId: number | null = null): void {
+    this.isLoading.set(true);
     forkJoin({ categories: this.adminService.getCategories(), artworks: this.adminService.getArtworks() })
-      .pipe(catchError(() => {
-        this.notificationService.error(this.translateService.translate('admin.categories.loadError'));
-        return EMPTY;
-      }))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error(this.translateService.translate('admin.categories.loadError'));
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe(({ categories, artworks }) => {
         this.rawCategories.set(categories.map(c => ({
           ...c,
@@ -132,11 +141,11 @@ export class CategoriesAdminListComponent implements OnInit {
     this.router.navigate(['/admin/categories', category.id, 'edit']);
   }
 
-  protected sort(field: SortField): void {
+  protected sort(field: string): void {
     if (this.sortField() === field) {
       this.sortAsc.update(v => !v);
     } else {
-      this.sortField.set(field);
+      this.sortField.set(field as SortField);
       this.sortAsc.set(true);
     }
   }
@@ -147,22 +156,10 @@ export class CategoriesAdminListComponent implements OnInit {
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
-  }
-
-  protected showTooltip(event: MouseEvent, text: string): void {
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
-    this.tooltipText.set(text);
-    this.tooltipX.set(rect.left + rect.width / 2 - 210);
-    this.tooltipY.set(rect.top - 8);
-  }
-
-  protected hideTooltip(): void {
-    this.tooltipText.set('');
+    this.modalImageUrl.set(null);
   }
 
   protected exportData(): void {

@@ -1,0 +1,59 @@
+<div class="image-cropper">
+  <div class="cropper-viewport"
+       tabindex="0"
+       role="group"
+       [attr.aria-label]="'shared.imageCropper.viewportLabel' | translate"
+       (pointerdown)="onPointerDown($event)"
+       (pointermove)="onPointerMove($event)"
+       (pointerup)="onPointerEnd($event)"
+       (pointercancel)="onPointerEnd($event)"
+       (keydown)="onKeydown($event)">
+    <img [src]="imageUrl()"
+         [alt]="'admin.common.preview' | translate"
+         [style.object-position]="positionX() + '% ' + positionY() + '%'"
+         [style.transform]="'scale(' + zoom() / 100 + ')'"
+         [style.transform-origin]="positionX() + '% ' + positionY() + '%'">
+    <div class="cropper-hint">
+      <mat-icon>open_with</mat-icon>
+      <span>{{ 'shared.imageCropper.hint' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="cropper-controls">
+    <button type="button" mat-icon-button
+            (click)="adjustZoom(-zoomStep)"
+            [disabled]="zoom() <= minZoom"
+            [matTooltip]="'shared.imageCropper.zoomOut' | translate"
+            [attr.aria-label]="'shared.imageCropper.zoomOut' | translate">
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+
+    <input type="range"
+           class="zoom-slider"
+           [value]="zoom()"
+           [min]="minZoom"
+           [max]="maxZoom"
+           [step]="zoomStep"
+           [attr.aria-label]="'shared.imageCropper.zoomLabel' | translate"
+           [attr.aria-valuetext]="zoom() + '%'"
+           (input)="onZoomInput($any($event.target).value)">
+
+    <button type="button" mat-icon-button
+            (click)="adjustZoom(zoomStep)"
+            [disabled]="zoom() >= maxZoom"
+            [matTooltip]="'shared.imageCropper.zoomIn' | translate"
+            [attr.aria-label]="'shared.imageCropper.zoomIn' | translate">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+
+    <span class="zoom-value">{{ zoom() }}%</span>
+
+    <button type="button" mat-icon-button
+            (click)="reset()"
+            [disabled]="!canReset"
+            [matTooltip]="'shared.imageCropper.reset' | translate"
+            [attr.aria-label]="'shared.imageCropper.reset' | translate">
+      <mat-icon>restart_alt</mat-icon>
+    </button>
+  </div>
+</div>

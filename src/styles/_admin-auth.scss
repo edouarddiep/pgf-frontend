@@ -1,9 +1,24 @@
 @use 'tokens' as *;
 
 // Écrans d'authentification de l'admin (connexion, inscription, invitation,
-// mot de passe oublié).
+// mot de passe oublié). Même vocabulaire visuel que le site public : fond
+// chaud, typographie Roboto Flex en capitales espacées, aplats sans ombre.
 
 .auth-page {
+  // Material est thémé en bleu pour le site public : dans l'administration on
+  // ramène les états de focus sur la couleur de la charte.
+  --mdc-outlined-text-field-focus-outline-color: #{$admin-accent};
+  --mdc-outlined-text-field-focus-label-text-color: #{$admin-accent};
+  --mdc-outlined-text-field-caret-color: #{$admin-accent};
+  --mdc-filled-text-field-focus-active-indicator-color: #{$admin-accent};
+  --mdc-filled-text-field-focus-label-text-color: #{$admin-accent};
+  --mdc-filled-text-field-caret-color: #{$admin-accent};
+  --mat-form-field-focus-select-arrow-color: #{$admin-accent};
+  --mat-option-selected-state-label-text-color: #{$admin-accent};
+  --mdc-circular-progress-active-indicator-color: #{$admin-accent};
+  --mdc-linear-progress-active-indicator-color: #{$admin-accent};
+  --mat-datepicker-calendar-date-selected-state-background-color: #{$admin-accent};
+
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -18,9 +33,11 @@
   .auth-card {
     width: 100%;
     max-width: 420px;
-    padding: 2rem;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
-    border-radius: 12px !important;
+    padding: 2.5rem;
+    background: white;
+    border: 1px solid rgba(112, 105, 105, 0.12);
+    box-shadow: 0 10px 40px rgba(112, 105, 105, 0.1) !important;
+    border-radius: 14px !important;
 
     @include phone {
       padding: 1.5rem;
@@ -32,31 +49,65 @@
     }
   }
 
+  // -------------------------------------------------------------- en-tête
+
+  .auth-brand {
+    display: block;
+    text-align: center !important;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: $color-muted;
+    margin-bottom: 0.75rem;
+  }
+
   .card-title {
     text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin: 0 0 1.5rem;
+    font-size: 1.15rem;
+    font-variation-settings: 'wght' 400, 'wdth' 100, 'opsz' 32;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: $admin-accent;
+    margin: 0 0 0.35rem;
+  }
+
+  .card-subtitle {
+    text-align: center !important;
+    font-size: 0.85rem;
+    color: $color-muted;
+    margin: 0 0 1.75rem;
+  }
+
+  .card-title:last-of-type {
+    margin-bottom: 1.75rem;
   }
 
   .full-width {
     width: 100%;
   }
 
-  .toggle-password {
-    cursor: pointer;
-    font-size: 18px;
-    color: #888;
-    margin-right: 4px;
-    user-select: none;
+  // -------------------------------------------------------------- champs
 
-    &:hover { color: $color-heading; }
+  .toggle-password {
+    color: $color-muted !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    &:hover {
+      color: $admin-accent !important;
+      background: transparent !important;
+      transform: none !important;
+    }
   }
+
+  // -------------------------------------------------------------- actions
 
   .actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
     margin-top: 1.25rem;
 
     a[mat-button] {
@@ -64,11 +115,11 @@
       font-size: 0.8rem;
       padding: 0 8px;
       min-width: unset;
-      color: #888;
+      color: $color-muted;
       letter-spacing: 0;
 
       &:hover {
-        color: $color-heading;
+        color: $admin-accent;
         background: transparent;
       }
     }
@@ -87,20 +138,58 @@
   .action-btn {
     height: 44px;
     font-size: 0.8rem !important;
+    letter-spacing: 0.08em !important;
     white-space: nowrap;
   }
 
+  // Bouton principal : aplat de la charte, comme dans l'administration.
+  .mat-mdc-raised-button.mat-primary {
+    background-color: $admin-accent !important;
+    border-color: $admin-accent !important;
+    color: white !important;
+
+    &:hover:not(:disabled) {
+      background-color: $admin-accent-dark !important;
+      border-color: $admin-accent-dark !important;
+      color: white !important;
+    }
+  }
+
+  // -------------------------------------------------------------- messages
+
   .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: $color-error-dark;
-    font-size: 0.875rem;
-    margin-top: -0.25rem;
-    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    background: rgba(244, 67, 54, 0.06);
+    border-left: 3px solid $color-error-dark;
+    border-radius: 4px;
+    padding: 0.6rem 0.75rem;
+    margin: 0 0 0.9rem;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+  }
+
+  .validation-errors p {
+    color: $color-error-dark;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    margin: 0 0 0.35rem;
   }
 
   .success-message {
     text-align: center;
     color: $color-success;
-    font-size: 1.05rem;
+    font-size: 1rem;
+    line-height: 1.6;
     padding: 1rem 0;
   }
 }

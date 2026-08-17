@@ -1,7 +1,9 @@
 <div class="admin-page">
   <div class="admin-header">
-    <div style="display:flex; align-items:center; gap:0.5rem">
-      <button mat-icon-button (click)="cancel()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
+    <div class="header-back">
+      <button mat-icon-button type="button" (click)="cancel()"
+              [matTooltip]="'admin.common.backToList' | translate"
+              [attr.aria-label]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
       <h2>{{ editingArchive() ? ('admin.archives.editTitle' | translate) : ('admin.archives.createTitle' | translate) }}</h2>
     </div>
   </div>
@@ -61,30 +63,14 @@
 
           <div class="full-width">
             <label class="file-upload-label">{{ 'admin.archives.form.filesLabel' | translate }}</label>
-            @if (thumbnailUrl()) {
+            @if (thumbnailUrl(); as url) {
               <div class="image-preview-wrapper">
-                <div class="image-preview"
-                     (mousedown)="startDrag($event)"
-                     (mousemove)="onDrag($event)"
-                     (mouseup)="stopDrag()"
-                     (mouseleave)="stopDrag()">
-                  <img [src]="thumbnailUrl()!"
-                       [alt]="'admin.common.preview' | translate"
-                       [style.object-position]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'"
-                       [style.transform]="'scale(' + mainImageZoom() / 100 + ')'"
-                       [style.transform-origin]="mainImagePositionX() + '% ' + mainImagePositionY() + '%'">
-                  <div class="crop-hint">
-                    <mat-icon>open_with</mat-icon>
-                    <span>{{ 'admin.categories.form.cropHint' | translate }}</span>
-                  </div>
-                </div>
-                <div class="zoom-controls">
-                  <mat-icon>zoom_out</mat-icon>
-                  <input type="range" [value]="mainImageZoom()"
-                         (input)="onZoomChange($any($event.target).value)"
-                         min="100" max="300" step="5">
-                  <mat-icon>zoom_in</mat-icon>
-                </div>
+                <app-image-cropper
+                  [imageUrl]="url"
+                  [(positionX)]="mainImagePositionX"
+                  [(positionY)]="mainImagePositionY"
+                  [(zoom)]="mainImageZoom"
+                  (changed)="hasUnsavedChanges.set(true)" />
               </div>
             }
             <app-archive-file-upload
@@ -111,8 +97,7 @@
           <span class="spacer"></span>
           <button type="button" mat-button (click)="cancel()">{{ 'admin.common.cancel' | translate }}</button>
           <button type="submit" mat-raised-button color="primary"
-                  [disabled]="!isFormValidForSubmit() || isSaving()"
-                  [class.btn-active]="isFormValidForSubmit() && !isSaving()">
+                  [disabled]="!isFormValidForSubmit() || isSaving()">
             {{ editingArchive() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
           </button>
         </div>
@@ -120,12 +105,7 @@
     </mat-card-content>
   </mat-card>
 
-  @if (showImageModal()) {
-    <div class="image-modal" (click)="closeImageModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
-        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
-      </div>
-    </div>
+  @if (modalImageUrl(); as url) {
+    <app-media-lightbox [url]="url" (closed)="closeImageModal()" />
   }
 </div>

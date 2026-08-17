@@ -19,6 +19,10 @@ export class MessageDetailDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<MessageDetailDialogComponent>);
   protected readonly data = inject<ContactMessage>(MAT_DIALOG_DATA);
 
+  // Le formulaire de contact concatène l'indicatif et le numéro saisi : le zéro
+  // initial du numéro national n'a plus lieu d'être une fois l'indicatif présent.
+  protected readonly phone = this.data.phone?.replace(/^(\+\d{1,4})\s*0(\d)/, '$1 $2');
+
   protected close(): void {
     if (!this.data.isRead) {
       this.adminService.markMessageAsRead(this.data.id)

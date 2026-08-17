@@ -14,10 +14,12 @@
   }
 }
 
+// Rendue dans l'overlay CDK, la boîte hérite du `p` à 1.2rem du site public.
 mat-dialog-content p {
-  color: #555;
-  line-height: 1.5;
   margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: $color-body;
 }
 
 mat-dialog-actions {

@@ -16,6 +16,8 @@ import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard'
 import { Archive, ArchiveFile } from '@core/models/archive.model';
 import { catchError, EMPTY } from 'rxjs';
 import { ArchiveFileUploadComponent } from '@shared/components/archive-file-upload/archive-file-upload.component';
+import { ImageCropperComponent } from '@shared/components/image-cropper/image-cropper.component';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -34,6 +36,8 @@ import { LocaleService } from '@core/services/locale.service';
     MatCardModule,
     MatTooltipModule,
     ArchiveFileUploadComponent,
+    ImageCropperComponent,
+    MediaLightboxComponent,
     TranslatePipe
   ],
   templateUrl: './archives-admin-form.component.html',
@@ -56,17 +60,11 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
   protected readonly editingArchive = signal<Archive | null>(null);
   protected readonly isSaving = signal(false);
   protected readonly pendingFiles = signal<{ fileType: ArchiveFile['fileType']; fileUrl: string; fileName: string }[]>([]);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal('');
+  protected readonly modalImageUrl = signal<string | null>(null);
   protected readonly submitAttempted = signal(false);
   protected readonly mainImagePositionX = signal(50);
   protected readonly mainImagePositionY = signal(50);
   protected readonly mainImageZoom = signal(100);
-  private isDragging = false;
-  private dragStartX = 0;
-  private dragStartY = 0;
-  private dragStartPosX = 0;
-  private dragStartPosY = 0;
 
   protected readonly isAlignLeft = signal(false);
   protected readonly isAlignCenter = signal(false);
@@ -199,40 +197,10 @@ export class ArchivesAdminFormComponent implements OnInit, HasUnsavedChanges {
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
-  }
-
-  protected startDrag(event: MouseEvent): void {
-    this.isDragging = true;
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-    this.dragStartPosX = this.mainImagePositionX();
-    this.dragStartPosY = this.mainImagePositionY();
-    event.preventDefault();
-  }
-
-  protected onDrag(event: MouseEvent): void {
-    if (!this.isDragging) return;
-    const previewEl = event.currentTarget as HTMLElement;
-    const sensitivity = 100 / this.mainImageZoom();
-    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
-    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
-    this.mainImagePositionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
-    this.mainImagePositionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
-    this.hasUnsavedChanges.set(true);
-  }
-
-  protected stopDrag(): void {
-    this.isDragging = false;
-  }
-
-  protected onZoomChange(value: string): void {
-    this.mainImageZoom.set(+value);
-    this.hasUnsavedChanges.set(true);
+    this.modalImageUrl.set(null);
   }
 
   protected saveArchive(): void {

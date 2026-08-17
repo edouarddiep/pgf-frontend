@@ -16,6 +16,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { TranslateService } from '@core/services/translate.service';
 import { LocaleService } from '@core/services/locale.service';
 import {MatTooltip} from '@angular/material/tooltip';
+import {ImageCropperComponent} from '@shared/components/image-cropper/image-cropper.component';
+import {MediaLightboxComponent} from '@shared/components/media-lightbox/media-lightbox.component';
 
 @Component({
   selector: 'app-categories-admin-form',
@@ -27,7 +29,9 @@ import {MatTooltip} from '@angular/material/tooltip';
     MatFormFieldModule,
     MatInputModule,
     TranslatePipe,
-    MatTooltip
+    MatTooltip,
+    ImageCropperComponent,
+    MediaLightboxComponent
 ],
   templateUrl: './categories-admin-form.component.html',
   styleUrl: './categories-admin-form.component.scss',
@@ -43,18 +47,11 @@ export class CategoriesAdminFormComponent implements OnInit, HasUnsavedChanges {
   protected readonly localeService = inject(LocaleService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
-  private isDragging = false;
-  private dragStartX = 0;
-  private dragStartY = 0;
-  private dragStartPosX = 50;
-  private dragStartPosY = 50;
-
   protected readonly editingCategory = signal<ArtworkCategory | null>(null);
   protected readonly isSubmitting = signal(false);
   protected readonly pendingImageFile = signal<File | null>(null);
   protected readonly previewImageUrl = signal<string | null>(null);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
+  protected readonly modalImageUrl = signal<string | null>(null);
   protected readonly imageRequired = signal(false);
   protected readonly positionX = signal(50);
   protected readonly positionY = signal(50);
@@ -168,44 +165,17 @@ export class CategoriesAdminFormComponent implements OnInit, HasUnsavedChanges {
     this.hasUnsavedChanges.set(true);
   }
 
-  protected startDrag(event: MouseEvent): void {
-    this.isDragging = true;
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-    this.dragStartPosX = this.positionX();
-    this.dragStartPosY = this.positionY();
-    event.preventDefault();
-  }
-
-  protected onDrag(event: MouseEvent): void {
-    if (!this.isDragging) return;
-    const previewEl = event.currentTarget as HTMLElement;
-    const sensitivity = 100 / this.zoom();
-    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
-    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
-    this.positionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
-    this.positionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
-    this.hasUnsavedChanges.set(true);
-    this.categoryForm.markAsDirty();
-  }
-
-  protected stopDrag(): void {
-    this.isDragging = false;
-  }
-
-  protected onZoomChange(value: string): void {
-    this.zoom.set(+value);
+  protected onCropChanged(): void {
     this.hasUnsavedChanges.set(true);
     this.categoryForm.markAsDirty();
   }
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
+    this.modalImageUrl.set(null);
   }
 
   private generateSlug(name: string): string {

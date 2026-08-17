@@ -3,14 +3,6 @@
 // Spécificités de la page de connexion, le reste vient de styles/_admin-auth.scss.
 
 .auth-page {
-  .auth-card {
-    padding: 2.5rem 3rem;
-
-    @include phone {
-      padding: 1.5rem;
-    }
-  }
-
   .actions {
     justify-content: center;
   }
@@ -18,14 +10,18 @@
   .forgot-link {
     display: flex;
     justify-content: center;
-    margin-top: 0.25rem;
+    margin-top: 0.75rem;
 
     a {
       font-size: 0.75rem;
+      color: $color-muted;
       cursor: pointer;
       background: none;
       text-decoration: none;
       padding: 0;
+      transition: color 0.2s ease;
+
+      &:hover { color: $admin-accent; }
     }
   }
 }

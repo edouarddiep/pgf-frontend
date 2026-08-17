@@ -393,6 +393,8 @@ export const en = {
       greeting: 'Hello',
       title: 'PGF Administration',
       logout: 'Log out',
+      mobileBlockedTitle: 'Not available on mobile',
+      mobileBlockedMessage: 'Please open this page on a computer.',
       logoutSuccess: 'Successfully logged out. Thank you and enjoy your visit!',
       nav: {
         dashboard: 'Dashboard',
@@ -433,6 +435,10 @@ export const en = {
     },
     login: {
       title: 'PGF Administration',
+      brand: 'Pierrette Gonseth-Favre',
+      subtitle: 'Content management area',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password',
       email: 'Email address',
       passwordLabel: 'Password',
       wrongPassword: 'User not found or incorrect password.',
@@ -475,6 +481,8 @@ export const en = {
     },
     common: {
       exportList: 'Export list',
+      clearSearch: 'Clear search',
+      resultCount: '{{count}} result(s)',
       exportTooltip: 'Exports the list data to an Excel file',
       search: 'Search',
       cancel: 'Cancel',
@@ -498,6 +506,7 @@ export const en = {
         saveFailed: 'Error saving',
         deleteFailed: 'Error deleting',
         uploadFailed: 'Upload error',
+        downloadFailed: 'Download error',
         generic: 'An error occurred. Please try again.'
       },
     },
@@ -534,6 +543,9 @@ export const en = {
         descriptionHint: 'Maximum 1000 characters',
         categories: 'Categories',
         categoryRequired: 'Please select at least one category',
+        mainImageLabel: 'Main image *',
+        chooseMainImage: 'Choose the main image',
+        changeMainImage: 'Change the main image',
         imagesLabel: 'Images',
         imageLegend: '*The main image is displayed first on the artwork page'
       },
@@ -687,6 +699,9 @@ export const en = {
       statusRead: 'Read',
       statusNew: 'New',
       read: 'Read message',
+      reply: 'Reply by e-mail',
+      searchLabel: 'Search a message',
+      searchPlaceholder: 'By sender, e-mail or subject',
       receivedAt: 'Received on dd.MM.yyyy at HH:mm',
       deleteConfirmTitle: 'Delete message',
       deleteConfirmMessage: 'Are you sure you want to delete this message? This action cannot be undone.',
@@ -719,6 +734,18 @@ export const en = {
       zoom: 'Enlarge',
       moveLeft: 'Move left',
       moveRight: 'Move right'
+    },
+    imageCropper: {
+      viewportLabel: 'Image framing: drag or use arrow keys to move, + and - to zoom',
+      hint: 'Drag to reframe',
+      zoomIn: 'Zoom in',
+      zoomOut: 'Zoom out',
+      zoomLabel: 'Image zoom level',
+      reset: 'Reset framing'
+    },
+    lightbox: {
+      title: 'Media preview',
+      close: 'Close preview'
     },
     archiveFileUpload: {
       attach: 'Attach a file',

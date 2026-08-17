@@ -1,10 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { htmlToPlainText } from '@core/utils/html-text.util';
 
 @Pipe({ name: 'truncate', standalone: true })
 export class TruncatePipe implements PipeTransform {
   transform(value: string | undefined | null, limit = 120): string {
-    if (!value) { return ''; }
-    const plain = value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+    const plain = htmlToPlainText(value).replace(/\s+/g, ' ');
     if (plain.length <= limit) { return plain; }
     const truncated = plain.slice(0, limit);
     const lastSpace = truncated.lastIndexOf(' ');

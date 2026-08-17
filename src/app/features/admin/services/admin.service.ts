@@ -29,7 +29,6 @@ export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly adminApiUrl = `${environment.apiUrl}/admin`;
-  private readonly apiUrl = environment.apiUrl;
   private readonly isAuthenticatedSignal = signal(false);
 
   constructor() {
@@ -105,10 +104,6 @@ export class AdminService {
 
   getArtworks(): Observable<Artwork[]> {
     return this.http.get<Artwork[]>(`${this.adminApiUrl}/artworks`);
-  }
-
-  getArtworksByCategory(categoryId: number): Observable<Artwork[]> {
-    return this.http.get<Artwork[]>(`${this.apiUrl}/artworks/category/${categoryId}`);
   }
 
   createArtwork(dto: Partial<Artwork>): Observable<Artwork> {

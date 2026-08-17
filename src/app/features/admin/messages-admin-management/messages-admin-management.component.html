@@ -1,71 +1,103 @@
 <div class="admin-page">
   <div class="admin-header">
     <h2>{{ 'admin.messages.title' | translate }}</h2>
-    <mat-chip-set>
-      <mat-chip>{{ 'admin.messages.total' | translate: {count: messages().length} }}</mat-chip>
-      <mat-chip color="primary" [highlighted]="unreadCount() > 0">
-        {{ 'admin.messages.unread' | translate: {count: unreadCount()} }}
-      </mat-chip>
-    </mat-chip-set>
+    <div class="header-actions">
+      <mat-chip-set>
+        <mat-chip>{{ 'admin.messages.total' | translate: {count: totalCount()} }}</mat-chip>
+        <mat-chip [highlighted]="unreadCount() > 0">
+          {{ 'admin.messages.unread' | translate: {count: unreadCount()} }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
   </div>
 
   <mat-card class="table-card" appLoading>
     <mat-card-header>
       <mat-card-title>{{ 'admin.messages.listTitle' | translate }}</mat-card-title>
+      <mat-form-field>
+        <mat-label>{{ 'admin.messages.searchLabel' | translate }}</mat-label>
+        <input matInput [value]="searchQuery()" (input)="onSearchChange($any($event.target).value)"
+               [placeholder]="'admin.messages.searchPlaceholder' | translate">
+        @if (searchQuery()) {
+          <button matSuffix mat-icon-button (click)="onSearchChange('')"
+                  [attr.aria-label]="'admin.common.clearSearch' | translate"><mat-icon>close</mat-icon></button>
+        }
+      </mat-form-field>
+      <span class="result-count" aria-live="polite">
+        {{ 'admin.common.resultCount' | translate: {count: messages().length} }}
+      </span>
     </mat-card-header>
+
     <mat-card-content>
-      <table mat-table [dataSource]="messages()" class="messages-table">
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colStatus' | translate }}</th>
-          <td mat-cell *matCellDef="let message">
-            @if (message.isRead) {
-              <span class="status-badge read">{{ 'admin.messages.statusRead' | translate }}</span>
-            } @else {
-              <span class="status-badge new">{{ 'admin.messages.statusNew' | translate }}</span>
-            }
-          </td>
-        </ng-container>
+      @if (messages(); as rows) {
+        @if (rows.length > 0) {
+          <table mat-table [dataSource]="rows" class="messages-table">
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colStatus' | translate }}</th>
+              <td mat-cell *matCellDef="let message">
+                @if (message.isRead) {
+                  <span class="status-badge read">{{ 'admin.messages.statusRead' | translate }}</span>
+                } @else {
+                  <span class="status-badge new">{{ 'admin.messages.statusNew' | translate }}</span>
+                }
+              </td>
+            </ng-container>
 
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colSender' | translate }}</th>
-          <td mat-cell *matCellDef="let message">
-            <div class="sender-info">
-              <strong>{{ message.name }}</strong>
-              <small class="email-link" (click)="replyToMessage(message)">{{ message.email }}</small>
-            </div>
-          </td>
-        </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef
+                  [appSortable]="'name'" [sortField]="sortField()" [sortAsc]="sortAsc()" (sortChange)="sort($event)">
+                {{ 'admin.messages.colSender' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let message">
+                <div class="sender-info">
+                  <strong>{{ message.name }}</strong>
+                  <button type="button" class="email-link" (click)="replyToMessage(message)"
+                          [matTooltip]="'admin.messages.reply' | translate">{{ message.email }}</button>
+                </div>
+              </td>
+            </ng-container>
 
-        <ng-container matColumnDef="subject">
-          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colSubject' | translate }}</th>
-          <td mat-cell *matCellDef="let message">{{ message.subject }}</td>
-        </ng-container>
+            <ng-container matColumnDef="subject">
+              <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colSubject' | translate }}</th>
+              <td mat-cell *matCellDef="let message">{{ message.subject }}</td>
+            </ng-container>
 
-        <ng-container matColumnDef="createdAt">
-          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colDate' | translate }}</th>
-          <td mat-cell *matCellDef="let message">{{ message.createdAt | date:"dd.MM.yyyy HH:mm" }}</td>
-        </ng-container>
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef
+                  [appSortable]="'createdAt'" [sortField]="sortField()" [sortAsc]="sortAsc()" (sortChange)="sort($event)">
+                {{ 'admin.messages.colDate' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let message">{{ message.createdAt | date:"dd.MM.yyyy HH:mm" }}</td>
+            </ng-container>
 
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colActions' | translate }}</th>
-          <td mat-cell *matCellDef="let message">
-            <div class="actions-cell">
-              <button mat-icon-button (click)="viewMessage(message)" [matTooltip]="'admin.messages.read' | translate"><mat-icon>visibility</mat-icon></button>
-              <button mat-icon-button color="primary" (click)="replyToMessage(message)" [matTooltip]="'Répondre par e-mail'"><mat-icon>reply</mat-icon></button>
-              <button mat-icon-button color="warn" (click)="deleteMessage(message.id)" [matTooltip]="'admin.common.delete' | translate"><mat-icon>delete</mat-icon></button>
-            </div>
-          </td>
-        </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>{{ 'admin.messages.colActions' | translate }}</th>
+              <td mat-cell *matCellDef="let message">
+                <div class="actions-cell">
+                  <button mat-icon-button (click)="viewMessage(message)"
+                          [matTooltip]="'admin.messages.read' | translate"
+                          [attr.aria-label]="'admin.messages.read' | translate"><mat-icon>visibility</mat-icon></button>
+                  <button mat-icon-button color="primary" (click)="replyToMessage(message)"
+                          [matTooltip]="'admin.messages.reply' | translate"
+                          [attr.aria-label]="'admin.messages.reply' | translate"><mat-icon>reply</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="deleteMessage(message.id)"
+                          [matTooltip]="'admin.common.delete' | translate"
+                          [attr.aria-label]="'admin.common.delete' | translate"><mat-icon>delete</mat-icon></button>
+                </div>
+              </td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.unread]="!row.isRead"></tr>
-      </table>
-
-      @if (messages().length === 0) {
-        <div class="no-data">
-          <mat-icon>inbox</mat-icon>
-          <p>{{ 'admin.messages.notFound' | translate }}</p>
-        </div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.unread]="!row.isRead"></tr>
+          </table>
+        } @else if (isLoading()) {
+          <div class="no-data"><app-loading-spinner /></div>
+        } @else {
+          <div class="no-data">
+            <mat-icon>inbox</mat-icon>
+            <p>{{ 'admin.messages.notFound' | translate }}</p>
+          </div>
+        }
       }
     </mat-card-content>
   </mat-card>

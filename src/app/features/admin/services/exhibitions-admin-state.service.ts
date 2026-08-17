@@ -1,7 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 
+// 'date' : statut puis date, l'ordre par défaut de la liste.
+export type ExhibitionSortField = 'date' | 'id' | 'title';
+
 export interface ExhibitionsListState {
-  sortField: 'id' | 'title';
+  sortField: ExhibitionSortField;
   sortAsc: boolean;
   searchQuery: string;
   anchorId: number | null;
@@ -10,7 +13,7 @@ export interface ExhibitionsListState {
 @Injectable({ providedIn: 'root' })
 export class ExhibitionsAdminStateService {
   private readonly _state = signal<ExhibitionsListState>({
-    sortField: 'id',
+    sortField: 'date',
     sortAsc: true,
     searchQuery: '',
     anchorId: null

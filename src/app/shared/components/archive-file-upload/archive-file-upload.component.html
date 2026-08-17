@@ -16,7 +16,8 @@
     <div class="files-grid">
       @for (file of files(); track file.fileUrl; let i = $index) {
         <div class="file-card" [class.is-main]="isMain(file)">
-          <div class="file-preview" (click)="openModal(file)">
+          <div class="file-preview" role="button" tabindex="0"
+               (click)="openModal(file)" (keydown.enter)="openModal(file)" (keydown.space)="openModal(file)">
             @if (isImage(file)) {
               <img [src]="file.fileUrl" [alt]="file.fileName" loading="lazy">
             } @else if (isVideo(file)) {
@@ -66,27 +67,6 @@
 </div>
 
 @if (modalFile(); as file) {
-  <div class="file-modal" (click)="closeModal()">
-    <div class="file-modal-content" (click)="$event.stopPropagation()">
-      <button type="button" class="modal-close" (click)="closeModal()">
-        <mat-icon>close</mat-icon>
-      </button>
-      @if (isImage(file)) {
-        <img [src]="file.fileUrl" [alt]="file.fileName" class="modal-img">
-      } @else if (isVideo(file)) {
-        <video controls autoplay [src]="file.fileUrl" class="modal-video"></video>
-      } @else if (isAudio(file)) {
-        <div class="modal-audio">
-          <mat-icon class="audio-icon">audiotrack</mat-icon>
-          <p>{{ file.fileName }}</p>
-          <audio controls [src]="file.fileUrl"></audio>
-        </div>
-      } @else {
-        <iframe [src]="getSafeUrl(file.fileUrl)" class="modal-pdf"></iframe>
-      }
-      @if (file.fileName) {
-        <div class="modal-filename">{{ file.fileName }}</div>
-      }
-    </div>
-  </div>
+  <app-media-lightbox [url]="file.fileUrl" [kind]="modalKind(file)" [caption]="file.fileName"
+                      (closed)="closeModal()" />
 }

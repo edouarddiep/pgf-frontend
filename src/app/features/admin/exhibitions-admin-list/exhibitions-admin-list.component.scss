@@ -3,12 +3,9 @@
 // Spécificités de la liste des expositions, le reste vient de styles/_admin.scss.
 
 .admin-page {
-  .mat-column-location {
+  // Colonne « lieu » : uniquement les cellules, l'en-tête garde le style commun.
+  td.mat-column-location {
     color: $color-body;
     font-size: 0.9rem;
-  }
-
-  .custom-tooltip {
-    transform: translateY(-105%) translateX(-50%);
   }
 }

@@ -1,4 +1,6 @@
-import {Component, ChangeDetectionStrategy, inject, signal, PLATFORM_ID} from '@angular/core';
+import {
+  Component, ChangeDetectionStrategy, inject, signal, PLATFORM_ID, afterNextRender, viewChild, ElementRef
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
@@ -41,12 +43,16 @@ export class AdminLoginComponent {
 
   protected readonly loginMode = signal<'legacy' | 'email'>('email');
 
+  private readonly emailInput = viewChild<ElementRef<HTMLInputElement>>('emailInput');
+
   protected readonly loginForm = this.fb.group({
     email: ['', [Validators.email, Validators.required]],
     password: ['', [Validators.required]]
   });
 
   constructor() {
+    afterNextRender(() => this.emailInput()?.nativeElement.focus());
+
     if (isPlatformBrowser(inject(PLATFORM_ID))) {
       const params = new URLSearchParams(window.location.search);
       if (params.get('legacy') === 'true') {

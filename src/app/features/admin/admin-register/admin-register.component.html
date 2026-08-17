@@ -26,17 +26,23 @@
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'admin.register.password' | translate }}</mat-label>
             <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
-            <mat-icon matSuffix class="toggle-password" (click)="togglePassword()">
-              {{ showPassword() ? 'visibility_off' : 'visibility' }}
-            </mat-icon>
+            <button type="button" mat-icon-button matSuffix class="toggle-password"
+                    (click)="togglePassword()"
+                    [attr.aria-pressed]="showPassword()"
+                    [attr.aria-label]="(showPassword() ? 'admin.login.hidePassword' : 'admin.login.showPassword') | translate">
+              <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'admin.register.confirmPassword' | translate }}</mat-label>
             <input matInput [type]="showConfirmPassword() ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
-            <mat-icon matSuffix class="toggle-password" (click)="toggleConfirmPassword()">
-              {{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}
-            </mat-icon>
+            <button type="button" mat-icon-button matSuffix class="toggle-password"
+                    (click)="toggleConfirmPassword()"
+                    [attr.aria-pressed]="showConfirmPassword()"
+                    [attr.aria-label]="(showConfirmPassword() ? 'admin.login.hidePassword' : 'admin.login.showPassword') | translate">
+              <mat-icon>{{ showConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
           </mat-form-field>
 
           <div class="validation-errors">

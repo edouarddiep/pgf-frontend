@@ -21,6 +21,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdminService } from '@features/admin/services/admin.service';
 import { Exhibition } from '@core/models/exhibition.model';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
 import { NotificationService } from '@shared/services/notification.service';
 import { catchError, EMPTY, filter, finalize, Subject, switchMap, takeUntil } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -102,6 +103,7 @@ function endDateValidator(control: AbstractControl) {
     MatProgressSpinnerModule,
     MatProgressBarModule,
     ImageUploadComponent,
+    MediaLightboxComponent,
     TranslatePipe,
     MatAutocomplete,
     MatOption,
@@ -140,11 +142,9 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
   protected readonly isSaving = signal(false);
   protected readonly uploadedVideoUrls = signal<string[]>([]);
   protected readonly uploadingVideos = signal(false);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
+  protected readonly modalImageUrl = signal<string | null>(null);
   protected readonly mainImageUrl = signal<string | undefined>(undefined);
-  protected readonly showVideoModal = signal(false);
-  protected readonly modalVideoUrl = signal<string>('');
+  protected readonly modalVideoUrl = signal<string | null>(null);
   protected readonly imageRequired = signal(false);
   protected readonly addressSuggestions = signal<SwissAddress[]>([]);
 
@@ -428,20 +428,18 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
+    this.modalImageUrl.set(null);
   }
 
   protected openVideoModal(url: string): void {
     this.modalVideoUrl.set(url);
-    this.showVideoModal.set(true);
   }
 
   protected closeVideoModal(): void {
-    this.showVideoModal.set(false);
+    this.modalVideoUrl.set(null);
   }
 
   private formatDateForBackend(date: Date): string {

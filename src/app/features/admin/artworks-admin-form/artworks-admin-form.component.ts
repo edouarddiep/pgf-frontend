@@ -15,6 +15,8 @@ import { NotificationService } from '@shared/services/notification.service';
 import { Artwork, ArtworkCategory } from '@core/models/artwork.model';
 import { EMPTY, catchError, finalize } from 'rxjs';
 import { ImageUploadComponent } from '@shared/components/image-upload/image-upload.component';
+import { ImageCropperComponent } from '@shared/components/image-cropper/image-cropper.component';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
 import { HasUnsavedChanges } from '@features/admin/guards/unsaved-changes.guard';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
@@ -35,6 +37,8 @@ import { LocaleService } from '@core/services/locale.service';
     MatTooltipModule,
     MatProgressSpinnerModule,
     ImageUploadComponent,
+    ImageCropperComponent,
+    MediaLightboxComponent,
     TranslatePipe
 ],
   templateUrl: './artworks-admin-form.component.html',
@@ -52,17 +56,10 @@ export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {
   protected readonly localeService = inject(LocaleService);
   protected readonly lang = computed(() => this.translateService.currentLang());
 
-  private isDragging = false;
-  private dragStartX = 0;
-  private dragStartY = 0;
-  private dragStartPosX = 50;
-  private dragStartPosY = 50;
-
   protected readonly categories = signal<ArtworkCategory[]>([]);
   protected readonly editingArtwork = signal<Artwork | null>(null);
   protected readonly isSubmitting = signal(false);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
+  protected readonly modalImageUrl = signal<string | null>(null);
   protected readonly imageRequired = signal(false);
 
   protected readonly mainImageUrl = signal<string | undefined>(undefined);
@@ -179,7 +176,7 @@ export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {
     if (file) {
       this.fileUploadService.uploadImage(file, this.getCategorySlugForUpload()).pipe(
         catchError(() => {
-          this.notificationService.error('Erreur lors de l\'upload de l\'image principale');
+          this.notificationService.error(this.translateService.translate('admin.common.errors.uploadFailed'));
           this.isSubmitting.set(false);
           return EMPTY;
         })
@@ -224,35 +221,6 @@ export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {
     this.hasUnsavedChanges.set(true);
   }
 
-  protected startDrag(event: MouseEvent): void {
-    this.isDragging = true;
-    this.dragStartX = event.clientX;
-    this.dragStartY = event.clientY;
-    this.dragStartPosX = this.mainImagePositionX();
-    this.dragStartPosY = this.mainImagePositionY();
-    event.preventDefault();
-  }
-
-  protected onDrag(event: MouseEvent): void {
-    if (!this.isDragging) return;
-    const previewEl = event.currentTarget as HTMLElement;
-    const sensitivity = 100 / this.mainImageZoom();
-    const deltaX = ((event.clientX - this.dragStartX) / previewEl.offsetWidth) * -100 * sensitivity;
-    const deltaY = ((event.clientY - this.dragStartY) / previewEl.offsetHeight) * -100 * sensitivity;
-    this.mainImagePositionX.set(Math.min(100, Math.max(0, this.dragStartPosX + deltaX)));
-    this.mainImagePositionY.set(Math.min(100, Math.max(0, this.dragStartPosY + deltaY)));
-    this.hasUnsavedChanges.set(true);
-  }
-
-  protected stopDrag(): void {
-    this.isDragging = false;
-  }
-
-  protected onZoomChange(value: string): void {
-    this.mainImageZoom.set(+value);
-    this.hasUnsavedChanges.set(true);
-  }
-
   protected onOtherImagesChanged(event: { urls: string[]; mainUrl: string | undefined }): void {
     if (event.mainUrl) {
       const previousMain = this.mainImageUrl();
@@ -280,11 +248,10 @@ export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
+    this.modalImageUrl.set(null);
   }
 
   protected getCategorySlugForUpload(): string {
@@ -304,7 +271,7 @@ export class ArtworksAdminFormComponent implements OnInit, HasUnsavedChanges {
       a.click();
       URL.revokeObjectURL(objectUrl);
     } catch {
-      this.notificationService.error('Erreur lors du téléchargement');
+      this.notificationService.error(this.translateService.translate('admin.common.errors.downloadFailed'));
     }
   }
 

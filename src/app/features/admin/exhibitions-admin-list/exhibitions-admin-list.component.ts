@@ -12,8 +12,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { Exhibition, ExhibitionStatus } from '@core/models/exhibition.model';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, finalize } from 'rxjs';
 import { LoadingDirective } from '@/app/directives/loading.directive';
+import { SortableDirective } from '@/app/directives/sortable.directive';
+import { TextTooltipDirective } from '@/app/directives/text-tooltip.directive';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import { ExportColumn, ExportService } from '@shared/services/export.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
@@ -21,7 +25,13 @@ import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@core/services/translate.service';
 import { LocaleService } from '@core/services/locale.service';
 import { TruncatePipe } from '@core/pipes/truncate.pipe';
-import { ExhibitionsAdminStateService } from '@features/admin/services/exhibitions-admin-state.service';
+import { ExhibitionSortField, ExhibitionsAdminStateService } from '@features/admin/services/exhibitions-admin-state.service';
+
+const STATUS_ORDER: Record<ExhibitionStatus, number> = {
+  [ExhibitionStatus.ONGOING]: 0,
+  [ExhibitionStatus.UPCOMING]: 1,
+  [ExhibitionStatus.PAST]: 2
+};
 
 @Component({
   selector: 'app-exhibitions-admin-list',
@@ -36,6 +46,10 @@ import { ExhibitionsAdminStateService } from '@features/admin/services/exhibitio
     MatChipsModule,
     MatTooltipModule,
     LoadingDirective,
+    SortableDirective,
+    TextTooltipDirective,
+    MediaLightboxComponent,
+    LoadingSpinnerComponent,
     HighlightPipe,
     TranslatePipe,
     TruncatePipe
@@ -56,14 +70,11 @@ export class ExhibitionsAdminListComponent implements OnInit {
   protected readonly lang = computed(() => this.translateService.currentLang());
 
   protected readonly rawExhibitions = signal<Exhibition[]>([]);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal<string>('');
+  protected readonly modalImageUrl = signal<string | null>(null);
+  protected readonly isLoading = signal(true);
   protected readonly searchQuery = signal('');
-  protected readonly sortField = signal<'id' | 'title'>('id');
+  protected readonly sortField = signal<ExhibitionSortField>('date');
   protected readonly sortAsc = signal(true);
-  protected readonly tooltipText = signal<string>('');
-  protected readonly tooltipX = signal(0);
-  protected readonly tooltipY = signal(0);
   protected readonly highlightedId = signal<number | null>(null);
   protected readonly displayedColumns = ['id', 'image', 'title', 'location', 'status', 'actions'];
 
@@ -85,11 +96,41 @@ export class ExhibitionsAdminListComponent implements OnInit {
     }
 
     return [...base].sort((a, b) => {
-      const va = field === 'id' ? a.id : this.normalize(a.title ?? '');
-      const vb = field === 'id' ? b.id : this.normalize(b.title ?? '');
-      return asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+      const comparison = field === 'date' ? this.compareByStatusThenDate(a, b) : this.compareByField(a, b, field);
+      return asc ? comparison : -comparison;
     });
   });
+
+  // Ordre de travail du back-office : les expositions en cours d'abord, puis
+  // celles à venir (la plus proche en tête) et enfin les passées (la plus
+  // récente en tête), comme le fait déjà l'API pour le site public.
+  private compareByStatusThenDate(a: Exhibition, b: Exhibition): number {
+    const rankDiff = STATUS_ORDER[a.status ?? ExhibitionStatus.PAST] - STATUS_ORDER[b.status ?? ExhibitionStatus.PAST];
+    if (rankDiff !== 0) {
+      return rankDiff;
+    }
+    const dateDiff = this.startTime(a) - this.startTime(b);
+    if (a.status === ExhibitionStatus.UPCOMING) {
+      return dateDiff;
+    }
+    return -dateDiff;
+  }
+
+  private compareByField(a: Exhibition, b: Exhibition, field: ExhibitionSortField): number {
+    const va = field === 'id' ? a.id : this.normalize(a.title ?? '');
+    const vb = field === 'id' ? b.id : this.normalize(b.title ?? '');
+    if (va === vb) {
+      return 0;
+    }
+    return va > vb ? 1 : -1;
+  }
+
+  private startTime(exhibition: Exhibition): number {
+    if (!exhibition.startDate) {
+      return 0;
+    }
+    return new Date(exhibition.startDate).getTime();
+  }
 
   ngOnInit(): void {
     const state = this.stateService.state();
@@ -100,11 +141,15 @@ export class ExhibitionsAdminListComponent implements OnInit {
   }
 
   private loadExhibitions(anchorId: number | null = null): void {
+    this.isLoading.set(true);
     this.adminService.getExhibitions()
-      .pipe(catchError(() => {
-        this.notificationService.error(this.translateService.translate('admin.exhibitions.loadError'));
-        return EMPTY;
-      }))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error(this.translateService.translate('admin.exhibitions.loadError'));
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe(exhibitions => {
         this.rawExhibitions.set(exhibitions);
         this.scrollToAnchor(anchorId);
@@ -151,11 +196,11 @@ export class ExhibitionsAdminListComponent implements OnInit {
     });
   }
 
-  protected sort(field: 'id' | 'title'): void {
+  protected sort(field: string): void {
     if (this.sortField() === field) {
       this.sortAsc.update(v => !v);
     } else {
-      this.sortField.set(field);
+      this.sortField.set(field as ExhibitionSortField);
       this.sortAsc.set(true);
     }
   }
@@ -185,22 +230,10 @@ export class ExhibitionsAdminListComponent implements OnInit {
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
-  }
-
-  protected showTooltip(event: MouseEvent, text: string): void {
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
-    this.tooltipText.set(text);
-    this.tooltipX.set(rect.left + rect.width / 2 - 210);
-    this.tooltipY.set(rect.top - 8);
-  }
-
-  protected hideTooltip(): void {
-    this.tooltipText.set('');
+    this.modalImageUrl.set(null);
   }
 
   protected exportData(): void {

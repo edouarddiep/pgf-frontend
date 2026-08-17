@@ -20,9 +20,9 @@
   mat-icon { font-size: 18px; width: 18px; height: 18px; }
 
   &:hover {
-    border-color: $color-primary;
-    background: rgba(25, 118, 210, 0.05);
-    color: $color-primary;
+    border-color: $admin-accent;
+    background: $admin-accent-softer;
+    color: $admin-accent;
   }
 
   input[type='file'] { display: none; }
@@ -114,84 +114,4 @@
   font-size: 0.85rem;
   font-style: italic;
   margin: 0.5rem 0 0;
-}
-
-.file-modal {
-  position: fixed;
-  top: 64px;
-  left: 250px;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.file-modal-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-
-  .modal-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 4px !important;
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    z-index: 1;
-    padding: 0;
-    transition: background 0.2s ease, transform 0.2s ease;
-
-    mat-icon { font-size: 18px; width: 18px; height: 18px; }
-
-    &:hover {
-      background: rgba(112, 105, 105, 0.75);
-      transform: scale(1.05);
-    }
-  }
-
-  .modal-img { max-width: 90vw; max-height: 85vh; border-radius: 4px; object-fit: contain; }
-  .modal-video { max-width: 90vw; max-height: 80vh; border-radius: 4px; }
-  .modal-pdf { width: 80vw; height: 85vh; border: none; border-radius: 4px; background: white; }
-
-  .modal-audio {
-    background: white;
-    border-radius: 8px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    min-width: 320px;
-
-    .audio-icon { font-size: 64px; width: 64px; height: 64px; color: $color-primary; }
-    p { margin: 0; color: $color-heading; font-size: 0.9rem; text-align: center; }
-    audio { width: 100%; }
-  }
-
-  .modal-filename {
-    color: white;
-    font-size: 0.85rem;
-    opacity: 0.8;
-    text-align: center;
-    max-width: 80vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }

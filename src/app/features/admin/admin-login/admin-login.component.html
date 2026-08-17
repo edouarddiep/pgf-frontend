@@ -1,29 +1,39 @@
 <div class="auth-page">
   <mat-card class="auth-card">
     <mat-card-content>
+      <span class="auth-brand">{{ 'admin.login.brand' | translate }}</span>
       <h1 class="card-title">{{ 'admin.login.title' | translate }}</h1>
+      <p class="card-subtitle">{{ 'admin.login.subtitle' | translate }}</p>
+
       <form [formGroup]="loginForm" (ngSubmit)="login()">
         @if (loginMode() === 'email') {
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>{{ 'admin.login.email' | translate }}</mat-label>
-            <input matInput formControlName="email" type="email" autocomplete="email">
+            <input #emailInput matInput formControlName="email" type="email" autocomplete="email"
+                   autocapitalize="none" spellcheck="false">
           </mat-form-field>
         }
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>{{ 'admin.login.passwordLabel' | translate }}</mat-label>
           <input matInput [type]="showPassword() ? 'text' : 'password'" formControlName="password"
-                 (keyup.enter)="login()">
-          <mat-icon matSuffix class="toggle-password" (click)="togglePassword()">
-            {{ showPassword() ? 'visibility_off' : 'visibility' }}
-          </mat-icon>
+                 autocomplete="current-password">
+          <button type="button" mat-icon-button matSuffix class="toggle-password"
+                  (click)="togglePassword()"
+                  [attr.aria-pressed]="showPassword()"
+                  [attr.aria-label]="(showPassword() ? 'admin.login.hidePassword' : 'admin.login.showPassword') | translate">
+            <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
         </mat-form-field>
 
         @if (loginError()) {
-          <div class="error-message">{{ 'admin.login.wrongPassword' | translate }}</div>
+          <div class="error-message" role="alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ 'admin.login.wrongPassword' | translate }}</span>
+          </div>
         }
 
         <div class="actions">
-          <button mat-raised-button color="primary" type="submit" class="action-btn"
+          <button mat-raised-button color="primary" type="submit" class="action-btn full-width"
                   [disabled]="loginForm.invalid || isLoading()">
             {{ isLoading() ? ('admin.login.submitting' | translate) : ('admin.login.submit' | translate) }}
           </button>

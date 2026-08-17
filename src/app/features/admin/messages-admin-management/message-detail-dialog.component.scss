@@ -1,18 +1,52 @@
+@use 'tokens' as *;
+
+// La boîte de dialogue est rendue dans l'overlay CDK, hors de `.admin-page` :
+// elle hérite donc de la typographie du site public (p à 1.2rem, h2/h3 à
+// 1.9rem centrés). On rétablit ici l'échelle de l'administration.
+
 .message-detail {
   max-width: 600px;
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+    color: $color-heading;
+  }
 }
 
 .message-info p {
-  margin: 0.5rem 0;
+  margin: 0.35rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: $color-body;
+  overflow-wrap: anywhere;
 }
 
 .message-content {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   padding: 1rem;
-  background: #f5f5f5;
+  background: $color-surface;
   border-radius: 4px;
+
+  h3 {
+    margin: 0 0 0.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: $color-muted;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $color-heading;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 }
 
-.message-content h3 {
-  margin-top: 0;
+.mat-mdc-dialog-actions {
+  justify-content: flex-end;
+  border-top: 1px solid $color-border;
 }

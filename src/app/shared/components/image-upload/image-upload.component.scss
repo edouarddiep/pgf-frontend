@@ -15,8 +15,8 @@
   background: #fafafa;
 
   &:hover, &.dragging {
-    border-color: $color-primary;
-    background: #f0f6ff;
+    border-color: $admin-accent;
+    background: $admin-accent-softer;
   }
 
   &.has-images {
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: $color-primary;
+  color: $admin-accent;
   font-size: 0.9rem;
   font-weight: 500;
 

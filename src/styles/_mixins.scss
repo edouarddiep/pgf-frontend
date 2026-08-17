@@ -143,6 +143,10 @@
 
   .lang-item {
     color: #999 !important;
+    // Un <button> n'hérite ni de la police ni des réglages de la fonte
+    // variable : sans ça, la bascule sort en police système et paraît grasse.
+    font-family: inherit !important;
+    font-variation-settings: inherit !important;
     font-size: 0.9rem !important;
     font-weight: normal !important;
     letter-spacing: 0.5px !important;
@@ -187,14 +191,14 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
-  &.is-main { border-color: $color-primary; }
+  &.is-main { border-color: $admin-accent; }
 
   .main-badge {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    background: rgba(25, 118, 210, 0.88);
+    background: rgba(112, 105, 105, 0.9);
     color: white;
     font-size: 0.7rem;
     padding: 4px 6px;

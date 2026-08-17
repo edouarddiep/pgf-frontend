@@ -1,7 +1,9 @@
 <div class="admin-page">
   <div class="admin-header">
-    <div style="display:flex; align-items:center; gap:0.5rem">
-      <button mat-icon-button (click)="cancel()" [matTooltip]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
+    <div class="header-back">
+      <button mat-icon-button type="button" (click)="cancel()"
+              [matTooltip]="'admin.common.backToList' | translate"
+              [attr.aria-label]="'admin.common.backToList' | translate"><mat-icon>arrow_back</mat-icon></button>
       <h2>{{ editingExhibition() ? ('admin.exhibitions.editTitle' | translate) : ('admin.exhibitions.createTitle' | translate) }}</h2>
     </div>
   </div>
@@ -194,8 +196,7 @@
           }
           <button mat-button type="button" (click)="cancel()" [disabled]="isSaving()">{{ 'admin.common.cancel' | translate }}</button>
           <button mat-raised-button color="primary" type="submit"
-                  [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())"
-                  [class.btn-active]="!exhibitionForm.invalid && !isSaving() && (!editingExhibition() || exhibitionForm.dirty || hasUnsavedChanges())">
+                  [disabled]="exhibitionForm.invalid || isSaving() || (editingExhibition() && !exhibitionForm.dirty && !hasUnsavedChanges())">
             {{ editingExhibition() ? ('admin.common.saveChanges' | translate) : ('admin.common.save' | translate) }}
           </button>
         </div>
@@ -203,23 +204,11 @@
     </mat-card-content>
   </mat-card>
 
-  @if (showImageModal()) {
-    <div class="image-modal" (click)="closeImageModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <img [src]="modalImageUrl()" [alt]="'admin.common.preview' | translate" class="modal-image">
-        <button type="button" class="modal-close" (click)="closeImageModal()"><mat-icon>close</mat-icon></button>
-      </div>
-    </div>
+  @if (modalImageUrl(); as url) {
+    <app-media-lightbox [url]="url" (closed)="closeImageModal()" />
   }
 
-  @if (showVideoModal()) {
-    <div class="image-modal" (click)="closeVideoModal()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-        <video [src]="modalVideoUrl()" controls autoplay class="modal-image" style="max-height:80vh; max-width:80vw;">
-          <source [src]="modalVideoUrl()">
-        </video>
-        <button type="button" class="modal-close" (click)="closeVideoModal()"><mat-icon>close</mat-icon></button>
-      </div>
-    </div>
+  @if (modalVideoUrl(); as videoUrl) {
+    <app-media-lightbox [url]="videoUrl" kind="video" (closed)="closeVideoModal()" />
   }
 </div>

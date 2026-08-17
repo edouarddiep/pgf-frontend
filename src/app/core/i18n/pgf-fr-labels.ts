@@ -394,6 +394,8 @@ export const fr = {
       greeting: 'Bonjour',
       title: 'Administration PGF',
       logout: 'Déconnexion',
+      mobileBlockedTitle: 'Accès non disponible sur mobile',
+      mobileBlockedMessage: 'Veuillez consulter cette page depuis un ordinateur.',
       logoutSuccess: 'Déconnexion réussie. Merci et bonne visite !',
       nav: {
         dashboard: 'Tableau de bord',
@@ -434,6 +436,10 @@ export const fr = {
     },
     login: {
       title: 'Administration PGF',
+      brand: 'Pierrette Gonseth-Favre',
+      subtitle: 'Espace de gestion du contenu du site',
+      showPassword: 'Afficher le mot de passe',
+      hidePassword: 'Masquer le mot de passe',
       email: 'Adresse e-mail',
       passwordLabel: 'Mot de passe',
       wrongPassword: 'Utilisateur inexistant ou mot de passe incorrect.',
@@ -476,6 +482,8 @@ export const fr = {
     },
     common: {
       exportList: 'Exporter la liste',
+      clearSearch: 'Effacer la recherche',
+      resultCount: '{{count}} résultat(s)',
       exportTooltip: 'Exporte les données de la liste dans un fichier Excel',
       search: 'Rechercher',
       cancel: 'Annuler',
@@ -499,6 +507,7 @@ export const fr = {
         saveFailed: 'Erreur lors de la sauvegarde',
         deleteFailed: 'Erreur lors de la suppression',
         uploadFailed: "Erreur lors de l'upload",
+        downloadFailed: 'Erreur lors du téléchargement',
         generic: 'Une erreur est survenue. Veuillez réessayer.'
       },
     },
@@ -535,6 +544,9 @@ export const fr = {
         descriptionHint: 'Maximum 1000 caractères',
         categories: 'Catégories',
         categoryRequired: 'Veuillez sélectionner au moins une catégorie',
+        mainImageLabel: 'Image principale *',
+        chooseMainImage: "Choisir l'image principale",
+        changeMainImage: "Changer l'image principale",
         imagesLabel: 'Images',
         imageLegend: "*L'image principale s'affiche en premier sur la page de l'œuvre"
       },
@@ -688,6 +700,9 @@ export const fr = {
       statusRead: 'Ouvert',
       statusNew: 'Nouveau',
       read: 'Lire le message',
+      reply: 'Répondre par e-mail',
+      searchLabel: 'Rechercher un message',
+      searchPlaceholder: 'Par expéditeur, e-mail ou sujet',
       receivedAt: "Reçu le dd.MM.yyyy à HH:mm",
       deleteConfirmTitle: 'Supprimer le message',
       deleteConfirmMessage: 'Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.',
@@ -720,6 +735,18 @@ export const fr = {
       zoom: 'Agrandir',
       moveLeft: 'Déplacer à gauche',
       moveRight: 'Déplacer à droite'
+    },
+    imageCropper: {
+      viewportLabel: "Cadrage de l'image : glisser ou flèches du clavier pour déplacer, + et - pour zoomer",
+      hint: 'Glisser pour recadrer',
+      zoomIn: 'Zoomer',
+      zoomOut: 'Dézoomer',
+      zoomLabel: "Niveau de zoom de l'image",
+      reset: 'Réinitialiser le cadrage'
+    },
+    lightbox: {
+      title: 'Aperçu du média',
+      close: "Fermer l'aperçu"
     },
     archiveFileUpload: {
       attach: 'Joindre un fichier',

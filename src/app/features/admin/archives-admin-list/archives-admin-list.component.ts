@@ -12,9 +12,13 @@ import { AdminService } from '@features/admin/services/admin.service';
 import { NotificationService } from '@shared/services/notification.service';
 import { ExportColumn, ExportService } from '@shared/services/export.service';
 import { LoadingDirective } from '@/app/directives/loading.directive';
+import { SortableDirective } from '@/app/directives/sortable.directive';
+import { TextTooltipDirective } from '@/app/directives/text-tooltip.directive';
+import { MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
+import { LoadingSpinnerComponent } from '@shared/components/loading-spinner/loading-spinner.component';
 import { HighlightPipe } from '@core/pipes/highlight.pipe';
 import { Archive } from '@core/models/archive.model';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, finalize } from 'rxjs';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { ConfirmDialogService } from '@shared/services/confirm-dialog.service';
 import { TranslateService } from '@core/services/translate.service';
@@ -36,6 +40,10 @@ type SortField = 'id' | 'title' | 'year';
     MatCardModule,
     MatTooltipModule,
     LoadingDirective,
+    SortableDirective,
+    TextTooltipDirective,
+    MediaLightboxComponent,
+    LoadingSpinnerComponent,
     HighlightPipe,
     TranslatePipe,
     TruncatePipe
@@ -58,11 +66,8 @@ export class ArchivesAdminListComponent implements OnInit {
   protected readonly searchQuery = signal('');
   protected readonly sortField = signal<SortField>('id');
   protected readonly sortAsc = signal(true);
-  protected readonly showImageModal = signal(false);
-  protected readonly modalImageUrl = signal('');
-  protected readonly tooltipText = signal<string>('');
-  protected readonly tooltipX = signal(0);
-  protected readonly tooltipY = signal(0);
+  protected readonly modalImageUrl = signal<string | null>(null);
+  protected readonly isLoading = signal(true);
   protected readonly highlightedId = signal<number | null>(null);
   protected readonly displayedColumns = ['id', 'thumbnail', 'title', 'year', 'actions'];
 
@@ -100,11 +105,15 @@ export class ArchivesAdminListComponent implements OnInit {
   }
 
   private loadArchives(anchorId: number | null = null): void {
+    this.isLoading.set(true);
     this.adminService.getArchives()
-      .pipe(catchError(() => {
-        this.notificationService.error(this.translateService.translate('admin.archives.loadError'));
-        return EMPTY;
-      }))
+      .pipe(
+        catchError(() => {
+          this.notificationService.error(this.translateService.translate('admin.archives.loadError'));
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe(archives => {
         this.rawArchives.set(archives);
         this.scrollToAnchor(anchorId);
@@ -151,11 +160,11 @@ export class ArchivesAdminListComponent implements OnInit {
     });
   }
 
-  protected sort(field: SortField): void {
+  protected sort(field: string): void {
     if (this.sortField() === field) {
       this.sortAsc.update(v => !v);
     } else {
-      this.sortField.set(field);
+      this.sortField.set(field as SortField);
       this.sortAsc.set(true);
     }
   }
@@ -166,26 +175,10 @@ export class ArchivesAdminListComponent implements OnInit {
 
   protected openImageModal(url: string): void {
     this.modalImageUrl.set(url);
-    this.showImageModal.set(true);
   }
 
   protected closeImageModal(): void {
-    this.showImageModal.set(false);
-  }
-
-  protected showTooltip(event: MouseEvent, text: string): void {
-    const rect = (event.target as HTMLElement).getBoundingClientRect();
-    this.tooltipText.set(this.stripHtml(text));
-    this.tooltipX.set(rect.left + rect.width / 2 - 210);
-    this.tooltipY.set(rect.top - 8);
-  }
-
-  private stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
-  }
-
-  protected hideTooltip(): void {
-    this.tooltipText.set('');
+    this.modalImageUrl.set(null);
   }
 
   protected exportData(): void {
