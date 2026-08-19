@@ -143,9 +143,17 @@ $biography-year-line: 1.5rem;
   }
 
   .timeline-content .entry-title {
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: #4a4444;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+
+    &:empty {
+      display: none;
+    }
   }
 
   @include mobile {
