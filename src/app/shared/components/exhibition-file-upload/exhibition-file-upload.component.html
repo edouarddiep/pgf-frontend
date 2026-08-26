@@ -3,11 +3,33 @@
          accept="image/*,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav,application/pdf,.doc,.docx"
          (change)="onFilesSelected($event)">
 
-  <button type="button" class="upload-zone" (click)="fileInput.click()">
-    <mat-icon>cloud_upload</mat-icon>
-    <span class="upload-title">{{ 'shared.exhibitionFileUpload.drop' | translate }}</span>
-    <small>{{ 'shared.exhibitionFileUpload.hint' | translate }}</small>
-  </button>
+  <div class="upload-actions">
+    <button type="button" class="upload-zone" (click)="fileInput.click()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span class="upload-title">{{ 'shared.exhibitionFileUpload.drop' | translate }}</span>
+      <small>{{ 'shared.exhibitionFileUpload.hint' | translate }}</small>
+    </button>
+
+    <button type="button" class="upload-zone" [class.active]="linkFormOpen()" (click)="toggleLinkForm()">
+      <mat-icon>add_link</mat-icon>
+      <span class="upload-title">{{ 'shared.exhibitionFileUpload.addLink' | translate }}</span>
+      <small>{{ 'shared.exhibitionFileUpload.linkHint' | translate }}</small>
+    </button>
+  </div>
+
+  @if (linkFormOpen()) {
+    <div class="link-form">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'shared.exhibitionFileUpload.linkUrl' | translate }}</mat-label>
+        <input matInput type="url" placeholder="https://..." [value]="linkUrl()"
+               (input)="linkUrl.set($any($event.target).value)"
+               (keydown.enter)="$event.preventDefault(); addLink()">
+      </mat-form-field>
+      <button type="button" mat-flat-button class="link-submit" (click)="addLink()">
+        {{ 'shared.exhibitionFileUpload.linkSubmit' | translate }}
+      </button>
+    </div>
+  }
 
   @if (uploading()) {
     <mat-progress-bar mode="indeterminate" class="upload-progress"></mat-progress-bar>
@@ -28,7 +50,7 @@
         <li class="file-row" [class.expanded]="isExpanded(file)">
           <div class="file-main">
             <button type="button" class="file-thumb" (click)="openPreview(file)"
-                    [matTooltip]="'shared.exhibitionFileUpload.preview' | translate">
+                    [matTooltip]="(isLink(file) ? 'exhibitions.media.openLink' : 'shared.exhibitionFileUpload.preview') | translate">
               @if (isImage(file)) {
                 <img [src]="file.thumbnailUrl || file.fileUrl" [alt]="file.fileName || ''" loading="lazy">
               } @else if (isVideo(file)) {
@@ -44,7 +66,7 @@
                     [matTooltip]="'shared.exhibitionFileUpload.details' | translate">
               <span class="file-name">{{ displayName(file) }}</span>
               <span class="file-meta">
-                {{ sizeLabel(file) }}
+                {{ metaLabel(file) }}
                 @if (file.source) { <span class="file-source">{{ file.source }}</span> }
               </span>
               <mat-icon class="file-chevron">{{ isExpanded(file) ? 'expand_less' : 'expand_more' }}</mat-icon>
@@ -91,6 +113,13 @@
                 <input matInput [value]="file.source || ''"
                        [placeholder]="'shared.exhibitionFileUpload.sourcePlaceholder' | translate"
                        (input)="patch(i, { source: $any($event.target).value })">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'shared.exhibitionFileUpload.sourceUrl' | translate }}</mat-label>
+                <input matInput type="url" placeholder="https://..." [value]="file.sourceUrl || ''"
+                       (input)="patch(i, { sourceUrl: $any($event.target).value })"
+                       (blur)="normalizeSourceUrl(i)">
               </mat-form-field>
 
               <mat-form-field appearance="outline">

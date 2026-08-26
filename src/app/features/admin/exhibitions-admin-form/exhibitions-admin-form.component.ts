@@ -303,7 +303,7 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
   private fileSignature(file: ExhibitionFile): string {
     return JSON.stringify([
       file.mediaType, file.title ?? '', file.description ?? '',
-      file.source ?? '', file.publishedOn ?? '', file.displayOrder ?? 0
+      file.source ?? '', file.sourceUrl ?? '', file.publishedOn ?? '', file.displayOrder ?? 0
     ]);
   }
 

@@ -18,6 +18,7 @@ export interface ExhibitionFile {
   description?: string;
   descriptionEn?: string;
   source?: string;
+  sourceUrl?: string;
   publishedOn?: string;
   displayOrder?: number;
 }

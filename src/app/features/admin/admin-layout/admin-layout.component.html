@@ -51,7 +51,7 @@
           <span matLine>{{ 'admin.layout.nav.messages' | translate }}</span>
         </a>
         <mat-divider></mat-divider>
-        <a mat-list-item [routerLink]="navService.langPrefix()" target="_blank">
+        <a mat-list-item [routerLink]="navService.langPrefix()" target="_blank" rel="noopener">
           <mat-icon matListIcon>exit_to_app</mat-icon>
           <span matLine>{{ 'admin.dashboard.backToSite' | translate }}</span>
         </a>

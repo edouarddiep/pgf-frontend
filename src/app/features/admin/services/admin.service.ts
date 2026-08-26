@@ -1,13 +1,38 @@
-import {Injectable, inject, signal, PLATFORM_ID} from '@angular/core';
+import {Injectable, inject, signal, computed, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {Observable, of} from 'rxjs';
+import {catchError, finalize, map, shareReplay} from 'rxjs/operators';
 import {ArtworkCategory, Artwork} from '@core/models/artwork.model';
 import {Exhibition, ExhibitionFile} from '@core/models/exhibition.model';
 import {ContactMessage} from '@core/models/contact.model';
 import {environment} from '@environments/environment';
 import {Archive} from '@core/models/archive.model';
+
+// La session vit dans localStorage : sessionStorage disparaissait à la
+// fermeture de l'onglet et n'est jamais partagé entre onglets, ce qui imposait
+// une reconnexion à chaque nouvel onglet.
+const SESSION_STORAGE_KEY = 'pgf-admin-session';
+const LEGACY_STORAGE_KEYS = ['pgf-admin-auth', 'pgf-admin-jwt', 'pgf-admin-legacy'];
+
+// Un jeton qui expire pendant le trajet de la requête serait rejeté : on le
+// renouvelle un peu avant l'échéance.
+const TOKEN_EXPIRY_MARGIN_SECONDS = 60;
+
+interface AdminSession {
+  accessToken?: string;
+  refreshToken?: string;
+  expiresAt?: number;
+  legacyPassword?: string;
+}
+
+interface SupabaseTokenResponse {
+  access_token: string;
+  refresh_token?: string;
+  expires_in?: number;
+  expires_at?: number;
+}
 
 export interface AdminExhibitionRequest {
   title: string;
@@ -29,18 +54,30 @@ export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly adminApiUrl = `${environment.apiUrl}/admin`;
-  private readonly isAuthenticatedSignal = signal(false);
+  private readonly router = inject(Router);
+  private readonly session = signal<AdminSession | null>(null);
+  private refreshRequest?: Observable<string>;
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      const stored = sessionStorage.getItem('pgf-admin-auth');
-      this.isAuthenticatedSignal.set(stored === 'true');
-    } else {
-      this.isAuthenticatedSignal.set(false);
-    }
+    this.session.set(this.readSession());
+    this.clearLegacyStorage();
   }
 
-  isAuthenticated = this.isAuthenticatedSignal.asReadonly();
+  readonly isAuthenticated = computed(() => this.session() !== null);
+
+  readonly displayName = computed(() => {
+    const accessToken = this.session()?.accessToken;
+    if (!accessToken) {
+      return 'Admin';
+    }
+
+    try {
+      const payload = JSON.parse(atob(accessToken.split('.')[1]));
+      return payload?.user_metadata?.display_name ?? '';
+    } catch {
+      return '';
+    }
+  });
 
   login(emailOrPassword: string, password?: string): Observable<boolean> {
     if (password !== undefined) {
@@ -50,51 +87,125 @@ export class AdminService {
   }
 
   private loginWithEmail(email: string, password: string): Observable<boolean> {
-    return this.http.post<{ access_token: string }>(
-      `${environment.supabaseUrl}/auth/v1/token?grant_type=password`,
-      { email, password },
-      { headers: { apikey: environment.supabasePublishableKey } }
-    ).pipe(
-      map(res => {
-        this.isAuthenticatedSignal.set(true);
-        if (isPlatformBrowser(this.platformId)) {
-          sessionStorage.setItem('pgf-admin-auth', 'true');
-          sessionStorage.setItem('pgf-admin-jwt', res.access_token);
-          sessionStorage.removeItem('pgf-admin-legacy');
-        }
+    return this.requestToken('password', { email, password }).pipe(map(() => true));
+  }
+
+  private loginWithLegacyPassword(password: string): Observable<boolean> {
+    return this.http.post<void>(`${this.adminApiUrl}/auth/login`, { password }).pipe(
+      map(() => {
+        this.storeSession({ legacyPassword: password });
         return true;
       })
     );
   }
 
-  private loginWithLegacyPassword(password: string): Observable<boolean> {
-    return this.http.post<void>(`${this.adminApiUrl}/auth/login`, { password }).pipe(
-      map(() => true),
-      tap(() => {
-        this.isAuthenticatedSignal.set(true);
-        if (isPlatformBrowser(this.platformId)) {
-          sessionStorage.setItem('pgf-admin-auth', 'true');
-          sessionStorage.setItem('pgf-admin-legacy', password);
-          sessionStorage.removeItem('pgf-admin-jwt');
-        }
+  // L'en-tête est résolu de façon asynchrone : un jeton périmé est renouvelé
+  // avant que la requête ne parte, sans que l'administrateur ne s'en aperçoive.
+  authHeader(): Observable<string> {
+    const session = this.session();
+    if (!session) {
+      return of('');
+    }
+
+    if (session.legacyPassword) {
+      return of(`Basic ${btoa(':' + session.legacyPassword)}`);
+    }
+
+    if (session.accessToken && !this.isExpired(session)) {
+      return of(`Bearer ${session.accessToken}`);
+    }
+
+    return this.refreshAccessToken();
+  }
+
+  logout(): void {
+    this.session.set(null);
+    this.refreshRequest = undefined;
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+  }
+
+  // Supabase fait tourner le refresh_token à chaque échange : deux appels
+  // simultanés en invalideraient un. Toutes les requêtes partagent donc le même.
+  private refreshAccessToken(): Observable<string> {
+    const refreshToken = this.session()?.refreshToken;
+    if (!refreshToken) {
+      this.expireSession();
+      return of('');
+    }
+
+    this.refreshRequest ??= this.requestToken('refresh_token', { refresh_token: refreshToken }).pipe(
+      map(res => `Bearer ${res.access_token}`),
+      catchError(() => {
+        this.expireSession();
+        return of('');
+      }),
+      finalize(() => this.refreshRequest = undefined),
+      shareReplay(1)
+    );
+
+    return this.refreshRequest;
+  }
+
+  private requestToken(grantType: string, body: object): Observable<SupabaseTokenResponse> {
+    return this.http.post<SupabaseTokenResponse>(
+      `${environment.supabaseUrl}/auth/v1/token?grant_type=${grantType}`,
+      body,
+      { headers: { apikey: environment.supabasePublishableKey } }
+    ).pipe(
+      map(res => {
+        this.storeSession({
+          accessToken: res.access_token,
+          refreshToken: res.refresh_token,
+          expiresAt: res.expires_at ?? this.nowInSeconds() + (res.expires_in ?? 3600)
+        });
+        return res;
       })
     );
   }
 
-  getAuthHeader(): string {
-    if (isPlatformBrowser(this.platformId)) {
-      const jwt = sessionStorage.getItem('pgf-admin-jwt');
-      if (jwt) return `Bearer ${jwt}`;
-      const legacy = sessionStorage.getItem('pgf-admin-legacy');
-      if (legacy) return `Basic ${btoa(':' + legacy)}`;
-    }
-    return '';
+  private expireSession(): void {
+    this.logout();
+    this.router.navigate(['/admin/login']);
   }
 
-  logout(): void {
-    this.isAuthenticatedSignal.set(false);
+  private isExpired(session: AdminSession): boolean {
+    return !session.expiresAt || session.expiresAt - TOKEN_EXPIRY_MARGIN_SECONDS <= this.nowInSeconds();
+  }
+
+  private nowInSeconds(): number {
+    return Math.floor(Date.now() / 1000);
+  }
+
+  // Une session sans moyen de se rejouer ne vaut rien : un jeton expiré sans
+  // refresh_token laisserait le garde passant et l'API répondre 401.
+  private readSession(): AdminSession | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
+
+    try {
+      const stored = localStorage.getItem(SESSION_STORAGE_KEY);
+      const session = stored ? JSON.parse(stored) as AdminSession : null;
+      return session?.legacyPassword || session?.refreshToken ? session : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private storeSession(session: AdminSession): void {
+    this.session.set(session);
     if (isPlatformBrowser(this.platformId)) {
-      sessionStorage.removeItem('pgf-admin-auth');
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+    }
+  }
+
+  // L'ancien stockage par onglet gardait le mot de passe legacy en clair après
+  // une déconnexion : on le purge au démarrage.
+  private clearLegacyStorage(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      LEGACY_STORAGE_KEYS.forEach(key => sessionStorage.removeItem(key));
     }
   }
 

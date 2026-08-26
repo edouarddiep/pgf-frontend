@@ -310,6 +310,31 @@ $wave-durations: 0.9s, 1.15s, 0.75s, 1s, 0.85s, 1.2s, 0.95s;
     color: $color-muted;
   }
 
+  // Lien sortant : souligné au survol, il se lit comme un lien et non comme
+  // un bouton de plus dans la carte.
+  .media-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    align-self: flex-start;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: $color-text;
+    border-bottom: 1px solid rgba(112, 105, 105, 0.35);
+    transition: border-color 0.25s ease, color 0.25s ease;
+
+    mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+    }
+
+    &:hover { border-color: $color-text; }
+  }
+
   .media-audio {
     width: 100%;
     margin-top: 0.5rem;

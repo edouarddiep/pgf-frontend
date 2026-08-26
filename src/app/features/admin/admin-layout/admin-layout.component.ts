@@ -1,6 +1,5 @@
-import {ChangeDetectionStrategy, Component, computed, inject, PLATFORM_ID, signal} from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatListModule} from '@angular/material/list';
@@ -34,29 +33,11 @@ import {NavService} from '@core/services/nav.service';
 export class AdminLayoutComponent {
   private readonly adminService = inject(AdminService);
   private readonly notificationService = inject(NotificationService);
-  private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   protected readonly navService = inject(NavService);
-  private readonly platformId = inject(PLATFORM_ID);
 
-  protected readonly displayName = signal<string>('');
+  protected readonly displayName = this.adminService.displayName;
   protected readonly currentLang = computed(() => this.translateService.currentLang());
-
-  constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      const jwt = sessionStorage.getItem('pgf-admin-jwt');
-      if (jwt) {
-        try {
-          const payload = JSON.parse(atob(jwt.split('.')[1]));
-          this.displayName.set(payload?.user_metadata?.display_name ?? '');
-        } catch {
-          this.displayName.set('');
-        }
-      } else {
-        this.displayName.set('Admin');
-      }
-    }
-  }
 
   protected setLang(lang: 'fr' | 'en'): void {
     this.translateService.setLang(lang);

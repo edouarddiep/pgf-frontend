@@ -72,6 +72,8 @@ export class ExhibitionFileUploadComponent {
   // la liste est réordonnée.
   protected readonly expandedUrl = signal<string | null>(null);
   protected readonly previewedFile = signal<ExhibitionFile | null>(null);
+  protected readonly linkFormOpen = signal(false);
+  protected readonly linkUrl = signal('');
 
   // Récapitulatif par catégorie, dans l'ordre d'affichage du site public.
   protected readonly typeSummary = computed(() =>
@@ -129,6 +131,74 @@ export class ExhibitionFileUploadComponent {
           fileSize: result.fileSize ?? file.size
         }]);
       });
+  }
+
+  // Un article en ligne n'a pas de fichier à envoyer : il devient un média de
+  // type LINK dont l'URL est l'adresse publique, ouverte dans un nouvel onglet.
+  protected toggleLinkForm(): void {
+    this.linkFormOpen.update(open => !open);
+    this.linkUrl.set('');
+  }
+
+  protected addLink(): void {
+    const url = this.normalizeUrl(this.linkUrl());
+    if (!url) {
+      this.notificationService.error(this.translateService.translate('shared.exhibitionFileUpload.invalidUrl'));
+      return;
+    }
+
+    const host = this.hostOf(url);
+    this.emit([...this.files(), {
+      mediaType: 'PRESS_ARTICLE',
+      fileType: 'LINK',
+      fileUrl: url,
+      fileName: host,
+      source: host
+    }]);
+
+    this.linkFormOpen.set(false);
+    this.linkUrl.set('');
+  }
+
+  // Saisie libre : on remet le lien en forme quand l'admin quitte le champ,
+  // et on le signale plutôt que de laisser partir une adresse inexploitable.
+  protected normalizeSourceUrl(index: number): void {
+    const current = this.files()[index]?.sourceUrl;
+    if (!current) {
+      return;
+    }
+
+    const normalized = this.normalizeUrl(current);
+    if (!normalized) {
+      this.notificationService.error(this.translateService.translate('shared.exhibitionFileUpload.invalidUrl'));
+      return;
+    }
+
+    if (normalized !== current) {
+      this.patch(index, { sourceUrl: normalized });
+    }
+  }
+
+  private normalizeUrl(value: string): string | null {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return null;
+    }
+
+    try {
+      const url = new URL(/^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`);
+      return url.hostname.includes('.') ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private hostOf(url: string): string {
+    try {
+      return new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
   }
 
   private detectFileType(mimeType: string): ExhibitionFileType {
@@ -195,7 +265,16 @@ export class ExhibitionFileUploadComponent {
     return file.fileType === 'VIDEO';
   }
 
-  protected sizeLabel(file: ExhibitionFile): string {
+  protected isLink(file: ExhibitionFile): boolean {
+    return file.fileType === 'LINK';
+  }
+
+  // Un lien n'a pas de poids : la ligne affiche son domaine à la place.
+  protected metaLabel(file: ExhibitionFile): string {
+    return this.isLink(file) ? this.hostOf(file.fileUrl) : this.sizeLabel(file);
+  }
+
+  private sizeLabel(file: ExhibitionFile): string {
     if (!file.fileSize) {
       return '';
     }
@@ -203,7 +282,13 @@ export class ExhibitionFileUploadComponent {
     return megabytes >= 1 ? `${megabytes.toFixed(1)} Mo` : `${Math.round(file.fileSize / 1024)} Ko`;
   }
 
+  // Une page externe refuse d'être encadrée : elle s'ouvre dans un onglet,
+  // seuls les fichiers hébergés passent par la visionneuse.
   protected openPreview(file: ExhibitionFile): void {
+    if (this.isLink(file)) {
+      window.open(file.fileUrl, '_blank', 'noopener');
+      return;
+    }
     this.previewedFile.set(file);
   }
 

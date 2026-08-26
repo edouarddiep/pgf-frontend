@@ -11,6 +11,10 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { DateFormatPipe } from '@core/pipes/date-format.pipe';
 import { MediaKind, MediaLightboxComponent } from '@shared/components/media-lightbox/media-lightbox.component';
 
+// En deçà de ce nombre de médias, tout tient sous les yeux : les filtres
+// n'apportent rien et alourdissent la section.
+const MIN_FILES_FOR_FILTERS = 5;
+
 const MEDIA_TYPE_ICONS: Record<ExhibitionMediaType, string> = {
   PRESS_ARTICLE: 'article', INTERVIEW: 'record_voice_over', VIDEO: 'movie',
   AUDIO: 'graphic_eq', PHOTO: 'photo_camera', DOCUMENT: 'description', OTHER: 'attach_file'
@@ -58,6 +62,10 @@ export class ExhibitionMediaComponent {
 
   protected readonly availableTypes = computed(() =>
     EXHIBITION_MEDIA_TYPES.filter(type => this.mediaFiles().some(file => file.mediaType === type))
+  );
+
+  protected readonly showFilters = computed(() =>
+    this.mediaFiles().length >= MIN_FILES_FOR_FILTERS && this.availableTypes().length > 1
   );
 
   protected readonly visibleFiles = computed(() => {
@@ -117,6 +125,20 @@ export class ExhibitionMediaComponent {
 
   protected isDocument(file: ExhibitionFile): boolean {
     return file.fileType === 'DOCUMENT' || file.fileType === 'LINK';
+  }
+
+  // Un média qui vit ailleurs porte son propre appel à l'action : sans lien
+  // visible, rien ne dit au visiteur que la carte mène à l'article.
+  protected externalUrl(file: ExhibitionFile): string | null {
+    if (file.sourceUrl) {
+      return file.sourceUrl;
+    }
+    return this.isDocument(file) ? file.fileUrl : null;
+  }
+
+  protected externalLabel(file: ExhibitionFile): string {
+    const isArticle = file.mediaType === 'PRESS_ARTICLE' || file.mediaType === 'INTERVIEW';
+    return isArticle ? 'exhibitions.media.read' : 'exhibitions.media.openLink';
   }
 
   // Un document bureautique ou un lien externe n'a rien à faire dans la
