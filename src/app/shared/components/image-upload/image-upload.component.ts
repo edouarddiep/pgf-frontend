@@ -8,6 +8,7 @@ import { NotificationService } from '@shared/services/notification.service';
 import { FileUploadService } from '@core/services/file-upload.service';
 import {TranslatePipe} from '@core/pipes/translate.pipe';
 import {TranslateService} from '@core/services/translate.service';
+import {nextMediaIndex} from '@core/utils/media-index.util';
 
 export interface ImageItem {
   url: string;
@@ -107,8 +108,9 @@ export class ImageUploadComponent {
   private uploadFiles(files: File[]): void {
     this.uploading.set(true);
     const slug = this.exhibitionSlug();
+    const firstIndex = nextMediaIndex([this.mainImageUrl(), ...this.images().map(image => image.url)], 'image');
     const uploads = slug
-      ? files.map((f, i) => this.fileUploadService.uploadExhibitionImage(f, slug, this.images().length + i + 1))
+      ? files.map((f, i) => this.fileUploadService.uploadExhibitionImage(f, slug, firstIndex + i))
       : files.map(f => this.fileUploadService.uploadImage(f, this.category()));
 
     let index = 0;
@@ -116,9 +118,10 @@ export class ImageUploadComponent {
       if (index >= uploads.length) { this.uploading.set(false); this.emit(); return; }
       uploads[index].subscribe({
         next: result => {
-          const main = this.mainImageUrl();
-          const hasMain = main !== undefined ? this.images().some(i => i.isMain) : true; // Si pas de main attendu, jamais isMain
-          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: main !== undefined && !hasMain }]);
+          // L'image principale vit hors de cette liste quand le parent la gère :
+          // promouvoir un ajout y reléguerait la principale, en double.
+          const becomesMain = !this.hasExternalMain() && !this.images().some(image => image.isMain);
+          this.images.update(imgs => [...imgs, { url: result.imageUrl, isMain: becomesMain }]);
           index++;
           processNext();
         },

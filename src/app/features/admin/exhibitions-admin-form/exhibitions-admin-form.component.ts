@@ -35,6 +35,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { TranslateService } from '@core/services/translate.service';
 import { LocaleService } from '@core/services/locale.service';
+import {nextMediaIndex} from '@core/utils/media-index.util';
 
 interface ExhibitionFormData {
   title: string;
@@ -334,16 +335,16 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
     const file = input.files[0];
     input.value = '';
 
-    this.fileUploadService.uploadExhibitionImage(file, this.getExhibitionSlug(), 1)
+    const imageIndex = nextMediaIndex([this.mainImageUrl(), ...this.uploadedImageUrls()], 'image');
+
+    this.fileUploadService.uploadExhibitionImage(file, this.getExhibitionSlug(), imageIndex)
       .pipe(catchError(() => {
         this.notificationService.error(this.translateService.translate('admin.exhibitions.uploadError'));
         return EMPTY;
       }))
       .subscribe(result => {
-        const previousMain = this.mainImageUrl();
-        if (previousMain) {
-          this.uploadedImageUrls.update(urls => [previousMain, ...urls]);
-        }
+        // Remplacement, pas rétrogradation : garder l'ancienne principale dans la
+        // galerie y ferait réapparaître l'image que l'on vient justement d'écarter.
         this.mainImageUrl.set(result.imageUrl);
         this.imageRequired.set(false);
         this.hasUnsavedChanges.set(true);
@@ -388,7 +389,7 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
     if (files.length === 0) return;
     this.uploadingVideos.set(true);
     const exhibitionSlug = this.getExhibitionSlug();
-    const startIndex = this.uploadedVideoUrls().length;
+    const startIndex = nextMediaIndex(this.uploadedVideoUrls(), 'video') - 1;
     let uploadIndex = 0;
 
     const processNext = () => {
@@ -429,7 +430,7 @@ export class ExhibitionsAdminFormComponent implements OnInit, OnDestroy, HasUnsa
     this.isSaving.set(true);
     const formData = this.exhibitionForm.value as ExhibitionFormData;
     const mainUrl = this.mainImageUrl()!;
-    const imageUrls = [mainUrl, ...this.uploadedImageUrls()];
+    const imageUrls = Array.from(new Set([mainUrl, ...this.uploadedImageUrls()]));
 
     const exhibitionData = {
       title: formData.title!,
