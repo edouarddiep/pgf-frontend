@@ -4,6 +4,7 @@ import { provideClientHydration, withEventReplay, withHttpTransferCacheOptions }
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
+import { environment } from '@environments/environment';
 import { loadingInterceptor } from '@shared/interceptors/loading.interceptor';
 import {adminHeaderInterceptor} from '@shared/interceptors/admin-header.interceptor';
 
@@ -20,11 +21,11 @@ export const appConfig: ApplicationConfig = {
     ),
     provideClientHydration(
       withEventReplay(),
-      // Les expositions en cours conditionnent l'affichage d'une section entière :
-      // cet appel doit refléter la base à chaque visite, et non l'état figé au
-      // dernier build. Tous les autres appels restent servis par le transfer state.
+      // Le site est prérendu statiquement : le transfer state figerait les réponses
+      // de l'API au dernier build, alors que leur contenu est édité depuis l'admin.
+      // Aucun appel API n'est donc mis en cache, le navigateur interroge la base.
       withHttpTransferCacheOptions({
-        filter: request => !request.url.includes('/exhibitions/ongoing')
+        filter: request => !request.url.startsWith(environment.apiUrl)
       })
     ),
     provideHttpClient(

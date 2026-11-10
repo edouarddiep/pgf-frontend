@@ -2,13 +2,16 @@ import {Injectable, inject, signal, computed, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from '@angular/common';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {Observable, of} from 'rxjs';
-import {catchError, finalize, map, shareReplay} from 'rxjs/operators';
+import {MonoTypeOperatorFunction, Observable, of} from 'rxjs';
+import {catchError, finalize, map, shareReplay, tap} from 'rxjs/operators';
 import {ArtworkCategory, Artwork} from '@core/models/artwork.model';
 import {Exhibition, ExhibitionFile} from '@core/models/exhibition.model';
 import {ContactMessage} from '@core/models/contact.model';
 import {environment} from '@environments/environment';
 import {Archive} from '@core/models/archive.model';
+import {ExhibitionService} from '@features/exhibitions/services/exhibition.service';
+import {ArtworkService} from '@features/artworks/services/artwork.service';
+import {Invalidable} from '@core/utils/invalidable-cache.util';
 
 // La session vit dans localStorage : sessionStorage disparaissait à la
 // fermeture de l'onglet et n'est jamais partagé entre onglets, ce qui imposait
@@ -55,6 +58,8 @@ export class AdminService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly adminApiUrl = `${environment.apiUrl}/admin`;
   private readonly router = inject(Router);
+  private readonly exhibitionService = inject(ExhibitionService);
+  private readonly artworkService = inject(ArtworkService);
   private readonly session = signal<AdminSession | null>(null);
   private refreshRequest?: Observable<string>;
 
@@ -234,11 +239,13 @@ export class AdminService {
   }
 
   createExhibition(request: AdminExhibitionRequest): Observable<Exhibition> {
-    return this.http.post<Exhibition>(`${this.adminApiUrl}/exhibitions`, request);
+    return this.http.post<Exhibition>(`${this.adminApiUrl}/exhibitions`, request)
+      .pipe(this.invalidating(this.exhibitionService));
   }
 
   updateExhibition(id: number, request: AdminExhibitionRequest): Observable<Exhibition> {
-    return this.http.put<Exhibition>(`${this.adminApiUrl}/exhibitions/${id}`, request);
+    return this.http.put<Exhibition>(`${this.adminApiUrl}/exhibitions/${id}`, request)
+      .pipe(this.invalidating(this.exhibitionService));
   }
 
   uploadExhibitionVideo(file: File, exhibitionSlug: string, videoIndex: number): Observable<{ videoUrl: string }> {
@@ -254,7 +261,8 @@ export class AdminService {
   }
 
   deleteExhibition(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${id}`)
+      .pipe(this.invalidating(this.exhibitionService));
   }
 
   deleteExhibitionImage(imageUrl: string): Observable<void> {
@@ -268,23 +276,34 @@ export class AdminService {
   }
 
   createExhibitionFiles(exhibitionId: number, files: ExhibitionFile[]): Observable<ExhibitionFile[]> {
-    return this.http.post<ExhibitionFile[]>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/batch`, files);
+    return this.http.post<ExhibitionFile[]>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/batch`, files)
+      .pipe(this.invalidating(this.exhibitionService));
   }
 
   updateExhibitionFile(exhibitionId: number, fileId: number, file: ExhibitionFile): Observable<ExhibitionFile> {
-    return this.http.put<ExhibitionFile>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`, file);
+    return this.http.put<ExhibitionFile>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`, file)
+      .pipe(this.invalidating(this.exhibitionService));
   }
 
   deleteExhibitionFile(exhibitionId: number, fileId: number): Observable<void> {
-    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/exhibitions/${exhibitionId}/files/${fileId}`)
+      .pipe(this.invalidating(this.exhibitionService));
+  }
+
+  // Toute écriture périme le cache servi au public : sans ça, revenir sur le site
+  // depuis l'admin sans recharger afficherait encore l'état d'avant l'édition.
+  private invalidating<T>(cache: Invalidable): MonoTypeOperatorFunction<T> {
+    return tap(() => cache.invalidate());
   }
 
   createCategory(dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
-    return this.http.post<ArtworkCategory>(`${this.adminApiUrl}/categories`, dto);
+    return this.http.post<ArtworkCategory>(`${this.adminApiUrl}/categories`, dto)
+      .pipe(this.invalidating(this.artworkService));
   }
 
   updateCategory(id: number, dto: Partial<ArtworkCategory>): Observable<ArtworkCategory> {
-    return this.http.put<ArtworkCategory>(`${this.adminApiUrl}/categories/${id}`, dto);
+    return this.http.put<ArtworkCategory>(`${this.adminApiUrl}/categories/${id}`, dto)
+      .pipe(this.invalidating(this.artworkService));
   }
 
   uploadCategoryImage(file: File, categorySlug: string): Observable<{ thumbnailUrl: string }> {
@@ -297,7 +316,8 @@ export class AdminService {
   }
 
   deleteCategory(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.adminApiUrl}/categories/${id}`);
+    return this.http.delete<void>(`${this.adminApiUrl}/categories/${id}`)
+      .pipe(this.invalidating(this.artworkService));
   }
 
   getArchives(): Observable<Archive[]> {
